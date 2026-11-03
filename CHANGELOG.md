@@ -13,7 +13,7 @@ Releases before 1.0 are described only on their
 
 The fork becomes **ARKHIVA Mobile**. The application id is now
 `org.buhonet.agente.arkhiva` and the visible name is ARKHIVA Mobile; the Python package is
-`arkhiva/` (`python -m arkhiva`). A version installed as Jenny does not see this one's data
+`arkhiva/`. A version installed as Jenny does not see this one's data
 directory, so the first start creates `.arkhiva` beside the old `.jenny`: copy the notebooks
 across by hand if you want them back. The full record of what changed, and what is still
 being converted, is in [docs/REBRANDING.md](docs/REBRANDING.md).

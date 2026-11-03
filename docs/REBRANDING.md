@@ -22,8 +22,8 @@ conserva la licencia y la atribución; ver [LICENSE](../LICENSE) y
 | Tema nativo | `Theme.Jenny*` | `Theme.Arkhiva*` |
 | Logo / símbolo | mascota | **Ω**, sin mascota |
 
-Entrada del módulo Python: `python -m arkhiva`. Punto de arranque Android:
-`arkhiva/android_entry.py`.
+Arranque del gateway en Android: `arkhiva/android_entry.py`. No hay entrada `python -m`:
+la app embebe Chaquopy y arranca el gateway por servicio.
 
 ## Renombrado interno
 
