@@ -38,13 +38,13 @@ from contextlib import contextmanager
 
 import pytest
 
-from jenny.agent.tools.python_exec import (
+from arkhiva.agent.tools.python_exec import (
     PythonNamespace,
     _discover_runtime_path_prefixes,
     _effective_runtime_prefixes,
     _reset_runtime_path_prefixes,
 )
-from jenny.config.tool_schemas import PythonExecConfig
+from arkhiva.config.tool_schemas import PythonExecConfig
 
 _REFUSED = "outside allowed directory"
 
@@ -90,7 +90,7 @@ def _runtime_prefix(root):
     class _FakeAssetFinder:
         extract_root = str(root)
 
-    key = f"__jenny_test_asset_finder__{root}"
+    key = f"__arkhiva_test_asset_finder__{root}"
     sys.path_importer_cache[key] = _FakeAssetFinder()
     _reset_runtime_path_prefixes()
     try:
@@ -291,7 +291,7 @@ def test_the_exemption_is_off_outside_a_guarded_exec(sandbox) -> None:
     ns = _namespace(workspace)
     with _runtime_prefix(outside):
         _run(ns, "1 + 1")
-    from jenny.agent.tools.python_exec import _is_runtime_path
+    from arkhiva.agent.tools.python_exec import _is_runtime_path
 
     assert not _is_runtime_path(str(outside / "secret.txt"))
 

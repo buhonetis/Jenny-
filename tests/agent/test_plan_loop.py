@@ -18,15 +18,15 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from jenny.agent.loop import AgentLoop
-from jenny.agent.plan_host import LoopPlanHost
-from jenny.bus.events import InboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.plan.driver import PLAN_STEP_TOOLS, PlanDriver
-from jenny.plan.store import PlanStore
-from jenny.providers.base import LLMResponse, ToolCallRequest
-from jenny.session.history_meta import INJECTED_EVENT_META, PLAN_STEP_EVENT
-from jenny.session.plan_probe import set_plan_probe
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.agent.plan_host import LoopPlanHost
+from arkhiva.bus.events import InboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.plan.driver import PLAN_STEP_TOOLS, PlanDriver
+from arkhiva.plan.store import PlanStore
+from arkhiva.providers.base import LLMResponse, ToolCallRequest
+from arkhiva.session.history_meta import INJECTED_EVENT_META, PLAN_STEP_EVENT
+from arkhiva.session.plan_probe import set_plan_probe
 from tests.support.aio import stop_agent_loop, wait_until
 
 KEY = "project:piante"
@@ -239,7 +239,7 @@ async def test_a_step_turn_offers_the_step_tools_and_persists_no_user_bubble(
     session = loop.sessions.get_or_create(KEY)
     row = next(m for m in session.messages if m.get(INJECTED_EVENT_META) == PLAN_STEP_EVENT)
     assert row["role"] == "user" and row["plan_step"] == "s1"
-    from jenny.webui.transcript import _session_user_event
+    from arkhiva.webui.transcript import _session_user_event
 
     assert _session_user_event(KEY, row) is None
     assert outcome.message is not None and outcome.message.content == "Va bene."
@@ -338,7 +338,7 @@ async def test_a_refused_step_blocks_without_a_reminder(workspace: Path) -> None
 
 async def test_cancelling_a_planning_stops_the_turn_in_flight(workspace: Path) -> None:
     """L'annullamento ferma il turno che stava pianificando: il 25/10 andava
-    avanti, ``plan_propose`` lo rifiutava e Jenny faceva il lavoro «diretta»."""
+    avanti, ``plan_propose`` lo rifiutava e ARKHIVA faceva il lavoro «diretta»."""
     script = Script(workspace)
     script.hang_planning = True
     loop, driver = _loop(workspace, script)
@@ -431,7 +431,7 @@ async def test_slash_stop_in_the_notebook_stops_the_plan(workspace: Path) -> Non
 
 
 async def test_a_paused_plan_runs_user_turns_read_only(workspace: Path) -> None:
-    from jenny.security.workspace_access import WORKSPACE_READONLY_METADATA_KEY
+    from arkhiva.security.workspace_access import WORKSPACE_READONLY_METADATA_KEY
 
     script = Script(workspace, close_steps=False)
     loop, driver = _loop(workspace, script)
@@ -462,8 +462,8 @@ async def test_the_personal_chat_sees_one_line_per_open_plan(workspace: Path) ->
 
 
 def test_plan_tools_are_registered_in_both_scopes() -> None:
-    from jenny.agent.tools.loader import ToolLoader
-    from jenny.agent.tools.plan import TOOLS
+    from arkhiva.agent.tools.loader import ToolLoader
+    from arkhiva.agent.tools.plan import TOOLS
 
     names = {cls().name for cls in TOOLS}
     assert names == PLAN_TOOLS
@@ -476,7 +476,7 @@ def test_plan_tools_are_registered_in_both_scopes() -> None:
 def test_plan_blocked_asks_for_decisions_not_a_report() -> None:
     """Sul Titan la domanda era un resoconto di 1700 caratteri con due domande dentro:
     il tool chiede le decisioni, numerate, e manda il resoconto nella risposta."""
-    from jenny.agent.tools.plan import PlanBlockedTool
+    from arkhiva.agent.tools.plan import PlanBlockedTool
 
     tool = PlanBlockedTool()
     question = tool.parameters["properties"]["question"]["description"]
@@ -527,7 +527,7 @@ async def _dispatch(loop: AgentLoop, msg: InboundMessage, *queued: InboundMessag
 
 
 def _cron(session_key: str = KEY, content: str = "Controlla le piante") -> InboundMessage:
-    from jenny.cron.session_turns import CRON_TRIGGER_META
+    from arkhiva.cron.session_turns import CRON_TRIGGER_META
 
     return InboundMessage(
         channel="websocket", sender_id="cron", chat_id=KEY, content=content,
@@ -572,7 +572,7 @@ async def test_a_helper_result_in_a_notebook_reads_the_notebooks_instructions(
 
 
 async def test_a_cron_turn_is_not_the_answer_to_a_blocked_plan(workspace: Path) -> None:
-    from jenny.security.workspace_access import WORKSPACE_READONLY_METADATA_KEY
+    from arkhiva.security.workspace_access import WORKSPACE_READONLY_METADATA_KEY
 
     script = Script(workspace, close_steps=False)
     loop, driver = _loop(workspace, script)
@@ -586,7 +586,7 @@ async def test_a_cron_turn_is_not_the_answer_to_a_blocked_plan(workspace: Path) 
 
 
 async def test_a_cron_turn_during_a_step_neither_sees_nor_judges_it(workspace: Path) -> None:
-    from jenny.security.workspace_access import WORKSPACE_READONLY_METADATA_KEY
+    from arkhiva.security.workspace_access import WORKSPACE_READONLY_METADATA_KEY
 
     script = Script(workspace, close_steps=False)
     loop, driver = _loop(workspace, script)
@@ -604,8 +604,8 @@ async def test_a_cron_turn_during_a_step_neither_sees_nor_judges_it(workspace: P
 async def test_a_board_monitor_cron_runs_read_only_while_the_notebook_is_held(
     workspace: Path,
 ) -> None:
-    from jenny.security.workspace_access import WORKSPACE_READONLY_METADATA_KEY
-    from jenny.session.keys import notebook_cron_session_key
+    from arkhiva.security.workspace_access import WORKSPACE_READONLY_METADATA_KEY
+    from arkhiva.session.keys import notebook_cron_session_key
 
     script = Script(workspace, close_steps=False)
     loop, driver = _loop(workspace, script)
@@ -699,7 +699,7 @@ async def test_stop_and_rollback_refuse_under_an_abandoned_turn(workspace: Path)
 async def test_the_answer_to_a_question_is_still_a_planning_turn(workspace: Path) -> None:
     """Tre turni: domanda, risposta senza il tasto, proposta. La risposta è in sola
     lettura e vede ``plan_propose``; dopo la proposta si torna alla chat normale."""
-    from jenny.security.workspace_access import WORKSPACE_READONLY_METADATA_KEY
+    from arkhiva.security.workspace_access import WORKSPACE_READONLY_METADATA_KEY
 
     script = Script(workspace)
     script.ask_first = True
@@ -758,12 +758,12 @@ async def test_no_web_while_planning(workspace: Path) -> None:
 async def test_spawn_while_planning_allows_only_the_notebook_editor(workspace: Path) -> None:
     from unittest.mock import AsyncMock
 
-    from jenny.agent.tools.context import (
+    from arkhiva.agent.tools.context import (
         RequestContext,
         bind_request_context,
         reset_request_context,
     )
-    from jenny.agent.tools.spawn import SpawnTool
+    from arkhiva.agent.tools.spawn import SpawnTool
 
     manager = MagicMock()
     manager.spawn = AsyncMock(return_value="started")
@@ -798,9 +798,9 @@ async def test_a_helper_result_while_planning_is_planning_and_counts_only_if_spa
     """Il rientro di un aiutante durante la pianificazione è pianificazione (sola
     lettura); conta come lettura solo se l'ha lanciato lei — un ``researcher`` di
     prima non ha guardato il quaderno per questo piano."""
-    from jenny.agent.hook import ToolResultHookContext
-    from jenny.agent.loop_plan import PlanReadHook
-    from jenny.security.workspace_access import WORKSPACE_READONLY_METADATA_KEY
+    from arkhiva.agent.hook import ToolResultHookContext
+    from arkhiva.agent.loop_plan import PlanReadHook
+    from arkhiva.security.workspace_access import WORKSPACE_READONLY_METADATA_KEY
 
     loop, driver = _loop(workspace, Script(workspace))
     await driver.start_drafting(KEY)

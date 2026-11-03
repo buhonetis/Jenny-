@@ -1,6 +1,6 @@
 """La scheda di un posto in chat (``shared/place-card.js``).
 
-Jenny manda un posto scrivendo un link a Google Maps da solo sul suo paragrafo;
+ARKHIVA manda un posto scrivendo un link a Google Maps da solo sul suo paragrafo;
 la chat lo disegna come cartolina, e un tocco apre Maps. Qui si misura il
 modulo vero in node (riconoscimento, geometria delle tessere, «sei qui») e poi
 la casa vera in jsdom: la risposta che arriva, la scheda che compare, il tocco
@@ -8,7 +8,7 @@ che va al ponte nativo e non al browser.
 
 Cose che leggendo il sorgente non si dimostrano:
 
-* un link **dentro una frase** resta un link: Jenny che cita un posto non lo
+* un link **dentro una frase** resta un link: ARKHIVA che cita un posto non lo
   sta mandando;
 * il testo del link e' del modello e resta testo, anche se contiene HTML;
 * coordinate fuori scala non fanno una mappa nel mezzo dell'oceano: niente
@@ -25,7 +25,7 @@ from pathlib import Path
 from support.home_dom import requires_jsdom, run_home
 from support.js_harness import requires_node, run_js
 
-ASSETS = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets"
+ASSETS = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets"
 PLACE_CARD_JS = ASSETS / "shared" / "place-card.js"
 _VENDOR = ASSETS / "vendor"
 
@@ -247,7 +247,7 @@ def test_a_tap_goes_to_maps_not_to_the_browser() -> None:
         _HOME
         + """
 const calls = [];
-window.JennyNative = { openMap: (...a) => calls.push(a) };
+window.ArkhivaNative = { openMap: (...a) => calls.push(a) };
 const block = await answer('[Piazza Santo Stefano — 40125 Bologna BO](' + LINK + ')');
 const e = tap(block.querySelector('.place-name'));
 assert.equal(e.defaultPrevented, true);
@@ -255,7 +255,7 @@ assert.deepEqual(calls, [['44.4924', '11.3472', 'Piazza Santo Stefano, 40125 Bol
 assert.deepEqual(opened, [], 'aperto anche nel browser');
 
 // Fuori da Android il link si apre fuori dalla pagina.
-delete window.JennyNative;
+delete window.ArkhivaNative;
 tap(block.querySelector('a.place-card'));
 assert.deepEqual(opened, [LINK]);
 """

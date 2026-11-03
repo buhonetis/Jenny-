@@ -1,8 +1,8 @@
 from types import SimpleNamespace
 
-from jenny.providers.anthropic_provider import AnthropicProvider
-from jenny.providers.base import LLMProvider, LLMResponse
-from jenny.providers.openai_compat_provider import OpenAICompatProvider
+from arkhiva.providers.anthropic_provider import AnthropicProvider
+from arkhiva.providers.base import LLMProvider, LLMResponse
+from arkhiva.providers.openai_compat_provider import OpenAICompatProvider
 
 
 def test_openai_compat_error_captures_retry_after_from_headers() -> None:
@@ -55,7 +55,7 @@ async def test_a_huge_retry_after_is_capped_in_standard_mode(monkeypatch) -> Non
     async def _fake_sleep(seconds: float) -> None:
         slept.append(seconds)
 
-    monkeypatch.setattr("jenny.providers.base.asyncio.sleep", _fake_sleep)
+    monkeypatch.setattr("arkhiva.providers.base.asyncio.sleep", _fake_sleep)
     response = await _RateLimited().chat_with_retry(messages=[{"role": "user", "content": "x"}])
 
     assert response.finish_reason == "error"

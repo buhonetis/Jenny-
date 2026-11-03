@@ -13,13 +13,13 @@ import time
 
 from support.cron import reschedule_job
 
-from jenny.cron.service import (
+from arkhiva.cron.service import (
     _ONE_SHOT_RETRY_MS,
     _PAST_GRACE_MS,
     CronJobSkippedError,
     CronService,
 )
-from jenny.cron.types import CronSchedule
+from arkhiva.cron.types import CronSchedule
 
 
 def _bound_chat() -> dict[str, str]:

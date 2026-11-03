@@ -2,8 +2,8 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
-from jenny.agent.loop import AgentLoop
-from jenny.bus.queue import MessageBus
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.bus.queue import MessageBus
 
 
 async def test_llm_runtime_returns_provider(tmp_path: Path) -> None:

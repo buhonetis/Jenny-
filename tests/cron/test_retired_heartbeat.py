@@ -13,22 +13,22 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from jenny.cron.retired_heartbeat import (
+from arkhiva.cron.retired_heartbeat import (
     HEARTBEAT_FILE,
     RETIRED_SUFFIX,
     active_section,
     announce_retired_heartbeat,
 )
-from jenny.cron.types import CronJob, CronPayload
-from jenny.runtime import cron_dispatch
-from jenny.runtime.cron_dispatch import CronDispatcher
-from jenny.session.turn_visibility import TurnVisibility
+from arkhiva.cron.types import CronJob, CronPayload
+from arkhiva.runtime import cron_dispatch
+from arkhiva.runtime.cron_dispatch import CronDispatcher
+from arkhiva.session.turn_visibility import TurnVisibility
 
 # Il template che la 2.0.0 scriveva al primo avvio: nessun controllo.
 _EMPTY_TEMPLATE = """# Heartbeat Tasks
 
 <!--
-This file is checked periodically by your Jenny agent.
+This file is checked periodically by your ARKHIVA agent.
 -->
 
 ## Active Tasks

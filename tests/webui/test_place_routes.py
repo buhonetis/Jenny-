@@ -16,9 +16,9 @@ from types import SimpleNamespace
 import httpx
 import pytest
 
-from jenny.config.tool_schemas import LocationConfig
-from jenny.runtime import location, map_tiles
-from jenny.webui.place_routes import PlaceRoutes
+from arkhiva.config.tool_schemas import LocationConfig
+from arkhiva.runtime import location, map_tiles
+from arkhiva.webui.place_routes import PlaceRoutes
 
 PNG = map_tiles._PNG_MAGIC + b"tile"
 
@@ -46,7 +46,7 @@ class TestLastLocation:
         assert r.status_code == 401
 
     async def test_the_cached_fix(self, tmp_path, monkeypatch):
-        monkeypatch.setattr("jenny.config.loader.load_config", lambda: _config())
+        monkeypatch.setattr("arkhiva.config.loader.load_config", lambda: _config())
         location._CURRENT = location.LocationFix(
             latitude=44.4924, longitude=11.3472, accuracy_m=12.0, time_ms=int(time.time() * 1000)
         )
@@ -57,17 +57,17 @@ class TestLastLocation:
         assert body["ageSeconds"] <= 2
 
     async def test_off_or_empty_is_204(self, tmp_path, monkeypatch):
-        monkeypatch.setattr("jenny.config.loader.load_config", lambda: _config(enable=False))
+        monkeypatch.setattr("arkhiva.config.loader.load_config", lambda: _config(enable=False))
         location._CURRENT = location.LocationFix(1.0, 2.0, None, int(time.time() * 1000))
         assert (await _routes(tmp_path).dispatch(object(), "/api/location/last")).status_code == 204
-        monkeypatch.setattr("jenny.config.loader.load_config", lambda: _config())
+        monkeypatch.setattr("arkhiva.config.loader.load_config", lambda: _config())
         location._CURRENT = None
         assert (await _routes(tmp_path).dispatch(object(), "/api/location/last")).status_code == 204
 
     async def test_an_empty_cache_asks_the_last_known_once(self, tmp_path, monkeypatch):
         """Appena acceso il gateway la cache è vuota: la prima scheda non deve
         restare senza distanza (visto su jenny_s22)."""
-        monkeypatch.setattr("jenny.config.loader.load_config", lambda: _config())
+        monkeypatch.setattr("arkhiva.config.loader.load_config", lambda: _config())
         asked: list[bool] = []
 
         async def last_known(cfg, *, precise):
@@ -80,8 +80,8 @@ class TestLastLocation:
         assert asked == [False], "il GPS non si accende per una scheda"
 
     async def test_another_device_does_not_get_it(self, tmp_path, monkeypatch):
-        monkeypatch.setattr("jenny.config.loader.load_config", lambda: _config())
-        monkeypatch.setattr("jenny.channels.ws_remote.on_remote_listener", lambda: True)
+        monkeypatch.setattr("arkhiva.config.loader.load_config", lambda: _config())
+        monkeypatch.setattr("arkhiva.channels.ws_remote.on_remote_listener", lambda: True)
         location._CURRENT = location.LocationFix(1.0, 2.0, None, int(time.time() * 1000))
         assert (await _routes(tmp_path).dispatch(object(), "/api/location/last")).status_code == 204
 
@@ -131,7 +131,7 @@ class TestTileCache:
             assert await map_tiles.get_tile(tmp_path, 16, 5, 7, client=client) == PNG
         assert len(seen) == 1
         assert str(seen[0].url) == "https://tile.openstreetmap.org/16/5/7.png"
-        assert seen[0].headers["User-Agent"].startswith("Jenny/")
+        assert seen[0].headers["User-Agent"].startswith("ARKHIVA/")
         assert (tmp_path / "16" / "5" / "7.png").read_bytes() == PNG
 
     async def test_offline_serves_the_stale_copy(self, tmp_path):

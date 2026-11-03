@@ -21,17 +21,17 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from jenny.agent.runner import AgentRunner, AgentRunResult, AgentRunSpec
-from jenny.agent.subagent import (
+from arkhiva.agent.runner import AgentRunner, AgentRunResult, AgentRunSpec
+from arkhiva.agent.subagent import (
     DEFAULT_TOOL_ERROR_BUDGET,
     SubagentManager,
     SubagentSpec,
     SubagentStatus,
 )
-from jenny.agent.tool_error_policy import TOOL_ERROR_RETRY_HINT
-from jenny.agent.tool_execution import ToolErrorBudget
-from jenny.bus.queue import MessageBus
-from jenny.providers.base import LLMProvider, LLMResponse, ToolCallRequest
+from arkhiva.agent.tool_error_policy import TOOL_ERROR_RETRY_HINT
+from arkhiva.agent.tool_execution import ToolErrorBudget
+from arkhiva.bus.queue import MessageBus
+from arkhiva.providers.base import LLMProvider, LLMResponse, ToolCallRequest
 
 _MAX_TOOL_RESULT_CHARS = 16_000
 

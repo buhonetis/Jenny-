@@ -11,10 +11,10 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
-from jenny.agent.subagent import PLAN_HELPER_SLOTS, SubagentManager
-from jenny.bus.queue import MessageBus
-from jenny.plan.driver import PlanDriver
-from jenny.runtime.container import GatewayContainer
+from arkhiva.agent.subagent import PLAN_HELPER_SLOTS, SubagentManager
+from arkhiva.bus.queue import MessageBus
+from arkhiva.plan.driver import PlanDriver
+from arkhiva.runtime.container import GatewayContainer
 
 
 class _Agent:
@@ -33,9 +33,9 @@ class _Agent:
 
 def test_the_plan_driver_sets_the_helper_limit(tmp_path: Path, monkeypatch) -> None:
     # Gli agganci globali del driver restano fuori: questo test guarda solo il limite.
-    monkeypatch.setattr("jenny.session.plan_probe.set_plan_probe", lambda _probe: None)
+    monkeypatch.setattr("arkhiva.session.plan_probe.set_plan_probe", lambda _probe: None)
     monkeypatch.setattr(
-        "jenny.security.workspace_access.set_held_notebook_probe", lambda _probe: None,
+        "arkhiva.security.workspace_access.set_held_notebook_probe", lambda _probe: None,
     )
     monkeypatch.setattr(PlanDriver, "watch_drafts", lambda self: None)
     container = GatewayContainer.__new__(GatewayContainer)

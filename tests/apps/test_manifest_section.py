@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pytest
 
-from jenny.apps.manifest import load_app
+from arkhiva.apps.manifest import load_app
 
 ROOT = Path(__file__).resolve().parents[2]
 

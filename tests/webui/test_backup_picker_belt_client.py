@@ -46,7 +46,7 @@ const setVisible = (v) => {
 };
 let opened = 0;
 globalThis.window = globalThis;
-globalThis.JennyNative = {
+globalThis.ArkhivaNative = {
   importBackup() { opened += 1; }, exportBackup() { opened += 1; }, restartApp() {},
 };
 const flow = await import('./shared/backup-flow.js');

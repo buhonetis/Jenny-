@@ -5,10 +5,10 @@ from __future__ import annotations
 
 
 def test_tool_configs_are_single_sourced_and_reexported() -> None:
-    from jenny.agent.tools.filesystem import FileToolsConfig as FsFromTool
-    from jenny.agent.tools.python_exec import PythonExecConfig as PyFromTool
-    from jenny.config.schema import PythonExecConfig as PyFromSchema
-    from jenny.config.tool_schemas import FileToolsConfig, PythonExecConfig
+    from arkhiva.agent.tools.filesystem import FileToolsConfig as FsFromTool
+    from arkhiva.agent.tools.python_exec import PythonExecConfig as PyFromTool
+    from arkhiva.config.schema import PythonExecConfig as PyFromSchema
+    from arkhiva.config.tool_schemas import FileToolsConfig, PythonExecConfig
 
     # Stessa identità di classe da tutte le superfici d'import (re-export, non copie).
     assert PyFromTool is PythonExecConfig
@@ -17,8 +17,8 @@ def test_tool_configs_are_single_sourced_and_reexported() -> None:
 
 
 def test_config_resolves_tool_subconfigs_without_rebuild() -> None:
-    from jenny.config.schema import Config
-    from jenny.config.tool_schemas import PythonExecConfig
+    from arkhiva.config.schema import Config
+    from arkhiva.config.tool_schemas import PythonExecConfig
 
     cfg = Config()
     assert isinstance(cfg.tools.python_exec, PythonExecConfig)

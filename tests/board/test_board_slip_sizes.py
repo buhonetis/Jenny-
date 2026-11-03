@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from jenny.board import model
-from jenny.board.store import BoardOwnershipError, mutate_board, read_board
-from jenny.board.view import build_board_view
+from arkhiva.board import model
+from arkhiva.board.store import BoardOwnershipError, mutate_board, read_board
+from arkhiva.board.view import build_board_view
 
 
 def test_a_slip_takes_the_room_of_its_size() -> None:
@@ -23,7 +23,7 @@ def test_a_slip_takes_the_room_of_its_size() -> None:
     assert not (2 <= x < 2 + w and 3 <= y < 3 + h and x + model.CARD_BOX[0] > 2)
 
 
-def test_jenny_cannot_change_the_size(notebook) -> None:
+def test_arkhiva_cannot_change_the_size(notebook) -> None:
     mutate_board(notebook, lambda b: b["cards"].append({
         "id": "pf", "title": "Portafoglio", "pos": {"x": 1, "y": 1}, "size": "M",
         "app": {"slug": "pf", "params": {}}}))

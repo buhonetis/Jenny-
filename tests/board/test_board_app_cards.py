@@ -11,11 +11,11 @@ from pathlib import Path
 
 import pytest
 
-from jenny.board import model
-from jenny.board.sections import alert_probe
-from jenny.board.store import mutate_board, read_board
-from jenny.board.view import build_board_view
-from jenny.webui.commands import CommandError, dispatch_command
+from arkhiva.board import model
+from arkhiva.board.sections import alert_probe
+from arkhiva.board.store import mutate_board, read_board
+from arkhiva.board.view import build_board_view
+from arkhiva.webui.commands import CommandError, dispatch_command
 
 WATERBOT = {
     "name": "WaterBot", "description": "Moisture",
@@ -34,7 +34,7 @@ def _app(workspace: Path, records: list[dict]) -> None:
 
 def _seed(notebook: Path) -> None:
     mutate_board(notebook, lambda b: b["cards"].append({
-        "id": "acero", "title": "Acero", "pages": [], "pos": {"x": 5, "y": 6, "by": "jenny"}}))
+        "id": "acero", "title": "Acero", "pages": [], "pos": {"x": 5, "y": 6, "by": "arkhiva"}}))
 
 
 @pytest.fixture
@@ -83,7 +83,7 @@ async def test_a_card_that_is_an_app_is_a_strip_of_its_size(ctx, notebook, water
 
 
 def test_a_new_version_resizes_the_cards_that_show_it(notebook, waterbot) -> None:
-    from jenny.board.place import refresh_app_cards
+    from arkhiva.board.place import refresh_app_cards
 
     mutate_board(notebook, lambda b: b["cards"].append({
         "id": "wb", "title": "WaterBot", "pos": {"x": 1, "y": 1},
@@ -140,8 +140,8 @@ async def test_an_app_never_goes_inside_another_cards_drawer(ctx, notebook, wate
     assert "unknown params" in str(err.value)
 
 
-def test_jenny_cannot_change_a_card_app(notebook) -> None:
-    from jenny.board.store import BoardOwnershipError
+def test_arkhiva_cannot_change_a_card_app(notebook) -> None:
+    from arkhiva.board.store import BoardOwnershipError
 
     mutate_board(notebook, lambda b: b["cards"].append({
         "id": "wb", "title": "WaterBot", "pos": {"x": 1, "y": 1},
@@ -150,7 +150,7 @@ def test_jenny_cannot_change_a_card_app(notebook) -> None:
         mutate_board(notebook, lambda b: b["cards"][0].pop("app"), actor=model.JENNY)
 
 
-async def test_jenny_proposes_an_app_card_and_yes_places_it(ctx, notebook, waterbot) -> None:
+async def test_arkhiva_proposes_an_app_card_and_yes_places_it(ctx, notebook, waterbot) -> None:
     _seed(notebook)
     mutate_board(notebook, lambda b: b["suggestions"].append({
         "id": "sg-wb", "kind": "add_app_card", "subject": "WaterBot", "app": "waterbot",
@@ -179,7 +179,7 @@ async def test_an_old_section_proposal_becomes_an_app_card(ctx, notebook, waterb
 
 
 def test_a_card_app_changing_state_is_journaled_once(notebook, waterbot) -> None:
-    from jenny.board.clock import watch_app_sections
+    from arkhiva.board.clock import watch_app_sections
 
     mutate_board(notebook, lambda b: b["cards"].append({
         "id": "wb", "title": "WaterBot", "pos": {"x": 1, "y": 1},
@@ -197,9 +197,9 @@ def test_a_card_app_changing_state_is_journaled_once(notebook, waterbot) -> None
 
 
 def test_the_board_block_names_the_app_of_a_card(notebook, waterbot, monkeypatch) -> None:
-    from jenny.board.context_block import board_block, drawer_text
+    from arkhiva.board.context_block import board_block, drawer_text
 
-    monkeypatch.setattr("jenny.config.paths.get_workspace_path", lambda: waterbot)
+    monkeypatch.setattr("arkhiva.config.paths.get_workspace_path", lambda: waterbot)
     mutate_board(notebook, lambda b: b["cards"].append({
         "id": "wb", "title": "WaterBot", "pos": {"x": 1, "y": 1},
         "app": {"slug": "waterbot", "params": {"sensor": "acerello"}}}))
@@ -212,8 +212,8 @@ def test_the_board_block_names_the_app_of_a_card(notebook, waterbot, monkeypatch
 
 
 def test_the_drawer_of_an_app_card_starts_from_the_app(notebook, waterbot) -> None:
-    from jenny.board.sections import section_resolver
-    from jenny.board.view import build_card_view
+    from arkhiva.board.sections import section_resolver
+    from arkhiva.board.view import build_card_view
 
     mutate_board(notebook, lambda b: b["cards"].append({
         "id": "wb", "title": "WaterBot", "pos": {"x": 1, "y": 1},

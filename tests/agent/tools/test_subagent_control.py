@@ -9,23 +9,23 @@ from unittest.mock import MagicMock
 import pytest
 from loguru import logger
 
-from jenny.agent.loop import AgentLoop
-from jenny.agent.subagent import (
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.agent.subagent import (
     SubagentConcurrencyLimitError,
     SubagentRestartError,
 )
-from jenny.agent.tools.context import RequestContext, ToolContext
-from jenny.agent.tools.file_state import FileStates
-from jenny.agent.tools.loader import ToolLoader
-from jenny.agent.tools.registry import ToolRegistry
-from jenny.agent.tools.subagent_control import (
+from arkhiva.agent.tools.context import RequestContext, ToolContext
+from arkhiva.agent.tools.file_state import FileStates
+from arkhiva.agent.tools.loader import ToolLoader
+from arkhiva.agent.tools.registry import ToolRegistry
+from arkhiva.agent.tools.subagent_control import (
     SubagentCancelTool,
     SubagentRestartTool,
     SubagentSendTool,
     SubagentStatusTool,
 )
-from jenny.bus.queue import MessageBus
-from jenny.config.schema import ToolsConfig
+from arkhiva.bus.queue import MessageBus
+from arkhiva.config.schema import ToolsConfig
 
 # Tool che l'orchestratore deve conservare e tool che deve perdere. Sono la
 # ragione della fase: l'output dei secondi gonfia la sessione dell'utente.
@@ -134,7 +134,7 @@ def test_loop_tool_scope_follows_the_flag(tmp_path: Path) -> None:
 
 
 def test_orchestrator_mode_defaults_to_config_default(tmp_path: Path) -> None:
-    from jenny.config.schema import AgentDefaults
+    from arkhiva.config.schema import AgentDefaults
 
     provider = MagicMock()
     provider.get_default_model.return_value = "test-model"
@@ -146,7 +146,7 @@ def test_orchestrator_mode_defaults_to_config_default(tmp_path: Path) -> None:
 
 def test_system_prompt_follows_the_mode(tmp_path: Path) -> None:
     """Il prompt non deve descrivere tool che in quello scope non esistono."""
-    from jenny.agent.context import ContextBuilder
+    from arkhiva.agent.context import ContextBuilder
 
     orchestrated = ContextBuilder(tmp_path, orchestrator=True).build_system_prompt()
     classic = ContextBuilder(tmp_path, orchestrator=False).build_system_prompt()
@@ -192,7 +192,7 @@ class _FakeManager(_OwnsTheTestIds):
         return self.snapshot
 
     async def cancel_task(self, task_id: str, *, by: str = "user") -> bool:
-        assert by == "jenny", "fermato dal suo strumento: la casa dice «fermata da Jenny»"
+        assert by == "arkhiva", "fermato dal suo strumento: la casa dice «fermata da ARKHIVA»"
         self.cancelled.append(task_id)
         return self.cancel_result
 
@@ -401,7 +401,7 @@ class _FakeSendManager(_OwnsTheTestIds):
         self.error: Exception | None = None
 
     async def send(self, target_id: str, message: str, *, quick=None):
-        from jenny.agent.subagent import SubagentSendResult
+        from arkhiva.agent.subagent import SubagentSendResult
 
         if self.error is not None:
             raise self.error
@@ -439,7 +439,7 @@ async def test_send_forwards_quick_only_when_given() -> None:
 
 @pytest.mark.asyncio
 async def test_send_surfaces_errors_as_text_never_a_traceback() -> None:
-    from jenny.agent.subagent import SubagentSendError
+    from arkhiva.agent.subagent import SubagentSendError
 
     manager = _FakeSendManager()
     tool = _send_tool(manager)
@@ -520,7 +520,7 @@ async def test_a_refused_send_does_not_arm_the_duplicate_guard() -> None:
 
 
 def test_orchestrator_prompt_teaches_send_vs_spawn() -> None:
-    from jenny.utils.prompt_templates import render_template
+    from arkhiva.utils.prompt_templates import render_template
 
     prompt = render_template("agent/orchestrator.md", strip=True)
     assert "subagent_send" in prompt
@@ -559,7 +559,7 @@ class _TwoSessionsManager:
         return f"Subagent restarted (id: {target_id})"
 
     async def send(self, target_id: str, message: str, *, quick=None):
-        from jenny.agent.subagent import SubagentSendResult
+        from arkhiva.agent.subagent import SubagentSendResult
 
         self.calls.append(("send", target_id))
         return SubagentSendResult("injected", f"injected into [{target_id}]")

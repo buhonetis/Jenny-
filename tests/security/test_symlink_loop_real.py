@@ -20,10 +20,10 @@ from pathlib import Path
 
 import pytest
 
-from jenny.config.loader import load_config, save_config
-from jenny.config.schema import Config
-from jenny.runtime.context import get_runtime_context
-from jenny.security.workspace_policy import WorkspaceBoundaryError, resolve_allowed_path
+from arkhiva.config.loader import load_config, save_config
+from arkhiva.config.schema import Config
+from arkhiva.runtime.context import get_runtime_context
+from arkhiva.security.workspace_policy import WorkspaceBoundaryError, resolve_allowed_path
 
 
 @pytest.fixture()
@@ -90,7 +90,7 @@ async def test_the_workspace_routes_answer_a_loop_with_a_4xx(
     from websockets.datastructures import Headers
     from websockets.http11 import Request as WsRequest
 
-    from jenny.webui.workspace_routes import WorkspaceRoutes
+    from arkhiva.webui.workspace_routes import WorkspaceRoutes
 
     routes = WorkspaceRoutes(check_api_token=lambda _r: True, get_workspace_root=lambda: workspace)
     reply = await routes.dispatch(WsRequest(path=f"{route}?{query}", headers=Headers()), route)
@@ -104,8 +104,8 @@ async def test_the_workspace_routes_answer_a_loop_with_a_4xx(
 
 
 def _namespace(workspace: Path):
-    from jenny.agent.tools.python_exec import PythonNamespace
-    from jenny.config.tool_schemas import PythonExecConfig
+    from arkhiva.agent.tools.python_exec import PythonNamespace
+    from arkhiva.config.tool_schemas import PythonExecConfig
 
     cfg = PythonExecConfig()
     return PythonNamespace(

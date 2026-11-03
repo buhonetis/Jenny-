@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.subagent_records import (
+from arkhiva.agent.subagent_records import (
     MAX_RECORDS_PER_SESSION,
     RECORD_TTL_S,
     SubagentRecord,
@@ -16,7 +16,7 @@ from jenny.agent.subagent_records import (
     SubagentSpec,
     default_label,
 )
-from jenny.security.workspace_access import (
+from arkhiva.security.workspace_access import (
     WorkspaceScope,
     workspace_sandbox_status,
 )

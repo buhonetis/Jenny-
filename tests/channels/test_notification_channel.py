@@ -1,4 +1,4 @@
-"""Test per ``jenny/channels/notification.py`` (la tendina come canale).
+"""Test per ``arkhiva/channels/notification.py`` (la tendina come canale).
 
 Il bridge Chaquopy non esiste fuori dal telefono: qui si sostituisce
 ``post_alert`` e si guarda **con che cosa** viene chiamato, più i due gate che
@@ -11,10 +11,10 @@ from typing import Any
 
 import pytest
 
-from jenny.bus.events import NOTIFICATION_CHANNEL, OutboundMessage
-from jenny.channels import notification as nc
-from jenny.channels.notification import REPLY_THREAD_TAG, NotificationChannel
-from jenny.runtime.native_input import NATIVE_THREAD_KEY
+from arkhiva.bus.events import NOTIFICATION_CHANNEL, OutboundMessage
+from arkhiva.channels import notification as nc
+from arkhiva.channels.notification import REPLY_THREAD_TAG, NotificationChannel
+from arkhiva.runtime.native_input import NATIVE_THREAD_KEY
 
 
 class _Spy:

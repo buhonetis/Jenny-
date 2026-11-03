@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import pytest
 
-from jenny.providers.anthropic_provider import AnthropicProvider, _thinking_style
+from arkhiva.providers.anthropic_provider import AnthropicProvider, _thinking_style
 
 MESSAGES = [{"role": "user", "content": "ciao"}]
 

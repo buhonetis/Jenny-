@@ -14,9 +14,9 @@ from typing import Any
 import pytest
 from loguru import logger as loguru_logger
 
-from jenny.plan.driver import OPEN_GAPS_PATH, PlanDriver, plan_view
-from jenny.plan.model import MAX_RESEARCH_ITEMS, names_research_gaps, to_research_items
-from jenny.plan.store import PlanStore
+from arkhiva.plan.driver import OPEN_GAPS_PATH, PlanDriver, plan_view
+from arkhiva.plan.model import MAX_RESEARCH_ITEMS, names_research_gaps, to_research_items
+from arkhiva.plan.store import PlanStore
 from tests.support.plan import KEY, STEPS, FakeBus, FakeHost, propose, write_file
 
 # ── la lista nel resoconto ──────────────────────────────────────────────────
@@ -43,7 +43,7 @@ from tests.support.plan import KEY, STEPS, FakeBus, FakeHost, propose, write_fil
         ("To research these I would need the web.", []),
         ("Nessuna lista qui.\n- un punto qualunque", []),
         # In grassetto a metà riga, coi due punti: la lista del Titan (26/10), che
-        # il driver contava zero mentre l'annuncio mandava Jenny a cercare.
+        # il driver contava zero mentre l'annuncio mandava ARKHIVA a cercare.
         (
             "I drawer citano pagine cancellate. **To research:** (i) additivo anti-alghe "
             "(`algae inhibitor`); (ii) protezione dal gelo delle radici in vaso; (iii) "

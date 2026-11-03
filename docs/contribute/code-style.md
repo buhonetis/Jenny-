@@ -16,7 +16,7 @@ The codebase is **asyncio end-to-end**: the message bus, the agent loop, the pro
 ## Formatting and linting
 
 ```bash
-ruff check jenny/ jenny_extensions/ tests/
+ruff check arkhiva/ arkhiva_extensions/ tests/
 ```
 
 | Setting | Value |
@@ -29,22 +29,22 @@ ruff check jenny/ jenny_extensions/ tests/
 
 ## Type checking
 
-Pyright runs in `basic` mode (`pyrightconfig.json`, `include: ["jenny"]`, excluding `jenny/templates` and `jenny/skills`). It is a static check with zero runtime impact, and it runs in two tiers with very different consequences:
+Pyright runs in `basic` mode (`pyrightconfig.json`, `include: ["jenny"]`, excluding `arkhiva/templates` and `arkhiva/skills`). It is a static check with zero runtime impact, and it runs in two tiers with very different consequences:
 
 ```bash
 # BLOCKING subset — must stay error-clean:
-npx pyright jenny/bus jenny/command jenny/plan jenny/runtime jenny/session jenny/snapshot jenny/gateway_runtime.py jenny/extensions.py jenny_extensions
+npx pyright arkhiva/bus arkhiva/command arkhiva/plan arkhiva/runtime arkhiva/session arkhiva/snapshot arkhiva/gateway_runtime.py arkhiva/extensions.py arkhiva_extensions
 
 # Full perimeter — informational, never fails the build:
 npx pyright || true
 ```
 
-`jenny/bus`, `jenny/command`, `jenny/runtime`, `jenny/session`, `jenny/snapshot` and `jenny/gateway_runtime.py` are at zero errors today and CI fails if a PR reintroduces one. The full-perimeter run surfaces the residual errors elsewhere, which are being tightened directory by directory rather than declared clean prematurely — don't add to that pile, but don't be surprised by it either.
+`arkhiva/bus`, `arkhiva/command`, `arkhiva/runtime`, `arkhiva/session`, `arkhiva/snapshot` and `arkhiva/gateway_runtime.py` are at zero errors today and CI fails if a PR reintroduces one. The full-perimeter run surfaces the residual errors elsewhere, which are being tightened directory by directory rather than declared clean prematurely — don't add to that pile, but don't be surprised by it either.
 
 Two config carve-outs are worth knowing:
 
 - `reportMissingImports` is off project-wide, because the Android/Chaquopy-only dependencies aren't installed in a plain environment.
-- `jenny/pydantic_compat` gets relaxed `reportGeneralTypeIssues` / `reportAttributeAccessIssue`; it's the homemade stdlib-only `BaseModel` (see [`FORK_BOUNDARY.md`](../../FORK_BOUNDARY.md)) and leans on metaprogramming pyright can't follow.
+- `arkhiva/pydantic_compat` gets relaxed `reportGeneralTypeIssues` / `reportAttributeAccessIssue`; it's the homemade stdlib-only `BaseModel` (see [`FORK_BOUNDARY.md`](../../FORK_BOUNDARY.md)) and leans on metaprogramming pyright can't follow.
 
 CI pins the checker version (`npx --yes pyright@1.1.411`); a bare `npx pyright` locally may pick up a newer release and report slightly different results.
 
@@ -52,12 +52,12 @@ CI pins the checker version (`npx --yes pyright@1.1.411`); a bare `npx pyright` 
 
 `pytest` runs with `asyncio_mode = "auto"` and `testpaths = ["tests"]`, so async tests need no `@pytest.mark.asyncio` decorator and a bare `pytest` from the repo root is already scoped correctly.
 
-**Tests mirror the `jenny/` package structure directory for directory.** `jenny/agent/tools/download.py` is tested by `tests/agent/tools/test_download.py`; `jenny/apps/storage.py` by `tests/apps/test_storage.py`. A new module goes with a test file at the matching relative path, not wherever is convenient. The one exception is `jenny/pydantic_compat/`, which is tested by the single file `tests/test_pydantic_compat.py`. See [Testing](./testing.md) for what CI runs and how to scope a subset.
+**Tests mirror the `arkhiva/` package structure directory for directory.** `arkhiva/agent/tools/download.py` is tested by `tests/agent/tools/test_download.py`; `arkhiva/apps/storage.py` by `tests/apps/test_storage.py`. A new module goes with a test file at the matching relative path, not wherever is convenient. The one exception is `arkhiva/pydantic_compat/`, which is tested by the single file `tests/test_pydantic_compat.py`. See [Testing](./testing.md) for what CI runs and how to scope a subset.
 
 ## The full check before a PR
 
 ```bash
-ruff check jenny/ jenny_extensions/ tests/ && npx pyright jenny/bus jenny/command jenny/plan jenny/runtime jenny/session jenny/snapshot jenny/gateway_runtime.py jenny/extensions.py jenny_extensions && pytest -q
+ruff check arkhiva/ arkhiva_extensions/ tests/ && npx pyright arkhiva/bus arkhiva/command arkhiva/plan arkhiva/runtime arkhiva/session arkhiva/snapshot arkhiva/gateway_runtime.py arkhiva/extensions.py arkhiva_extensions && pytest -q
 ```
 
 Lint, blocking type check, tests — the same sequence CI gates on. Commits also need a DCO `Signed-off-by:` line; see [`CONTRIBUTING.md`](../../CONTRIBUTING.md).
@@ -78,7 +78,7 @@ Jenny's codebase is bilingual on purpose, and the split is by *audience*, not by
 
 ### WebUI strings are never hardcoded
 
-Every string a user sees in the SPA lives in `jenny/templates/ui/assets/i18n/it.json` and `en.json`, and is read through the shared helper:
+Every string a user sees in the SPA lives in `arkhiva/templates/ui/assets/i18n/it.json` and `en.json`, and is read through the shared helper:
 
 ```js
 import { i18n } from './shared/i18n.js';
@@ -89,7 +89,7 @@ Adding a string means adding the key to **both** JSON files. A literal in JS or 
 
 ### New WebUI files must be declared
 
-The Android build ships UI assets from an explicit manifest, not a directory walk: a new file under `jenny/templates/ui/` has to be added to `_UI_MANIFEST` in `jenny/utils/android_assets.py` (the sibling lists `_TEMPLATES_MANIFEST` and `_SKILLS_MANIFEST` do the same job for prompt templates and skills). Miss it and the file simply won't exist on the device — the desktop gateway will look fine while the APK breaks. Registering a package with no manifest at all raises `ValueError: no static manifest registered for package ...` rather than falling back to a silent walk.
+The Android build ships UI assets from an explicit manifest, not a directory walk: a new file under `arkhiva/templates/ui/` has to be added to `_UI_MANIFEST` in `arkhiva/utils/android_assets.py` (the sibling lists `_TEMPLATES_MANIFEST` and `_SKILLS_MANIFEST` do the same job for prompt templates and skills). Miss it and the file simply won't exist on the device — the desktop gateway will look fine while the APK breaks. Registering a package with no manifest at all raises `ValueError: no static manifest registered for package ...` rather than falling back to a silent walk.
 
 ## Where the rules live
 

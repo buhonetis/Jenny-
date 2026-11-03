@@ -7,10 +7,10 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from support.agent import make_loop
 
-from jenny.agent.loop import AgentLoop
-from jenny.agent.tools.message import MessageTool
-from jenny.bus.events import InboundMessage, OutboundMessage
-from jenny.providers.base import LLMResponse, ToolCallRequest
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.agent.tools.message import MessageTool
+from arkhiva.bus.events import InboundMessage, OutboundMessage
+from arkhiva.providers.base import LLMResponse, ToolCallRequest
 
 
 def _make_loop(tmp_path: Path) -> AgentLoop:
@@ -159,7 +159,7 @@ class TestMessageToolTurnTracking:
 
     def test_sent_in_turn_tracks_same_target(self) -> None:
         tool = MessageTool()
-        from jenny.agent.tools.context import RequestContext
+        from arkhiva.agent.tools.context import RequestContext
         tool.set_context(RequestContext(channel="websocket", chat_id="chat1"))
         assert not tool._sent_in_turn
         tool._sent_in_turn = True

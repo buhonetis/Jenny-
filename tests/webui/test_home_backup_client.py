@@ -33,7 +33,7 @@ from pathlib import Path
 from support.js_harness import function, member, requires_node, run_js
 
 ROOT = Path(__file__).resolve().parents[2]
-ASSETS = ROOT / "jenny" / "templates" / "ui" / "assets"
+ASSETS = ROOT / "arkhiva" / "templates" / "ui" / "assets"
 ROOM_JS = ASSETS / "home-backup.js"
 WHEN_JS = ASSETS / "shared" / "when.js"
 I18N_JS = ASSETS / "shared" / "i18n.js"
@@ -212,7 +212,7 @@ def test_a_cancelled_export_does_not_move_the_row() -> None:
 
       assert.deepEqual(actions, ['export']);
       assert.equal(s.value(), i18n.t('home.backup.never'), 'la riga si e mossa su un annullamento');
-      assert.deepEqual(notices, [], 'ha avvisato «Tu e Jenny» di un backup che non c e');
+      assert.deepEqual(notices, [], 'ha avvisato «Tu e ARKHIVA» di un backup che non c e');
       assert.equal(nodi['home-backup-export'].disabled, false, 'il bottone e rimasto spento');
     """)
 
@@ -286,7 +286,7 @@ const ext = {
 
 def test_an_extension_card_closes_the_rows_under_more_options() -> None:
     """Con una scheda sopra le righe sono «altre»: chiuse, dietro un tocco. La
-    riga di «Tu e Jenny» la dice l'estensione, e le sue righe stanno in fondo."""
+    riga di «Tu e ARKHIVA» la dice l'estensione, e le sue righe stanno in fondo."""
     _run_js(_EXTENSION + """
       const s = room(null);
       s.attachExtension(ext);
@@ -297,7 +297,7 @@ def test_an_extension_card_closes_the_rows_under_more_options() -> None:
       assert.equal(nodi['home-backup-more-toggle'].attrs['aria-expanded'], 'false');
       assert.equal(nodi['home-backup-ext-rows'].innerHTML, '<button>spegni</button>');
       assert.equal(s.value(), 'al sicuro');
-      assert.deepEqual(notices, ['riga riscritta'], 'la riga di «Tu e Jenny» non si riscrive');
+      assert.deepEqual(notices, ['riga riscritta'], 'la riga di «Tu e ARKHIVA» non si riscrive');
 
       for (const fn of nodi['home-backup-more-toggle'].listeners.click) fn();
       assert.equal(nodi['home-backup-more'].hidden, false);

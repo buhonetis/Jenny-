@@ -9,7 +9,7 @@ superato dal successivo, escono per primi; poi il rumore; i tool per ultimi.
 
 from __future__ import annotations
 
-from jenny.agent.subagent_activity import (
+from arkhiva.agent.subagent_activity import (
     DIGEST_KIND_TOOL,
     KIND_ITERATION,
     KIND_PHASE,

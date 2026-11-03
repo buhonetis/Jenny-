@@ -14,12 +14,12 @@ from typing import Any
 
 import pytest
 
-from jenny.bus.events import NOTIFICATION_CHANNEL, OutboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.channels import notification as nc
-from jenny.channels.dispatcher import WebSocketDispatcher
-from jenny.channels.notification import REPLY_THREAD_TAG, NotificationChannel
-from jenny.config.schema import Config
+from arkhiva.bus.events import NOTIFICATION_CHANNEL, OutboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.channels import notification as nc
+from arkhiva.channels.dispatcher import WebSocketDispatcher
+from arkhiva.channels.notification import REPLY_THREAD_TAG, NotificationChannel
+from arkhiva.config.schema import Config
 
 
 class MockWebSocket:
@@ -147,7 +147,7 @@ async def test_the_channel_is_not_born_without_an_android_context() -> None:
 
 
 async def test_the_channel_is_born_with_an_android_context(monkeypatch) -> None:
-    monkeypatch.setattr("jenny.runtime.context.get_android_context", lambda: object())
+    monkeypatch.setattr("arkhiva.runtime.context.get_android_context", lambda: object())
     d = WebSocketDispatcher(Config(), MessageBus())
     assert isinstance(d.channels.get(NOTIFICATION_CHANNEL), NotificationChannel)
 
@@ -161,7 +161,7 @@ def test_the_channel_is_not_a_target_of_the_proactive_fanout() -> None:
     aggiungendo una riga, il che vuol dire che nessun test se ne accorgerebbe:
     questo lo fa, chiedendo i target a fabbrica piena.
     """
-    from jenny.runtime.container import GatewayContainer
+    from arkhiva.runtime.container import GatewayContainer
 
     class _Dispatcher:
         channels = {

@@ -1,4 +1,4 @@
-"""I nomi delle Jenny App non accettano un "a capo" finale.
+"""I nomi delle ARKHIVA App non accettano un "a capo" finale.
 
 ``SLUG_RE``, ``ACTION_NAME_RE`` e ``COLLECTION_RE`` erano ancorate con
 ``^…$`` e usate con ``.match``: in Python ``$`` accetta anche un ``\\n`` in
@@ -14,8 +14,8 @@ from pathlib import Path
 
 import pytest
 
-from jenny.apps import manifest
-from jenny.apps.storage import StorageError, _collection_path
+from arkhiva.apps import manifest
+from arkhiva.apps.storage import StorageError, _collection_path
 
 
 @pytest.mark.parametrize("regex", ["SLUG_RE", "ACTION_NAME_RE", "COLLECTION_RE"])

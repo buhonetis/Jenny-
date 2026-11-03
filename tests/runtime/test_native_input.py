@@ -1,4 +1,4 @@
-"""Test per ``jenny/runtime/native_input.py`` (ingresso dalla tendina).
+"""Test per ``arkhiva/runtime/native_input.py`` (ingresso dalla tendina).
 
 Il chiamante vero è Kotlin da un thread JNI, e questo file lo imita: l'unica
 prova che conta davvero è quella che entra da un thread che **non** è il loop,
@@ -16,9 +16,9 @@ import pytest
 from support.aio import wait_until
 from support.kotlin_source import read_source
 
-from jenny.bus.events import NOTIFICATION_CHANNEL, InboundMessage
-from jenny.runtime import native_input as ni
-from jenny.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.bus.events import NOTIFICATION_CHANNEL, InboundMessage
+from arkhiva.runtime import native_input as ni
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
 
 
 class _FakeBus:
@@ -101,7 +101,7 @@ class TestBind:
         """
         import inspect
 
-        from jenny.runtime.container import GatewayContainer
+        from arkhiva.runtime.container import GatewayContainer
 
         source = inspect.getsource(GatewayContainer.run)
         assert "bind_native_input(self.bus)" in source
@@ -111,7 +111,7 @@ class TestBind:
         precedente è morto e i suoi riferimenti vanno buttati."""
         import inspect
 
-        from jenny import android_entry
+        from arkhiva import android_entry
 
         source = inspect.getsource(android_entry)
         assert "reset_native_input()" in source
@@ -130,12 +130,12 @@ class TestBoundaryWithKotlin:
     @staticmethod
     def _gateway_service() -> str:
         repo = pathlib.Path(__file__).resolve().parents[2]
-        kt = repo / "android/app/src/main/java/com/flagdizero/jenny/GatewayService.kt"
+        kt = repo / "android/app/src/main/java/org/buhonet/agente/arkhiva/GatewayService.kt"
         return read_source(kt)
 
     def test_kotlin_calls_this_module(self):
-        assert 'getModule("jenny.runtime.native_input")' in self._gateway_service()
-        assert ni.__name__ == "jenny.runtime.native_input"
+        assert 'getModule("arkhiva.runtime.native_input")' in self._gateway_service()
+        assert ni.__name__ == "arkhiva.runtime.native_input"
 
     def test_kotlin_calls_this_function(self):
         assert 'callAttr("on_native_text"' in self._gateway_service()
@@ -223,7 +223,7 @@ class TestDelivery:
     async def test_the_mascot_enters_on_its_own_channel(self):
         """Due superfici native, due canali: la risposta a una domanda scritta
         nel fumetto deve tornare **nel fumetto**, non squillare in tendina."""
-        from jenny.bus.events import FLOATING_CHANNEL
+        from arkhiva.bus.events import FLOATING_CHANNEL
 
         bus = await _bound()
         assert ni.on_native_text("che ore sono?", ni.SOURCE_FLOATING) is True
@@ -245,7 +245,7 @@ class TestDelivery:
     async def test_the_mascot_carries_the_screen_reading(self):
         """Il riassunto della lettura presa al tocco entra nei metadata del
         turno, ridotto ai campi noti: da lì lo leggono il loop e il tool."""
-        from jenny.runtime.screen import SCREEN_META_KEY
+        from arkhiva.runtime.screen import SCREEN_META_KEY
 
         bus = await _bound()
         summary = '{"id": "s1", "app": "Chrome", "url": "x.org/a", "extra": "no"}'
@@ -258,7 +258,7 @@ class TestDelivery:
     @pytest.mark.parametrize("summary", [None, "", "{not json", '{"app": "no id"}', "[1]"])
     async def test_a_missing_or_broken_reading_still_delivers_the_text(self, summary):
         """Le parole dell'utente arrivano comunque: si perde solo lo schermo."""
-        from jenny.runtime.screen import SCREEN_META_KEY
+        from arkhiva.runtime.screen import SCREEN_META_KEY
 
         bus = await _bound()
         assert ni.on_native_text("ciao", ni.SOURCE_FLOATING, None, summary) is True
@@ -268,7 +268,7 @@ class TestDelivery:
     async def test_only_the_mascot_carries_a_screen(self):
         """Lo schermo si legge solo dal fumetto: da un'altra sorgente il
         riassunto si ignora anche se arriva."""
-        from jenny.runtime.screen import SCREEN_META_KEY
+        from arkhiva.runtime.screen import SCREEN_META_KEY
 
         bus = await _bound()
         assert ni.on_native_text("ok", ni.SOURCE_NOTIFICATION, None, '{"id": "s1"}') is True

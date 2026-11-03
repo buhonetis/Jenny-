@@ -22,7 +22,7 @@ from support.js_harness import requires_node, run_js
 
 FOCUS_JS = (
     Path(__file__).resolve().parents[2]
-    / "jenny" / "templates" / "ui" / "assets" / "home-focus.js"
+    / "arkhiva" / "templates" / "ui" / "assets" / "home-focus.js"
 )
 
 
@@ -238,10 +238,10 @@ def test_the_physical_keyboard_question_goes_to_the_native_shell() -> None:
     e fuori dal guscio decide il puntatore."""
     out = _run_js(
         """
-assert.equal(physicalKeyboard({ JennyNative: { hasHardwareKeyboard: () => true } }), true);
-assert.equal(physicalKeyboard({ JennyNative: { hasHardwareKeyboard: () => false } }), false);
-assert.equal(physicalKeyboard({ JennyNative: { hasHardwareKeyboard: () => { throw new Error('x'); } } }), false);
-assert.equal(physicalKeyboard({ JennyNative: {}, matchMedia: () => ({ matches: true }) }), false);
+assert.equal(physicalKeyboard({ ArkhivaNative: { hasHardwareKeyboard: () => true } }), true);
+assert.equal(physicalKeyboard({ ArkhivaNative: { hasHardwareKeyboard: () => false } }), false);
+assert.equal(physicalKeyboard({ ArkhivaNative: { hasHardwareKeyboard: () => { throw new Error('x'); } } }), false);
+assert.equal(physicalKeyboard({ ArkhivaNative: {}, matchMedia: () => ({ matches: true }) }), false);
 assert.equal(physicalKeyboard({ matchMedia: () => ({ matches: true }) }), true);
 assert.equal(physicalKeyboard({ matchMedia: () => ({ matches: false }) }), false);
 console.log(JSON.stringify({ ok: true }));

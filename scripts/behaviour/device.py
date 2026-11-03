@@ -20,7 +20,7 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Any
 
-PACKAGE = "com.flagdizero.jenny"
+PACKAGE = "org.buhonet.agente.arkhiva"
 WORKSPACE = "files/workspace"
 GATEWAY = "http://127.0.0.1:18790"
 PERSONAL_CHAT = "default"
@@ -29,7 +29,7 @@ PERSONAL_CHAT = "default"
 #: fine suite. Le sessioni si rimettono a app ferma: il gateway le tiene in
 #: memoria e un file riscritto sotto i suoi piedi verrebbe sovrascritto.
 SNAPSHOT_PATHS = ("memory", "USER.md", "SOUL.md", "AGENTS.md", "skills", "cron",
-                  "sessions", "wikis", ".jenny/staged")
+                  "sessions", "wikis", ".arkhiva/staged")
 SNAPSHOT_FILE = "files/behaviour_snapshot.tar"
 
 

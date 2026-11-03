@@ -21,16 +21,16 @@ from typing import Any
 
 import pytest
 
-from jenny.agent import dream_cycle
-from jenny.agent.memory import MemoryStore
-from jenny.bus.events import InboundMessage
-from jenny.command.builtin import register_builtin_commands
-from jenny.command.router import CommandContext, CommandRouter
-from jenny.config.loader import save_config
-from jenny.config.schema import Config
-from jenny.utils.helpers import sync_workspace_templates
+from arkhiva.agent import dream_cycle
+from arkhiva.agent.memory import MemoryStore
+from arkhiva.bus.events import InboundMessage
+from arkhiva.command.builtin import register_builtin_commands
+from arkhiva.command.router import CommandContext, CommandRouter
+from arkhiva.config.loader import save_config
+from arkhiva.config.schema import Config
+from arkhiva.utils.helpers import sync_workspace_templates
 
-_REVIEW_TARGET = "jenny.agent.dream_review.run_dream_review"
+_REVIEW_TARGET = "arkhiva.agent.dream_review.run_dream_review"
 _MEMORY_TEXT = "# Memory\n- seed fact\n"
 
 
@@ -51,8 +51,8 @@ def router() -> CommandRouter:
 
 @pytest.fixture()
 def workspace(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
-    from jenny.runtime.context import get_runtime_context
-    from jenny.utils import prompt_templates
+    from arkhiva.runtime.context import get_runtime_context
+    from arkhiva.utils import prompt_templates
 
     ws = tmp_path / "workspace"
     ws.mkdir(parents=True)

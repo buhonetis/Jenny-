@@ -17,12 +17,12 @@ from types import SimpleNamespace
 
 import pytest
 
-from jenny.config.schema import SnapshotConfig
-from jenny.snapshot.backup import BackupError, BackupManager
-from jenny.snapshot.engine import SnapshotEngine
-from jenny.snapshot.locations import STAGED_SNAPSHOTS_DIR_NAME
-from jenny.snapshot.service import SnapshotService
-from jenny.snapshot.store import put_blob
+from arkhiva.config.schema import SnapshotConfig
+from arkhiva.snapshot.backup import BackupError, BackupManager
+from arkhiva.snapshot.engine import SnapshotEngine
+from arkhiva.snapshot.locations import STAGED_SNAPSHOTS_DIR_NAME
+from arkhiva.snapshot.service import SnapshotService
+from arkhiva.snapshot.store import put_blob
 
 _HASH = "a" * 64
 

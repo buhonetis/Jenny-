@@ -2,7 +2,7 @@
 
 Il 25/10/2026 sul telefono il tondo, 12 px sopra il composer e al centro, copriva
 due righe della colonna del testo. Provate due posizioni sulla casa vera: nel
-margine sinistro copriva l'inizio delle righe di Jenny; a cavallo del bordo alto
+margine sinistro copriva l'inizio delle righe di ARKHIVA; a cavallo del bordo alto
 del composer copre al più metà dell'ultima riga, che il bordo taglia comunque.
 Qui si fissa la seconda: il fondo del tondo scende sotto il bordo di metà della
 sua altezza.
@@ -13,7 +13,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-_CSS = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets" / "home-style.css"
+_CSS = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets" / "home-style.css"
 
 
 def _px(rule: str, prop: str) -> str:

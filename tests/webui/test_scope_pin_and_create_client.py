@@ -55,7 +55,7 @@ from pathlib import Path
 
 from support.js_harness import function, member, requires_node, run_js
 
-ASSETS = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets"
+ASSETS = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets"
 CHIP_JS = ASSETS / "shared" / "scope-chip.js"
 # Le due domande e le cinque regole non stanno più nel chip: stanno qui,
 # perché le usa anche il pannello della casa.
@@ -374,7 +374,7 @@ def test_creating_a_project_opens_it() -> None:
       assert.equal(chip._projects, null, "l'elenco va riletto: il progetto nuovo non c'è");
       assert.deepEqual(toasts, [['i18n:scope.created:bordi', 'success']]);
       assert.deepEqual(greeted.map(([name]) => name), ['bordi'],
-                       'Jenny non saluta nel progetto appena nato');
+                       'ARKHIVA non saluta nel progetto appena nato');
     """)
 
 

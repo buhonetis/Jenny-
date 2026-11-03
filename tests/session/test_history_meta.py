@@ -13,18 +13,18 @@ che è anche il payload della richiesta in corso.
 
 from __future__ import annotations
 
-from jenny.cron.session_turns import CRON_HISTORY_META
-from jenny.providers.base import LLMProvider
-from jenny.providers.openai_compat_helpers import _ALLOWABLE_MSG_KEYS
-from jenny.session.history_meta import (
+from arkhiva.cron.session_turns import CRON_HISTORY_META
+from arkhiva.providers.base import LLMProvider
+from arkhiva.providers.openai_compat_helpers import _ALLOWABLE_MSG_KEYS
+from arkhiva.session.history_meta import (
     GOAL_CONTINUE_EVENT,
     INJECTED_EVENT_META,
     LENGTH_RECOVERY_EVENT,
     SUBAGENT_RESULT_EVENT,
     is_synthetic_history_row,
 )
-from jenny.session.manager import Session
-from jenny.utils.runtime import (
+from arkhiva.session.manager import Session
+from arkhiva.utils.runtime import (
     build_budget_exhausted_finalization_message,
     build_finalization_retry_message,
     build_length_recovery_message,

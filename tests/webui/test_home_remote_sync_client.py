@@ -1,4 +1,4 @@
-"""La casa del telefono, mentre scrivi a Jenny dal Mac.
+"""La casa del telefono, mentre scrivi a ARKHIVA dal Mac.
 
 Nella casa vera (jsdom): una domanda scritta dal Mac arriva dal vivo col suo
 segnetto («from macbook»), e tornando a guardare la casa rilegge il filo solo se
@@ -48,7 +48,7 @@ frame({ event: 'delta', chat_id: 'default', text: 'risposta', stream_id: 's1' })
 frame({ event: 'stream_end', chat_id: 'default', stream_id: 's1' });
 frame({ event: 'turn_end', chat_id: 'default', rev: 'boot.5' });
 await tick(30);
-assert.deepEqual(thread().slice(-2), ['you: dal Mac', 'jenny: risposta']);
+assert.deepEqual(thread().slice(-2), ['you: dal Mac', 'arkhiva: risposta']);
 assert.deepEqual(badges(), [O.remoteNamed.replace('{device}', 'macbook')]);
 """)
 
@@ -100,11 +100,11 @@ threads[KEY] = {
 };
 await showHome();
 assert.equal(reads('full'), full + 1, 'il filo era cambiato e non ha riletto');
-assert.deepEqual(thread().slice(-2), ['you: perso per strada', 'jenny: eccomi']);
+assert.deepEqual(thread().slice(-2), ['you: perso per strada', 'arkhiva: eccomi']);
 """)
 
 
-def test_no_reread_while_jenny_is_answering() -> None:
+def test_no_reread_while_arkhiva_is_answering() -> None:
     run_home(_HEAD + """
 await boot();
 await tick(30);

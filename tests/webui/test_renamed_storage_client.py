@@ -2,7 +2,7 @@
 
 Il 25/09/2026 i nomi del front-end sono passati all'inglese, e tre cose salvate in
 ``localStorage`` portavano un nome o un valore italiano: la visibilita' e la taglia
-della mascotte (``jenny-mascotte-visible``/``-size``), i due temi ``fumetto`` e
+della mascotte (``arkhiva-mascotte-visible``/``-size``), i due temi ``fumetto`` e
 ``pietra`` in ``tc-theme``, e i tre cassetti dell'officina in ``mobile-last-mode``
 (``cervello``, ``mani``, ``memoria``). Una preferenza scelta dall'utente non deve
 tornare al default per un rinomino: qui si prova che passa al nome nuovo.
@@ -18,7 +18,7 @@ from pathlib import Path
 
 from support.js_harness import requires_node, run_module
 
-ASSETS = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets"
+ASSETS = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets"
 
 pytestmark = requires_node
 
@@ -44,8 +44,8 @@ def _run_mascot(seed: dict[str, str]) -> dict[str, str | None]:
             f"globalThis.__SEED__ = {json.dumps(seed)};\n"
             + _FAKE_STORAGE
             + "const m = await import('./mascot.js');\n"
-            + "const keys = ['jenny-mascot-visible', 'jenny-mascot-size',"
-            + " 'jenny-mascotte-visible', 'jenny-mascotte-size'];\n"
+            + "const keys = ['arkhiva-mascot-visible', 'arkhiva-mascot-size',"
+            + " 'arkhiva-mascotte-visible', 'arkhiva-mascotte-size'];\n"
             + "console.log(JSON.stringify({"
             + " stored: Object.fromEntries(keys.map((k) => [k, localStorage.getItem(k)])),"
             + " size: m.mascotSize() }));\n",
@@ -56,33 +56,33 @@ def _run_mascot(seed: dict[str, str]) -> dict[str, str | None]:
 
 def test_the_old_mascot_keys_move_to_the_new_names() -> None:
     """La taglia passa al nome nuovo. «Visibile», vecchio e nuovo, se ne va e
-    basta: dal 05/10/2026 Jenny c'e' sempre, ed e' la porta della chat."""
-    out = _run_mascot({"jenny-mascotte-visible": "0", "jenny-mascotte-size": "lg",
-                       "jenny-mascot-visible": "0"})
+    basta: dal 05/10/2026 ARKHIVA c'e' sempre, ed e' la porta della chat."""
+    out = _run_mascot({"arkhiva-mascotte-visible": "0", "arkhiva-mascotte-size": "lg",
+                       "arkhiva-mascot-visible": "0"})
     assert out["stored"] == {
-        "jenny-mascot-visible": None,
-        "jenny-mascot-size": "lg",
-        "jenny-mascotte-visible": None,
-        "jenny-mascotte-size": None,
+        "arkhiva-mascot-visible": None,
+        "arkhiva-mascot-size": "lg",
+        "arkhiva-mascotte-visible": None,
+        "arkhiva-mascotte-size": None,
     }
     assert out["size"] == "lg"
 
 
 def test_a_value_already_under_the_new_name_wins() -> None:
     """Il nome nuovo e' la scelta piu' recente: quello vecchio non la scavalca."""
-    out = _run_mascot({"jenny-mascotte-size": "lg", "jenny-mascot-size": "md"})
-    assert out["stored"]["jenny-mascot-size"] == "md"
-    assert out["stored"]["jenny-mascotte-size"] is None
+    out = _run_mascot({"arkhiva-mascotte-size": "lg", "arkhiva-mascot-size": "md"})
+    assert out["stored"]["arkhiva-mascot-size"] == "md"
+    assert out["stored"]["arkhiva-mascotte-size"] is None
 
 
 def test_the_first_paint_reads_the_old_mascot_keys_too() -> None:
     """``bootstrap.js`` gira prima di ``mascot.js``: al primo avvio dopo
     l'aggiornamento la chiave nuova non c'e' ancora, e senza il nome vecchio la
     mascotte comparirebbe piccola e poi si ridimensionerebbe. La visibilita'
-    non si legge piu' (05/10/2026): Jenny c'e' sempre."""
+    non si legge piu' (05/10/2026): ARKHIVA c'e' sempre."""
     source = (ASSETS / "bootstrap.js").read_text(encoding="utf-8")
     # `read` e' la lettura protetta del file.
-    assert "read('jenny-mascotte-size')" in source
+    assert "read('arkhiva-mascotte-size')" in source
     assert "visible" not in source, "il primo fotogramma legge ancora «visibile»"
     assert "data-mascot-hidden" not in source
 

@@ -1,4 +1,4 @@
-"""Test di sync_workspace_templates (jenny.utils.helpers).
+"""Test di sync_workspace_templates (arkhiva.utils.helpers).
 
 Copertura ricollocata qui dopo la rimozione di tests/agent/test_onboard_logic.py
 (che testava anche _merge_missing_defaults, simbolo eliminato): questi invarianti
@@ -9,9 +9,9 @@ proteggono i file utente esistenti nel workspace e restano comportamento vivo
 from pathlib import Path
 from types import SimpleNamespace
 
-import jenny.utils.helpers as helpers_module
-from jenny.runtime.container import GatewayContainer
-from jenny.utils.helpers import sync_workspace_templates
+import arkhiva.utils.helpers as helpers_module
+from arkhiva.runtime.container import GatewayContainer
+from arkhiva.utils.helpers import sync_workspace_templates
 
 
 class TestSyncWorkspaceTemplates:

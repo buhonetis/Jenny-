@@ -9,6 +9,54 @@ Releases before 1.0 are described only on their
 
 ## [Unreleased]
 
+## ARKHIVA Ω · 1.0.0-SOBERANO
+
+The fork becomes **ARKHIVA Mobile**. The application id is now
+`org.buhonet.agente.arkhiva` and the visible name is ARKHIVA Mobile; the Python package is
+`arkhiva/`. A version installed as Jenny does not see this one's data
+directory, so the first start creates `.arkhiva` beside the old `.jenny`: copy the notebooks
+across by hand if you want them back. The full record of what changed, and what is still
+being converted, is in [docs/REBRANDING.md](docs/REBRANDING.md).
+
+### Added
+
+- `Vault_Memoria/`: the memory files now live in a folder you can open with a file manager,
+  copy and version. On the phone it sits under the app's external files directory; the
+  canonical files keep their names (`SOUL.md`, `USER.md`, `memory/MEMORY.md`, `AGENTS.md`)
+  and a mirror of the workspace is kept beside them, with the frontmatter stripped.
+- A local-first inference profile (`config/local_first.py`): `http://127.0.0.1:11434/v1/`,
+  `qwen2.5-coder:3b`, 120 s timeout, overridable through `ARKHIVA_LOCAL_BASE_URL`,
+  `ARKHIVA_LOCAL_MODEL`, `ARKHIVA_LOCAL_API_KEY` and `ARKHIVA_LOCAL_TIMEOUT`. It is never
+  applied in silence: the first start that finds no provider says so instead of pointing at
+  a server that is not there.
+- Spanish as a first-class language of the interface: `values-es/strings.xml` for the native
+  start and error screens, and `assets/i18n/es.json` in the WebUI, which falls back to
+  English for the sections not translated yet.
+
+### Changed
+
+- The cognitive prompts are written in Spanish, tool names, parser headings and action ids
+  excepted — those are contract with the code, not prose. The prompt budgets stay where the
+  tests put them (read-only ≤ 1500 characters, orchestrator < 3200, scheduling ≤ 1450).
+- Sovereign palette: obsidian `#0F1115` with a cyan accent `#00FFC2`. The default WebUI
+  theme and the system splash now agree on the background, and the native colours have a
+  single source in `res/values/colors.xml`.
+- The native layout resolves its strings through resources instead of hardcoding them, so
+  the loading and error screens follow the phone's language.
+
+### Removed
+
+- The mascot and the brand assets of the original project. The symbol is Ω.
+
+### Fixed
+
+- The historical template fixtures under `tests/agent/fixtures/` are back to their exact
+  original bytes: rewriting them broke the digest-based retirement of withdrawn templates,
+  which would have let obsolete prompt text survive on disk as if the user had written it.
+- The `ARKHIVA_LOCAL_*` variable names moved into `config/runtime_env.py`, the one place
+  that is supposed to know which knobs exist.
+
+
 ### Removed
 
 - `/goal` and the long-running goal behind it. Jenny could start one on her own and then keep

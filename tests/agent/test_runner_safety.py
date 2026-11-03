@@ -7,7 +7,7 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from support.runner import make_spec
 
-from jenny.providers.base import LLMResponse, ToolCallRequest
+from arkhiva.providers.base import LLMResponse, ToolCallRequest
 
 
 async def test_runner_does_not_abort_on_workspace_violation_anymore():
@@ -19,7 +19,7 @@ async def test_runner_does_not_abort_on_workspace_violation_anymore():
     we now hand the error back to the LLM as a recoverable tool result and
     rely on ``repeated_workspace_violation_error`` to throttle bypass loops.
     """
-    from jenny.agent.runner import AgentRunner
+    from arkhiva.agent.runner import AgentRunner
 
     provider = MagicMock()
     provider.chat_with_retry = AsyncMock(side_effect=[
@@ -61,7 +61,7 @@ async def test_runner_does_not_abort_on_workspace_violation_anymore():
 
 def test_is_ssrf_violation_recognizes_private_url_blocks():
     """SSRF rejections are classified separately from workspace boundaries."""
-    from jenny.agent.tool_error_policy import is_ssrf_violation
+    from arkhiva.agent.tool_error_policy import is_ssrf_violation
 
     ssrf_msg = "Error: Command blocked by safety guard (internal/private URL detected)"
     assert is_ssrf_violation(ssrf_msg) is True
@@ -85,7 +85,7 @@ def test_is_ssrf_violation_recognizes_private_url_blocks():
 @pytest.mark.asyncio
 async def test_runner_returns_non_retryable_hint_on_ssrf_violation():
     """SSRF stays blocked, but the runtime gives the LLM a final chance to recover."""
-    from jenny.agent.runner import AgentRunner
+    from arkhiva.agent.runner import AgentRunner
 
     provider = MagicMock()
     provider.chat_with_retry = AsyncMock(side_effect=[
@@ -135,8 +135,8 @@ def test_ssrf_note_names_a_whitelist_key_that_takes_effect():
     """
     import re
 
-    from jenny.agent.tool_error_policy import SSRF_BOUNDARY_NOTE
-    from jenny.config.schema import Config
+    from arkhiva.agent.tool_error_policy import SSRF_BOUNDARY_NOTE
+    from arkhiva.config.schema import Config
 
     match = re.search(r"via (\w+)\.(\w+)\.", SSRF_BOUNDARY_NOTE)
     assert match, SSRF_BOUNDARY_NOTE
@@ -154,7 +154,7 @@ async def test_runner_lets_llm_recover_from_shell_guard_path_outside():
     turn (silent hang on Telegram per #3605); now the LLM gets the soft
     error back and can finalize on the next iteration.
     """
-    from jenny.agent.runner import AgentRunner
+    from arkhiva.agent.runner import AgentRunner
 
     provider = MagicMock()
     captured_second_call: list[dict] = []
@@ -206,7 +206,7 @@ async def test_runner_throttles_repeated_workspace_bypass_attempts():
     the runner replaces the tool result with a hard "stop trying" message
     so the model finally gives up and surfaces the boundary to the user.
     """
-    from jenny.agent.runner import AgentRunner
+    from arkhiva.agent.runner import AgentRunner
 
     bypass_attempts = [
         ToolCallRequest(

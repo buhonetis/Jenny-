@@ -1,4 +1,4 @@
-"""La fonte della bolla di lavoro: ``jenny/runtime/work_status.py``.
+"""La fonte della bolla di lavoro: ``arkhiva/runtime/work_status.py``.
 
 Cosa si fissa: la forma del payload (campi, niente testo), il freno sugli
 aggiornamenti con l'ultimo che parte comunque in ritardo, le transizioni che
@@ -12,10 +12,10 @@ import asyncio
 
 import pytest
 
-from jenny.bus.events import OUTBOUND_META_WORK_STATUS
-from jenny.providers import retry_notice
-from jenny.runtime import work_status
-from jenny.runtime.work_status import WorkReporter, work_snapshot
+from arkhiva.bus.events import OUTBOUND_META_WORK_STATUS
+from arkhiva.providers import retry_notice
+from arkhiva.runtime import work_status
+from arkhiva.runtime.work_status import WorkReporter, work_snapshot
 
 
 class _Bus:

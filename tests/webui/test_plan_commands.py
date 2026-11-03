@@ -12,12 +12,12 @@ from typing import Any
 
 import pytest
 
-from jenny.config.loader import save_config
-from jenny.config.schema import Config
-from jenny.plan.driver import PlanDriver
-from jenny.plan.store import PlanStore
-from jenny.runtime.context import get_runtime_context
-from jenny.webui.commands import CommandContext, CommandError, dispatch_command
+from arkhiva.config.loader import save_config
+from arkhiva.config.schema import Config
+from arkhiva.plan.driver import PlanDriver
+from arkhiva.plan.store import PlanStore
+from arkhiva.runtime.context import get_runtime_context
+from arkhiva.webui.commands import CommandContext, CommandError, dispatch_command
 from tests.support.plan import KEY, STEPS, FakeBus, FakeHost, propose, write_file
 
 

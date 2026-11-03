@@ -1,4 +1,4 @@
-"""OpenCode Go: ogni modello parla un solo dei tre endpoint, e Jenny lo impara.
+"""OpenCode Go: ogni modello parla un solo dei tre endpoint, e ARKHIVA lo impara.
 
 Il difetto di partenza, visto sul telefono l'08/10/2026: con il provider
 ``opencode-go`` in formato OpenAI, ``gpt-6-luna`` rispondeva
@@ -24,12 +24,12 @@ from typing import Any
 import httpx
 import pytest
 
-from jenny.config.schema import Config, ProviderConfig
-from jenny.providers.anthropic_provider import AnthropicProvider
-from jenny.providers.base import LLMProvider, LLMResponse
-from jenny.providers.factory import make_provider
-from jenny.providers.openai_compat_provider import OpenAICompatProvider
-from jenny.providers.opencode_router import (
+from arkhiva.config.schema import Config, ProviderConfig
+from arkhiva.providers.anthropic_provider import AnthropicProvider
+from arkhiva.providers.base import LLMProvider, LLMResponse
+from arkhiva.providers.factory import make_provider
+from arkhiva.providers.openai_compat_provider import OpenAICompatProvider
+from arkhiva.providers.opencode_router import (
     EndpointMemory,
     OpenCodeRouter,
     endpoint_order,
@@ -307,7 +307,7 @@ class TestMemoria:
         assert EndpointMemory(path).get(GO_BASE, "m") is None
 
 
-# --- il resto di Jenny vede un provider qualunque -------------------------------------
+# --- il resto di ARKHIVA vede un provider qualunque -------------------------------------
 
 
 class TestFacciata:

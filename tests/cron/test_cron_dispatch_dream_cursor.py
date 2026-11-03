@@ -12,10 +12,10 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
-from jenny.agent.memory import DREAM_HISTORY_HEADER
-from jenny.agent.tools.file_state import FileStates
-from jenny.config.schema import Config
-from jenny.runtime.cron_dispatch import CronDispatcher
+from arkhiva.agent.memory import DREAM_HISTORY_HEADER
+from arkhiva.agent.tools.file_state import FileStates
+from arkhiva.config.schema import Config
+from arkhiva.runtime.cron_dispatch import CronDispatcher
 
 _DREAM_JOB = SimpleNamespace(
     name="dream", id="dream", payload=SimpleNamespace(kind="system_event")

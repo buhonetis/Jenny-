@@ -18,9 +18,9 @@ from types import SimpleNamespace
 
 import pytest
 
-from jenny.agent.memory import MemoryStore
-from jenny.agent.memory_budget import budget_report, make_write_size_guard
-from jenny.agent.tools.file_state import FileStates
+from arkhiva.agent.memory import MemoryStore
+from arkhiva.agent.memory_budget import budget_report, make_write_size_guard
+from arkhiva.agent.tools.file_state import FileStates
 
 
 @pytest.fixture

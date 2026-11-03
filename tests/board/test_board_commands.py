@@ -8,22 +8,22 @@ from pathlib import Path
 
 import pytest
 
-from jenny.board import model
-from jenny.board.corrections import list_corrections, open_corrections, resolve_correction
-from jenny.board.links import page_membership
-from jenny.board.store import (
+from arkhiva.board import model
+from arkhiva.board.corrections import list_corrections, open_corrections, resolve_correction
+from arkhiva.board.links import page_membership
+from arkhiva.board.store import (
     mutate_board,
     read_board,
     write_card_summary,
 )
-from jenny.board.view import build_board_view, build_card_view
-from jenny.webui.commands import CommandError, dispatch_command
+from arkhiva.board.view import build_board_view, build_card_view
+from arkhiva.webui.commands import CommandError, dispatch_command
 
 TZ = "Europe/Rome"
 
 
 def _jobs(cron) -> dict:
-    from jenny.board.cron_link import notebook_jobs
+    from arkhiva.board.cron_link import notebook_jobs
 
     return notebook_jobs(cron, "piante")
 
@@ -38,16 +38,16 @@ def _card_view(notebook: Path, cron, card: str) -> dict:
 
 
 def _notes(notebook: Path, cron) -> list:
-    from jenny.board.cron_link import notes_from_jobs
+    from arkhiva.board.cron_link import notes_from_jobs
 
     return notes_from_jobs(_jobs(cron), TZ)
 
 
 def _remind(cron, card: str, text: str, when: dict, every_ms: int = 3_600_000) -> str:
     """Un promemoria del quaderno come lo scrive ``edit.add_reminder``: un job."""
-    from jenny.board.cron_link import add_notebook_job
-    from jenny.cron.dates import date_schedule
-    from jenny.cron.types import CronSchedule
+    from arkhiva.board.cron_link import add_notebook_job
+    from arkhiva.cron.dates import date_schedule
+    from arkhiva.cron.types import CronSchedule
 
     if when["kind"] == "date":
         day = when["date"][:7] if when.get("precision") == "month" else when["date"]
@@ -65,15 +65,15 @@ def _seed(notebook: Path) -> None:
         board["cards"].append({
             "id": "acero", "title": "Acero", "pages": [
                 "travaso-acero.md", "vasi-settembre.md", "irrigazione-acero.md",
-            ], "pos": {"x": 5, "y": 6, "by": "jenny"}, "glyph": "leaf",
+            ], "pos": {"x": 5, "y": 6, "by": "arkhiva"}, "glyph": "leaf",
             "created": "2026-09-01T10:00:00+02:00",
         })
         board["cards"].append({
             "id": "monstera", "title": "Monstera", "pages": ["rinvaso-monstera.md"],
-            "pos": {"x": 47, "y": 4, "by": "jenny"},
+            "pos": {"x": 47, "y": 4, "by": "arkhiva"},
         })
         board["connections"].append(
-            {"a": "acero", "b": "monstera", "label": "vasi dello stesso ordine", "by": "jenny"}
+            {"a": "acero", "b": "monstera", "label": "vasi dello stesso ordine", "by": "arkhiva"}
         )
 
     mutate_board(notebook, apply)
@@ -120,7 +120,7 @@ def test_card_view_orders_sections_by_the_skeleton(notebook: Path) -> None:
         "path": "travaso-acero.md", "title": "travaso acero", "exists": True,
     }
     assert view["connections"] == [
-        {"to": "monstera", "title": "Monstera", "label": "vasi dello stesso ordine", "by": "jenny"}
+        {"to": "monstera", "title": "Monstera", "label": "vasi dello stesso ordine", "by": "arkhiva"}
     ]
     assert build_card_view(notebook, "nope") is None
 
@@ -171,14 +171,14 @@ async def test_accepting_a_card_places_it_in_a_free_spot(ctx, notebook: Path) ->
         "id": "sg-ginkgo", "kind": "add_card", "subject": "Ginkgo", "glyph": "plant",
         "pages": ["ginkgo.md", "ginkgo-talea.md", "ginkgo-vaso.md"],
         "text": "Gli faccio un posto?",
-    }), actor="jenny")
+    }), actor="arkhiva")
     await dispatch_command(ctx, "board.suggestion.respond", {
         "wiki": "piante", "id": "sg-ginkgo", "answer": "yes",
     })
     board = read_board(notebook)
     ginkgo = model.card_by_id(board, "ginkgo")
     assert ginkgo["pages"] == ["ginkgo.md", "ginkgo-talea.md", "ginkgo-vaso.md"]
-    assert ginkgo["pos"]["by"] == "jenny"
+    assert ginkgo["pos"]["by"] == "arkhiva"
     assert (ginkgo["pos"]["x"], ginkgo["pos"]["y"]) not in {(5, 6), (47, 4)}
     assert board["suggestions"] == []
     assert board["since"][-1]["kind"] == "card_added"
@@ -193,7 +193,7 @@ async def test_a_no_is_remembered_and_later_is_deferred(ctx, notebook: Path) -> 
             {"id": "sg-b", "kind": "add_card", "subject": "Ginkgo", "pages": ["ginkgo.md"]},
         ]
 
-    mutate_board(notebook, add, actor="jenny")
+    mutate_board(notebook, add, actor="arkhiva")
     await dispatch_command(ctx, "board.suggestion.respond", {"wiki": "piante", "id": "sg-a",
                                                             "answer": "no"})
     await dispatch_command(ctx, "board.suggestion.respond", {"wiki": "piante", "id": "sg-b",
@@ -276,7 +276,7 @@ async def test_a_reminder_can_be_for_the_whole_notebook(cron_ctx, cron, notebook
     view = _board(notebook, cron)
     assert [n["id"] for n in view["notes"] if n["card"] == ""] == [out["id"]]
     # Un post-it libero, senza scheda, dopo quelli delle schede.
-    assert view["postits"][-1]["card"] == "" and view["postits"][-1]["pos"]["by"] == "jenny"
+    assert view["postits"][-1]["card"] == "" and view["postits"][-1]["pos"]["by"] == "arkhiva"
     with pytest.raises(CommandError):
         await dispatch_command(cron_ctx, "board.reminder.add", {
             "wiki": "piante", "card": "Fico!", "text": "x",
@@ -398,7 +398,7 @@ def test_the_wall_takes_positions_past_the_first_screen(notebook) -> None:
         board["cards"][1]["pos"] = {"x": -140.0, "y": -60.0, "by": "user"}
 
     mutate_board(notebook, far)
-    from jenny.board.store import read_board as _rb
+    from arkhiva.board.store import read_board as _rb
 
     cards = _rb(notebook)["cards"]
     assert (cards[0]["pos"]["x"], cards[0]["pos"]["y"]) == (250.0, 180.5)
@@ -436,7 +436,7 @@ async def test_an_accepted_card_lands_near_the_view(ctx, notebook) -> None:
     mutate_board(notebook, propose)
     await dispatch_command(ctx, "board.suggestion.respond", {
         "wiki": "piante", "id": "sg-ginkgo", "answer": "yes", "near": {"x": 300, "y": -150}})
-    from jenny.board.store import read_board as _rb
+    from arkhiva.board.store import read_board as _rb
 
     card = next(c for c in _rb(notebook)["cards"] if c["title"] == "Ginkgo")
     assert 250 <= card["pos"]["x"] <= 320 and -200 <= card["pos"]["y"] <= -130
@@ -474,7 +474,7 @@ async def test_each_card_with_reminders_has_its_own_postit(notebook: Path, cron)
     # Nati accanto alla loro scheda, senza coprire le schede né fra loro.
     rects = [(p["pos"]["x"], p["pos"]["y"], p["pos"]["x"] + model.POSTIT_BOX[0],
               p["pos"]["y"] + model.POSTIT_BOX[1]) for p in view["postits"]]
-    assert all(p["pos"]["by"] == "jenny" for p in view["postits"])
+    assert all(p["pos"]["by"] == "arkhiva" for p in view["postits"])
     assert model._overlap(rects[0], rects[1]) == 0
     for rect in rects:
         for card in view["cards"]:
@@ -484,7 +484,7 @@ async def test_each_card_with_reminders_has_its_own_postit(notebook: Path, cron)
 
 
 async def test_no_reminders_no_postit(notebook: Path, cron) -> None:
-    from jenny.board.cron_link import notes_on_disk
+    from arkhiva.board.cron_link import notes_on_disk
 
     _seed(notebook)
     assert _board(notebook, cron)["postits"] == []
@@ -499,9 +499,9 @@ async def test_a_one_time_cron_is_a_note_and_a_recurring_one_a_label(notebook: P
                                                                       cron) -> None:
     """Un singolo dal tool ``cron`` (a un'ora esatta) sta sul post-it con la sua ora;
     un ricorrente senza filtro sta sull'etichetta menta. Mai tutti e due."""
-    from jenny.board.cron_link import add_notebook_job
-    from jenny.cron.dates import date_schedule
-    from jenny.cron.types import CronSchedule
+    from arkhiva.board.cron_link import add_notebook_job
+    from arkhiva.cron.dates import date_schedule
+    from arkhiva.cron.types import CronSchedule
 
     _seed(notebook)
     once = add_notebook_job(cron, "piante", "acero", name="Chiama il vivaio", message="m",
@@ -535,7 +535,7 @@ async def test_moving_a_postit_makes_its_place_the_users(ctx, notebook: Path, cr
     assert exc.value.code == "bad_request"
 
 
-def test_jenny_does_not_move_a_postit() -> None:
+def test_arkhiva_does_not_move_a_postit() -> None:
     card = {"id": "acero", "title": "Acero", "pos": {"x": 1, "y": 1}}
     before = model.normalize_board({"cards": [{**card, "postitPos": {"x": 70, "y": 10}}]})
     after = model.normalize_board({"cards": [{**card, "postitPos": {"x": 10, "y": 10}}]})
@@ -562,7 +562,7 @@ async def test_the_label_and_the_notebook_objects_move_like_a_postit(ctx, notebo
     assert exc.value.code == "bad_request"
 
 
-def test_jenny_does_not_move_a_label_nor_the_notebook_objects() -> None:
+def test_arkhiva_does_not_move_a_label_nor_the_notebook_objects() -> None:
     card = {"id": "acero", "title": "Acero", "pos": {"x": 1, "y": 1}}
     before = model.normalize_board({"cards": [{**card, "autoPos": {"x": 70, "y": 10}}],
                                     "notebookPostitPos": {"x": 5, "y": 60},
@@ -610,8 +610,8 @@ async def test_a_reminder_is_edited_and_dropped_by_id(cron_ctx, cron, notebook: 
 
 async def test_a_reminder_of_another_notebook_is_not_found(cron_ctx, cron,
                                                            notebook: Path) -> None:
-    from jenny.board.cron_link import add_notebook_job
-    from jenny.cron.dates import date_schedule
+    from arkhiva.board.cron_link import add_notebook_job
+    from arkhiva.cron.dates import date_schedule
 
     _seed(notebook)
     other = add_notebook_job(cron, "altrove", "acero", name="x", message="x",
@@ -642,7 +642,7 @@ async def test_the_drawer_shows_a_reminder_once(cron_ctx, cron, notebook: Path) 
 
 def test_the_drawer_takes_the_notes_out_of_the_sections(notebook: Path) -> None:
     """Le note e le foto sono i due mazzetti sotto il brief, non sezioni fra le altre."""
-    from jenny.board.sections import section_resolver
+    from arkhiva.board.sections import section_resolver
 
     _seed(notebook)
 
@@ -706,7 +706,7 @@ async def test_a_photo_with_a_note_is_a_said_line_without_one_none(ctx, notebook
 
 
 async def test_correcting_a_photo_note_writes_a_new_line(ctx, notebook: Path) -> None:
-    from jenny.board.sections import section_resolver
+    from arkhiva.board.sections import section_resolver
 
     _seed(notebook)
 
@@ -833,7 +833,7 @@ async def test_moving_the_lilac_and_the_gallery_makes_their_place_the_users(
                            5.5 + model.GALLERY_BOX[1])) == 0
 
 
-def test_jenny_does_not_move_the_lilac_or_the_gallery() -> None:
+def test_arkhiva_does_not_move_the_lilac_or_the_gallery() -> None:
     card = {"id": "acero", "title": "Acero", "pos": {"x": 1, "y": 1}}
     for key in ("notesPos", "photosPos"):
         before = model.normalize_board({"cards": [{**card, key: {"x": 70, "y": 10}}]})
@@ -846,8 +846,8 @@ async def test_a_recurring_job_is_refused_as_recurring_not_as_missing(cron_ctx, 
     """Un ricorrente senza filtro non si corregge dalla bacheca, ma c'è: il rifiuto
     lo dice («change it with the cron tool»), invece di «non esiste», che
     manda a cercarlo in un altro quaderno."""
-    from jenny.board.cron_link import add_notebook_job
-    from jenny.cron.types import CronSchedule
+    from arkhiva.board.cron_link import add_notebook_job
+    from arkhiva.cron.types import CronSchedule
 
     _seed(notebook)
     job = add_notebook_job(cron, "piante", "acero", name="Meteo", message="m",

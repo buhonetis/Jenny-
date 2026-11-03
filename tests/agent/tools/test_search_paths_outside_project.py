@@ -14,9 +14,9 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.tools.filesystem import ReadFileTool
-from jenny.agent.tools.search import FindFilesTool, GrepTool
-from jenny.security.workspace_access import build_workspace_scope, enter_workspace_scope
+from arkhiva.agent.tools.filesystem import ReadFileTool
+from arkhiva.agent.tools.search import FindFilesTool, GrepTool
+from arkhiva.security.workspace_access import build_workspace_scope, enter_workspace_scope
 
 
 @pytest.fixture

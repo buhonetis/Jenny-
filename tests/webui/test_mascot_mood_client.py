@@ -36,11 +36,11 @@ from pathlib import Path
 
 from support.js_harness import requires_node, run_js
 
-from jenny.session.mascot_mood import MOODS, NEUTRAL_MOOD
-from jenny.utils.android_assets import _UI_MANIFEST
+from arkhiva.session.mascot_mood import MOODS, NEUTRAL_MOOD
+from arkhiva.utils.android_assets import _UI_MANIFEST
 
-ASSETS = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets"
-JENNY_JS = ASSETS / "shared" / "jenny-mascot.js"
+ASSETS = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets"
+ARKHIVA_JS = ASSETS / "shared" / "arkhiva-mascot.js"
 MOTION_JS = ASSETS / "shared" / "mascot-motion.js"
 
 node = requires_node
@@ -103,9 +103,9 @@ def _dict_const(source: str, name: str) -> dict[str, str]:
 
 
 def _harness() -> str:
-    jenny = JENNY_JS.read_text(encoding="utf-8")
-    consts = "\n".join(f"const {name} = {_const(jenny, name)};" for name in _CONSTS)
-    methods = "\n".join(_method(jenny, name) + "," for name in _METHODS)
+    arkhiva = ARKHIVA_JS.read_text(encoding="utf-8")
+    consts = "\n".join(f"const {name} = {_const(arkhiva, name)};" for name in _CONSTS)
+    methods = "\n".join(_method(arkhiva, name) + "," for name in _METHODS)
     return f"""
 import assert from 'node:assert/strict';
 const {{ MotionChannels }} = await import({json.dumps(MOTION_JS.as_uri())});
@@ -424,7 +424,7 @@ def test_a_frame_while_another_turn_is_in_flight_is_dropped() -> None:
 @node
 def test_a_mood_shows_at_the_edge_too_with_the_side_faces() -> None:
     """Fino al 28/09/2026 al bordo l'umore non si vedeva, e l'utente lo cercava:
-    «quando Jenny e' nascosta non si agganciano le espressioni?». Adesso al
+    «quando ARKHIVA e' nascosta non si agganciano le espressioni?». Adesso al
     bordo e' il corpo di lato senza faccia con la faccia dell'umore sopra, e
     fuori la faccia davanti; decaduto l'umore torna la posa cotta."""
     _run_js("""
@@ -476,7 +476,7 @@ def test_clearing_redraws_once_and_is_idempotent() -> None:
 
 
 def test_mood_faces_cover_every_backend_label_except_neutral() -> None:
-    faces = set(re.findall(r"'(\w+)'", _const(JENNY_JS.read_text(encoding="utf-8"), "MOOD_FACES")))
+    faces = set(re.findall(r"'(\w+)'", _const(ARKHIVA_JS.read_text(encoding="utf-8"), "MOOD_FACES")))
     expected = {m for m in MOODS if m != NEUTRAL_MOOD}
     assert faces == expected, (
         f"MOOD_FACES (JS) e MOODS (Python) divergono: {sorted(faces)} vs {sorted(expected)}"
@@ -484,15 +484,15 @@ def test_mood_faces_cover_every_backend_label_except_neutral() -> None:
 
 
 def test_every_mood_has_a_drawn_face() -> None:
-    source = JENNY_JS.read_text(encoding="utf-8")
+    source = ARKHIVA_JS.read_text(encoding="utf-8")
     faces = set(re.findall(r"'(\w+)'", _const(source, "MOOD_FACES")))
     assert faces <= set(_dict_const(source, "FACE")), "un umore senza faccia in FACE"
     assert faces == set(_dict_const(source, "SIDE_FACE")), "un umore senza faccia di lato"
 
 
 def test_every_layer_the_client_names_exists_and_ships() -> None:
-    """Corpo senza faccia è una Jenny senza volto: qui si controlla file per file."""
-    source = JENNY_JS.read_text(encoding="utf-8")
+    """Corpo senza faccia è una ARKHIVA senza volto: qui si controlla file per file."""
+    source = ARKHIVA_JS.read_text(encoding="utf-8")
     urls = {
         **_dict_const(source, "BODY"),
         **_dict_const(source, "FACE"),

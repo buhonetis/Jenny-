@@ -19,8 +19,8 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-UI = ROOT / "jenny" / "templates" / "ui"
-EXTENSIONS = ROOT / "jenny_extensions"
+UI = ROOT / "arkhiva" / "templates" / "ui"
+EXTENSIONS = ROOT / "arkhiva_extensions"
 LOCALES = ("it", "en")
 
 _JS_KEY = re.compile(r"""\bi18n\.t\(\s*['"]([A-Za-z][\w-]*(?:\.[\w-]+)+)['"]""")

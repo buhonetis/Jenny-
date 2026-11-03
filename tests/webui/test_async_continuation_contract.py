@@ -31,7 +31,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-ASSETS = ROOT / "jenny" / "templates" / "ui" / "assets"
+ASSETS = ROOT / "arkhiva" / "templates" / "ui" / "assets"
 APP_JS = ASSETS / "mobile-app.js"
 HEADER_JS = ASSETS / "mobile-header.js"
 SETTINGS_JS = ASSETS / "mobile-settings.js"

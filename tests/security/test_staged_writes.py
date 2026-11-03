@@ -1,4 +1,4 @@
-"""J2: un subagent non fidato mette in bozza i file che Jenny carica da sola.
+"""J2: un subagent non fidato mette in bozza i file che ARKHIVA carica da sola.
 
 Una skill, ``AGENTS.md``, un promemoria, ``USER.md``, la memoria: scritti da
 un lavoro che ha letto una pagina ostile, agirebbero più tardi senza nessuno
@@ -15,16 +15,16 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from jenny.agent import staged_writes
-from jenny.agent.tools.apply_patch import ApplyPatchTool
-from jenny.agent.tools.filesystem import EditFileTool, WriteFileTool
-from jenny.agent.tools.python_exec import PythonExecTool
-from jenny.agent.tools.python_exec_builtins import _register_builtin_functions
-from jenny.config.tool_schemas import PythonExecConfig
-from jenny.security import taint_ledger
-from jenny.security.subagent_policy import SubagentRunPolicy, enter_subagent_policy
-from jenny.webui.commands import CommandError
-from jenny.webui.staged_commands import staged_discard, staged_install, staged_list
+from arkhiva.agent import staged_writes
+from arkhiva.agent.tools.apply_patch import ApplyPatchTool
+from arkhiva.agent.tools.filesystem import EditFileTool, WriteFileTool
+from arkhiva.agent.tools.python_exec import PythonExecTool
+from arkhiva.agent.tools.python_exec_builtins import _register_builtin_functions
+from arkhiva.config.tool_schemas import PythonExecConfig
+from arkhiva.security import taint_ledger
+from arkhiva.security.subagent_policy import SubagentRunPolicy, enter_subagent_policy
+from arkhiva.webui.commands import CommandError
+from arkhiva.webui.staged_commands import staged_discard, staged_install, staged_list
 
 
 @pytest.fixture
@@ -195,14 +195,14 @@ async def test_discard_leaves_the_file_alone(ws: Path) -> None:
 async def test_drafts_survive_a_restart(ws: Path) -> None:
     """Su disco: un nuovo processo li ritrova (nessuno stato in memoria)."""
     staged_writes.stage(ws, "USER.md", b"x", sources=("web_search",), task_id="t")
-    meta = json.loads(next((ws / ".jenny" / "staged").iterdir()).joinpath("meta.json").read_text())
+    meta = json.loads(next((ws / ".arkhiva" / "staged").iterdir()).joinpath("meta.json").read_text())
     assert meta["target"] == "USER.md"
     assert len(staged_writes.list_staged(ws)) == 1
 
 
 async def test_a_subagent_cannot_touch_a_pending_draft(ws: Path) -> None:
     ref = staged_writes.stage(ws, "USER.md", b"x", sources=("web_search",), task_id="t")
-    path = ws / ".jenny" / "staged" / ref.id / "content"
+    path = ws / ".arkhiva" / "staged" / ref.id / "content"
     with enter_subagent_policy(_untrusted(ws)):
         out = await _tool(WriteFileTool, ws).execute(path=str(path), content="peggio")
     assert "private configuration" in out
@@ -224,19 +224,19 @@ def test_a_draft_pointing_outside_is_never_installed(ws: Path) -> None:
 
 
 async def test_the_frame_reaches_the_websocket() -> None:
-    from jenny.bus.events import COORDINATION_FLAGS
+    from arkhiva.bus.events import COORDINATION_FLAGS
 
     assert "_staged_changed" in COORDINATION_FLAGS
 
 
-async def test_the_announce_tells_jenny_there_is_something_to_approve(ws: Path) -> None:
+async def test_the_announce_tells_arkhiva_there_is_something_to_approve(ws: Path) -> None:
     import time
     from unittest.mock import AsyncMock
 
-    from jenny.agent.runner import AgentRunResult
-    from jenny.agent.subagent import SubagentManager, SubagentSpec, SubagentStatus
-    from jenny.bus.queue import MessageBus
-    from jenny.providers.base import LLMProvider
+    from arkhiva.agent.runner import AgentRunResult
+    from arkhiva.agent.subagent import SubagentManager, SubagentSpec, SubagentStatus
+    from arkhiva.bus.queue import MessageBus
+    from arkhiva.providers.base import LLMProvider
 
     provider = MagicMock(spec=LLMProvider)
     provider.get_default_model.return_value = "m"
@@ -288,11 +288,11 @@ async def test_a_tainted_researcher_saves_sources_in_its_notebook_without_a_draf
     ws: Path,
 ) -> None:
     """Un ``researcher`` lanciato nella chat di un quaderno salva le fonti verbatim in
-    ``raw/research/`` del quaderno, senza bozza: ``raw/`` non è un file che Jenny
+    ``raw/research/`` del quaderno, senza bozza: ``raw/`` non è un file che ARKHIVA
     carica da sola, e la bozza lì fermerebbe un passo ``research`` del piano a ogni
     fonte. Il file resta marcato come non fidato nel registro (chi lo legge dopo lo
     sa); l'``AGENTS.md`` dello stesso quaderno, invece, va in bozza."""
-    from jenny.security.workspace_access import build_workspace_scope, enter_workspace_scope
+    from arkhiva.security.workspace_access import build_workspace_scope, enter_workspace_scope
 
     notebook = ws / "wikis" / "piante"
     (notebook / "raw" / "research").mkdir(parents=True)

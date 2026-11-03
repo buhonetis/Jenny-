@@ -16,16 +16,16 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from jenny.agent.loop import AgentLoop
-from jenny.bus.queue import MessageBus
-from jenny.providers.base import LLMProvider
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.bus.queue import MessageBus
+from arkhiva.providers.base import LLMProvider
 
 # Quel che ``patch_deps=True`` sostituisce: un workspace senza file veri non
 # regge il costruttore di queste tre.
 DEFAULT_PATCHES = (
-    "jenny.agent.loop.ContextBuilder",
-    "jenny.agent.loop.SessionManager",
-    "jenny.agent.loop.SubagentManager",
+    "arkhiva.agent.loop.ContextBuilder",
+    "arkhiva.agent.loop.SessionManager",
+    "arkhiva.agent.loop.SubagentManager",
 )
 
 

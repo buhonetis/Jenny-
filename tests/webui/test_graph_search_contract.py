@@ -26,9 +26,9 @@ from pathlib import Path
 
 from support.js_harness import requires_node, run_module
 
-from jenny.webui.wiki_search import WikiSearchService
+from arkhiva.webui.wiki_search import WikiSearchService
 
-ASSETS = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets"
+ASSETS = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets"
 
 pytestmark = requires_node
 

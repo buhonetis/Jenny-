@@ -5,14 +5,14 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from jenny.agent.agent_types import AGENT_TYPES
-from jenny.agent.subagent import SubagentManager
-from jenny.agent.tools.filesystem import FileToolsConfig
-from jenny.bus.queue import MessageBus
-from jenny.config.paths import get_output_path
-from jenny.config.schema import ToolsConfig
-from jenny.config.tool_schemas import SshConfig, SshHostConfig
-from jenny.providers.base import LLMProvider
+from arkhiva.agent.agent_types import AGENT_TYPES
+from arkhiva.agent.subagent import SubagentManager
+from arkhiva.agent.tools.filesystem import FileToolsConfig
+from arkhiva.bus.queue import MessageBus
+from arkhiva.config.paths import get_output_path
+from arkhiva.config.schema import ToolsConfig
+from arkhiva.config.tool_schemas import SshConfig, SshHostConfig
+from arkhiva.providers.base import LLMProvider
 
 
 @pytest.mark.asyncio

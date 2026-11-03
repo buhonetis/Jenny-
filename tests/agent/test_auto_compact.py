@@ -9,14 +9,14 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from support.aio import settle_tasks
 
-from jenny.agent.loop import AgentLoop
-from jenny.bus.events import InboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.command import CommandContext
-from jenny.config.schema import AgentDefaults
-from jenny.providers.base import LLMResponse
-from jenny.runtime.user_text import say
-from jenny.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.bus.events import InboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.command import CommandContext
+from arkhiva.config.schema import AgentDefaults
+from arkhiva.providers.base import LLMResponse
+from arkhiva.runtime.user_text import say
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
 
 
 def _make_loop(
@@ -85,7 +85,7 @@ def _make_fake_compact(
     track_count: bool = False,
 ):
     """Return a fake compact_idle_session that mirrors the real method's session mutation."""
-    from jenny.session.manager import Session as _Session
+    from arkhiva.session.manager import Session as _Session
 
     state = {"count": 0}
 
@@ -240,11 +240,11 @@ class TestAgentLoopTTLParam:
             await loop._process_message(msg)
 
         session = loop.sessions.get_or_create("internal:direct")
-        from jenny.session.manager import FILE_MAX_MESSAGES
+        from arkhiva.session.manager import FILE_MAX_MESSAGES
         assert len(session.messages) <= FILE_MAX_MESSAGES
 
     def test_session_enforce_file_cap_skips_archive_when_dropped_prefix_already_consolidated(self, tmp_path):
-        from jenny.session.manager import Session
+        from arkhiva.session.manager import Session
         archive_fn = MagicMock()
         session = Session(key="internal:direct")
         for i in range(8):
@@ -257,7 +257,7 @@ class TestAgentLoopTTLParam:
         archive_fn.assert_not_called()
 
     def test_session_enforce_file_cap_archives_only_unconsolidated_dropped_prefix(self, tmp_path):
-        from jenny.session.manager import Session
+        from arkhiva.session.manager import Session
         archive_fn = MagicMock()
         session = Session(key="internal:direct")
         for i in range(8):

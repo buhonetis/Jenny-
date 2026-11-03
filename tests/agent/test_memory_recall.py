@@ -1,7 +1,7 @@
 """Il recupero dal tier freddo: cosa deve valere perché "non è perso" sia vero.
 
 La fase 2 ha mantenuto la sua promessa sul disco. Questi test tengono ferma la
-parte che riguarda ciò che Jenny *sa*: che l'archivio si possa interrogare senza
+parte che riguarda ciò che ARKHIVA *sa*: che l'archivio si possa interrogare senza
 corrispondenze testuali, e che quando l'elenco non ci sta tutto lo dica invece di
 accorciarsi in silenzio — che è il modo in cui ``grep`` falliva.
 """
@@ -11,14 +11,14 @@ from __future__ import annotations
 from datetime import date
 from pathlib import Path
 
-from jenny.agent.memory import MemoryStore
-from jenny.agent.memory_archive import (
+from arkhiva.agent.memory import MemoryStore
+from arkhiva.agent.memory_archive import (
     ArchivedEntry,
     archive_entry,
     list_archived,
     read_archived,
 )
-from jenny.agent.tools.memory_recall import MemoryRecallTool
+from arkhiva.agent.tools.memory_recall import MemoryRecallTool
 
 
 def _store(tmp_path: Path) -> MemoryStore:
@@ -121,7 +121,7 @@ class TestOpeningEntries:
 
 class TestTruncationIsNeverSilent:
     async def test_a_long_list_comes_in_pages_and_says_so(self, tmp_path, monkeypatch):
-        import jenny.agent.tools.memory_recall as mod
+        import arkhiva.agent.tools.memory_recall as mod
 
         monkeypatch.setattr(mod, "_INDEX_MAX_CHARS", 120)
         store = _store(tmp_path)
@@ -145,7 +145,7 @@ class TestTruncationIsNeverSilent:
     async def test_a_page_fits_in_a_tool_result(self):
         """Oltre ``max_tool_result_chars`` (16.000) il risultato finisce in un file e
         il modello ne vede l'anteprima: successo sull'emulatore il 12/10/2026."""
-        import jenny.agent.tools.memory_recall as mod
+        import arkhiva.agent.tools.memory_recall as mod
 
         assert mod._INDEX_MAX_CHARS < 16_000
 
@@ -154,7 +154,7 @@ class TestSearch:
     """Con ``query``: le parole del modello, in tutte e due le lingue."""
 
     async def test_it_finds_a_fact_past_the_first_page(self, tmp_path, monkeypatch):
-        import jenny.agent.tools.memory_recall as mod
+        import arkhiva.agent.tools.memory_recall as mod
 
         monkeypatch.setattr(mod, "_INDEX_MAX_CHARS", 200)
         store = _store(tmp_path)
@@ -212,7 +212,7 @@ class TestChains:
         assert "replaced by a newer wording" in out
 
     async def test_opening_shows_every_wording_and_the_live_one(self, tmp_path):
-        from jenny.agent.tools.memory_entries import entry_id
+        from arkhiva.agent.tools.memory_entries import entry_id
 
         (tmp_path / "USER.md").write_text("- Lavora al forno Stella\n", encoding="utf-8")
         live = entry_id("- Lavora al forno Stella")
@@ -256,7 +256,7 @@ class TestChains:
 
 class TestWhereItIsMounted:
     def test_the_main_agent_gets_it(self):
-        from jenny.agent.tools.loader import _HARDCODED_TOOL_MODULES
+        from arkhiva.agent.tools.loader import _HARDCODED_TOOL_MODULES
 
         assert "memory_recall" in _HARDCODED_TOOL_MODULES
         assert "orchestrator" in MemoryRecallTool._scopes

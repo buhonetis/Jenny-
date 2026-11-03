@@ -2,7 +2,7 @@
 
 Nella riprova del 25/10/2026 nove richieste sono fallite con un 429 di OpenCode
 Go dopo i tentativi: otto aiutanti chiusi in ``failed``, la loro conversazione
-cancellata, e Jenny li ha rilanciati da zero. Qui si fissa che gli aiutanti
+cancellata, e ARKHIVA li ha rilanciati da zero. Qui si fissa che gli aiutanti
 usano la scala di tentativi lunga, che un errore passeggero lascia la storia
 salvata e l'annuncio dice di continuare, e che un errore vero resta com'era.
 """
@@ -15,11 +15,11 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from jenny.agent.runner import AgentRunResult, AgentRunSpec
-from jenny.agent.subagent import SubagentManager
-from jenny.bus.queue import MessageBus
-from jenny.providers.base import LLMProvider
-from jenny.session.manager import SessionManager
+from arkhiva.agent.runner import AgentRunResult, AgentRunSpec
+from arkhiva.agent.subagent import SubagentManager
+from arkhiva.bus.queue import MessageBus
+from arkhiva.providers.base import LLMProvider
+from arkhiva.session.manager import SessionManager
 
 BRIEF = "Search the pruning of the maple in a pot."
 
@@ -152,11 +152,11 @@ async def test_a_provider_wait_counts_as_progress(tmp_path: Path) -> None:
     callback = seen[0].retry_wait_callback
     assert callback is not None
 
-    from jenny.agent.subagent import SubagentStatus
+    from arkhiva.agent.subagent import SubagentStatus
 
     status = SubagentStatus(task_id="t", label="x", task_description="y", started_at=0.0)
     status.state = "stalled"
-    from jenny.agent.subagent import _retry_wait_touch
+    from arkhiva.agent.subagent import _retry_wait_touch
 
     await _retry_wait_touch(status)("waiting 60s")
     assert status.state == "running" and status.last_progress_at > 0.0

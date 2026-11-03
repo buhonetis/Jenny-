@@ -1,4 +1,4 @@
-"""Test per jenny/runtime/notifier.py (alert di sistema Android).
+"""Test per arkhiva/runtime/notifier.py (alert di sistema Android).
 
 Il bridge Chaquopy non esiste nei test desktop: si verifica la derivazione
 pura dei campi (``alert_fields``), il no-op senza contesto Android e il
@@ -12,8 +12,8 @@ from typing import Any
 
 import pytest
 
-from jenny.runtime import notifier, user_text
-from jenny.webui.metadata import WEBUI_MESSAGE_SOURCE_METADATA_KEY
+from arkhiva.runtime import notifier, user_text
+from arkhiva.webui.metadata import WEBUI_MESSAGE_SOURCE_METADATA_KEY
 
 
 class _FakeBridge:
@@ -42,44 +42,44 @@ def _meta(kind: str, label: str | None = None) -> dict[str, Any]:
 def _italian_jenny(monkeypatch):
     """Lingua e nome fissati: i titoli dipendono da ``config.json``, e qui no."""
     monkeypatch.setattr(user_text, "current_language", lambda: "it")
-    monkeypatch.setattr(notifier, "current_bot_name", lambda: "Jenny")
+    monkeypatch.setattr(notifier, "current_bot_name", lambda: "ARKHIVA")
 
 
 class TestAlertFields:
     def test_cron_with_label(self):
         title, body, tag = notifier.alert_fields("ricordati il pane", _meta("cron", "spesa"))
-        assert title == "Jenny · ⏰ Promemoria · spesa"
+        assert title == "ARKHIVA · ⏰ Promemoria · spesa"
         assert tag == "cron:spesa"
         assert body == "ricordati il pane"
 
     def test_cron_without_label(self):
         title, _, tag = notifier.alert_fields("ping", _meta("cron"))
-        assert title == "Jenny · ⏰ Promemoria"
+        assert title == "ARKHIVA · ⏰ Promemoria"
         assert tag == "cron"
 
     def test_cron_blank_label_falls_back(self):
         title, _, tag = notifier.alert_fields("ping", _meta("cron", "   "))
-        assert title == "Jenny · ⏰ Promemoria"
+        assert title == "ARKHIVA · ⏰ Promemoria"
         assert tag == "cron"
 
     def test_update(self):
         # Tag dedicato: l'annuncio in chat e l'alert esplicito di un update
         # critico coalizzano invece di suonare due volte.
         title, _, tag = notifier.alert_fields("nuova versione 0.7.0", _meta("update"))
-        assert title == "Jenny · Aggiornamento"
+        assert title == "ARKHIVA · Aggiornamento"
         assert tag == "update"
 
     def test_plain_message_defaults(self):
         for metadata in (None, {}, {"latency_ms": 3}):
             title, _, tag = notifier.alert_fields("ciao", metadata)
-            assert title == "Jenny"
+            assert title == "ARKHIVA"
             assert tag == "message"
 
     def test_malformed_source_is_ignored(self):
         title, _, tag = notifier.alert_fields(
             "ciao", {WEBUI_MESSAGE_SOURCE_METADATA_KEY: "cron"}
         )
-        assert title == "Jenny"
+        assert title == "ARKHIVA"
         assert tag == "message"
 
     def test_body_collapses_whitespace_and_truncates(self):
@@ -95,8 +95,8 @@ class TestAlertFields:
 
     def test_english_titles_follow_the_language(self, monkeypatch):
         monkeypatch.setattr(user_text, "current_language", lambda: "en")
-        assert notifier.alert_fields("x", _meta("cron"))[0] == "Jenny · ⏰ Reminder"
-        assert notifier.alert_fields("x", _meta("update"))[0] == "Jenny · Update"
+        assert notifier.alert_fields("x", _meta("cron"))[0] == "ARKHIVA · ⏰ Reminder"
+        assert notifier.alert_fields("x", _meta("update"))[0] == "ARKHIVA · Update"
         assert notifier.alert_fields("   ", None)[1] == "New message"
 
     def test_title_uses_the_configured_bot_name(self, monkeypatch):
@@ -126,7 +126,7 @@ class TestPostAlert:
         monkeypatch.setattr(notifier, "_get_bridge", fake_get_bridge)
         ok = await notifier.post_alert("ricordati il pane", _meta("cron", "spesa"))
         assert ok is True
-        assert bridge.calls == [("Jenny · ⏰ Promemoria · spesa", "ricordati il pane", "cron:spesa")]
+        assert bridge.calls == [("ARKHIVA · ⏰ Promemoria · spesa", "ricordati il pane", "cron:spesa")]
 
     async def test_thread_overrides_the_tag_and_leaves_the_title(self, monkeypatch):
         """Il canale della tendina passa un thread unico.
@@ -144,7 +144,7 @@ class TestPostAlert:
 
         monkeypatch.setattr(notifier, "_get_bridge", fake_get_bridge)
         await notifier.post_alert("ecco", _meta("cron", "spesa"), thread="chat")
-        assert bridge.calls == [("Jenny · ⏰ Promemoria · spesa", "ecco", "chat")]
+        assert bridge.calls == [("ARKHIVA · ⏰ Promemoria · spesa", "ecco", "chat")]
 
     async def test_without_thread_nothing_changes(self, monkeypatch):
         """Gli avvisi proattivi tengono i loro tag distinti."""
@@ -172,8 +172,8 @@ class TestPostAlert:
         monkeypatch.setattr(notifier, "_get_bridge", fake_get_bridge)
         await notifier.post_alert("ecco la risposta", {"webui": True, "conn_id": "c1"})
         await notifier.post_alert("ricordati il pane", _meta("cron", "spesa"))
-        assert bridge.replies == [("Jenny", "ecco la risposta", "message")]
-        assert bridge.calls == [("Jenny · ⏰ Promemoria · spesa", "ricordati il pane", "cron:spesa")]
+        assert bridge.replies == [("ARKHIVA", "ecco la risposta", "message")]
+        assert bridge.calls == [("ARKHIVA · ⏰ Promemoria · spesa", "ricordati il pane", "cron:spesa")]
 
     def test_only_a_true_webui_flag_is_a_reply(self):
         assert notifier.is_app_reply({"webui": True}) is True
@@ -208,7 +208,7 @@ class TestNotifyDelivery:
         notifier.notify_delivery("evento X", _meta("cron", "pioggia"))
         assert notifier._TASKS
         await asyncio.gather(*notifier._TASKS)
-        assert bridge.calls == [("Jenny · ⏰ Promemoria · pioggia", "evento X", "cron:pioggia")]
+        assert bridge.calls == [("ARKHIVA · ⏰ Promemoria · pioggia", "evento X", "cron:pioggia")]
         assert not notifier._TASKS
 
 
@@ -233,7 +233,7 @@ class TestNotebookConversation:
     def test_a_reply_in_a_notebook_names_it_in_tag_and_title(self):
         title, _, tag = notifier.alert_fields("ecco", None, conversation="project:Casa")
         assert tag == "project:Casa|message"
-        assert title == "Jenny · Casa"
+        assert title == "ARKHIVA · Casa"
 
     def test_a_notebook_cron_keeps_its_title_and_gains_the_notebook(self):
         """Un cron del quaderno consegna nel quaderno: il tocco deve portare lì."""
@@ -241,7 +241,7 @@ class TestNotebookConversation:
             "annaffia", _meta("cron", "Piante"), conversation="project:Casa"
         )
         assert tag == "project:Casa|cron:Piante"
-        assert title == "Jenny · ⏰ Promemoria · Piante"
+        assert title == "ARKHIVA · ⏰ Promemoria · Piante"
 
     def test_without_a_conversation_the_tags_do_not_change(self):
         assert notifier.alert_fields("ciao", None)[2] == "message"
@@ -259,8 +259,8 @@ class TestNotebookConversation:
         notifier.notify_delivery("ciao", {"webui": True}, chat_id="default")
         await asyncio.gather(*notifier._TASKS)
         assert bridge.replies == [
-            ("Jenny · Casa", "fatto", "project:Casa|message"),
-            ("Jenny", "ciao", "message"),
+            ("ARKHIVA · Casa", "fatto", "project:Casa|message"),
+            ("ARKHIVA", "ciao", "message"),
         ]
 
     async def test_the_shade_thread_still_wins(self, monkeypatch):

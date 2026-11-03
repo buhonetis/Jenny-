@@ -10,10 +10,13 @@ plugins {
 // Never stored in the repo. Read from the environment (CI) or, failing that,
 // from a gitignored `android/keystore.properties` (local release builds):
 //
-//   storeFile=/absolute/path/to/jenny-release.jks
+//   storeFile=/absolute/path/to/arkhiva-release.jks
 //   storePassword=...
-//   keyAlias=jenny
+//   keyAlias=arkhiva
 //   keyPassword=...
+//
+// ARKHIVA lee primero las variables ARKHIVA_* y cae a las JENNY_* heredadas
+// para no romper un keystore/CI ya configurado durante la transición.
 //
 // If neither source provides a full set, the release build is left UNSIGNED
 // rather than failing: `assembleRelease` must keep working for anyone who only
@@ -25,13 +28,18 @@ val keystoreProps = Properties().apply {
     }
 }
 
-fun signingCredential(envName: String, propName: String): String? =
-    (System.getenv(envName) ?: keystoreProps.getProperty(propName))?.takeIf { it.isNotBlank() }
+fun signingCredential(propName: String, vararg envNames: String): String? =
+    (envNames.firstNotNullOfOrNull { System.getenv(it) }
+        ?: keystoreProps.getProperty(propName))?.takeIf { it.isNotBlank() }
 
-val releaseStoreFile = signingCredential("JENNY_KEYSTORE_PATH", "storeFile")
-val releaseStorePassword = signingCredential("JENNY_KEYSTORE_PASSWORD", "storePassword")
-val releaseKeyAlias = signingCredential("JENNY_KEY_ALIAS", "keyAlias")
-val releaseKeyPassword = signingCredential("JENNY_KEY_PASSWORD", "keyPassword")
+val releaseStoreFile = signingCredential("storeFile", "ARKHIVA_KEYSTORE_PATH", "JENNY_KEYSTORE_PATH")
+val releaseStorePassword = signingCredential(
+    "storePassword", "ARKHIVA_KEYSTORE_PASSWORD", "JENNY_KEYSTORE_PASSWORD"
+)
+val releaseKeyAlias = signingCredential("keyAlias", "ARKHIVA_KEY_ALIAS", "JENNY_KEY_ALIAS")
+val releaseKeyPassword = signingCredential(
+    "keyPassword", "ARKHIVA_KEY_PASSWORD", "JENNY_KEY_PASSWORD"
+)
 
 val hasReleaseSigning = releaseStoreFile != null &&
     releaseStorePassword != null &&
@@ -40,13 +48,13 @@ val hasReleaseSigning = releaseStoreFile != null &&
     file(releaseStoreFile!!).exists()
 
 android {
-    namespace = "com.flagdizero.jenny"
-    compileSdk = 34
+    namespace = "org.buhonet.agente.arkhiva"
+    compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.flagdizero.jenny"
+        applicationId = "org.buhonet.agente.arkhiva"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         // versionCode must increase monotonically on every published build.
         // versionName tracks the Python package version in pyproject.toml —
         // keep the two in sync when releasing.
@@ -56,8 +64,8 @@ android {
         // uno di quelli e' installato. Pubblicare a 12 avrebbe significato non
         // poter provare l'aggiornamento proprio sul dispositivo che lo riceve:
         // l'updater pretende un codice STRETTAMENTE maggiore di quello installato.
-        versionCode = 18
-        versionName = "2.0.0"
+        versionCode = 100
+        versionName = "1.0.0-SOBERANO"
 
         ndk {
             abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64", "x86")
@@ -84,11 +92,11 @@ android {
         }
     }
 
-    // Due build dallo stesso codice. `foss` (GitHub, F-Droid) è Jenny senza
+    // Due build dallo stesso codice. `foss` (GitHub, F-Droid) è ARKHIVA senza
     // nessuna libreria Google; `play` (Play Store) aggiunge le estensioni —
     // oggi la copia su Google Drive. Il codice di un'estensione sta fuori dal
-    // core: Kotlin in `src/play/`, Python in `jenny_extensions/` (v. il blocco
-    // `chaquopy` più sotto e `jenny/extensions.py`). La `foss` quindi non ne
+    // core: Kotlin in `src/play/`, Python in `arkhiva_extensions/` (v. il blocco
+    // `chaquopy` più sotto e `arkhiva/extensions.py`). La `foss` quindi non ne
     // contiene nemmeno il codice, e `scripts/check_foss_apk.py` lo verifica.
     // Stesso `applicationId`: è la stessa app, distribuita in due posti.
     flavorDimensions += "store"
@@ -164,12 +172,12 @@ chaquopy {
     sourceSets {
         maybeCreate("main").apply {
             srcDir("../../")
-            include("jenny/**")
+            include("arkhiva/**")
         }
         // Le estensioni Python, solo nel flavor che le vuole.
         maybeCreate("play").apply {
             srcDir("../../")
-            include("jenny_extensions/**")
+            include("arkhiva_extensions/**")
         }
     }
 }
@@ -194,10 +202,10 @@ gradle.taskGraph.whenReady {
     val buildingRelease = allTasks.any { it.name.contains("Release") }
     if (buildingRelease && !hasReleaseSigning) {
         logger.warn(
-            "\n[jenny] WARNING: release signing credentials not found — the APK " +
+            "\n[arkhiva] WARNING: release signing credentials not found — the APK " +
                 "will be UNSIGNED and cannot be installed on a device.\n" +
-                "[jenny] Set JENNY_KEYSTORE_PATH / JENNY_KEYSTORE_PASSWORD / " +
-                "JENNY_KEY_ALIAS / JENNY_KEY_PASSWORD, or create " +
+                "[arkhiva] Set ARKHIVA_KEYSTORE_PATH / ARKHIVA_KEYSTORE_PASSWORD / " +
+                "ARKHIVA_KEY_ALIAS / ARKHIVA_KEY_PASSWORD, or create " +
                 "android/keystore.properties (see app/build.gradle.kts).\n"
         )
     }
@@ -218,11 +226,11 @@ gradle.taskGraph.whenReady {
     if (buildingRelease && !workingTreeDirt.isNullOrEmpty()) {
         val files = workingTreeDirt.lines().size
         logger.warn(
-            "\n[jenny] WARNING: release build from a DIRTY working tree " +
+            "\n[arkhiva] WARNING: release build from a DIRTY working tree " +
                 "($files file(s) modified or untracked).\n" +
-                "[jenny] Chaquopy packages the working tree, not HEAD, so this APK " +
+                "[arkhiva] Chaquopy packages the working tree, not HEAD, so this APK " +
                 "corresponds to no commit and cannot be reproduced from git.\n" +
-                "[jenny] Fine for verifying a change; for anything you install and " +
+                "[arkhiva] Fine for verifying a change; for anything you install and " +
                 "keep, commit first and build from a detached worktree at that SHA.\n"
         )
     }
@@ -232,21 +240,21 @@ gradle.taskGraph.whenReady {
 // into .imy, making them unreadable via importlib.resources. By also
 // mirroring them as assets, scripts remain extractable at runtime.)
 val copyScriptAssets by tasks.registering(Sync::class) {
-    from("../../jenny/skills") {
+    from("../../arkhiva/skills") {
         include("**/scripts/*.py")
     }
     into("$buildDir/generated/assets/skills")
 }
 
-// Mirror the whole jenny package as plain .py assets so the agent can
+// Mirror the whole arkhiva package as plain .py assets so the agent can
 // read its own source on-device (extracted at gateway startup by
-// jenny.utils.android_assets.extract_jenny_source).
+// arkhiva.utils.android_assets.extract_arkhiva_source).
 val copyPackageSourceAssets by tasks.registering(Sync::class) {
-    from("../../jenny") {
+    from("../../arkhiva") {
         include("**/*.py")
         exclude("**/__pycache__/**")
     }
-    into("$buildDir/generated/assets/jenny_src/jenny")
+    into("$buildDir/generated/assets/arkhiva_src/arkhiva")
 }
 
 // I due Copy sopra devono girare prima di QUALUNQUE consumatore della cartella

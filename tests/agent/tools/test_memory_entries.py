@@ -1,4 +1,4 @@
-"""Scrittura per voce sui file di memoria (``jenny/agent/tools/memory_entries.py``).
+"""Scrittura per voce sui file di memoria (``arkhiva/agent/tools/memory_entries.py``).
 
 Il campione ``_REAL_SHAPE`` riproduce la forma **misurata** di ``USER.md`` sul
 Titan 2 il 2026-08-18 — titolo ``#``, sezioni ``##``, bullet di una riga, alcuni
@@ -13,10 +13,10 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.memory_archive import archive_dir, find_archived
-from jenny.agent.memory_budget import FileBudget, make_write_size_guard
-from jenny.agent.tools.file_state import FileStates
-from jenny.agent.tools.memory_entries import (
+from arkhiva.agent.memory_archive import archive_dir, find_archived
+from arkhiva.agent.memory_budget import FileBudget, make_write_size_guard
+from arkhiva.agent.tools.file_state import FileStates
+from arkhiva.agent.tools.memory_entries import (
     MEMORY_TARGETS,
     MemoryEntryTool,
     add_entry,
@@ -570,7 +570,7 @@ class TestItIsMountedOnDream:
         """Stesso ``FileStates`` degli altri tool del run, altrimenti i contatori
         raccontano due run diversi; e stesso guard, altrimenti il tetto ha una
         porta di servizio."""
-        from jenny.agent.memory import MemoryStore
+        from arkhiva.agent.memory import MemoryStore
 
         store = MemoryStore(tmp_path)
         refusals: list[str] = []
@@ -777,7 +777,7 @@ class TestRemovingIsDemoting:
         (tmp_path / "USER.md").write_text(_REAL_SHAPE, encoding="utf-8")
         tool = MemoryEntryTool(tmp_path, file_states=FileStates())
         monkeypatch.setattr(
-            "jenny.agent.tools.memory_entries.archive_entry",
+            "arkhiva.agent.tools.memory_entries.archive_entry",
             lambda *a, **k: (_ for _ in ()).throw(OSError("disco pieno")),
         )
 
@@ -930,7 +930,7 @@ class TestReplacingAlsoKeepsTheOldVersion:
     @pytest.fixture
     def tool(self, tmp_path: Path):
         (tmp_path / "USER.md").write_text(_REAL_SHAPE, encoding="utf-8")
-        from jenny.agent.tools.memory_entries import make_entry_archiver
+        from arkhiva.agent.tools.memory_entries import make_entry_archiver
 
         return MemoryEntryTool(
             tmp_path,
@@ -984,7 +984,7 @@ class TestTheArchiveKnowsWhatReplacedWhat:
     @pytest.fixture
     def tool(self, tmp_path: Path):
         (tmp_path / "USER.md").write_text(_REAL_SHAPE, encoding="utf-8")
-        from jenny.agent.tools.memory_entries import make_entry_archiver
+        from arkhiva.agent.tools.memory_entries import make_entry_archiver
 
         return MemoryEntryTool(
             tmp_path,
@@ -994,7 +994,7 @@ class TestTheArchiveKnowsWhatReplacedWhat:
 
     @staticmethod
     def _archived(tmp_path: Path, text: str):
-        from jenny.agent.memory_archive import read_archived
+        from arkhiva.agent.memory_archive import read_archived
 
         path = find_archived(tmp_path / "memory", entry_id(text))
         assert path is not None, text
@@ -1017,7 +1017,7 @@ class TestTheArchiveKnowsWhatReplacedWhat:
         assert old.superseded_by == entry_id("- Brevity first")
 
     async def test_a_refused_replace_archives_nothing(self, tmp_path):
-        from jenny.agent.tools.memory_entries import make_entry_archiver
+        from arkhiva.agent.tools.memory_entries import make_entry_archiver
 
         (tmp_path / "USER.md").write_text(_REAL_SHAPE, encoding="utf-8")
         tool = MemoryEntryTool(
@@ -1053,7 +1053,7 @@ class TestTheArchiveKnowsWhatReplacedWhat:
 
     def test_a_whole_file_rewrite_pairs_by_similarity(self, tmp_path):
         """``apply_patch`` porta solo il prima e il dopo: il legame si ricava."""
-        from jenny.agent.tools.memory_entries import make_entry_archiver
+        from arkhiva.agent.tools.memory_entries import make_entry_archiver
 
         (tmp_path / "USER.md").write_text(_REAL_SHAPE, encoding="utf-8")
         after = _REAL_SHAPE.replace(
@@ -1081,7 +1081,7 @@ class TestPairSuccessors:
         return parse_entries("\n".join(f"- {t}" for t in texts))
 
     def test_each_entry_is_paired_at_most_once(self):
-        from jenny.agent.tools.memory_entries import pair_successors
+        from arkhiva.agent.tools.memory_entries import pair_successors
 
         gone = self._entries("Lives in Rome, Pigneto", "Lives in Rome")
         arrived = self._entries("Lives in Rome, Marranella")
@@ -1090,7 +1090,7 @@ class TestPairSuccessors:
         assert pair_successors(gone, arrived) == {gone[1].id: arrived[0].id}
 
     def test_two_rewrites_pair_crosswise_correctly(self):
-        from jenny.agent.tools.memory_entries import pair_successors
+        from arkhiva.agent.tools.memory_entries import pair_successors
 
         gone = self._entries("Plays Magic the Gathering on Fridays", "Allergic to dust mites")
         arrived = self._entries(
@@ -1102,7 +1102,7 @@ class TestPairSuccessors:
         }
 
     def test_below_the_threshold_nothing_is_paired(self):
-        from jenny.agent.tools.memory_entries import pair_successors
+        from arkhiva.agent.tools.memory_entries import pair_successors
 
         gone = self._entries("Prefers short answers")
         arrived = self._entries("Has a brother who moved in last month")
@@ -1179,7 +1179,7 @@ class TestCreateRefusesToBuildUnprotected:
     """
 
     def test_it_raises_instead_of_returning_an_unprotected_tool(self, tmp_path):
-        from jenny.agent.tools.context import ToolContext
+        from arkhiva.agent.tools.context import ToolContext
 
         ctx = ToolContext(config=None, workspace=str(tmp_path))
 

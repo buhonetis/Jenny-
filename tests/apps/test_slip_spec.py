@@ -7,8 +7,8 @@ from pathlib import Path
 
 import pytest
 
-from jenny.apps.manifest import load_app
-from jenny.apps.slip_spec import size_for
+from arkhiva.apps.manifest import load_app
+from arkhiva.apps.slip_spec import size_for
 
 SPESA_ACTIONS = [
     {"name": "add_item", "description": "Add", "kind": "storage", "op": "append",

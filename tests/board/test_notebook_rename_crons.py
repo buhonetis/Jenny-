@@ -14,9 +14,9 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
-from jenny.board import cron_link, model
-from jenny.cron.service import CronService
-from jenny.cron.types import CronSchedule
+from arkhiva.board import cron_link, model
+from arkhiva.cron.service import CronService
+from arkhiva.cron.types import CronSchedule
 
 OLD, NEW = "orto", "giardino"
 EVERY = CronSchedule(kind="every", every_ms=3_600_000)
@@ -91,13 +91,13 @@ async def test_a_stopped_scheduler_journals_the_move_and_applies_it_at_start(
 
 
 def test_a_moved_job_is_alive_under_the_new_name(tmp_path: Path, monkeypatch) -> None:
-    from jenny.board.store import mutate_board
+    from arkhiva.board.store import mutate_board
 
     root = tmp_path / "wikis" / NEW
     (root / "wiki").mkdir(parents=True)
     mutate_board(root, lambda b: b["cards"].append(
         {"id": "basilico", "title": "Basilico", "pages": [], "pos": {"x": 1, "y": 1}}))
-    monkeypatch.setattr("jenny.board.cron_link.notebook_root",
+    monkeypatch.setattr("arkhiva.board.cron_link.notebook_root",
                         lambda name: root if name == NEW else None)
     cron = CronService(tmp_path / "cron" / "jobs.json")
     jid = _add(cron, "acqua", notebook=OLD, scope="basilico")
@@ -114,8 +114,8 @@ def test_without_a_scheduler_or_with_a_broken_one_nothing_raises() -> None:
 
 
 async def test_the_rename_command_brings_the_crons_along(tmp_path: Path, monkeypatch) -> None:
-    from jenny.webui import commands, home_pages
-    from jenny.webui import project_rename as module
+    from arkhiva.webui import commands, home_pages
+    from arkhiva.webui import project_rename as module
 
     async def _no_pages(kind, ref, new_ref):
         return 0
@@ -140,9 +140,9 @@ async def test_the_rename_command_brings_the_crons_along(tmp_path: Path, monkeyp
 async def test_a_refused_rename_leaves_the_crons_alone(tmp_path: Path, monkeypatch) -> None:
     import pytest
 
-    from jenny.webui import commands
-    from jenny.webui import project_rename as module
-    from jenny.webui.commands import CommandError
+    from arkhiva.webui import commands
+    from arkhiva.webui import project_rename as module
+    from arkhiva.webui.commands import CommandError
 
     def _refuses(**kw):
         raise module.ProjectRenameError("taken", code="name_taken")
@@ -159,10 +159,10 @@ async def test_a_refused_rename_leaves_the_crons_alone(tmp_path: Path, monkeypat
 
 
 def test_a_rename_resumed_at_boot_is_followed_by_the_crons(tmp_path: Path, monkeypatch) -> None:
-    from jenny.runtime.container import GatewayContainer
+    from arkhiva.runtime.container import GatewayContainer
 
     monkeypatch.setattr(
-        "jenny.session.project_rename.repair_pending_project_renames",
+        "arkhiva.session.project_rename.repair_pending_project_renames",
         lambda workspace: [(f"project:{OLD}", f"project:{NEW}"), ("unified:default", "x")],
     )
     container = GatewayContainer.__new__(GatewayContainer)
@@ -176,7 +176,7 @@ def test_the_boot_follows_resumed_renames_once_the_scheduler_exists() -> None:
     """Il cablaggio: lo spostamento dei cron sta dopo la costruzione dello scheduler."""
     import inspect
 
-    from jenny.runtime.container import GatewayContainer
+    from arkhiva.runtime.container import GatewayContainer
 
     src = inspect.getsource(GatewayContainer.build)
     built = src.index("self.cron = CronService(")
@@ -186,9 +186,9 @@ def test_the_boot_follows_resumed_renames_once_the_scheduler_exists() -> None:
 
 def test_a_chat_that_follows_a_hand_renamed_folder_brings_the_crons(tmp_path: Path,
                                                                     monkeypatch) -> None:
-    from jenny.agent import loop as loop_module
-    from jenny.agent.loop import AgentLoop
-    from jenny.session.project_traces import PROJECT_WIKI_ID_KEY
+    from arkhiva.agent import loop as loop_module
+    from arkhiva.agent.loop import AgentLoop
+    from arkhiva.session.project_traces import PROJECT_WIKI_ID_KEY
 
     target = tmp_path / "wikis" / NEW
     target.mkdir(parents=True)

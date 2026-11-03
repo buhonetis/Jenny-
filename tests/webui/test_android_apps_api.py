@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 
-import jenny.webui.android_apps_api as api
+import arkhiva.webui.android_apps_api as api
 
 
 class FakeBridge:

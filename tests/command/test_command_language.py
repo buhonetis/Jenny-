@@ -11,17 +11,17 @@ import time
 
 import pytest
 
-from jenny.agent.gardener import GardenerOutcome
-from jenny.command.builtin import (
+from arkhiva.agent.gardener import GardenerOutcome
+from arkhiva.command.builtin import (
     _format_dream_no_input_message,
     _format_gardener_outcome,
     build_help_text,
 )
-from jenny.command.scope import refusal_for_line
-from jenny.command.specs import BUILTIN_COMMAND_SPECS
-from jenny.runtime import user_text
-from jenny.runtime.user_text import say
-from jenny.utils.helpers import build_status_content
+from arkhiva.command.scope import refusal_for_line
+from arkhiva.command.specs import BUILTIN_COMMAND_SPECS
+from arkhiva.runtime import user_text
+from arkhiva.runtime.user_text import say
+from arkhiva.utils.helpers import build_status_content
 
 
 @pytest.fixture()
@@ -44,7 +44,7 @@ def test_every_command_has_an_italian_help_line() -> None:
 
 def test_help_speaks_italian(italian) -> None:
     text = build_help_text("unified:default")
-    assert text.startswith("✿ comandi di jenny:")
+    assert text.startswith("✿ comandi di arkhiva:")
     assert say("cmd.help.dream", "it") in text
 
 

@@ -14,12 +14,12 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
 
-from jenny.agent.loop import AgentLoop
-from jenny.bus.events import InboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.cron.session_turns import monitor_session_key
-from jenny.providers.base import LLMResponse
-from jenny.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.bus.events import InboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.cron.session_turns import monitor_session_key
+from arkhiva.providers.base import LLMResponse
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
 
 # Un turno silenzioso di lavoro interno: la sessione di un monitor del cron.
 MONITOR_SESSION_KEY = monitor_session_key("rain-check")

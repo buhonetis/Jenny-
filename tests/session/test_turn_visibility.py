@@ -1,4 +1,4 @@
-"""Copertura per ``jenny.session.turn_visibility``.
+"""Copertura per ``arkhiva.session.turn_visibility``.
 
 Il modulo è il confine unico fra "questo turno può parlare all'utente" e "questo
 turno è lavoro interno". Prima esistevano tre meccanismi incompatibili — il gate
@@ -8,10 +8,10 @@ turno di annuncio di un subagent, che è proprio quello che finiva in chat.
 
 from __future__ import annotations
 
-from jenny.bus.events import INTERNAL_CHANNEL
-from jenny.cron.session_turns import monitor_session_key
-from jenny.session.keys import UNIFIED_SESSION_KEY
-from jenny.session.turn_visibility import (
+from arkhiva.bus.events import INTERNAL_CHANNEL
+from arkhiva.cron.session_turns import monitor_session_key
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.session.turn_visibility import (
     TURN_VISIBILITY_META,
     TurnVisibility,
     is_silent_turn,

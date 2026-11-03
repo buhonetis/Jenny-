@@ -20,8 +20,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from jenny.cron.service import _RUN_RECORDS_KEEP, CronService
-from jenny.cron.types import CronSchedule
+from arkhiva.cron.service import _RUN_RECORDS_KEEP, CronService
+from arkhiva.cron.types import CronSchedule
 
 
 def _bound_chat(chat_id: str = "chat-1") -> dict[str, str]:

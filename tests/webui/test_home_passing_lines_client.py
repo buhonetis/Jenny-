@@ -1,6 +1,6 @@
 """La frase fra un passo e l'altro, dal vivo, lascia il posto alla successiva.
 
-Il testo che Jenny scrive prima di uno strumento («ok, la cerco e te la metto in
+Il testo che ARKHIVA scrive prima di uno strumento («ok, la cerco e te la metto in
 un file») la rilettura lo fa diventare un pensiero (``transcript_replay.py``,
 ``demote_interrupted_assistant``), e la casa non lo mostra. Dal vivo invece
 restava: sul s22 il 28/10/2026 una ricerca lasciava quattro frasi che dicevano
@@ -32,15 +32,15 @@ def test_the_line_before_a_step_stays_until_the_next_one() -> None:
 say('t1', 'ok, vedo come si cura');
 step('t1', 'read_file');
 await tick(10);
-assert.deepEqual(thread(), ['jenny: ok, vedo come si cura'], 'mentre lo strumento gira si vede');
+assert.deepEqual(thread(), ['arkhiva: ok, vedo come si cura'], 'mentre lo strumento gira si vede');
 say('t1', 'ok, la cerco');
 step('t1', 'spawn');
 await tick(10);
-assert.deepEqual(thread(), ['jenny: ok, la cerco']);
+assert.deepEqual(thread(), ['arkhiva: ok, la cerco']);
 say('t1', "fatto, ci sta lavorando l'aiutante");
 frame({ event: 'turn_end', chat_id: 'default', turn_id: 't1' });
 await tick(10);
-assert.deepEqual(thread(), ["jenny: fatto, ci sta lavorando l'aiutante"]);
+assert.deepEqual(thread(), ["arkhiva: fatto, ci sta lavorando l'aiutante"]);
 """)
 
 
@@ -49,11 +49,11 @@ def test_a_progress_text_gives_way_to_the_answer() -> None:
     run_home(_HEAD + """
 frame({ event: 'message', chat_id: 'default', kind: 'progress', text: "L'aiutante ha finito, ti rispondo." });
 await tick(10);
-assert.deepEqual(thread(), ["jenny: L'aiutante ha finito, ti rispondo."]);
+assert.deepEqual(thread(), ["arkhiva: L'aiutante ha finito, ti rispondo."]);
 frame({ event: 'message', chat_id: 'default', text: 'acqua una volta al mese' });
 frame({ event: 'turn_end', chat_id: 'default' });
 await tick(10);
-assert.deepEqual(thread(), ['jenny: acqua una volta al mese']);
+assert.deepEqual(thread(), ['arkhiva: acqua una volta al mese']);
 """)
 
 
@@ -74,7 +74,7 @@ say('t1', 'prima parte');
 say('t1', 'seconda parte');
 frame({ event: 'turn_end', chat_id: 'default', turn_id: 't1' });
 await tick(10);
-assert.deepEqual(thread(), ['jenny: prima parte seconda parte']);
+assert.deepEqual(thread(), ['arkhiva: prima parte seconda parte']);
 """)
 
 
@@ -85,7 +85,7 @@ step('t1', 'spawn');
 say('t1', 'fatto');
 frame({ event: 'turn_end', chat_id: 'default', turn_id: 't1' });
 await tick(10);
-const bubble = [...document.querySelectorAll('.home-msg-jenny')].pop();
+const bubble = [...document.querySelectorAll('.home-msg-arkhiva')].pop();
 assert.equal(app.chat._textOf(bubble), 'fatto');
 """)
 
@@ -99,8 +99,8 @@ frame({ event: 'message', chat_id: 'default', turn_id: 't1',
   media_urls: [{ url: '/api/media/x/ricerca.md', name: 'ricerca.md' }] });
 frame({ event: 'turn_end', chat_id: 'default', turn_id: 't1' });
 await tick(10);
-assert.deepEqual(thread(), ['jenny: ecco la ricerca: tre fonti, tutte concordi']);
-assert.equal(document.querySelectorAll('.home-msg-jenny').length, 1);
+assert.deepEqual(thread(), ['arkhiva: ecco la ricerca: tre fonti, tutte concordi']);
+assert.equal(document.querySelectorAll('.home-msg-arkhiva').length, 1);
 """)
 
 
@@ -115,7 +115,7 @@ frame({ event: 'message', chat_id: 'default', turn_id: 't1',
 frame({ event: 'turn_end', chat_id: 'default', turn_id: 't1' });
 await tick(10);
 assert.deepEqual(thread(), [
-  'jenny: si annaffia una volta a settimana Ho finito i passaggi ma non sono riuscita a scrivere una risposta.',
+  'arkhiva: si annaffia una volta a settimana Ho finito i passaggi ma non sono riuscita a scrivere una risposta.',
 ]);
 """)
 
@@ -130,5 +130,5 @@ frame({ event: 'message', chat_id: 'default', turn_id: 't1',
   media_urls: [{ url: '/api/media/x/ricerca.md', name: 'ricerca.md' }] });
 frame({ event: 'turn_end', chat_id: 'default', turn_id: 't1' });
 await tick(10);
-assert.deepEqual(thread(), ['jenny: ecco la ricerca: luce filtrata']);
+assert.deepEqual(thread(), ['arkhiva: ecco la ricerca: luce filtrata']);
 """)

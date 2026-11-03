@@ -17,19 +17,19 @@ from typing import Any
 
 import pytest
 
-from jenny.bus.queue import MessageBus
-from jenny.channels.telegram import TelegramChannel
-from jenny.channels.telegram_api import TelegramAPIError
-from jenny.channels.telegram_media import (
+from arkhiva.bus.queue import MessageBus
+from arkhiva.channels.telegram import TelegramChannel
+from arkhiva.channels.telegram_api import TelegramAPIError
+from arkhiva.channels.telegram_media import (
     FILE_MAX_BYTES,
     IMAGE_MAX_BYTES,
     has_unsupported_attachment,
     pick_file,
 )
-from jenny.config.paths import get_uploads_dir, set_workspace_dir
-from jenny.config.schema import TelegramConfig
-from jenny.runtime.context import get_runtime_context
-from jenny.utils.media_decode import FileSizeExceeded
+from arkhiva.config.paths import get_uploads_dir, set_workspace_dir
+from arkhiva.config.schema import TelegramConfig
+from arkhiva.runtime.context import get_runtime_context
+from arkhiva.utils.media_decode import FileSizeExceeded
 
 # PNG minimo: magic byte veri, così ``is_image_file`` lo riconosce anche senza
 # fidarsi dell'estensione.
@@ -244,7 +244,7 @@ async def test_photo_without_caption_is_the_image_alone() -> None:
 
 
 async def test_voice_note_says_it_was_not_heard() -> None:
-    # Senza questo marcatore Jenny risponde come se avesse ascoltato: il file
+    # Senza questo marcatore ARKHIVA risponde come se avesse ascoltato: il file
     # arriva come path e niente, nel turno, dice che nessuno l'ha trascritto.
     api = FakeAPI()
     ch, bus = _channel(api)

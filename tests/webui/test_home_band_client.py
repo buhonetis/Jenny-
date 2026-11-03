@@ -1,6 +1,6 @@
-"""La fascia in fondo al filo e la sagoma di Jenny, eseguite sotto node.
+"""La fascia in fondo al filo e la sagoma di ARKHIVA, eseguite sotto node.
 
-`home-band.js` ha preso il posto di `shared/jenny-gap.js` il 06/10/2026.
+`home-band.js` ha preso il posto di `shared/arkhiva-gap.js` il 06/10/2026.
 Quello dava un margine ai messaggi che le finivano dietro **a scorrimento
 fermo**, e il testo tornava a capo sotto il dito ogni volta che ti fermavi.
 Adesso lo spazio per lei sta tutto in fondo: una fascia alta meta' di lei, in
@@ -23,7 +23,7 @@ from pathlib import Path
 
 from support.js_harness import member, requires_node, run_js
 
-ASSETS = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets"
+ASSETS = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets"
 BAND_JS = ASSETS / "home-band.js"
 MASCOT_JS = ASSETS / "shared" / "mascot.js"
 HOME_CHAT_JS = ASSETS / "home-chat.js"
@@ -103,9 +103,9 @@ globalThis.getComputedStyle = () => ({ paddingRight: '18px' });
 
 /* Il filo: [risposta, posto vivo, fascia]. La fascia finisce 44 px sotto il
    fondo del blocco (e' alta 44: niente coda in mezzo, la coda e' nella fascia). */
-function thread({ last = 'jenny', liveOn = false, text = 120 } = {}) {
+function thread({ last = 'arkhiva', liveOn = false, text = 120 } = {}) {
   const t = new El('home-thread');
-  const msg = new El(last === 'jenny' ? 'home-msg home-msg-jenny' : 'home-msg home-msg-user');
+  const msg = new El(last === 'arkhiva' ? 'home-msg home-msg-arkhiva' : 'home-msg home-msg-user');
   const block = new El('home-block');
   block._h = text;
   block._bottom = 456;
@@ -116,7 +116,7 @@ function thread({ last = 'jenny', liveOn = false, text = 120 } = {}) {
   const band = new El('home-band');
   band._bottom = 500;
   t.append(msg, live, band);
-  const mascot = new El('jenny-duo');
+  const mascot = new El('arkhiva-duo');
   mascot.offsetWidth = 120;
   return { t, msg, block, live, band, mascot };
 }
@@ -126,7 +126,7 @@ const shapeIn = (block) => block.children.find((c) => c.className === 'home-shap
 
 def test_the_ratios_still_say_what_this_module_assumes() -> None:
     """I due rapporti vengono da `mascot.js`: se l'arte cambia, la sagoma e il
-    `--jenny-dodge` del CSS vanno rivisti, e questo banco lo dice."""
+    `--arkhiva-dodge` del CSS vanno rivisti, e questo banco lo dice."""
     mascot = MASCOT_JS.read_text(encoding="utf-8")
     assert "export const ART_HEIGHT_RATIO = 0.73;" in mascot
     assert "export const OUT_RATIO = 0.25;" in mascot
@@ -168,7 +168,7 @@ def test_the_last_reply_gets_the_shape_at_its_bottom() -> None:
     out = _run_js("""
 const { block, band, mascot } = thread({ text: 120 });
 new HomeBand(band, mascot).refresh();
-assert.ok(block.classList.contains('has-jenny-shape'));
+assert.ok(block.classList.contains('has-arkhiva-shape'));
 const shape = shapeIn(block);
 assert.equal(shape.style.width, '45px');
 assert.equal(shape.style.height, '50px');
@@ -189,7 +189,7 @@ for (const opts of [{ liveOn: true }, { last: 'user' }]) {
   const { block, band, mascot } = thread(opts);
   new HomeBand(band, mascot).refresh();
   assert.equal(shapeIn(block), undefined, JSON.stringify(opts));
-  assert.ok(!block.classList.contains('has-jenny-shape'));
+  assert.ok(!block.classList.contains('has-arkhiva-shape'));
 }
 console.log('ok');
 """)
@@ -206,7 +206,7 @@ for (const cls of ['place-card', 'place-list']) {
   block.append(new El(cls));
   new HomeBand(band, mascot).refresh();
   assert.equal(shapeIn(block), undefined, cls);
-  assert.ok(!block.classList.contains('has-jenny-shape'), cls);
+  assert.ok(!block.classList.contains('has-arkhiva-shape'), cls);
 }
 console.log('ok');
 """)
@@ -225,7 +225,7 @@ mine.parentElement = t;
 t.children.splice(t.children.indexOf(msg) + 1, 0, mine);
 homeBand.refresh();
 assert.equal(shapeIn(block), undefined);
-assert.ok(!block.classList.contains('has-jenny-shape'));
+assert.ok(!block.classList.contains('has-arkhiva-shape'));
 assert.equal(block.children.length, 0);
 console.log('ok');
 """)
@@ -234,7 +234,7 @@ console.log('ok');
 
 def test_scrolling_recomputes_nothing() -> None:
     """**La ragione del cambio.** Lo scorrimento della chat non tocca piu' lo
-    spazio di Jenny, e il guscio non chiede piu' misure a pista ferma."""
+    spazio di ARKHIVA, e il guscio non chiede piu' misure a pista ferma."""
     chat = HOME_CHAT_JS.read_text(encoding="utf-8")
     on_scroll = member(chat, "_onScroll")
     code = re.sub(r"/\*.*?\*/", "", on_scroll, flags=re.S)
@@ -246,30 +246,30 @@ def test_scrolling_recomputes_nothing() -> None:
 
 
 def test_the_old_dodge_is_gone_everywhere() -> None:
-    assert not (ASSETS / "shared" / "jenny-gap.js").exists()
+    assert not (ASSETS / "shared" / "arkhiva-gap.js").exists()
     for path in ASSETS.rglob("*"):
         if path.suffix not in {".js", ".css", ".html"} or path == BAND_JS:
             continue
         text = path.read_text(encoding="utf-8", errors="replace")
-        for word in ("is-under-jenny", "--jenny-gap", "JennyGap", "jenny-gap.js"):
+        for word in ("is-under-arkhiva", "--arkhiva-gap", "ArkhivaGap", "arkhiva-gap.js"):
             assert word not in text, f"{path.name} parla ancora di {word}"
 
 
 def test_the_band_and_the_tail_are_css() -> None:
     """La fascia e' alta meta' di lei, e la coda dell'ultima risposta ci scende
     con una regola sola, appesa alla classe che `_mark` sposta. Il
-    `--jenny-dodge` delle scatole e' lo stesso conto della larghezza di
+    `--arkhiva-dodge` delle scatole e' lo stesso conto della larghezza di
     `shapeOf`."""
     css = HOME_CSS.read_text(encoding="utf-8")
-    assert "--home-band-h: calc(var(--jenny-size) * var(--jenny-art-h) / 2);" in css
+    assert "--home-band-h: calc(var(--arkhiva-size) * var(--arkhiva-art-h) / 2);" in css
     assert re.search(r"\.home-band \{[^}]*height: var\(--home-band-h\);", css)
-    last = r"\.home-msg-jenny\.home-at-band"
+    last = r"\.home-msg-arkhiva\.home-at-band"
     assert re.search(last + r" > \.home-tail \{[^}]*position: absolute;", css)
     # WebKit non ricalcola un `:has()` sui fratelli quando un messaggio entra
     # in mezzo (16/10/2026): la coda di prima restava sopra il testo dopo.
     rules = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
     assert ":has(+" not in rules, "un :has() sui fratelli: WebKit non lo ricalcola"
-    assert ("--jenny-dodge: calc(var(--jenny-size) * (1 - var(--jenny-out) - 0.275) - 18px + 6px);"
+    assert ("--arkhiva-dodge: calc(var(--arkhiva-size) * (1 - var(--arkhiva-out) - 0.275) - 18px + 6px);"
             in css)
     chat = HOME_CHAT_JS.read_text(encoding="utf-8")
     ctor = member(chat, "constructor")

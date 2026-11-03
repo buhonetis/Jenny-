@@ -1,4 +1,4 @@
-"""Il segno dei cassetti: un'icona sotto la risposta quando Jenny ha annotato in un quaderno.
+"""Il segno dei cassetti: un'icona sotto la risposta quando ARKHIVA ha annotato in un quaderno.
 
 L'utente ha scelto un segno discreto e non una frase («l'ho messo in…») nella
 risposta (12/10/2026). Il segno nasce dagli eventi di ``journal_append`` con un

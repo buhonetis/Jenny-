@@ -6,7 +6,7 @@ import time
 
 import pytest
 
-from jenny.agent.memory import _HISTORY_ENTRY_HARD_CAP, MemoryStore
+from arkhiva.agent.memory import _HISTORY_ENTRY_HARD_CAP, MemoryStore
 
 
 @pytest.fixture
@@ -484,7 +484,7 @@ class TestHistoryWithCursor:
         matching how every other small full-file state blob in this codebase
         (cron store, session manager, sidebar state, ...) is persisted."""
         calls = []
-        import jenny.agent.memory as memory_module
+        import arkhiva.agent.memory as memory_module
 
         real_atomic_write = memory_module.atomic_write
 
@@ -579,7 +579,7 @@ class TestDreamCursor:
         def boom(*_args, **_kwargs):
             raise OSError("no space left on device")
 
-        monkeypatch.setattr("jenny.agent.memory.atomic_write", boom)
+        monkeypatch.setattr("arkhiva.agent.memory.atomic_write", boom)
         with pytest.raises(OSError):
             store.set_last_dream_cursor(9)
         assert store.get_last_dream_cursor() == 3

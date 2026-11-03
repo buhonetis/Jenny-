@@ -24,15 +24,15 @@ from typing import Any
 
 import pytest
 
-from jenny.agent.memory import MemoryStore
-from jenny.bus.events import InboundMessage
-from jenny.command.builtin import register_builtin_commands
-from jenny.command.router import CommandContext, CommandRouter
-from jenny.config.loader import load_config, save_config
-from jenny.config.schema import Config
-from jenny.utils.helpers import sync_workspace_templates
+from arkhiva.agent.memory import MemoryStore
+from arkhiva.bus.events import InboundMessage
+from arkhiva.command.builtin import register_builtin_commands
+from arkhiva.command.router import CommandContext, CommandRouter
+from arkhiva.config.loader import load_config, save_config
+from arkhiva.config.schema import Config
+from arkhiva.utils.helpers import sync_workspace_templates
 
-_REVIEW_TARGET = "jenny.agent.dream_review.run_dream_review"
+_REVIEW_TARGET = "arkhiva.agent.dream_review.run_dream_review"
 
 # Il seme di MEMORY.md è ciò che il "modello" sostituisce nei test di scrittura:
 # ``edit_file`` rifiuta ``old_text=""`` su un file non vuoto, quindi serve un
@@ -56,8 +56,8 @@ def workspace(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     ``get_workspace_path()``, non dal package, e l'ambiente Jinja è memoizzato
     per processo.
     """
-    from jenny.runtime.context import get_runtime_context
-    from jenny.utils import prompt_templates
+    from arkhiva.runtime.context import get_runtime_context
+    from arkhiva.utils import prompt_templates
 
     ws = tmp_path / "workspace"
     ws.mkdir(parents=True)
@@ -457,7 +457,7 @@ class TestReviewPass:
         """Un rifiuto aperto è la sola metà dell'esito su cui l'utente possa agire.
 
         ``unresolved_refusals`` esisteva, era valorizzato su ogni percorso e non lo
-        leggeva nessuno in ``jenny/``: la review che lasciava un fatto fuori da
+        leggeva nessuno in ``arkhiva/``: la review che lasciava un fatto fuori da
         tutti i file riferiva "nothing was freed" — vero come numero, muto sul
         fatto che una scrittura era stata *bloccata*. A differenza di una
         degradazione, questa non si ripara con ``recall``: si ripara alzando il
@@ -832,8 +832,8 @@ class TestTheWorkBubble:
     async def test_the_bubble_opens_and_closes_and_the_text_carries_its_id(
         self, router, loop, memory
     ):
-        from jenny.bus.events import OUTBOUND_META_WORK_ID, OUTBOUND_META_WORK_STATUS
-        from jenny.runtime import work_status
+        from arkhiva.bus.events import OUTBOUND_META_WORK_ID, OUTBOUND_META_WORK_STATUS
+        from arkhiva.runtime import work_status
 
         work_status.reset_registry()
         frames: list = []
@@ -856,8 +856,8 @@ class TestTheWorkBubble:
     async def test_a_due_review_is_announced_before_the_memory_phase(
         self, router, loop, memory, monkeypatch
     ):
-        from jenny.bus.events import OUTBOUND_META_WORK_STATUS
-        from jenny.runtime import work_status
+        from arkhiva.bus.events import OUTBOUND_META_WORK_STATUS
+        from arkhiva.runtime import work_status
 
         work_status.reset_registry()
         _install_review(monkeypatch, _ReviewSpy())

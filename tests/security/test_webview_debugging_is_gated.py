@@ -22,7 +22,7 @@ import pytest
 from support.kotlin_source import code_only
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-ANDROID_SRC = REPO_ROOT / "android/app/src/main/java/com/flagdizero/jenny"
+ANDROID_SRC = REPO_ROOT / "android/app/src/main/java/org/buhonet/agente/arkhiva"
 
 ENABLE_CALL = "setWebContentsDebuggingEnabled(true)"
 # Il cancello guarda il flag dell'APK e non ``BuildConfig.DEBUG``: è la proprietà
@@ -35,7 +35,7 @@ def _kotlin_sources() -> list[Path]:
     if not ANDROID_SRC.is_dir():
         pytest.skip("sorgente Android non presente in questo checkout")
     # Tutti i source set: anche il codice di un flavor (``src/play``) va in un APK.
-    return sorted((REPO_ROOT / "android/app/src").glob("*/java/com/flagdizero/jenny/**/*.kt"))
+    return sorted((REPO_ROOT / "android/app/src").glob("*/java/org/buhonet/agente/arkhiva/**/*.kt"))
 
 
 def _enclosing_function(code: str, at: int) -> str:

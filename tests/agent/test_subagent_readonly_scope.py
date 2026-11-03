@@ -30,19 +30,19 @@ import asyncio
 from pathlib import Path
 from unittest.mock import MagicMock
 
-from jenny.agent.runner import AgentRunResult, AgentRunSpec
-from jenny.agent.subagent import SubagentManager
-from jenny.bus.queue import MessageBus
-from jenny.providers.base import LLMProvider
-from jenny.security.workspace_access import (
+from arkhiva.agent.runner import AgentRunResult, AgentRunSpec
+from arkhiva.agent.subagent import SubagentManager
+from arkhiva.bus.queue import MessageBus
+from arkhiva.providers.base import LLMProvider
+from arkhiva.security.workspace_access import (
     WorkspaceScope,
     build_workspace_scope,
     current_workspace_scope,
     enter_workspace_scope,
 )
-from jenny.session.manager import SessionManager
+from arkhiva.session.manager import SessionManager
 
-_READONLY_BLOCK = "# Read-Only Turn"
+_READONLY_BLOCK = "# Turno de solo lectura"
 
 
 class _Run:
@@ -208,7 +208,7 @@ async def test_a_resume_without_a_stored_system_message_takes_the_spec_mode(
 
     assert outcome.mode == "resumed"
     # Il prompt e' stato davvero ricostruito, non ereditato dalla storia.
-    assert "# Subagent" in runs[-1].system_prompt
+    assert "# Subagente" in runs[-1].system_prompt
     assert runs[-1].bound_writable
     assert not runs[-1].claims_readonly, (
         "il resume ha ricostruito il prompt dal turno del chiamante invece che "

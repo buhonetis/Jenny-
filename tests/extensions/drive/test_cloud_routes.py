@@ -14,10 +14,10 @@ from types import SimpleNamespace
 import pytest
 from support.gateway_http import make_handler, make_request
 
-from jenny import extensions
-from jenny.config.schema import SnapshotConfig
-from jenny.snapshot.engine import SnapshotEngine
-from jenny.snapshot.service import SnapshotService
+from arkhiva import extensions
+from arkhiva.config.schema import SnapshotConfig
+from arkhiva.snapshot.engine import SnapshotEngine
+from arkhiva.snapshot.service import SnapshotService
 
 pytest.importorskip("cryptography")
 
@@ -28,7 +28,7 @@ def _request(path: str, payload: dict | None = None, token: str | None = _AUTH_S
     headers = None
     if payload is not None:
         encoded = base64.b64encode(json.dumps(payload).encode("utf-8")).decode("ascii")
-        headers = [("X-Jenny-Backup-Data", encoded)]
+        headers = [("X-ARKHIVA-Backup-Data", encoded)]
     return make_request(path, token, headers)
 
 
@@ -42,7 +42,7 @@ def env(tmp_path: Path, monkeypatch):
     workspace = runtime_root / "workspace"
     (workspace / "memory").mkdir(parents=True)
 
-    from jenny.config import paths as paths_mod
+    from arkhiva.config import paths as paths_mod
 
     monkeypatch.setattr(paths_mod, "get_workspace_path", lambda: workspace)
     extensions.reset_for_tests(None)
@@ -95,13 +95,13 @@ async def test_cloud_password_actions_check_the_payload(env) -> None:
 async def test_the_switch_lives_in_the_extensions_section(env, tmp_path, monkeypatch) -> None:
     # Lo stato «acceso» sta in ``config.json`` sotto ``extensions.drive``: viaggia
     # negli snapshot, e il telefono nuovo ripristinato lo ritrova.
-    from jenny.config.loader import load_config, save_config
-    from jenny.config.schema import Config
-    from jenny_extensions.drive import cloud_service
+    from arkhiva.config.loader import load_config, save_config
+    from arkhiva.config.schema import Config
+    from arkhiva_extensions.drive import cloud_service
 
     path = tmp_path / "config.json"
     save_config(Config(), path)
-    monkeypatch.setattr("jenny.config.loader.get_config_path", lambda: path)
+    monkeypatch.setattr("arkhiva.config.loader.get_config_path", lambda: path)
 
     service = cloud_service.cloud_service_for(env.handler._snapshot_service)
     assert service._get_provider() == ""

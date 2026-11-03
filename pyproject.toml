@@ -1,7 +1,7 @@
 [project]
-name = "jenny"
-version = "2.0.0"
-description = "Jenny - AI agent framework (fork of nanobot)"
+name = "arkhiva"
+version = "1.0.0"
+description = "ARKHIVA - AI agent framework (fork of nanobot)"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.11"
 license = {text = "AGPL-3.0-only"}
@@ -64,27 +64,27 @@ allow-direct-references = true
 
 [tool.hatch.build]
 include = [
-    "jenny/**/*.py",
-    "jenny/templates/**/*.md",
-    "jenny/skills/**/*.md",
-    "jenny/skills/**/*.py",
-    "jenny/templates/ui/**/*",
-    "jenny_extensions/**/*.py",
-    "jenny_extensions/**/ui/**/*",
+    "arkhiva/**/*.py",
+    "arkhiva/templates/**/*.md",
+    "arkhiva/skills/**/*.md",
+    "arkhiva/skills/**/*.py",
+    "arkhiva/templates/ui/**/*",
+    "arkhiva_extensions/**/*.py",
+    "arkhiva_extensions/**/ui/**/*",
 ]
 
 [tool.hatch.build.targets.wheel]
-# ``jenny_extensions`` sta accanto a ``jenny`` (``jenny/extensions.py``): nell'APK
+# ``arkhiva_extensions`` sta accanto a ``arkhiva`` (``arkhiva/extensions.py``): nell'APK
 # entra solo nel flavor ``play``, qui c'è perché test e strumenti lo vedano.
-packages = ["jenny", "jenny_extensions"]
+packages = ["arkhiva", "arkhiva_extensions"]
 
 [tool.hatch.build.targets.wheel.sources]
-"jenny" = "jenny"
+"arkhiva" = "arkhiva"
 
 [tool.hatch.build.targets.sdist]
 include = [
-    "jenny/",
-    "jenny_extensions/",
+    "arkhiva/",
+    "arkhiva_extensions/",
     "README.md",
     "LICENSE",
     "THIRD_PARTY_NOTICES.md",
@@ -121,7 +121,7 @@ addopts = ["--strict-markers", "--strict-config"]
 tmp_path_retention_policy = "failed"
 
 [tool.coverage.run]
-source = ["jenny"]
+source = ["arkhiva"]
 omit = ["tests/*", "**/tests/*"]
 
 [tool.coverage.report]

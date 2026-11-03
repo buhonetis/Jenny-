@@ -60,7 +60,7 @@ class ProviderDownError(RuntimeError):
     """Il provider non ha risposto: il giro non misura il modello, e non si conta."""
 
 
-# Le righe di resa del provider (``jenny/providers/retry_notice.py``), in inglese o
+# Le righe di resa del provider (``arkhiva/providers/retry_notice.py``), in inglese o
 # tradotte: arrivano come testo in chat, non come errore, e senza questo controllo
 # un DNS caduto passava per risposte vere (12/10/2026).
 # Solo le righe finali: un retry che poi riesce e' un giro valido.
@@ -106,7 +106,7 @@ class Runner:
         # I job di sistema (Dream, giardiniere, orologio dei quaderni) girerebbero
         # in mezzo agli scenari: un Dream a meta' giro riscrive MEMORY.md. Si
         # spostano di un giorno ad app ferma; la fotografia rimette lo store.
-        dev.adb("shell", "am", "force-stop", "com.flagdizero.jenny")
+        dev.adb("shell", "am", "force-stop", "org.buhonet.agente.arkhiva")
         dev.shift_system_jobs(delay_ms=24 * 3600 * 1000)
         dev.restart_app()
         self.base = {path: dev.read(path) for path in RESET_FILES}
@@ -523,7 +523,7 @@ class Runner:
 
     def _usage(self) -> dict[str, int]:
         try:
-            state = json.loads(self.device.read(".jenny/webui/token-usage.json") or "{}")
+            state = json.loads(self.device.read(".arkhiva/webui/token-usage.json") or "{}")
             day = state["days"][sorted(state["days"])[-1]]
         except (KeyError, IndexError, json.JSONDecodeError):
             return {}

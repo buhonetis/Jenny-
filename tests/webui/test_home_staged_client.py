@@ -1,6 +1,6 @@
 """La scheda delle bozze da approvare, nella casa vera.
 
-Un subagent che ha letto qualcosa da fuori non scrive da solo i file che Jenny
+Un subagent che ha letto qualcosa da fuori non scrive da solo i file che ARKHIVA
 carica senza nessuno davanti: la modifica resta in bozza e la casa mostra una
 scheda con **Installa** / **Scarta**. Qui si fissa che la scheda compare
 all'apertura e al frame ``staged_changed``, che niente si installa senza un
@@ -91,14 +91,14 @@ assert.equal(card(), null);
 
 def test_long_sources_are_shortened_and_internal_files_hidden() -> None:
     run_home(_HEAD + """
-pending = [draft({ sources: ['file:wikis/piante/.jenny/tool-results/call_abcdef0123456789.txt',
+pending = [draft({ sources: ['file:wikis/piante/.arkhiva/tool-results/call_abcdef0123456789.txt',
   'web_fetch:a.example', 'web_search:b', 'web_fetch:c.example', 'web_fetch:d.example', 'web_fetch:e.example'] })];
 await boot();
 await until(card);
 const why = text(card().querySelector('.home-staged-why'));
 assert.ok(!why.includes('tool-results'), 'i file interni non si nominano');
 assert.match(why, /a\\.example, web_search:b, web_fetch:c\\.example and 2 more/);
-pending = [draft({ id: 'd2', sources: ['file:.jenny/tool-results/x.txt'] })];
+pending = [draft({ id: 'd2', sources: ['file:.arkhiva/tool-results/x.txt'] })];
 frame({ event: 'staged_changed', count: 1 });
 await until(() => card() && text(card()).includes(S.toolResults));
 assert.match(text(card().querySelector('.home-staged-why')), new RegExp(S.toolResults));
@@ -108,7 +108,7 @@ assert.match(text(card().querySelector('.home-staged-why')), new RegExp(S.toolRe
 def test_the_card_rows_wrap_long_paths() -> None:
     """Il foglio vero applicato alla scheda vera: lo stile calcolato della riga
     va a capo dentro le parole (un percorso lungo non esce dal bordo)."""
-    css = (Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets"
+    css = (Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets"
            / "home-style.css").read_text(encoding="utf-8")
     run_home(_HEAD + f"""
 const style = document.createElement('style');

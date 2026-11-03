@@ -15,7 +15,7 @@ from pathlib import Path
 from support.js_harness import member
 
 ROOT = Path(__file__).resolve().parents[2]
-UI = ROOT / "jenny" / "templates" / "ui"
+UI = ROOT / "arkhiva" / "templates" / "ui"
 INDEX = UI / "index.html"
 WHO_JS = UI / "assets" / "home-who.js"
 APP_JS = UI / "assets" / "home-app.js"
@@ -94,7 +94,7 @@ def test_back_leaves_the_notebook_only_after_the_overlays() -> None:
 
 def test_a_switch_releases_the_turn_that_was_running() -> None:
     """Il legame che il banco dello scambio non può esercitare: lo fa `init()`,
-    e senza, tutto quel che aspetta un `turn_end` — la faccia di Jenny, la riga
+    e senza, tutto quel che aspetta un `turn_end` — la faccia di ARKHIVA, la riga
     di lavoro, il bottone Ferma — resta ad aspettarne uno che è già stato
     scartato."""
     body = _member(APP_JS.read_text(encoding="utf-8"), "init")
@@ -136,7 +136,7 @@ def test_every_word_on_screen_comes_from_the_translations() -> None:
     è codice nuovo. Un `textContent` può ricevere solo una traduzione o un
     dato (il nome di un quaderno, la sua data, un numero).
 
-    Fino al 05/10/2026 c'era un'eccezione, il fiore di Jenny sulla riga
+    Fino al 05/10/2026 c'era un'eccezione, il fiore di ARKHIVA sulla riga
     personale: la riga è uscita dalla pagina, e il fiore con lei.
     """
     src = WHO_JS.read_text(encoding="utf-8")

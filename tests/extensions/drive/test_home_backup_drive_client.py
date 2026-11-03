@@ -1,13 +1,13 @@
 """La scheda della copia su Drive nella pagina «Backup» della casa.
 
 La pagina vera del core (`home-backup.js`) e la scheda vera dell'estensione
-(`jenny_extensions/drive/ui/home.js`) girano insieme con un DOM finto e i flussi
+(`arkhiva_extensions/drive/ui/home.js`) girano insieme con un DOM finto e i flussi
 finti; le regole (`cloudView`, `nightStrip`, `dayText`, `sizeText`) sono quelle
 vere di `cloud-backup.js`, perché è lì che si decide cosa dice la pagina.
 
 Cosa si misura: per ogni stato, il titolo giusto e il gesto giusto sul bottone
 grande; le righe dell'estensione che compaiono e spariscono fra le «Altre
-opzioni»; quando le «Altre opzioni» partono aperte; la riga di «Tu e Jenny».
+opzioni»; quando le «Altre opzioni» partono aperte; la riga di «Tu e ARKHIVA».
 """
 
 from __future__ import annotations

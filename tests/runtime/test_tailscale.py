@@ -1,4 +1,4 @@
-"""I due gesti con cui Jenny riaccende Tailscale (``jenny.runtime.tailscale``).
+"""I due gesti con cui ARKHIVA riaccende Tailscale (``arkhiva.runtime.tailscale``).
 
 Sul telefono sono intent veri; qui un ``Intent`` finto registra cosa si
 manderebbe e a chi. La politica (quando, quanto spesso) è in
@@ -9,8 +9,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from jenny.runtime import tailscale
-from jenny.runtime.context import get_runtime_context
+from arkhiva.runtime import tailscale
+from arkhiva.runtime.context import get_runtime_context
 
 
 class _Intent:
@@ -50,7 +50,7 @@ class _Context:
         return self.pm
 
     def getPackageName(self) -> str:  # noqa: N802 - API Android
-        return "com.flagdizero.jenny"
+        return "org.buhonet.agente.arkhiva"
 
     def sendBroadcast(self, intent: _Intent) -> None:  # noqa: N802 - API Android
         self.broadcasts.append(intent)
@@ -81,7 +81,7 @@ async def test_the_broadcast_goes_to_tailscale_receiver(monkeypatch) -> None:
     assert ctx.started == []
 
 
-async def test_open_app_shows_tailscale_then_brings_jenny_back(monkeypatch) -> None:
+async def test_open_app_shows_tailscale_then_brings_arkhiva_back(monkeypatch) -> None:
     ctx = _Context()
     _on_phone(monkeypatch, ctx)
     assert await tailscale.revive(open_app=True) == tailscale.OPENED_APP
@@ -89,11 +89,11 @@ async def test_open_app_shows_tailscale_then_brings_jenny_back(monkeypatch) -> N
     first, back = ctx.started
     assert first.component == ("com.tailscale.ipn", "com.tailscale.ipn.MainActivity")
     assert first.flags & _Intent.FLAG_ACTIVITY_NEW_TASK
-    assert back.component == ("com.flagdizero.jenny", "com.flagdizero.jenny.MainActivity")
+    assert back.component == ("org.buhonet.agente.arkhiva", "org.buhonet.agente.arkhiva.MainActivity")
     assert back.flags & _Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
 
 
-async def test_if_jenny_could_not_come_back_the_app_is_not_opened(monkeypatch) -> None:
+async def test_if_arkhiva_could_not_come_back_the_app_is_not_opened(monkeypatch) -> None:
     """Senza la mascotte a schermo Android blocca il ritorno (visto su
     jenny_s22): il gesto si dice solo messaggio, e l'ascoltatore non lo conta
     come app vista."""
@@ -104,7 +104,7 @@ async def test_if_jenny_could_not_come_back_the_app_is_not_opened(monkeypatch) -
     assert len(ctx.broadcasts) == 1 and ctx.started == []
 
 
-def test_when_it_cannot_tell_jenny_does_not_open_tailscale() -> None:
+def test_when_it_cannot_tell_arkhiva_does_not_open_tailscale() -> None:
     """Senza Chaquopy (o con una classe sparita) non si sa: niente apertura."""
     assert tailscale._can_come_back() is False
 

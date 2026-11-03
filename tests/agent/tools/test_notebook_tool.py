@@ -1,6 +1,6 @@
 """Il tool ``notebook``: due facce con lo stesso nome, e ``remove_pages``.
 
-Jenny ha le tre letture (``check``, ``map``, ``read_many``); l'editore dei
+ARKHIVA ha le tre letture (``check``, ``map``, ``read_many``); l'editore dei
 quaderni anche ``remove_pages``. Gli scope delle due classi devono restare
 disgiunti: il loader rifiuta due tool con lo stesso nome nello stesso registro,
 e l'editore carica ``subagent`` + ``notebook``.
@@ -16,34 +16,34 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.agent_types import AGENT_TYPES
-from jenny.agent.hook import ToolResultHookContext
-from jenny.agent.loop_plan import _counts_as_read
-from jenny.agent.subagent import split_allow_by_scope
-from jenny.agent.tools.context import (
+from arkhiva.agent.agent_types import AGENT_TYPES
+from arkhiva.agent.hook import ToolResultHookContext
+from arkhiva.agent.loop_plan import _counts_as_read
+from arkhiva.agent.subagent import split_allow_by_scope
+from arkhiva.agent.tools.context import (
     RequestContext,
     ToolContext,
     bind_request_context,
     reset_request_context,
 )
-from jenny.agent.tools.file_state import FileStates
-from jenny.agent.tools.loader import ToolLoader
-from jenny.agent.tools.notebook import NotebookEditTool, NotebookReadTool
-from jenny.agent.tools.registry import ToolRegistry
-from jenny.board import notify
-from jenny.board.store import (
+from arkhiva.agent.tools.file_state import FileStates
+from arkhiva.agent.tools.loader import ToolLoader
+from arkhiva.agent.tools.notebook import NotebookEditTool, NotebookReadTool
+from arkhiva.agent.tools.registry import ToolRegistry
+from arkhiva.board import notify
+from arkhiva.board.store import (
     mutate_board,
     read_board,
     write_card_summary,
 )
-from jenny.config.schema import ToolsConfig
-from jenny.security.workspace_access import (
+from arkhiva.config.schema import ToolsConfig
+from arkhiva.security.workspace_access import (
     READONLY_TOOL_REFUSAL,
     bind_workspace_scope,
     build_workspace_scope,
     reset_workspace_scope,
 )
-from jenny.security.workspace_policy import BoardWriteError
+from arkhiva.security.workspace_policy import BoardWriteError
 
 
 def _write(path: Path, text: str) -> None:
@@ -75,9 +75,9 @@ def root(tmp_path: Path) -> Path:
 @pytest.fixture
 async def cron(root: Path, monkeypatch):
     """Lo scheduler, con un promemoria dell'albero il cui ``why`` è ``acero.md``."""
-    from jenny.board.cron_link import add_notebook_job
-    from jenny.cron.dates import date_schedule
-    from jenny.runtime.context import get_runtime_context
+    from arkhiva.board.cron_link import add_notebook_job
+    from arkhiva.cron.dates import date_schedule
+    from arkhiva.runtime.context import get_runtime_context
     from tests.support.cron import running_cron
 
     workspace = root.parents[1]
@@ -121,7 +121,7 @@ def _ctx(tmp_path: Path) -> ToolContext:
 
 
 def _registries(tmp_path: Path) -> dict[str, ToolRegistry]:
-    """Ogni registro vero che può avere ``notebook``: Jenny nei due modi, e
+    """Ogni registro vero che può avere ``notebook``: ARKHIVA nei due modi, e
     l'editore (lo stesso registro serve anche la pianificazione, in sola lettura)."""
     out: dict[str, ToolRegistry] = {}
     for scope in ("orchestrator", "core"):
@@ -147,7 +147,7 @@ def test_no_other_scope_gets_it(scope: str, tmp_path: Path) -> None:
     assert "notebook" not in ToolLoader().load(_ctx(tmp_path), ToolRegistry(), scope=scope)
 
 
-def test_jenny_has_no_remove_pages(notebook_chat: Path) -> None:
+def test_arkhiva_has_no_remove_pages(notebook_chat: Path) -> None:
     tool = NotebookReadTool()
     assert tool.read_only and not NotebookEditTool().read_only
     assert "remove_pages" not in tool.parameters["properties"]["action"]["enum"]
@@ -155,7 +155,7 @@ def test_jenny_has_no_remove_pages(notebook_chat: Path) -> None:
     assert "remove_pages" in NotebookEditTool().parameters["properties"]["action"]["enum"]
 
 
-async def test_jenny_cannot_remove_pages(notebook_chat: Path) -> None:
+async def test_arkhiva_cannot_remove_pages(notebook_chat: Path) -> None:
     out = await NotebookReadTool().execute(action="remove_pages", pages=["wiki/pino.md"],
                                            reason="no")
     assert out.startswith("Error: unknown action")
@@ -197,7 +197,7 @@ async def test_map_and_check_from_the_tool(notebook_chat: Path) -> None:
 
 
 async def test_read_many_records_reads_without_dedup(notebook_chat: Path) -> None:
-    from jenny.agent.tools.filesystem import ReadFileTool
+    from arkhiva.agent.tools.filesystem import ReadFileTool
 
     states = FileStates()
     tool = NotebookEditTool(file_states=states)
@@ -274,7 +274,7 @@ async def test_remove_pages_refuses_what_is_not_a_page(notebook_chat: Path, page
 
 
 async def test_a_fence_refusing_one_page_removes_none(notebook_chat: Path, monkeypatch) -> None:
-    import jenny.agent.tools.notebook as module
+    import arkhiva.agent.tools.notebook as module
 
     def refuse(path):
         if Path(path).name == "fico.md":
@@ -291,7 +291,7 @@ async def test_a_fence_refusing_one_page_removes_none(notebook_chat: Path, monke
 async def test_the_trace_passes_the_same_fences(notebook_chat: Path, monkeypatch) -> None:
     """Anche la scrittura della traccia in raw/removed/ passa dai recinti: se uno
     la rifiuta, non si cancella niente."""
-    import jenny.agent.tools.notebook as module
+    import arkhiva.agent.tools.notebook as module
 
     seen: list[str] = []
 
@@ -342,7 +342,7 @@ def test_notebook_reads_count_as_planning_reads(action: str, result: str, counts
 
 def _lint(root: Path) -> list[str]:
     """Le righe di problema (🔴/🟡) che ``lint_wiki.py`` stampa per *root*."""
-    script = Path(__file__).resolve().parents[3] / "jenny" / "skills" / "llm-wiki" / "scripts"
+    script = Path(__file__).resolve().parents[3] / "arkhiva" / "skills" / "llm-wiki" / "scripts"
     spec = importlib.util.spec_from_file_location("lint_wiki_trace", script / "lint_wiki.py")
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
@@ -398,7 +398,7 @@ async def test_a_link_is_not_followed_to_delete(notebook_chat: Path) -> None:
 async def test_a_board_failure_after_deleting_still_answers(
     notebook_chat: Path, announced: list[str], monkeypatch, cron
 ) -> None:
-    import jenny.board.edit as edit_mod
+    import arkhiva.board.edit as edit_mod
 
     def boom(*_a, **_k):
         raise OSError(28, "No space left on device")
@@ -431,8 +431,8 @@ async def test_the_trace_says_which_pages_stayed(notebook_chat: Path, monkeypatc
 
 
 async def test_a_removed_page_leaves_no_taint_behind(notebook_chat: Path) -> None:
-    from jenny.security.subagent_policy import SubagentRunPolicy, enter_subagent_policy
-    from jenny.security.taint_ledger import ledger_for
+    from arkhiva.security.subagent_policy import SubagentRunPolicy, enter_subagent_policy
+    from arkhiva.security.taint_ledger import ledger_for
 
     install = notebook_chat.parents[2]
     rel = "workspace/wikis/piante/wiki/pino.md"

@@ -3,15 +3,15 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from jenny.agent.loop import AgentLoop
-from jenny.agent.turn_types import TurnOutcome
-from jenny.bus.events import OutboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.cron.session_turns import monitor_session_key
-from jenny.providers.base import GenerationSettings, LLMResponse
-from jenny.session.keys import UNIFIED_SESSION_KEY
-from jenny.session.turn_visibility import TurnVisibility
-from jenny.session.webui_turns import WebuiTurnCoordinator
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.agent.turn_types import TurnOutcome
+from arkhiva.bus.events import OutboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.cron.session_turns import monitor_session_key
+from arkhiva.providers.base import GenerationSettings, LLMResponse
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.session.turn_visibility import TurnVisibility
+from arkhiva.session.webui_turns import WebuiTurnCoordinator
 
 # Un turno silenzioso di lavoro interno: la sessione di un monitor del cron.
 MONITOR_SESSION_KEY = monitor_session_key("rain-check")

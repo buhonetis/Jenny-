@@ -13,8 +13,8 @@ from pathlib import Path
 
 import pytest
 
-from jenny.channels import ws_rpc
-from jenny.webui.commands import CommandContext, CommandError
+from arkhiva.channels import ws_rpc
+from arkhiva.webui.commands import CommandContext, CommandError
 
 
 def _ctx(tmp_path: Path) -> CommandContext:

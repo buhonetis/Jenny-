@@ -15,9 +15,9 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent import subagent_journal
-from jenny.agent.subagent import SubagentManager, SubagentUndoError
-from jenny.agent.subagent_journal import (
+from arkhiva.agent import subagent_journal
+from arkhiva.agent.subagent import SubagentManager, SubagentUndoError
+from arkhiva.agent.subagent_journal import (
     KEPT_CHANGED_AFTER,
     KEPT_CHANGED_DURING,
     KEPT_NOT_SAVED,
@@ -26,13 +26,13 @@ from jenny.agent.subagent_journal import (
     journal_dir,
     sweep_orphan_journals,
 )
-from jenny.agent.tools.python_exec import PythonExecTool
-from jenny.agent.tools.python_exec_builtins import _register_builtin_functions
-from jenny.board.store import mutate_board
-from jenny.bus.queue import MessageBus
-from jenny.config.tool_schemas import PythonExecConfig
-from jenny.providers.base import LLMResponse, ToolCallRequest
-from jenny.security.subagent_policy import (
+from arkhiva.agent.tools.python_exec import PythonExecTool
+from arkhiva.agent.tools.python_exec_builtins import _register_builtin_functions
+from arkhiva.board.store import mutate_board
+from arkhiva.bus.queue import MessageBus
+from arkhiva.config.tool_schemas import PythonExecConfig
+from arkhiva.providers.base import LLMResponse, ToolCallRequest
+from arkhiva.security.subagent_policy import (
     SubagentRunPolicy,
     SubagentSecretError,
     check_read,
@@ -40,7 +40,7 @@ from jenny.security.subagent_policy import (
     enter_subagent_policy,
     settle_writes,
 )
-from jenny.snapshot.engine import SnapshotEngine
+from arkhiva.snapshot.engine import SnapshotEngine
 from tests.support.aio import wait_until
 from tests.support.subagent_provider_fakes import fake_provider
 
@@ -104,7 +104,7 @@ def test_the_journal_notes_before_and_after_only_for_real_changes(ws: Path) -> N
 def test_the_main_agent_has_no_journal(ws: Path) -> None:
     page = ws / "wikis/piante/wiki/acero.md"
     check_write(page)
-    page.write_text("Jenny scrive", encoding="utf-8")
+    page.write_text("ARKHIVA scrive", encoding="utf-8")
     settle_writes()
     assert not (ws / "subagents" / "journal").exists()
 
@@ -351,7 +351,7 @@ def test_a_card_changed_by_both_leaves_the_board_as_it_is(board_ws: Path) -> Non
 
 
 def test_a_card_the_helper_removed_comes_back_in_its_place() -> None:
-    from jenny.agent.subagent_journal import _revert
+    from arkhiva.agent.subagent_journal import _revert
 
     before = {"cards": [{"id": "a"}, {"id": "b"}, {"id": "c"}], "orphansSeen": ["x.md"]}
     after = {"cards": [{"id": "a"}, {"id": "c"}], "orphansSeen": ["x.md", "y.md"]}
@@ -402,7 +402,7 @@ def test_a_second_undo_keeps_the_first_report(ws: Path) -> None:
     policy = _helper(ws)
     with enter_subagent_policy(policy):
         _write(ws / "wikis/piante/wiki/acero.md", "x")
-    first = policy.journal.undo(by="jenny")
+    first = policy.journal.undo(by="arkhiva")
     again = policy.journal.undo(by="user")
     assert again.to_dict() == first.to_dict()
 
@@ -546,12 +546,12 @@ async def test_a_finished_helper_is_undone_from_its_task_id(ws: Path) -> None:
     recent = manager.status_snapshot("unified:default")["recent"][0]
     assert recent["changes"] == 2 and recent["undo"] is None
 
-    report = await manager.undo(task_id, by="jenny")
+    report = await manager.undo(task_id, by="arkhiva")
     assert sorted(report.restored) == ["wikis/piante/wiki/acero.md", "wikis/piante/wiki/nuova.md"]
     assert _tree(ws) == before
     recent = manager.status_snapshot("unified:default")["recent"][0]
     assert recent["changes"] == 0
-    assert recent["undo"]["by"] == "jenny" and recent["undo"]["restored"] == 2
+    assert recent["undo"]["by"] == "arkhiva" and recent["undo"]["restored"] == 2
     # Un processo nuovo legge lo stesso dal disco.
     fresh = _manager(ws, provider)
     assert fresh.status_snapshot("unified:default")["recent"][0]["undo"]["restored"] == 2
@@ -579,9 +579,9 @@ async def test_undo_refuses_a_helper_that_is_still_working(ws: Path) -> None:
     gate.set()
 
 
-async def test_jenny_can_stop_and_undo_from_her_tool(ws: Path) -> None:
-    from jenny.agent.tools.context import RequestContext
-    from jenny.agent.tools.subagent_control import SubagentCancelTool
+async def test_arkhiva_can_stop_and_undo_from_her_tool(ws: Path) -> None:
+    from arkhiva.agent.tools.context import RequestContext
+    from arkhiva.agent.tools.subagent_control import SubagentCancelTool
 
     before = _tree(ws)
     manager = _manager(ws, _writer_provider(["wikis/piante/wiki/felce.md"]))
@@ -596,4 +596,4 @@ async def test_jenny_can_stop_and_undo_from_her_tool(ws: Path) -> None:
     assert "Put back 1 file(s)" in out
     assert _tree(ws) == before
     status = manager.status_snapshot("unified:default")["recent"][0]
-    assert status["undo"]["by"] == "jenny"
+    assert status["undo"]["by"] == "arkhiva"

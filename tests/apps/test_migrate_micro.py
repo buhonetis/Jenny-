@@ -8,11 +8,11 @@ from pathlib import Path
 
 import pytest
 
-from jenny.apps.manifest import find_app
-from jenny.apps.migrate_micro import migrate_micro_apps
-from jenny.board import micro as mc
-from jenny.board.sections import app_field_value, app_section_view
-from jenny.board.store import mutate_board, read_board
+from arkhiva.apps.manifest import find_app
+from arkhiva.apps.migrate_micro import migrate_micro_apps
+from arkhiva.board import micro as mc
+from arkhiva.board.sections import app_field_value, app_section_view
+from arkhiva.board.store import mutate_board, read_board
 
 FIELDS = {"moisture": {"label": "Umidità", "unit": "%", "type": "number"},
           "online": {"label": "Sensore", "type": "bool"}}
@@ -24,7 +24,7 @@ def notebook(tmp_path: Path, monkeypatch) -> tuple[Path, Path]:
     ws = tmp_path / "workspace"
     root = ws / "wikis" / "piante"
     (root / "wiki").mkdir(parents=True)
-    monkeypatch.setattr("jenny.config.paths.get_workspace_path", lambda: ws)
+    monkeypatch.setattr("arkhiva.config.paths.get_workspace_path", lambda: ws)
     mutate_board(root, lambda b: b["cards"].append(
         {"id": "acero", "title": "Acero", "pages": [], "pos": {"x": 1, "y": 1}}))
     return ws, root
@@ -53,7 +53,7 @@ def _micro(ws: Path, root: Path, micro_id: str, *, approved: bool, pending: bool
             path.write_text(json.dumps(data), encoding="utf-8")
     mutate_board(root, lambda b: b["cards"][0]["userSections"].append(
         {"id": f"s-{micro_id}", "kind": "micro", "micro": micro_id, "pending": pending,
-         "by": "jenny-on-request"}))
+         "by": "arkhiva-on-request"}))
 
 
 def test_an_approved_micro_app_becomes_a_live_placed_app(notebook) -> None:
@@ -67,7 +67,7 @@ def test_an_approved_micro_app_becomes_a_live_placed_app(notebook) -> None:
     section = read_board(root)["cards"][0]["userSections"][0]
     assert section == {"id": "s-m-acerello", "kind": "app", "app": "acerello", "params": {},
                        "created": section["created"], "migratedFrom": "m-acerello",
-                       "by": "jenny-on-request"}
+                       "by": "arkhiva-on-request"}
     view = app_section_view(ws, "acerello", {})
     assert (view["value"], view["unit"], view["every"]) == (41, "%", 30)
     # I promemoria non stanno più nel quaderno: la migrazione non ne scrive.

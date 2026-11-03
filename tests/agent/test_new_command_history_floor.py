@@ -30,16 +30,16 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from jenny.agent.context import ContextBuilder
-from jenny.agent.memory import HISTORY_FLOOR_METADATA_KEY, MemoryStore
-from jenny.bus.events import InboundMessage
-from jenny.command.builtin import cmd_new
-from jenny.command.router import CommandContext
-from jenny.session.manager import Session
+from arkhiva.agent.context import ContextBuilder
+from arkhiva.agent.memory import HISTORY_FLOOR_METADATA_KEY, MemoryStore
+from arkhiva.bus.events import InboundMessage
+from arkhiva.command.builtin import cmd_new
+from arkhiva.command.router import CommandContext
+from arkhiva.session.manager import Session
 
 PERSONAL = "unified:default"
 
-pytestmark = pytest.mark.usefixtures("_configure_jenny_workspace")
+pytestmark = pytest.mark.usefixtures("_configure_arkhiva_workspace")
 
 
 def _builder(tmp_path) -> ContextBuilder:
@@ -236,7 +236,7 @@ class TestCmdNew:
 
 async def test_new_refreezes_the_diary_view(tmp_path):
     """Le righe «nuove» e «non piu' in sospeso» parlavano alla conversazione buttata."""
-    from jenny.agent.diary import DIARY_STATE_KEY
+    from arkhiva.agent.diary import DIARY_STATE_KEY
 
     session = Session(key=PERSONAL)
     session.metadata[DIARY_STATE_KEY] = {"cursor": 3, "at": "2026-10-12 10:00",

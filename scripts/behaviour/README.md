@@ -103,7 +103,7 @@ python scripts/behaviour_check.py --save-baseline          # after a deliberate 
 python scripts/behaviour_check.py --restore                # after a run that died badly
 ```
 
-Run it after editing anything under `jenny/templates/agent/` or a tool description, and after
+Run it after editing anything under `arkhiva/templates/agent/` or a tool description, and after
 changing model.
 
 ## Adding a scenario

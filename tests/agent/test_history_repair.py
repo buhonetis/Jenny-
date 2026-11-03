@@ -1,4 +1,4 @@
-"""Test per le riparazioni di history in ``jenny.agent.history_repair``.
+"""Test per le riparazioni di history in ``arkhiva.agent.history_repair``.
 
 Copre ognuna delle quattro funzioni del modulo (drop degli orfani, backfill dei
 tool_use non soddisfatti, microcompact dei vecchi risultati tool, taglio del
@@ -8,7 +8,7 @@ casi rotti che richiedono la riparazione.
 
 from __future__ import annotations
 
-from jenny.agent.history_repair import (
+from arkhiva.agent.history_repair import (
     BACKFILL_CONTENT,
     COMPACTABLE_TOOLS,
     MICROCOMPACT_BATCH,
@@ -18,7 +18,7 @@ from jenny.agent.history_repair import (
     drop_orphan_tool_results,
     microcompact,
 )
-from jenny.utils.helpers import maybe_persist_tool_result
+from arkhiva.utils.helpers import maybe_persist_tool_result
 
 
 def _assistant(call_id: str, name: str = "read_file") -> dict:
@@ -253,7 +253,7 @@ class TestMicrocompact:
         reference = maybe_persist_tool_result(
             tmp_path, "s", "c0", "z" * 5000, max_chars=MICROCOMPACT_MIN_CHARS,
         )
-        saved = tmp_path / ".jenny" / "tool-results" / "s" / "c0.txt"
+        saved = tmp_path / ".arkhiva" / "tool-results" / "s" / "c0.txt"
         assert saved.exists()
         messages = [_tool("0", content=reference, name=tool_name)] + [
             _tool(str(i), content=self._long_content(), name=tool_name)

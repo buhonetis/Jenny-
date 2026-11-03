@@ -1,6 +1,6 @@
-"""Il loop dice al manager quando Jenny ha avuto il resoconto di un aiutante.
+"""Il loop dice al manager quando ARKHIVA ha avuto il resoconto di un aiutante.
 
-La scheda «si e fermato» della casa restava anche dopo che Jenny aveva gia
+La scheda «si e fermato» della casa restava anche dopo che ARKHIVA aveva gia
 ripreso il lavoro (prova del 24/10/2026): niente diceva che il resoconto le era
 arrivato. ``SubagentManager.mark_handled`` lo scrive nel record; qui si
 verificano i tre punti del loop che lo chiamano — fine del turno d'annuncio,
@@ -17,11 +17,11 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from jenny.agent.loop import AgentLoop
-from jenny.agent.turn_types import TurnDisposition
-from jenny.bus.events import InboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.providers.base import LLMResponse, ToolCallRequest
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.agent.turn_types import TurnDisposition
+from arkhiva.bus.events import InboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.providers.base import LLMResponse, ToolCallRequest
 from tests.support.agent import make_loop, make_provider
 
 RESULT = "[Subagent 'plant-cards' completed successfully]\n\nResult:\nSix pages written."
@@ -105,7 +105,7 @@ async def test_an_announce_already_answered_marks_too(tmp_path: Path) -> None:
 async def test_a_continued_helper_does_not_speak_in_chat(
     tmp_path: Path, meta: dict[str, object],
 ) -> None:
-    """Jenny fa continuare l'aiutante con ``subagent_send``: come per un rilancio,
+    """ARKHIVA fa continuare l'aiutante con ``subagent_send``: come per un rilancio,
     in chat parla solo il lavoro ripreso (``subagent_announce.md``)."""
     loop = _loop(tmp_path)
 

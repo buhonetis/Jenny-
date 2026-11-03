@@ -15,14 +15,14 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.tools.filesystem import EditFileTool, ReadFileTool, WriteFileTool
-from jenny.agent.tools.python_exec import PythonExecTool
-from jenny.agent.tools.python_exec_builtins import _register_builtin_functions
-from jenny.agent.tools.search import GrepTool
-from jenny.config.tool_schemas import PythonExecConfig
-from jenny.security import taint_ledger
-from jenny.security.subagent_policy import SubagentRunPolicy, enter_subagent_policy
-from jenny.security.taint_ledger import TaintLedger, ledger_for
+from arkhiva.agent.tools.filesystem import EditFileTool, ReadFileTool, WriteFileTool
+from arkhiva.agent.tools.python_exec import PythonExecTool
+from arkhiva.agent.tools.python_exec_builtins import _register_builtin_functions
+from arkhiva.agent.tools.search import GrepTool
+from arkhiva.config.tool_schemas import PythonExecConfig
+from arkhiva.security import taint_ledger
+from arkhiva.security.subagent_policy import SubagentRunPolicy, enter_subagent_policy
+from arkhiva.security.taint_ledger import TaintLedger, ledger_for
 
 
 @pytest.fixture
@@ -152,14 +152,14 @@ async def test_a_partial_edit_by_a_clean_run_keeps_it(ws: Path) -> None:
 async def test_a_subagent_cannot_erase_the_ledger(ws: Path) -> None:
     await _write_untrusted(ws, "out/pagina.md")
     with enter_subagent_policy(_run(ws, untrusted=True)):
-        out = await _write_tool(ws).execute(path=str(ws / ".jenny" / "taint_ledger.json"),
+        out = await _write_tool(ws).execute(path=str(ws / ".arkhiva" / "taint_ledger.json"),
                                             content="{}")
     assert "private configuration" in out
     assert ledger_for(ws).source_of("out/pagina.md") is not None
 
 
 async def test_a_user_save_from_the_webui_clears_the_taint(ws: Path) -> None:
-    from jenny.webui.commands import _clear_taint
+    from arkhiva.webui.commands import _clear_taint
 
     await _write_untrusted(ws, "out/pagina.md")
     _clear_taint(ws, ws / "out" / "pagina.md")
@@ -182,7 +182,7 @@ def test_many_files_in_one_folder_collapse_into_the_folder(ws: Path) -> None:
     for i in range(60):
         (ws / "out" / f"f{i}.txt").write_text("x")
         ledger.record(f"out/f{i}.txt", "web_search")
-    entries = json.loads((ws / ".jenny" / "taint_ledger.json").read_text())["entries"]
+    entries = json.loads((ws / ".arkhiva" / "taint_ledger.json").read_text())["entries"]
     assert list(entries) == ["out"]
     assert ledger.source_of("out/f3.txt") == "web_search"
 
@@ -194,7 +194,7 @@ def test_the_ledger_is_capped(ws: Path, monkeypatch: pytest.MonkeyPatch) -> None
         (ws / f"d{i}").mkdir()
         (ws / f"d{i}" / "f").write_text("x")
         ledger.record(f"d{i}/f", "web_search")
-    entries = json.loads((ws / ".jenny" / "taint_ledger.json").read_text())["entries"]
+    entries = json.loads((ws / ".arkhiva" / "taint_ledger.json").read_text())["entries"]
     assert len(entries) == 10
 
 
@@ -225,7 +225,7 @@ def test_concurrent_writers_lose_nothing(ws: Path) -> None:
 
 
 def test_an_unreadable_ledger_starts_empty(ws: Path) -> None:
-    path = ws / ".jenny" / "taint_ledger.json"
+    path = ws / ".arkhiva" / "taint_ledger.json"
     path.parent.mkdir(parents=True)
     path.write_text("{non json")
     assert TaintLedger(ws).source_of("out/x") is None

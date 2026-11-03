@@ -13,11 +13,11 @@ from unittest.mock import AsyncMock, MagicMock
 
 from support.runner import empty_tools, make_spec
 
-from jenny.agent.runner import AgentRunner
-from jenny.agent.subagent import _budget_notice
-from jenny.providers.base import LLMProvider, LLMResponse, ToolCallRequest
-from jenny.session.history_meta import INJECTED_EVENT_META
-from jenny.utils.runtime import BUDGET_NOTICE_EVENT
+from arkhiva.agent.runner import AgentRunner
+from arkhiva.agent.subagent import _budget_notice
+from arkhiva.providers.base import LLMProvider, LLMResponse, ToolCallRequest
+from arkhiva.session.history_meta import INJECTED_EVENT_META
+from arkhiva.utils.runtime import BUDGET_NOTICE_EVENT
 
 
 def _tool_response() -> LLMResponse:

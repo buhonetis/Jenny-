@@ -140,25 +140,25 @@ def test_off_waiting_and_remote_states() -> None:
         ({ body } = await panelWith({ ...ON, listening: false, address: null, peers: [] }));
         assert.ok(body.innerHTML.includes('settings.remote.tsDown'));
         assert.ok(!body.innerHTML.includes('data-remote="open-ts"'));
-        globalThis.JennyNative = {};
+        globalThis.ArkhivaNative = {};
         ({ body } = await panelWith({ ...ON, listening: false, address: null, peers: [] }));
         assert.ok(body.innerHTML.includes('data-remote="open-ts"'));
-        delete globalThis.JennyNative;
+        delete globalThis.ArkhivaNative;
         assert.ok(body.innerHTML.includes('settings.remote.waiting'));
 
-        // Jenny lo sta riaccendendo: lo si dice, col tentativo.
+        // ARKHIVA lo sta riaccendendo: lo si dice, col tentativo.
         ({ body } = await panelWith({
           ...ON, listening: false, address: null, peers: [], tailscale: 'reviving', revive_attempts: 2,
         }));
         assert.ok(body.innerHTML.includes('settings.remote.reviving{&quot;count&quot;:2}'));
         assert.ok(body.innerHTML.includes('settings.remote.tsDown'));
 
-        // Aprire l'app non è bastato: Jenny ha smesso, tocca all'utente.
-        globalThis.JennyNative = {};
+        // Aprire l'app non è bastato: ARKHIVA ha smesso, tocca all'utente.
+        globalThis.ArkhivaNative = {};
         ({ body } = await panelWith({
           ...ON, listening: false, address: null, peers: [], tailscale: 'needs_you', revive_attempts: 3,
         }));
-        delete globalThis.JennyNative;
+        delete globalThis.ArkhivaNative;
         assert.ok(body.innerHTML.includes('settings.remote.needsYou'));
         assert.ok(body.innerHTML.includes('settings.remote.tsNeedsYou'));
         assert.ok(!body.innerHTML.includes('settings.remote.tsDown'));

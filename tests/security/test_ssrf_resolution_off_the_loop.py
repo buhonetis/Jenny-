@@ -19,7 +19,7 @@ from types import SimpleNamespace
 import httpx
 import pytest
 
-from jenny.security import network
+from arkhiva.security import network
 
 _DELAY_S = 0.4
 _MIN_TICKS = 4  # 400 ms a 50 ms fanno ~8 giri
@@ -75,7 +75,7 @@ async def test_the_async_validators(slow_dns) -> None:
 
 
 async def test_the_validated_stream_of_downloads_and_updates(slow_dns) -> None:
-    from jenny.security.fetch import open_validated_stream
+    from arkhiva.security.fetch import open_validated_stream
 
     transport = httpx.MockTransport(lambda request: httpx.Response(200, content=b"ok"))
 
@@ -90,7 +90,7 @@ async def test_the_validated_stream_of_downloads_and_updates(slow_dns) -> None:
 
 
 async def test_web_fetch(slow_dns, monkeypatch) -> None:
-    from jenny.agent.tools import android_web
+    from arkhiva.agent.tools import android_web
 
     async def _fetch(ctx, url, timeout=None):
         return "<html><body><h1>ciao</h1></body></html>", "https://box.example/"
@@ -108,8 +108,8 @@ async def test_web_fetch(slow_dns, monkeypatch) -> None:
 
 
 async def test_browser_open(slow_dns, monkeypatch) -> None:
-    from jenny.agent.tools import browser
-    from jenny.agent.tools.browser import BrowserOpenTool
+    from arkhiva.agent.tools import browser
+    from arkhiva.agent.tools.browser import BrowserOpenTool
     from tests.agent.tools.test_browser import _install, _tool
 
     browser.reset_browser_state()
@@ -123,8 +123,8 @@ async def test_browser_open(slow_dns, monkeypatch) -> None:
 
 
 async def test_an_app_http_action(slow_dns, monkeypatch) -> None:
-    import jenny.apps.http as apps_http
-    from jenny.apps.manifest import AppAction, AppManifest
+    import arkhiva.apps.http as apps_http
+    from arkhiva.apps.manifest import AppAction, AppManifest
 
     real_client = httpx.AsyncClient
     transport = httpx.MockTransport(lambda request: httpx.Response(200, json={"ok": True}))
@@ -140,7 +140,7 @@ async def test_an_app_http_action(slow_dns, monkeypatch) -> None:
 
 
 async def test_the_app_view_proxy(slow_dns) -> None:
-    from jenny.apps.proxy import AppViewProxy
+    from arkhiva.apps.proxy import AppViewProxy
 
     proxy = AppViewProxy("piante", "http://box.example:8080")
     try:
@@ -151,10 +151,10 @@ async def test_the_app_view_proxy(slow_dns) -> None:
 
 
 async def test_an_ssh_tool(slow_dns, monkeypatch) -> None:
-    from jenny.agent.tools.ssh import SshExecTool
-    from jenny.config import loader as loader_mod
-    from jenny.config.schema import Config
-    from jenny.config.tool_schemas import SshHostConfig
+    from arkhiva.agent.tools.ssh import SshExecTool
+    from arkhiva.config import loader as loader_mod
+    from arkhiva.config.schema import Config
+    from arkhiva.config.tool_schemas import SshHostConfig
 
     config = Config()
     config.tools.ssh.enable = True

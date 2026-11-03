@@ -15,13 +15,13 @@ from unittest.mock import MagicMock
 import pytest
 from support.runner import empty_tools, make_spec
 
-from jenny.agent.context_governor import last_helper_result, mask_refused_results
-from jenny.agent.response_outcome import ResponseOutcome, classify_response
-from jenny.agent.runner import AgentRunner
-from jenny.providers.base import LLMProvider, LLMResponse, ToolCallRequest
-from jenny.runtime.user_text import say
-from jenny.session.history_meta import INJECTED_EVENT_META, SUBAGENT_RESULT_EVENT
-from jenny.utils.runtime import (
+from arkhiva.agent.context_governor import last_helper_result, mask_refused_results
+from arkhiva.agent.response_outcome import ResponseOutcome, classify_response
+from arkhiva.agent.runner import AgentRunner
+from arkhiva.providers.base import LLMProvider, LLMResponse, ToolCallRequest
+from arkhiva.runtime.user_text import say
+from arkhiva.session.history_meta import INJECTED_EVENT_META, SUBAGENT_RESULT_EVENT
+from arkhiva.utils.runtime import (
     EMPTY_FINAL_RESPONSE_MESSAGE,
     PROVIDER_REFUSED_MESSAGE,
     PROVIDER_REFUSED_RESULT_PLACEHOLDER,
@@ -191,7 +191,7 @@ def test_only_a_helper_result_as_the_last_user_row_is_a_candidate() -> None:
 
 def test_the_placeholder_keeps_the_runtime_context() -> None:
     """Il messaggio corrente di un turno d'annuncio porta anche piano e ora."""
-    from jenny.agent.context import ContextBuilder
+    from arkhiva.agent.context import ContextBuilder
 
     runtime = f"{ContextBuilder._RUNTIME_CONTEXT_TAG}\nPlan: step 2 of 3\n[/Runtime Context]"
     text_row = {"role": "user", "content": f"{HELPER_RESULT}\n\n{runtime}"}

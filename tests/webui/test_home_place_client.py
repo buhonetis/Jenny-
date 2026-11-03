@@ -1,7 +1,7 @@
 """Il punto di lettura della chat, e il «↓» per tornare in fondo.
 
 Fino al 10/10/2026 la chat della casa tornava sempre in fondo: aprire e chiudere
-Jenny (il velo), tornare da una stanza, rileggere il filo. Chi stava rileggendo
+ARKHIVA (il velo), tornare da una stanza, rileggere il filo. Chi stava rileggendo
 la storia la perdeva. E se sotto arrivava una risposta mentre eri risalito, non
 c'era niente che lo dicesse.
 

@@ -15,12 +15,12 @@ import httpx
 import pytest
 from support.tls import CA_COMMON_NAME, write_test_ca
 
-from jenny.config.paths import get_workspace_path
-from jenny.config.schema import Config, ProviderConfig, ProvidersConfig
-from jenny.providers.anthropic_provider import AnthropicProvider
-from jenny.providers.factory import make_provider
-from jenny.providers.openai_compat_provider import OpenAICompatProvider
-from jenny.providers.tls import CaBundleError, build_ssl_context, resolve_ca_bundle
+from arkhiva.config.paths import get_workspace_path
+from arkhiva.config.schema import Config, ProviderConfig, ProvidersConfig
+from arkhiva.providers.anthropic_provider import AnthropicProvider
+from arkhiva.providers.factory import make_provider
+from arkhiva.providers.openai_compat_provider import OpenAICompatProvider
+from arkhiva.providers.tls import CaBundleError, build_ssl_context, resolve_ca_bundle
 
 
 def _ca(tmp_path: Path) -> Path:
@@ -32,7 +32,7 @@ class TestSchema:
         assert ProviderConfig(name="p", format="openai_compat").ca_bundle is None
 
     def test_camel_case_alias_is_accepted(self) -> None:
-        """``config.json`` porta camelCase: e' la forma che Jenny riscrive."""
+        """``config.json`` porta camelCase: e' la forma che ARKHIVA riscrive."""
         provider = ProviderConfig.model_validate(
             {"name": "p", "format": "openai_compat", "caBundle": "ca.pem"}
         )

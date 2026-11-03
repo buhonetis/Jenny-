@@ -4,13 +4,13 @@ import asyncio
 
 import pytest
 
-from jenny.agent.loop import AgentLoop
-from jenny.agent.tools.context import RequestContext
-from jenny.agent.tools.cron import CronTool
-from jenny.agent.tools.message import MessageTool
-from jenny.agent.tools.spawn import SpawnTool
-from jenny.cron.service import CronService
-from jenny.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.agent.tools.context import RequestContext
+from arkhiva.agent.tools.cron import CronTool
+from arkhiva.agent.tools.message import MessageTool
+from arkhiva.agent.tools.spawn import SpawnTool
+from arkhiva.cron.service import CronService
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
 
 
 async def _race(tool, first: RequestContext, second: RequestContext, run_first, run_second):

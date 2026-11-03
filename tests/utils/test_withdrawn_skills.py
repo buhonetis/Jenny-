@@ -15,8 +15,8 @@ from pathlib import Path
 
 import pytest
 
-from jenny.utils import android_assets
-from jenny.utils.android_assets import (
+from arkhiva.utils import android_assets
+from arkhiva.utils.android_assets import (
     _RETIRED_SKILL_DIGESTS,
     _SKILLS_MANIFEST,
     retire_withdrawn_skills,
@@ -82,7 +82,7 @@ def test_a_retired_skill_is_never_one_we_still_ship() -> None:
 
 
 def test_the_sync_retires_it(tmp_path: Path, retired) -> None:
-    from jenny.utils.helpers import sync_workspace_templates
+    from arkhiva.utils.helpers import sync_workspace_templates
 
     skill = _write(tmp_path / "skills" / "old-skill" / "SKILL.md", _SHIPPED)
 

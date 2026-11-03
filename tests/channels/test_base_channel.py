@@ -2,9 +2,9 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from jenny.bus.events import OutboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.channels.websocket import WebSocketChannel
+from arkhiva.bus.events import OutboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.channels.websocket import WebSocketChannel
 
 
 def _mock_gateway() -> MagicMock:

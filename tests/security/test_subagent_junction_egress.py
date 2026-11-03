@@ -17,14 +17,14 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from jenny.agent.runner import AgentRunSpec
-from jenny.agent.tool_execution import ToolErrorBudget
-from jenny.agent.tools.python_exec import PythonExecTool
-from jenny.agent.tools.python_exec_builtins import _register_builtin_functions
-from jenny.config.tool_schemas import PythonExecConfig
-from jenny.providers.base import ToolCallRequest
-from jenny.security.network import configure_ssrf_whitelist
-from jenny.security.subagent_policy import (
+from arkhiva.agent.runner import AgentRunSpec
+from arkhiva.agent.tool_execution import ToolErrorBudget
+from arkhiva.agent.tools.python_exec import PythonExecTool
+from arkhiva.agent.tools.python_exec_builtins import _register_builtin_functions
+from arkhiva.config.tool_schemas import PythonExecConfig
+from arkhiva.providers.base import ToolCallRequest
+from arkhiva.security.network import configure_ssrf_whitelist
+from arkhiva.security.subagent_policy import (
     SubagentRunPolicy,
     egress_refusal,
     enter_subagent_policy,
@@ -90,7 +90,7 @@ def test_a_seeded_run_at_the_junction_reaches_no_site() -> None:
 
 
 async def test_the_runner_returns_the_refusal_without_running_the_tool() -> None:
-    from jenny.agent.runner import AgentRunner
+    from arkhiva.agent.runner import AgentRunner
 
     runner = AgentRunner(MagicMock())
     tool = MagicMock()

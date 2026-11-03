@@ -8,12 +8,12 @@ Android is the only runtime target for the finished product, but nearly all of t
 
 | Path | What's there |
 |---|---|
-| `jenny/` | The Python package: agent core, providers, channels, tools, config, WebUI backend. This is what gets bundled into the APK via Chaquopy. |
-| `jenny/templates/ui/` | The mobile-first WebUI's static assets (HTML/CSS/JS), served by the gateway and rendered inside the Android WebView. |
-| `jenny/templates/` (top-level `.md` files) | Prompt templates (`AGENTS.md`, `SOUL.md`, `USER.md`, etc.) copied into a fresh workspace on first run. |
-| `jenny/skills/` | Built-in skill definitions (`SKILL.md` folders) loaded into agent context. |
+| `arkhiva/` | The Python package: agent core, providers, channels, tools, config, WebUI backend. This is what gets bundled into the APK via Chaquopy. |
+| `arkhiva/templates/ui/` | The mobile-first WebUI's static assets (HTML/CSS/JS), served by the gateway and rendered inside the Android WebView. |
+| `arkhiva/templates/` (top-level `.md` files) | Prompt templates (`AGENTS.md`, `SOUL.md`, `USER.md`, etc.) copied into a fresh workspace on first run. |
+| `arkhiva/skills/` | Built-in skill definitions (`SKILL.md` folders) loaded into agent context. |
 | `android/` | The native Android project: Kotlin `MainActivity`/`GatewayService`, the Gradle build, the Chaquopy configuration that embeds the `jenny` package and its pinned dependencies. |
-| `tests/` | The pytest suite. Mirrors the `jenny/` package structure directory-for-directory (`tests/agent/` for `jenny/agent/`, `tests/webui/` for `jenny/webui/`, and so on) — a new module usually gets a matching test directory in the same relative location. |
+| `tests/` | The pytest suite. Mirrors the `arkhiva/` package structure directory-for-directory (`tests/agent/` for `arkhiva/agent/`, `tests/webui/` for `arkhiva/webui/`, and so on) — a new module usually gets a matching test directory in the same relative location. |
 | `docs/` | This documentation. |
 | `scripts/` | Standalone helper scripts (`check_dco.sh`, `vendorize_ui.py`, `capture_screenshots.sh`), kept outside CI YAML so they're runnable and testable on a developer machine too. |
 | `AGENTS.md` | The canonical architecture reference for AI coding agents (and a good orientation doc for humans too) — this page summarizes it, but `AGENTS.md` is the source of truth if the two ever disagree. |
@@ -42,26 +42,26 @@ In CI, `tests/webui/test_node_is_available.py` fails instead of letting node, js
 
 ## Where subsystems live
 
-The high-level data flow: an async `MessageBus` (`jenny/bus/queue.py`) decouples channels from the agent core. The WebSocket channel (`jenny/channels/websocket.py`) receives messages from the WebUI and publishes them as `InboundMessage` events onto the bus; `AgentLoop` (`jenny/agent/loop.py`) consumes them, builds context, and coordinates the turn; `AgentRunner` (`jenny/agent/runner.py`) drives the actual multi-turn LLM conversation — sending messages, receiving tool calls, executing tools, streaming responses; results come back out as `OutboundMessage` events. See [Architecture](../internals/architecture.md) and [The agent turn](../internals/agent-turn.md) for the full picture.
+The high-level data flow: an async `MessageBus` (`arkhiva/bus/queue.py`) decouples channels from the agent core. The WebSocket channel (`arkhiva/channels/websocket.py`) receives messages from the WebUI and publishes them as `InboundMessage` events onto the bus; `AgentLoop` (`arkhiva/agent/loop.py`) consumes them, builds context, and coordinates the turn; `AgentRunner` (`arkhiva/agent/runner.py`) drives the actual multi-turn LLM conversation — sending messages, receiving tool calls, executing tools, streaming responses; results come back out as `OutboundMessage` events. See [Architecture](../internals/architecture.md) and [The agent turn](../internals/agent-turn.md) for the full picture.
 
 | Subsystem | Lives in | Notes |
 |---|---|---|
-| Agent loop / turn coordination | `jenny/agent/loop.py`, `runner.py` | `AgentLoop` manages session keys, hooks, context building; `AgentRunner` executes the tool-calling conversation loop. |
-| LLM providers | `jenny/providers/` | `base.py` is the common provider interface; `factory.py` builds the runtime provider from config. See [Add a provider](add-a-provider.md) for how to add a new one — that's a separate page, not duplicated here. |
-| Channels | `jenny/channels/` | Four channels: WebSocket (`websocket.py`), Telegram (`telegram.py`), and on Android Notification (`notification.py`) and Floating (`floating.py`); `dispatcher.py` routes outbound bus messages to whichever are active, with retry, delta coalescing, and progress filtering. |
-| Tools | `jenny/agent/tools/` | Filesystem, `python_exec`, Android web search/fetch, cron, subagent spawning, long-running tasks, self-modification. Tools are registered **explicitly**: `loader.py` imports a fixed module list and each module declares its own `TOOLS = [...]`; name collisions raise at startup — there is no automatic module scanning. See [Write a tool](write-a-tool.md). |
-| Memory | `jenny/agent/memory.py` | Session history persistence plus Dream two-phase memory consolidation. Atomic writes with `fsync` for durability. |
-| Sessions | `jenny/session/` | History persistence, context compaction, the plan probe (`plan_probe.py`); TTL-based auto-compaction lives next door in `jenny/agent/autocompact.py` (`AutoCompact`). The user conversation is a single unified session (`unified:default`, see `keys.py`), except that a project chat on the WebSocket channel gets its own `project:<name>` session; internal work (cron, Dream) uses separate internal keys via `session_key_override`. |
-| Config | `jenny/config/schema.py`, `loader.py` | Pydantic-*style* config (`jenny/pydantic_compat/` — a stdlib-only reimplementation, see `FORK_BOUNDARY.md`) loaded from `workspace/config.json`. Supports camelCase aliases for JSON compatibility. |
-| WebUI (frontend) | `jenny/templates/ui/` | The mobile-first SPA. Talks to the gateway over the same WebSocket used for chat, plus HTTP routes under `/api/`. |
-| WebUI (backend) | `jenny/webui/` | The `/api/` route handlers backing the SPA — apps, settings, media, skills, transcript, token usage, workspaces, file preview — plus gateway service/token wiring. |
-| Jenny Apps | `jenny/apps/` | Runtime for user-authored mini-apps: `manifest.py`, `executor.py`, `storage.py`, `summary.py`, `http.py`, `proxy.py`, `token.py`. See [Write a mini-app](write-a-mini-app.md). |
-| Command router | `jenny/command/` | Slash command routing and built-in command handlers. |
-| Skills | `jenny/skills/` | Built-in skill definitions loaded into agent context. |
-| Security | `jenny/security/` | Workspace policy/access control plus SSRF network protections. |
-| Gateway entry point | `jenny/android_entry.py` → `gateway_runtime._run_gateway()` → `jenny/runtime/container.py::GatewayContainer` | `GatewayContainer` is the explicit composition root: builds the whole object graph and owns runtime state (onboarding-deferred agent creation, ordered shutdown drain). |
-| Runtime state | `jenny/runtime/context.py::RuntimeContext` | The single source of truth for the workspace directory, Android context, and config-path override. Accessors like `get_workspace_path()` / `get_android_context()` / `get_config_path()` delegate here rather than reading scattered module globals. |
-| Cron / delivery | `jenny/runtime/cron_dispatch.py::CronDispatcher`, `jenny/runtime/delivery.py::ChannelDeliverer` | |
+| Agent loop / turn coordination | `arkhiva/agent/loop.py`, `runner.py` | `AgentLoop` manages session keys, hooks, context building; `AgentRunner` executes the tool-calling conversation loop. |
+| LLM providers | `arkhiva/providers/` | `base.py` is the common provider interface; `factory.py` builds the runtime provider from config. See [Add a provider](add-a-provider.md) for how to add a new one — that's a separate page, not duplicated here. |
+| Channels | `arkhiva/channels/` | Four channels: WebSocket (`websocket.py`), Telegram (`telegram.py`), and on Android Notification (`notification.py`) and Floating (`floating.py`); `dispatcher.py` routes outbound bus messages to whichever are active, with retry, delta coalescing, and progress filtering. |
+| Tools | `arkhiva/agent/tools/` | Filesystem, `python_exec`, Android web search/fetch, cron, subagent spawning, long-running tasks, self-modification. Tools are registered **explicitly**: `loader.py` imports a fixed module list and each module declares its own `TOOLS = [...]`; name collisions raise at startup — there is no automatic module scanning. See [Write a tool](write-a-tool.md). |
+| Memory | `arkhiva/agent/memory.py` | Session history persistence plus Dream two-phase memory consolidation. Atomic writes with `fsync` for durability. |
+| Sessions | `arkhiva/session/` | History persistence, context compaction, the plan probe (`plan_probe.py`); TTL-based auto-compaction lives next door in `arkhiva/agent/autocompact.py` (`AutoCompact`). The user conversation is a single unified session (`unified:default`, see `keys.py`), except that a project chat on the WebSocket channel gets its own `project:<name>` session; internal work (cron, Dream) uses separate internal keys via `session_key_override`. |
+| Config | `arkhiva/config/schema.py`, `loader.py` | Pydantic-*style* config (`arkhiva/pydantic_compat/` — a stdlib-only reimplementation, see `FORK_BOUNDARY.md`) loaded from `workspace/config.json`. Supports camelCase aliases for JSON compatibility. |
+| WebUI (frontend) | `arkhiva/templates/ui/` | The mobile-first SPA. Talks to the gateway over the same WebSocket used for chat, plus HTTP routes under `/api/`. |
+| WebUI (backend) | `arkhiva/webui/` | The `/api/` route handlers backing the SPA — apps, settings, media, skills, transcript, token usage, workspaces, file preview — plus gateway service/token wiring. |
+| Jenny Apps | `arkhiva/apps/` | Runtime for user-authored mini-apps: `manifest.py`, `executor.py`, `storage.py`, `summary.py`, `http.py`, `proxy.py`, `token.py`. See [Write a mini-app](write-a-mini-app.md). |
+| Command router | `arkhiva/command/` | Slash command routing and built-in command handlers. |
+| Skills | `arkhiva/skills/` | Built-in skill definitions loaded into agent context. |
+| Security | `arkhiva/security/` | Workspace policy/access control plus SSRF network protections. |
+| Gateway entry point | `arkhiva/android_entry.py` → `gateway_runtime._run_gateway()` → `arkhiva/runtime/container.py::GatewayContainer` | `GatewayContainer` is the explicit composition root: builds the whole object graph and owns runtime state (onboarding-deferred agent creation, ordered shutdown drain). |
+| Runtime state | `arkhiva/runtime/context.py::RuntimeContext` | The single source of truth for the workspace directory, Android context, and config-path override. Accessors like `get_workspace_path()` / `get_android_context()` / `get_config_path()` delegate here rather than reading scattered module globals. |
+| Cron / delivery | `arkhiva/runtime/cron_dispatch.py::CronDispatcher`, `arkhiva/runtime/delivery.py::ChannelDeliverer` | |
 
 ### Large classes are split into mixins
 
@@ -77,7 +77,7 @@ Several large classes are decomposed into focused mixins/leaf modules composed v
 
 ## Config and security boundaries
 
-`jenny/config/schema.py::SecurityConfig` (`config.security`) is the canonical home for `restrict_to_workspace` / `ssrf_whitelist`. Only `restrict_to_workspace` is mirrored onto `ToolsConfig` for the tool layer; `ssrf_whitelist` lives on `SecurityConfig` alone, so writing `tools.ssrf_whitelist` is silently dropped. A validator migrates the legacy `tools.*` locations into `security` only for a config that has no `security` block at all — and every config Jenny has saved has one. `jenny/config/runtime_env.py` is the single layer for operational `JENNY_*` environment knobs — see [Environment variables](../reference/environment-variables.md). See [Security model](../internals/security-model.md) for what these boundaries actually enforce (and don't).
+`arkhiva/config/schema.py::SecurityConfig` (`config.security`) is the canonical home for `restrict_to_workspace` / `ssrf_whitelist`. Only `restrict_to_workspace` is mirrored onto `ToolsConfig` for the tool layer; `ssrf_whitelist` lives on `SecurityConfig` alone, so writing `tools.ssrf_whitelist` is silently dropped. A validator migrates the legacy `tools.*` locations into `security` only for a config that has no `security` block at all — and every config Jenny has saved has one. `arkhiva/config/runtime_env.py` is the single layer for operational `JENNY_*` environment knobs — see [Environment variables](../reference/environment-variables.md). See [Security model](../internals/security-model.md) for what these boundaries actually enforce (and don't).
 
 ## Code style and conventions
 

@@ -9,7 +9,7 @@ script lo verifica sull'APK vero, perché è l'APK che si pubblica.
 Guarda tre posti:
 
 - l'archivio Python di Chaquopy (``assets/chaquopy/app.imy``, uno zip dentro
-  lo zip): nessun file sotto ``jenny_extensions/``;
+  lo zip): nessun file sotto ``arkhiva_extensions/``;
 - il dex: nessuna classe delle estensioni native né di Google Play Services
   (i descrittori delle classi sono stringhe nel dex);
 - la radice dell'APK: nessun ``play-services-*.properties``, che le librerie
@@ -33,12 +33,12 @@ import sys
 import zipfile
 from pathlib import Path
 
-EXTENSIONS_PACKAGE = "jenny_extensions/"
+EXTENSIONS_PACKAGE = "arkhiva_extensions/"
 # Le classi native delle estensioni (``android/app/src/play/``) e la famiglia
 # di Google Play Services.
 DEX_MARKERS = (
-    b"Lcom/flagdizero/jenny/DriveBridge;",
-    b"Lcom/flagdizero/jenny/DriveExtension;",
+    b"Lorg/buhonet/agente/arkhiva/DriveBridge;",
+    b"Lorg/buhonet/agente/arkhiva/DriveExtension;",
     b"Lcom/google/android/gms/",
 )
 GOOGLE_PROPERTIES = re.compile(r"^(play-services|firebase)-[\w-]+\.properties$")

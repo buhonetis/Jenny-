@@ -13,8 +13,8 @@ import json
 
 import pytest
 
-from jenny.config.loader import load_config
-from jenny.config.schema import CURRENT_CONFIG_VERSION, AgentDefaults, Config
+from arkhiva.config.loader import load_config
+from arkhiva.config.schema import CURRENT_CONFIG_VERSION, AgentDefaults, Config
 
 _NEW_CONCURRENCY = AgentDefaults.model_fields["max_concurrent_subagents"].default
 
@@ -113,7 +113,7 @@ def test_a_version_that_is_no_whole_number_is_still_zero(version) -> None:
 
 
 async def test_persist_writes_a_string_version_back_as_an_integer(tmp_path) -> None:
-    from jenny.config.store import persist_schema_migrations
+    from arkhiva.config.store import persist_schema_migrations
 
     path = tmp_path / "config.json"
     path.write_text(
@@ -148,7 +148,7 @@ def test_migration_runs_through_the_real_loader(tmp_path) -> None:
 
 @pytest.mark.parametrize("version", ["1e400", '"3"'])
 async def test_persist_rewrites_a_version_that_is_not_an_integer(tmp_path, version) -> None:
-    from jenny.config.store import persist_schema_migrations
+    from arkhiva.config.store import persist_schema_migrations
 
     path = tmp_path / "config.json"
     path.write_text('{"configVersion": %s}' % version, encoding="utf-8")
@@ -161,7 +161,7 @@ async def test_persist_rewrites_a_version_that_is_not_an_integer(tmp_path, versi
 
 async def test_persist_stamps_the_file_once(tmp_path) -> None:
     """Lo stamp va su disco una volta: senza, la migrazione rigira a ogni boot."""
-    from jenny.config.store import persist_schema_migrations
+    from arkhiva.config.store import persist_schema_migrations
 
     path = tmp_path / "config.json"
     path.write_text(
@@ -183,7 +183,7 @@ async def test_persist_stamps_the_file_once(tmp_path) -> None:
 async def test_persist_preserves_unknown_keys(tmp_path) -> None:
     """Passa da ``store.mutate``, quindi le chiavi che questa versione non
     conosce sopravvivono alla riscrittura."""
-    from jenny.config.store import persist_schema_migrations
+    from arkhiva.config.store import persist_schema_migrations
 
     path = tmp_path / "config.json"
     path.write_text(
@@ -251,7 +251,7 @@ def test_v5_moves_the_old_output_default_and_nothing_else() -> None:
 
 
 def test_the_reply_never_takes_more_than_a_quarter_of_the_window() -> None:
-    from jenny.utils.helpers import output_tokens_for_window
+    from arkhiva.utils.helpers import output_tokens_for_window
 
     assert output_tokens_for_window(32000, 131072) == 32000
     assert output_tokens_for_window(32000, 65536) == 16384
@@ -261,7 +261,7 @@ def test_the_reply_never_takes_more_than_a_quarter_of_the_window() -> None:
 
 
 def test_the_provider_gets_the_clamped_output_budget() -> None:
-    from jenny.providers.factory import _make_provider_core
+    from arkhiva.providers.factory import _make_provider_core
 
     config = Config.model_validate({
         "providers": {"default": "local", "providers": [

@@ -1,8 +1,8 @@
 import pytest
 
-from jenny.agent.tools.base import Tool
-from jenny.agent.tools.context import ToolContext
-from jenny.agent.tools.loader import ToolLoader
+from arkhiva.agent.tools.base import Tool
+from arkhiva.agent.tools.context import ToolContext
+from arkhiva.agent.tools.loader import ToolLoader
 
 
 class _CoreOnlyTool(Tool):
@@ -64,7 +64,7 @@ class _UniversalTool(Tool):
 
 @pytest.mark.asyncio
 async def test_loader_filters_by_scope():
-    from jenny.agent.tools.registry import ToolRegistry
+    from arkhiva.agent.tools.registry import ToolRegistry
 
     loader = ToolLoader(test_classes=[_CoreOnlyTool, _SubagentOnlyTool, _UniversalTool])
 

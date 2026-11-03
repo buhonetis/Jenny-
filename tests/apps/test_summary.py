@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 
-from jenny.apps.summary import build_apps_summary
+from arkhiva.apps.summary import build_apps_summary
 
 MANIFEST = {
     "name": "Note",
@@ -74,7 +74,7 @@ def test_in_a_notebook_the_placed_apps_come_first_and_the_others_are_read_only(t
     """In un quaderno si usano le app posate sulla sua bacheca; le altre si nominano."""
     import json
 
-    from jenny.board.store import mutate_board
+    from arkhiva.board.store import mutate_board
 
     for slug, name in (("etf", "ETF"), ("spesa", "Spesa")):
         d = tmp_path / "apps" / slug
@@ -91,5 +91,5 @@ def test_in_a_notebook_the_placed_apps_come_first_and_the_others_are_read_only(t
     placed, others = summary.split("Other apps")
     assert "`etf_add`" in placed and "spesa" not in placed
     assert "Spesa (`spesa`)" in others and "read-only" in others
-    # E le app nuove si fanno da qui: Jenny mandava l'utente nella chat personale.
+    # E le app nuove si fanno da qui: ARKHIVA mandava l'utente nella chat personale.
     assert "is made from this chat too" in others

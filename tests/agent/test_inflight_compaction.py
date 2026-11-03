@@ -14,7 +14,7 @@ from typing import Any
 
 from support.runner import make_spec
 
-from jenny.agent.inflight_compaction import (
+from arkhiva.agent.inflight_compaction import (
     VERBATIM_USER_MAX_CHARS,
     InFlightCheckpoint,
     apply_checkpoint,
@@ -24,17 +24,17 @@ from jenny.agent.inflight_compaction import (
     format_range,
     plan_cut,
 )
-from jenny.agent.runner import AgentRunner
-from jenny.agent.tools.base import Tool
-from jenny.agent.tools.registry import ToolRegistry
-from jenny.providers.base import LLMResponse, ToolCallRequest
-from jenny.session.history_meta import (
+from arkhiva.agent.runner import AgentRunner
+from arkhiva.agent.tools.base import Tool
+from arkhiva.agent.tools.registry import ToolRegistry
+from arkhiva.providers.base import LLMResponse, ToolCallRequest
+from arkhiva.session.history_meta import (
     GOAL_CONTINUE_EVENT,
     INJECTED_EVENT_META,
     MID_TURN_META,
     SUBAGENT_RESULT_EVENT,
 )
-from jenny.utils.helpers import estimate_prompt_tokens_chain
+from arkhiva.utils.helpers import estimate_prompt_tokens_chain
 
 WINDOW = 12_000
 MAX_OUT = 1_000
@@ -370,9 +370,9 @@ async def test_the_next_turn_starts_from_the_compacted_view(tmp_path):
     """
     from support.agent import make_loop
 
-    from jenny.providers.base import GenerationSettings
-    from jenny.session.history_meta import CHECKPOINT_META, COMPACTED_META
-    from jenny.session.keys import UNIFIED_SESSION_KEY
+    from arkhiva.providers.base import GenerationSettings
+    from arkhiva.session.history_meta import CHECKPOINT_META, COMPACTED_META
+    from arkhiva.session.keys import UNIFIED_SESSION_KEY
 
     provider = _Provider(steps=40)
     provider.generation = GenerationSettings(max_tokens=MAX_OUT)

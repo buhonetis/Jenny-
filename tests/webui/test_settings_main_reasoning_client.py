@@ -1,6 +1,6 @@
-"""La select «Ragionamento di Jenny» si ferma quando quello di tutti è spento.
+"""La select «Ragionamento di ARKHIVA» si ferma quando quello di tutti è spento.
 
-Con ``reasoning_effort`` vuoto («decide il provider») il ragionamento di Jenny
+Con ``reasoning_effort`` vuoto («decide il provider») il ragionamento di ARKHIVA
 non si applica (``AgentLoop._turn_reasoning_effort``): la select lo dice
 restando disattivata, invece di offrire una scelta che non conta.
 """

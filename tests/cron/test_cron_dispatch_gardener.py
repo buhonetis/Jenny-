@@ -20,8 +20,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from jenny.config.schema import Config
-from jenny.runtime.cron_dispatch import CronDispatcher
+from arkhiva.config.schema import Config
+from arkhiva.runtime.cron_dispatch import CronDispatcher
 
 _JOB = SimpleNamespace(
     name="gardener", id="gardener", payload=SimpleNamespace(kind="system_event")
@@ -87,8 +87,8 @@ def _workspace(tmp_path, monkeypatch):
     proprio i test finirebbero a leggere il `config.json` di chi esegue la suite,
     o quello lasciato da un altro file.
     """
-    from jenny.config import paths
-    from jenny.runtime.context import get_runtime_context
+    from arkhiva.config import paths
+    from arkhiva.runtime.context import get_runtime_context
 
     previous = paths.get_workspace_path()
     paths.set_workspace_dir(str(tmp_path))
@@ -106,7 +106,7 @@ def _config(**knobs) -> Config:
     arriverebbe mai al job. Un test che passasse solo l'oggetto misurerebbe una
     strada che il codice non percorre più.
     """
-    from jenny.config.loader import get_config_path, save_config
+    from arkhiva.config.loader import get_config_path, save_config
 
     config = Config()
     for key, value in knobs.items():
@@ -128,13 +128,13 @@ async def test_the_job_reaches_run_gardener_with_the_picked_project(tmp_path, mo
     seen: dict[str, object] = {}
 
     async def _fake_run(agent, store, **_kw):
-        from jenny.agent.gardener import GardenerOutcome
+        from arkhiva.agent.gardener import GardenerOutcome
 
         seen["agent"] = agent
         seen["project"] = store.name
         return GardenerOutcome(status="written", elapsed=0.1, lines=2, writes=1)
 
-    monkeypatch.setattr("jenny.agent.gardener.run_gardener", _fake_run)
+    monkeypatch.setattr("arkhiva.agent.gardener.run_gardener", _fake_run)
 
     _project(tmp_path)
 
@@ -152,7 +152,7 @@ async def test_a_disabled_gardener_does_not_run_even_if_the_job_fires(tmp_path, 
     async def _fake_run(agent, store, **_kw):
         called.append(store.name)
 
-    monkeypatch.setattr("jenny.agent.gardener.run_gardener", _fake_run)
+    monkeypatch.setattr("arkhiva.agent.gardener.run_gardener", _fake_run)
     _project(tmp_path)
 
     await _dispatcher(_FakeAgent(tmp_path), _config(enabled=False))._dispatch(_JOB)
@@ -167,7 +167,7 @@ async def test_no_project_ready_means_no_call(tmp_path, monkeypatch):
     async def _fake_run(agent, store, **_kw):
         called.append(store.name)
 
-    monkeypatch.setattr("jenny.agent.gardener.run_gardener", _fake_run)
+    monkeypatch.setattr("arkhiva.agent.gardener.run_gardener", _fake_run)
     (tmp_path / "wikis").mkdir()
 
     await _dispatcher(_FakeAgent(tmp_path), _config())._dispatch(_JOB)
@@ -185,7 +185,7 @@ async def test_the_in_flight_sessions_come_from_the_agent(tmp_path, monkeypatch)
     async def _fake_run(agent, store, **_kw):
         called.append(store.name)
 
-    monkeypatch.setattr("jenny.agent.gardener.run_gardener", _fake_run)
+    monkeypatch.setattr("arkhiva.agent.gardener.run_gardener", _fake_run)
     _project(tmp_path)
 
     await _dispatcher(
@@ -199,7 +199,7 @@ async def test_the_in_flight_sessions_come_from_the_agent(tmp_path, monkeypatch)
 
 
 def _outcome(status: str, **kw):
-    from jenny.agent.gardener import GardenerOutcome
+    from arkhiva.agent.gardener import GardenerOutcome
 
     return GardenerOutcome(status=status, elapsed=0.1, lines=2, **kw)
 
@@ -216,7 +216,7 @@ async def test_a_failed_pass_is_not_reported_as_ok(tmp_path, monkeypatch):
     """Il dispatcher ritornava ``None`` per **ogni** esito, quindi una passata
     fallita e una riuscita erano indistinguibili da fuori: nel record del job
     finiva "ok" e chi andava a guardare vedeva un giardiniere che funziona."""
-    monkeypatch.setattr("jenny.agent.gardener.run_gardener", _returning("no_write"))
+    monkeypatch.setattr("arkhiva.agent.gardener.run_gardener", _returning("no_write"))
     _project(tmp_path)
 
     result = await _dispatcher(_FakeAgent(tmp_path), _config())._dispatch(_JOB)
@@ -228,7 +228,7 @@ async def test_a_failed_pass_is_not_reported_as_ok(tmp_path, monkeypatch):
 async def test_a_pass_that_wrote_says_nothing(tmp_path, monkeypatch):
     """Il controllo dell'altro verso: senza questo, un ``_run_gardener`` che
     ritornasse sempre una stringa passerebbe il test sopra."""
-    monkeypatch.setattr("jenny.agent.gardener.run_gardener", _returning("written", writes=1))
+    monkeypatch.setattr("arkhiva.agent.gardener.run_gardener", _returning("written", writes=1))
     _project(tmp_path)
 
     assert await _dispatcher(_FakeAgent(tmp_path), _config())._dispatch(_JOB) is None
@@ -240,7 +240,7 @@ async def test_a_failed_pass_is_stamped_so_the_next_tick_skips_it(tmp_path, monk
     ogni mezz'ora. Il runner qui è quello **vero** — il timbro vive dentro
     ``run_gardener`` perché ``/gardener`` deve contare come il cron, e stubbarlo
     renderebbe questo test verde qualunque cosa succeda al timbro."""
-    from jenny.agent.gardener_state import read_state
+    from arkhiva.agent.gardener_state import read_state
 
     root = _project(tmp_path)
 
@@ -256,9 +256,9 @@ async def test_a_skipped_tick_is_not_counted_as_an_attempt(tmp_path, monkeypatch
     """``skipped_no_delta`` è il caso normale di un tick, non un insuccesso: non
     ha chiamato nessun provider, e timbrarlo sposterebbe in avanti la distanza di
     una passata che non è mai partita."""
-    from jenny.agent.gardener_state import read_state
+    from arkhiva.agent.gardener_state import read_state
 
-    monkeypatch.setattr("jenny.agent.gardener.run_gardener", _returning("skipped_no_delta"))
+    monkeypatch.setattr("arkhiva.agent.gardener.run_gardener", _returning("skipped_no_delta"))
     root = _project(tmp_path)
 
     result = await _dispatcher(_FakeAgent(tmp_path), _config())._dispatch(_JOB)
@@ -279,8 +279,8 @@ async def test_a_tick_stands_down_when_a_pass_is_already_in_flight(tmp_path):
     passata che il cron non ha nemmeno fatto, e contarlo vorrebbe dire che tre
     ``/gardener`` a mano fanno scattare l'allarme «il diario non diventa pagine».
     """
-    from jenny.agent.gardener import _PASSES_IN_FLIGHT
-    from jenny.agent.gardener_state import GardenerState, read_state
+    from arkhiva.agent.gardener import _PASSES_IN_FLIGHT
+    from arkhiva.agent.gardener_state import GardenerState, read_state
 
     root = _project(tmp_path)
     _PASSES_IN_FLIGHT.add("viaggio")
@@ -297,7 +297,7 @@ async def test_a_tick_stands_down_when_a_pass_is_already_in_flight(tmp_path):
 async def test_the_tick_after_a_failed_pass_does_not_run_it_again(tmp_path, monkeypatch):
     """La ripetizione, vista da dove è stata misurata: due tick di fila, una
     passata sola. Prima erano due — e quarantotto in un giorno."""
-    from jenny.agent import gardener as gardener_module
+    from arkhiva.agent import gardener as gardener_module
 
     _project(tmp_path)
     passes: list[str] = []
@@ -314,7 +314,7 @@ async def test_the_tick_after_a_failed_pass_does_not_run_it_again(tmp_path, monk
         passes.append(store.name)
         return await real_run(agent, store, **kw)
 
-    monkeypatch.setattr("jenny.agent.gardener.run_gardener", _counting)
+    monkeypatch.setattr("arkhiva.agent.gardener.run_gardener", _counting)
 
     dispatcher = _dispatcher(_BrokenAgent(tmp_path), _config())
     await dispatcher._dispatch(_JOB)
@@ -327,7 +327,7 @@ def _alarms(monkeypatch) -> list[str]:
     """Gli alert di sistema emessi, senza runtime Android."""
     seen: list[str] = []
     monkeypatch.setattr(
-        "jenny.runtime.notifier.notify_delivery",
+        "arkhiva.runtime.notifier.notify_delivery",
         lambda content, metadata: seen.append(content),
     )
     return seen
@@ -339,13 +339,13 @@ async def test_a_series_of_failures_reaches_a_surface_someone_sees(tmp_path, mon
     logcat, ed è precisamente lo stato in cui il diario di un progetto smette di
     diventare pagine senza che niente lo dica. Stessa forma di ``_alert_stuck``
     di Dream — nessun token, nessuna dipendenza dal modello."""
-    from jenny.agent.gardener_state import GARDENER_FAILURES_ARE_ALARMING
+    from arkhiva.agent.gardener_state import GARDENER_FAILURES_ARE_ALARMING
 
     alerts = _alarms(monkeypatch)
     # La serie la conta ``run_gardener`` e la porta nell'esito; qui si prova la
     # sola decisione che è del cron — se quella serie vale una notifica.
     monkeypatch.setattr(
-        "jenny.agent.gardener.run_gardener",
+        "arkhiva.agent.gardener.run_gardener",
         _returning("failed", failures=GARDENER_FAILURES_ARE_ALARMING),
     )
     _project(tmp_path)
@@ -361,11 +361,11 @@ async def test_one_failure_below_the_threshold_does_not_ring(tmp_path, monkeypat
     """Il controllo dell'altro verso: una passata andata storta è ordinaria — un
     provider giù per un minuto — e un allarme a ogni incidente è un allarme che
     si impara a ignorare."""
-    from jenny.agent.gardener_state import GARDENER_FAILURES_ARE_ALARMING
+    from arkhiva.agent.gardener_state import GARDENER_FAILURES_ARE_ALARMING
 
     alerts = _alarms(monkeypatch)
     monkeypatch.setattr(
-        "jenny.agent.gardener.run_gardener",
+        "arkhiva.agent.gardener.run_gardener",
         _returning("failed", failures=GARDENER_FAILURES_ARE_ALARMING - 1),
     )
     _project(tmp_path)

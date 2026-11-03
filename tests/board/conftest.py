@@ -6,10 +6,10 @@ from pathlib import Path
 
 import pytest
 
-from jenny.config.loader import save_config
-from jenny.config.schema import Config
-from jenny.runtime.context import get_runtime_context
-from jenny.webui.commands import CommandContext
+from arkhiva.config.loader import save_config
+from arkhiva.config.schema import Config
+from arkhiva.runtime.context import get_runtime_context
+from arkhiva.webui.commands import CommandContext
 
 PAGES = {
     "travaso-acero.md": (

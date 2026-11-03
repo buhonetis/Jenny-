@@ -6,17 +6,17 @@ import json
 import time
 from pathlib import Path
 
-from jenny.agent.subagent_history import (
+from arkhiva.agent.subagent_history import (
     HISTORY_TTL_S,
     MAX_HISTORY_PER_ORIGIN,
     SubagentHistoryStore,
 )
-from jenny.session.keys import (
+from arkhiva.session.keys import (
     SUBAGENT_SESSION_PREFIX,
     is_internal_session_key,
     subagent_session_key,
 )
-from jenny.session.manager import SessionManager
+from arkhiva.session.manager import SessionManager
 
 _MESSAGES = [
     {"role": "system", "content": "you are a subagent"},
@@ -154,13 +154,13 @@ class TestRetentionCap:
     def test_the_cap_covers_every_slot_of_a_plan_step(self) -> None:
         """Un passo di piano fa girare ``PLAN_HELPER_SLOTS`` normali piu uno breve
         nella stessa sessione: col tetto a 3 i primi fermati al budget perdevano
-        la storia prima che Jenny potesse farli continuare."""
-        from jenny.agent.subagent import PLAN_HELPER_SLOTS
+        la storia prima che ARKHIVA potesse farli continuare."""
+        from arkhiva.agent.subagent import PLAN_HELPER_SLOTS
 
         assert MAX_HISTORY_PER_ORIGIN >= PLAN_HELPER_SLOTS + 1
 
     def test_finished_histories_go_before_budget_ones(self, tmp_path: Path) -> None:
-        from jenny.agent.subagent_history import KIND_BUDGET
+        from arkhiva.agent.subagent_history import KIND_BUDGET
 
         store, _ = _store(tmp_path, max_per_origin=2)
         base = time.time()
@@ -174,7 +174,7 @@ class TestRetentionCap:
         assert store.has("stopped") and store.has("done2") and not store.has("done1")
 
     def test_the_kind_survives_a_restart(self, tmp_path: Path) -> None:
-        from jenny.agent.subagent_history import KIND_BUDGET
+        from arkhiva.agent.subagent_history import KIND_BUDGET
 
         store, sessions = _store(tmp_path, max_per_origin=2)
         base = time.time()
@@ -236,7 +236,7 @@ class TestKeys:
         di progetto e' una conversazione — ma il lato che conta e' lo stesso:
         nessuna chiave interna passa.
         """
-        from jenny.webui.ws_http import _is_webui_readable_session_key
+        from arkhiva.webui.ws_http import _is_webui_readable_session_key
 
         assert _is_webui_readable_session_key(subagent_session_key("L1")) is False
         assert _is_webui_readable_session_key("cron:job-1") is False
@@ -247,7 +247,7 @@ class TestKeys:
     def test_dream_prune_glob_does_not_match_subagent_histories(
         self, tmp_path: Path
     ) -> None:
-        from jenny.agent.memory import MemoryStore
+        from arkhiva.agent.memory import MemoryStore
 
         store, sessions = _store(tmp_path)
         store.save("L1", "o", _MESSAGES)

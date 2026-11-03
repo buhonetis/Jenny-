@@ -26,9 +26,9 @@ from port_alloc import free_port
 from support.aio import wait_until
 from websockets.asyncio.server import serve
 
-from jenny.channels import ws_remote
-from jenny.channels.ws_remote import RemoteListener, server_listening
-from jenny.runtime.tailscale import BROADCAST, OPENED_APP
+from arkhiva.channels import ws_remote
+from arkhiva.channels.ws_remote import RemoteListener, server_listening
+from arkhiva.runtime.tailscale import BROADCAST, OPENED_APP
 
 TS4 = "100.94.12.7"
 TS6 = "fd7a:115c:a1e0::1234"
@@ -253,11 +253,11 @@ async def test_the_guard_passes_other_errors_on_and_is_removed_on_stop() -> None
         loop.set_exception_handler(None)
 
 
-# -- Tailscale giù: Jenny lo riaccende ----------------------------------------
+# -- Tailscale giù: ARKHIVA lo riaccende ----------------------------------------
 
 
 class _Revive:
-    """Il gesto finto. ``in_front=False``: Jenny non è davanti, l'app non si apre."""
+    """Il gesto finto. ``in_front=False``: ARKHIVA non è davanti, l'app non si apre."""
 
     def __init__(self, *, fail: bool = False, in_front: bool = True) -> None:
         self.calls: list[bool] = []
@@ -317,7 +317,7 @@ def _pause_over(listener: RemoteListener) -> None:
 
 
 async def test_the_app_opens_only_after_two_broadcasts_and_pauses_grow() -> None:
-    """Con Jenny non davanti l'app non si apre davvero: i tentativi continuano."""
+    """Con ARKHIVA non davanti l'app non si apre davvero: i tentativi continuano."""
     revive = _Revive(in_front=False)
     rig = _Rig()
     rig.listener._revive = revive
@@ -337,10 +337,10 @@ async def test_the_app_opens_only_after_two_broadcasts_and_pauses_grow() -> None
         await rig.listener.stop()
 
 
-async def test_the_app_opens_once_then_jenny_waits_for_the_user() -> None:
+async def test_the_app_opens_once_then_arkhiva_waits_for_the_user() -> None:
     """Tailscale senza accesso (jenny_s22, 25/10/2026): ogni apertura metteva il
-    suo login sopra Jenny, ogni 2-10 minuti per sempre. Ora si apre una volta;
-    se non basta, Jenny smette del tutto e il pannello lo dice."""
+    suo login sopra ARKHIVA, ogni 2-10 minuti per sempre. Ora si apre una volta;
+    se non basta, ARKHIVA smette del tutto e il pannello lo dice."""
     revive = _Revive()
     rig = _Rig()
     rig.listener._revive = revive

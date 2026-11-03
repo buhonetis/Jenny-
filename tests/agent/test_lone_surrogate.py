@@ -12,10 +12,10 @@ from __future__ import annotations
 
 import json
 
-from jenny.bus.events import InboundMessage
-from jenny.providers.base import LLMResponse
-from jenny.runtime.user_text import say
-from jenny.session.manager import SessionManager, scrub_lone_surrogates
+from arkhiva.bus.events import InboundMessage
+from arkhiva.providers.base import LLMResponse
+from arkhiva.runtime.user_text import say
+from arkhiva.session.manager import SessionManager, scrub_lone_surrogates
 from tests.support.agent import make_loop, make_provider
 
 KEY = "unified:default"
@@ -92,7 +92,7 @@ async def test_a_lone_surrogate_never_reaches_the_provider(tmp_path):
 async def test_a_lone_surrogate_injected_mid_turn_never_reaches_the_provider(tmp_path):
     import asyncio
 
-    from jenny.providers.base import ToolCallRequest
+    from arkhiva.providers.base import ToolCallRequest
 
     (tmp_path / "a.txt").write_text("A", encoding="utf-8")
     seen: list[str] = []

@@ -20,7 +20,7 @@ from pathlib import Path
 
 from tests.security.test_readonly_write_surfaces import _signals, _sources, _strip_prose
 
-ROOT = Path(__file__).resolve().parents[2] / "jenny"
+ROOT = Path(__file__).resolve().parents[2] / "arkhiva"
 
 # Il modulo che scrive → il file in cui sta l'aggancio (spesso lo stesso), e
 # come ci passa. L'aggancio è ``check_write`` (il recinto comune delle
@@ -65,7 +65,7 @@ _NOT_JOURNALED: dict[str, str] = {
     "agent/tools/ssh_jobs.py": "stato locale dei job SSH, non un file del lavoro",
     "agent/tools/ssh_transport.py": "stato locale del trasporto SSH",
     "apps/storage.py": (
-        "i dati delle app li scrivono le azioni delle app, che ha solo il turno di Jenny "
+        "i dati delle app li scrivono le azioni delle app, che ha solo il turno di ARKHIVA "
         "(lo strumento per-app si sincronizza sul registro del loop principale)"
     ),
     "session/manager.py": "il magazzino delle sessioni, scritto dal runtime",

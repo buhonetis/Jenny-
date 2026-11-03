@@ -1,8 +1,8 @@
-from jenny.agent.tools.apply_patch import ApplyPatchTool
-from jenny.agent.tools.exec_session import ListExecSessionsTool, WriteStdinTool
-from jenny.agent.tools.filesystem import EditFileTool, ReadFileTool, WriteFileTool
-from jenny.agent.tools.python_exec import PythonExecTool
-from jenny.agent.tools.search import FindFilesTool, GrepTool
+from arkhiva.agent.tools.apply_patch import ApplyPatchTool
+from arkhiva.agent.tools.exec_session import ListExecSessionsTool, WriteStdinTool
+from arkhiva.agent.tools.filesystem import EditFileTool, ReadFileTool, WriteFileTool
+from arkhiva.agent.tools.python_exec import PythonExecTool
+from arkhiva.agent.tools.search import FindFilesTool, GrepTool
 
 
 def test_coding_tool_descriptions_steer_editing_priority() -> None:

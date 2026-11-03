@@ -20,7 +20,7 @@ sempre stato, era la vista viva a mentire.
 
 Il flag che tiene aperto il turno deve quindi essere **indipendente dalla UI**:
 ``_closeMini`` non lo tocca, e solo ``turn_end``/``error`` lo chiudono. Dal
-28/09/2026 la minichat e' dei due gusci (``shared/jenny-minichat.js``) e va oltre:
+28/09/2026 la minichat e' dei due gusci (``shared/arkhiva-minichat.js``) e va oltre:
 a minichat chiusa segue ancora la domanda, e la risposta la trovi riaprendola.
 
 Asserzioni sul sorgente, nello stile di ``test_thinking_scroll_contract.py``: la
@@ -32,9 +32,9 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-ASSETS = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets"
+ASSETS = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets"
 CHAT_JS = ASSETS / "mobile-chat.js"
-MASCOT_JS = ASSETS / "shared" / "jenny-mascot.js"
+MASCOT_JS = ASSETS / "shared" / "arkhiva-mascot.js"
 
 
 def _method(source: str, name: str) -> str:
@@ -54,7 +54,7 @@ def test_a_failing_native_bridge_is_reported_not_papered_over() -> None:
     source = CHAT_JS.read_text(encoding="utf-8")
     body = _method(source, "_openMediaFile")
 
-    assert "const bridge = window.JennyNative;" in body
+    assert "const bridge = window.ArkhivaNative;" in body
     assert "typeof bridge.openFile === 'function'" in body, (
         "il ramo va scelto sulla *presenza* del bridge, non sull'esito della chiamata"
     )

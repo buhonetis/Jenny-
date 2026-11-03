@@ -25,19 +25,19 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from jenny.agent.loop import AgentLoop
-from jenny.bus.events import InboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.session.project_traces import (
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.bus.events import InboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.session.project_traces import (
     PROJECT_WIKI_ID_KEY,
     delete_project_traces,
     describe_project_traces,
     project_trace_paths,
 )
-from jenny.utils.wiki_paths import wiki_id
-from jenny.webui.commands import _project_delete_refusal
-from jenny.webui.project_create import create_project
-from jenny.webui.project_delete import ProjectDeleteError, delete_project
+from arkhiva.utils.wiki_paths import wiki_id
+from arkhiva.webui.commands import _project_delete_refusal
+from arkhiva.webui.project_create import create_project
+from arkhiva.webui.project_delete import ProjectDeleteError, delete_project
 
 NAME = "viaggio"
 KEY = f"project:{NAME}"
@@ -51,7 +51,7 @@ def _ensure(path: Path) -> Path:
 @pytest.fixture
 def workspace(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     monkeypatch.setattr(
-        "jenny.config.paths.get_webui_dir", lambda: _ensure(tmp_path / ".jenny" / "webui")
+        "arkhiva.config.paths.get_webui_dir", lambda: _ensure(tmp_path / ".arkhiva" / "webui")
     )
     return tmp_path
 
@@ -151,7 +151,7 @@ def test_the_traces_removed_are_the_ones_the_enumeration_names(
     posto solo. Qui se ne inventa una e si pretende che sparisca senza aver
     toccato la cancellazione.
     """
-    import jenny.session.project_traces as traces
+    import arkhiva.session.project_traces as traces
 
     real = traces.project_trace_paths
     invented = workspace / "sessions" / f"project_{NAME}.inventata"
@@ -239,7 +239,7 @@ def test_keep_adopts_the_id_the_conversation_remembers(workspace: Path) -> None:
     Senza l'adozione dell'id, il primo turno della chat ripresa verrebbe
     rifiutato da ``_refuse_reincarnated_project`` — giustamente.
     """
-    from jenny.utils.wiki_paths import wiki_id
+    from arkhiva.utils.wiki_paths import wiki_id
 
     _live_chat(workspace)
     session_file = project_trace_paths(workspace, KEY)[0]
@@ -347,7 +347,7 @@ async def test_a_wiki_without_an_id_never_refuses(
 async def test_an_id_that_vanished_is_put_back_and_the_turn_goes_on(
     loop: AgentLoop, workspace: Path, published: list[str]
 ) -> None:
-    """L'id sparito mentre Jenny gira (un aiutante, adb) non e' un'altra cartella.
+    """L'id sparito mentre ARKHIVA gira (un aiutante, adb) non e' un'altra cartella.
 
     Il turno passa, come prima — ma l'id si rimette subito: lasciarlo mancare
     voleva dire che il prossimo avvio ne coniava uno nuovo e chiudeva fuori la
@@ -444,7 +444,7 @@ def test_an_unopenable_wiki_is_not_protected_by_the_refusal(workspace: Path) -> 
 def test_deleting_a_project_takes_its_interrupted_turn_journal(workspace: Path) -> None:
     """Il diario di un turno interrotto sta accanto alla sessione: se restasse,
     il prossimo quaderno con lo stesso nome riprenderebbe il turno di un altro."""
-    from jenny.session.manager import SessionManager
+    from arkhiva.session.manager import SessionManager
 
     _make(workspace)
     _live_chat(workspace)

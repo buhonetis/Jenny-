@@ -10,10 +10,10 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from jenny.agent.loop import AgentLoop
-from jenny.agent.subagent import SubagentManager, SubagentSpec, SubagentStatus
-from jenny.agent.tools.search import FindFilesTool, GrepTool
-from jenny.bus.queue import MessageBus
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.agent.subagent import SubagentManager, SubagentSpec, SubagentStatus
+from arkhiva.agent.tools.search import FindFilesTool, GrepTool
+from arkhiva.bus.queue import MessageBus
 
 
 @pytest.mark.asyncio
@@ -429,30 +429,30 @@ def test_subagent_prompt_respects_disabled_skills(tmp_path: Path) -> None:
 
 @pytest.mark.asyncio
 async def test_jennys_own_state_is_not_browsed_but_stays_readable(tmp_path: Path) -> None:
-    """``.jenny/`` e' stato interno: l'11/10/2026 la passata della bacheca l'ha
+    """``.arkhiva/`` e' stato interno: l'11/10/2026 la passata della bacheca l'ha
     trovato con ``find_files`` e ha riletto cinque volte l'output salvato di un
     tool della chat. Ne' elencarlo ne' cercarci dentro; il percorso esatto che un
     output salvato annuncia, pero', si legge ancora."""
-    from jenny.agent.tools.filesystem import ListDirTool, ReadFileTool
+    from arkhiva.agent.tools.filesystem import ListDirTool, ReadFileTool
 
-    saved = tmp_path / "wikis" / "serra" / ".jenny" / "tool-results" / "project_serra" / "call_1.txt"
+    saved = tmp_path / "wikis" / "serra" / ".arkhiva" / "tool-results" / "project_serra" / "call_1.txt"
     saved.parent.mkdir(parents=True)
     saved.write_text("needle in a saved output\n", encoding="utf-8")
-    (tmp_path / "wikis" / "serra" / ".jenny" / "gardener.json").write_text("{}", encoding="utf-8")
+    (tmp_path / "wikis" / "serra" / ".arkhiva" / "gardener.json").write_text("{}", encoding="utf-8")
     (tmp_path / "wikis" / "serra" / "wiki").mkdir()
     (tmp_path / "wikis" / "serra" / "wiki" / "index.md").write_text("needle\n", encoding="utf-8")
 
     found = await FindFilesTool(workspace=tmp_path, allowed_dir=tmp_path).execute(path="wikis/serra")
-    assert ".jenny" not in found and "wiki/index.md" in found
+    assert ".arkhiva" not in found and "wiki/index.md" in found
     grepped = await GrepTool(workspace=tmp_path, allowed_dir=tmp_path).execute(
         pattern="needle", path="wikis/serra", output_mode="files_with_matches")
-    assert ".jenny" not in grepped and "index.md" in grepped
+    assert ".arkhiva" not in grepped and "index.md" in grepped
     lister = ListDirTool(workspace=tmp_path, allowed_dir=tmp_path)
-    assert ".jenny" not in await lister.execute(path="wikis/serra", recursive=True)
-    assert ".jenny" not in await lister.execute(path="wikis/serra")
+    assert ".arkhiva" not in await lister.execute(path="wikis/serra", recursive=True)
+    assert ".arkhiva" not in await lister.execute(path="wikis/serra")
     # Chi elenca apposta dentro la cartella ne vede il contenuto.
-    assert "call_1.txt" in await lister.execute(path="wikis/serra/.jenny/tool-results",
+    assert "call_1.txt" in await lister.execute(path="wikis/serra/.arkhiva/tool-results",
                                                 recursive=True)
     read = await ReadFileTool(workspace=tmp_path, allowed_dir=tmp_path).execute(
-        path="wikis/serra/.jenny/tool-results/project_serra/call_1.txt")
+        path="wikis/serra/.arkhiva/tool-results/project_serra/call_1.txt")
     assert "needle in a saved output" in read

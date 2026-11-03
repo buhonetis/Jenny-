@@ -14,11 +14,11 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
 
-from jenny.agent.loop import AgentLoop
-from jenny.bus.events import InboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.providers.base import LLMResponse
-from jenny.providers.message_repair import enforce_role_alternation
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.bus.events import InboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.providers.base import LLMResponse
+from arkhiva.providers.message_repair import enforce_role_alternation
 
 RESULT = "[Subagent 'plant-cards' completed successfully]\n\nResult:\nSix pages written."
 
@@ -163,8 +163,8 @@ async def test_a_refusal_after_the_result_retries_without_it(tmp_path: Path) -> 
     """Il provider rifiuta di rispondere dopo il rientro: il runner lo riconosce
     come risultato d'aiutante e ritenta col segnaposto, tenendo il Runtime
     Context; la storia tiene il risultato com'era."""
-    from jenny.agent.context import ContextBuilder
-    from jenny.utils.runtime import PROVIDER_REFUSED_RESULT_PLACEHOLDER
+    from arkhiva.agent.context import ContextBuilder
+    from arkhiva.utils.runtime import PROVIDER_REFUSED_RESULT_PLACEHOLDER
 
     loop = _loop(tmp_path)
     key = "internal:plants"

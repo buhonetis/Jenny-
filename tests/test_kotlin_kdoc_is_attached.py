@@ -3,7 +3,7 @@
 Due KDoc di fila vogliono dire che la prima non documenta niente: la sua
 dichiarazione è stata tolta o spostata, e il commento è rimasto a descrivere
 qualcosa che non c'è più — o, peggio, sembra descrivere quella dopo. Il 25/09
-se ne sono trovate in ``FloatingOverlayController`` (tre), ``JennyBrowserBridge``
+se ne sono trovate in ``FloatingOverlayController`` (tre), ``ArkhivaBrowserBridge``
 e ``MainActivity``.
 
 Qui il bersaglio sono proprio i commenti, quindi si legge il sorgente grezzo.
@@ -16,12 +16,12 @@ from pathlib import Path
 
 import pytest
 
-ANDROID_SRC = Path(__file__).resolve().parents[1] / "android/app/src/main/java/com/flagdizero/jenny"
+ANDROID_SRC = Path(__file__).resolve().parents[1] / "android/app/src/main/java/org/buhonet/agente/arkhiva"
 
 
 def test_no_kdoc_is_followed_by_another_kdoc() -> None:
     # Tutti i source set: ``main`` e quelli dei flavor (``src/play``, ``src/foss``).
-    files = sorted(ANDROID_SRC.parents[4].glob("*/java/com/flagdizero/jenny/*.kt"))
+    files = sorted(ANDROID_SRC.parents[4].glob("*/java/org/buhonet/agente/arkhiva/*.kt"))
     if not files:
         pytest.skip("sorgente Android non presente in questo checkout")
     orphans = []

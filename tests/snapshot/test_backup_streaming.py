@@ -14,25 +14,25 @@ from pathlib import Path
 
 import pytest
 
-from jenny.config.schema import SnapshotConfig
-from jenny.snapshot.backup import BackupManager
-from jenny.snapshot.crypto import (
+from arkhiva.config.schema import SnapshotConfig
+from arkhiva.snapshot.backup import BackupManager
+from arkhiva.snapshot.crypto import (
     DEFAULT_SEGMENT_SIZE,
     MAGIC,
     SEGMENTED_FORMAT_VERSION,
     TAG_LEN,
     decrypt_file,
 )
-from jenny.snapshot.engine import SnapshotEngine
-from jenny.snapshot.locations import STAGED_WORKSPACE_DIR_NAME
-from jenny.snapshot.service import SnapshotService
+from arkhiva.snapshot.engine import SnapshotEngine
+from arkhiva.snapshot.locations import STAGED_WORKSPACE_DIR_NAME
+from arkhiva.snapshot.service import SnapshotService
 
 pytest.importorskip("cryptography")
 
-from jenny.snapshot.crypto_backends.dev import DevAesGcmBackend  # noqa: E402
+from arkhiva.snapshot.crypto_backends.dev import DevAesGcmBackend  # noqa: E402
 
 _PASS = "passphrase"
-_PHOTO = ".jenny/media/websocket/foto.jpg"
+_PHOTO = ".arkhiva/media/websocket/foto.jpg"
 
 
 class _RecordingBackend(DevAesGcmBackend):
@@ -51,7 +51,7 @@ class _RecordingBackend(DevAesGcmBackend):
 @pytest.fixture()
 def backend(monkeypatch: pytest.MonkeyPatch) -> _RecordingBackend:
     recording = _RecordingBackend()
-    monkeypatch.setattr("jenny.snapshot.crypto.get_crypto_backend", lambda: recording)
+    monkeypatch.setattr("arkhiva.snapshot.crypto.get_crypto_backend", lambda: recording)
     return recording
 
 
@@ -138,7 +138,7 @@ async def test_leftovers_of_a_killed_export_are_cleared(
     staging = manager.import_staged_path.parent
     staging.mkdir(parents=True)
     (staging / "export.zip.part").write_bytes(b"zip in chiaro di un processo morto")
-    (staging / "jenny-backup-20260101-000000.jbk.part").write_bytes(b"mezzo")
+    (staging / "arkhiva-backup-20260101-000000.jbk.part").write_bytes(b"mezzo")
 
     staged = Path((await manager.export_backup(_PASS))["staged_path"])
 

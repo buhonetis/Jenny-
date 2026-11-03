@@ -55,7 +55,7 @@ const toNotebook = async () => {
 """
 
 
-_VENDOR = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets" / "vendor"
+_VENDOR = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets" / "vendor"
 # DOMPurify e marked veri: senza, `md()` esce col testo scappato e i backtick restano.
 _MARKDOWN_BOOT = f"""
 import {{ createRequire }} from 'node:module';
@@ -104,7 +104,7 @@ assert.equal($('home-input').placeholder, P.placeholderDrafting);
 assert.match(text(document.querySelector('.home-plan-hint')), /touches nothing/, 'la riga resta');
 assert.equal(text(document.querySelector('[data-plan-action="cancel-drafting"]')), P.cancelDrafting);
 assert.equal(toggle.getAttribute('aria-label'), P.toggleDrafting);
-// Jenny fa una domanda, tu rispondi: e' ancora pianificazione.
+// ARKHIVA fa una domanda, tu rispondi: e' ancora pianificazione.
 $('home-input').value = 'keep the camellia';
 $('home-send').click();
 assert.equal(messages().at(-1).plan, true, 'la risposta resta in sola lettura');
@@ -155,7 +155,7 @@ assert.equal(document.querySelector('.home-field').classList.contains('is-plan')
 
 def test_drafting_is_cancelled_from_the_hint_or_the_toggle() -> None:
     run_home(_HEAD + """
-// Rientrando in un quaderno dove Jenny pianifica (o dopo un riavvio), il
+// Rientrando in un quaderno dove ARKHIVA pianifica (o dopo un riavvio), il
 // tasto si riaccende da solo: lo stato e' del gateway.
 drafting = { ...DRAFTING, reads: 3 };
 await toNotebook();
@@ -219,7 +219,7 @@ def test_revise_during_a_plain_drafting_still_reaches_the_gateway() -> None:
 current = plan();
 drafting = { ...DRAFTING };
 await toNotebook();
-// Jenny pianifica senza revisione, e tu tocchi Rivedi sulla proposta di prima.
+// ARKHIVA pianifica senza revisione, e tu tocchi Rivedi sulla proposta di prima.
 action('revise').click();
 $('home-input').value = 'drop step 2';
 $('home-send').click();
@@ -290,7 +290,7 @@ assert.equal(msg.plan_revise, 'p1');
 drafting = { ...DRAFTING, revise: 'p1' };
 frame({ event: 'plan_changed', notebook: 'orto', plan_id: 'p1' });
 await tick(40);
-assert.ok(card().classList.contains('is-review'), 'in revisione finche\\' Jenny rivede');
+assert.ok(card().classList.contains('is-review'), 'in revisione finche\\' ARKHIVA rivede');
 $('home-input').value = 'and one more thing';
 $('home-send').click();
 assert.equal(messages().at(-1).plan, true);
@@ -352,9 +352,9 @@ assert.ok(action('resume'));
 """)
 
 
-def test_a_running_plan_stays_in_the_thread_and_jenny_writes_below() -> None:
+def test_a_running_plan_stays_in_the_thread_and_arkhiva_writes_below() -> None:
     """Fino al 26/10 un piano vivo stava nel posto vivo in fondo, e i resoconti di
-    Jenny gli finivano sopra: sul Titan la scheda di un piano fermo e' piu' alta
+    ARKHIVA gli finivano sopra: sul Titan la scheda di un piano fermo e' piu' alta
     dello schermo, e venti messaggi non si sono visti. Ora resta nel filo, dove e'
     stato approvato, e quel che arriva dopo gli va sotto — anche finito."""
     run_home(_HEAD + """
@@ -370,18 +370,18 @@ const thread = document.getElementById('home-thread');
 const live = thread.querySelector(':scope > .home-live');
 assert.equal(card().parentNode, thread, 'in corsa: nel filo, non nel posto vivo');
 assert.equal(card().nextElementSibling, live, 'appena approvato: in fondo');
-// Jenny scrive il resoconto del passo: va sotto la scheda.
+// ARKHIVA scrive il resoconto del passo: va sotto la scheda.
 frame({ event: 'delta', chat_id: 'project:orto', turn_id: 't9', text: 'Step 2 closed: three pages' });
 await tick(20);
-const jenny = [...thread.querySelectorAll(':scope > .home-msg-jenny')].at(-1);
-assert.match(text(jenny), /Step 2 closed/);
-assert.ok(card().compareDocumentPosition(jenny) & Node.DOCUMENT_POSITION_FOLLOWING,
+const arkhiva = [...thread.querySelectorAll(':scope > .home-msg-arkhiva')].at(-1);
+assert.match(text(arkhiva), /Step 2 closed/);
+assert.ok(card().compareDocumentPosition(arkhiva) & Node.DOCUMENT_POSITION_FOLLOWING,
   'il resoconto sta dopo la scheda');
 // Il piano si muove (un frame, una rilettura): la scheda non scavalca il messaggio.
 current = { ...current, done: 2, current_step_id: 's3' };
 frame({ event: 'plan_changed', notebook: 'orto', plan_id: 'p1' });
 await tick(40);
-assert.ok(card().compareDocumentPosition(jenny) & Node.DOCUMENT_POSITION_FOLLOWING);
+assert.ok(card().compareDocumentPosition(arkhiva) & Node.DOCUMENT_POSITION_FOLLOWING);
 // Finisce: resta dov'e', e un messaggio dopo gli va sotto.
 current = { ...current, status: 'done', done: 3, current_step_id: null,
   updated_at: new Date(Date.now() - 1000).toISOString(),
@@ -505,7 +505,7 @@ assert.equal(card().querySelectorAll('.home-plan-tag.is-changed').length, 0, 'ne
 
 def test_the_check_step_shows_the_automatic_check() -> None:
     """Il passo di controllo lo fa il codice: la scheda dice com'è andato, nella
-    lingua dell'utente, anche quando il passo si è chiuso senza una nota di Jenny."""
+    lingua dell'utente, anche quando il passo si è chiuso senza una nota di ARKHIVA."""
     run_home(_HEAD + """
 const done = (over) => step('s3', 'Check', { kind: 'check', status: 'done',
   ended_at: '2026-10-23T12:00:00Z', ...over });
@@ -818,7 +818,7 @@ assert.equal(text(card().querySelector('[data-step-id="s3"] .home-plan-sub')), P
 def test_a_closed_plan_counts_what_is_left_to_look_up() -> None:
     """A piano chiuso la scheda dice quante cose sono rimaste da cercare (la somma
     dei `gaps_listed` dei passi) e dove sta la lista; il passo che le ha lasciate
-    lo dice nella sua riga. Sulla prova del 26/10 Jenny non l'ha nominata in chat."""
+    lo dice nella sua riga. Sulla prova del 26/10 ARKHIVA non l'ha nominata in chat."""
     run_home(_HEAD + """
 const ended = '2026-10-23T12:00:00Z';
 current = plan({ status: 'done', done: 3, total: 3, updated_at: ended, steps: [
@@ -869,7 +869,7 @@ current = plan();
 await toNotebook();
 frame({ event: 'goal_status', status: 'running' });
 await tick(10);
-assert.equal(action('approve').disabled, true, 'mentre Jenny scrive il piano, Approva aspetta');
+assert.equal(action('approve').disabled, true, 'mentre ARKHIVA scrive il piano, Approva aspetta');
 frame({ event: 'goal_status', status: 'idle' });
 await tick(10);
 assert.equal(action('approve').disabled, false);
@@ -1081,7 +1081,7 @@ thread.dispatchEvent(new Event('scroll'));
 const btn = () => document.querySelector('#home-chat > .home-plan-strip .home-plan-strip-btn');
 frame({ event: 'goal_status', status: 'running' });
 await tick(10);
-assert.equal(btn().disabled, true, 'mentre Jenny parla, Riprendi aspetta');
+assert.equal(btn().disabled, true, 'mentre ARKHIVA parla, Riprendi aspetta');
 frame({ event: 'goal_status', status: 'idle' });
 await tick(10);
 assert.equal(btn().disabled, false);
@@ -1107,7 +1107,7 @@ routes['/api/board/card'] = { id: 'acero', title: 'Acero', glyph: 'leaf',
   sections: [{ title: 'Pot', text: 'Pot 20.', fresh: false,
     sources: [{ path: 'a.md', title: 'a', exists: true }] }],
   reminders: [{ id: 'r1', card: 'acero', text: 'Repot', when: { kind: 'date', date: '2027-03-01', precision: 'month' } }],
-  userSections: [], connections: [{ to: 'fig', title: 'Fig', label: 'same pot', by: 'jenny' }],
+  userSections: [], connections: [{ to: 'fig', title: 'Fig', label: 'same pot', by: 'arkhiva' }],
   corrections: [], skeleton: ['Pot'] };
 rpcAnswers['board.seen'] = () => ({ ok: true });
 open = [{ id: 'p1', notebook: 'orto', status: 'running', title: 'x', done: 1, total: 3 }];
@@ -1277,7 +1277,7 @@ assert.equal(location.hash, hashBefore);
 _DRAFTS = """
 const S = locales.en.home.staged;
 const draftItem = (over = {}) => ({ id: 'd1', target: 'wikis/orto/AGENTS.md',
-  sources: ['web_fetch:a.example', 'file:wikis/orto/.jenny/tool-results/call_1.txt',
+  sources: ['web_fetch:a.example', 'file:wikis/orto/.arkhiva/tool-results/call_1.txt',
     'web_search:b', 'web_fetch:c.example', 'web_fetch:d.example'],
   created_ms: 1, new_file: false, target_sha256: 'abc', diff: '--- a\\n+++ b\\n+one folder per plant\\n',
   truncated: false, ...over });

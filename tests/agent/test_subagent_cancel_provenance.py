@@ -18,9 +18,9 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from jenny.agent.runner import AgentRunResult
-from jenny.agent.subagent import SubagentManager
-from jenny.agent.subagent_records import (
+from arkhiva.agent.runner import AgentRunResult
+from arkhiva.agent.subagent import SubagentManager
+from arkhiva.agent.subagent_records import (
     CANCEL_REASON_SHUTDOWN,
     CANCEL_REASON_SUPERSEDED,
     CANCEL_REASON_USER,
@@ -28,8 +28,8 @@ from jenny.agent.subagent_records import (
     SubagentRecordStore,
     SubagentSpec,
 )
-from jenny.bus.queue import MessageBus
-from jenny.providers.base import LLMProvider
+from arkhiva.bus.queue import MessageBus
+from arkhiva.providers.base import LLMProvider
 
 
 def _manager(tmp_path: Path, **kw) -> SubagentManager:

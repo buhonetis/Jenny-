@@ -3,7 +3,7 @@
 """Prepara una release: allinea i file di versione e genera ``latest.json``.
 
 La versione vive in più posti che vanno tenuti in pari a mano (pyproject, il
-fallback hardcoded in ``jenny/__init__.py``, ``versionCode``/``versionName``
+fallback hardcoded in ``arkhiva/__init__.py``, ``versionCode``/``versionName``
 del build Gradle) e con il manifest dell'updater ne arriva un altro ancora.
 Questo script è l'unico punto in cui quei valori si toccano insieme.
 
@@ -86,7 +86,7 @@ class VersionFiles:
         """Risolve i tre percorsi a partire dalla radice del repo."""
         return cls(
             pyproject=root / "pyproject.toml",
-            init_py=root / "jenny" / "__init__.py",
+            init_py=root / "arkhiva" / "__init__.py",
             gradle=root / "android" / "app" / "build.gradle.kts",
         )
 
@@ -309,7 +309,7 @@ def ensure_foss_apk(path: Path) -> None:
 
 def apk_asset_name(version: str) -> str:
     """Nome con cui l'APK va allegato alla release."""
-    return f"jenny-{version}.apk"
+    return f"arkhiva-{version}.apk"
 
 
 def build_manifest(
@@ -449,7 +449,7 @@ def print_publish_commands(
         f"    {quoted_apk} \\\n"
         f"    {quoted_manifest} \\\n"
         f"    --repo {quoted_repo} \\\n"
-        f"    --title {shlex.quote(f'Jenny {version}')} \\\n"
+        f"    --title {shlex.quote(f'ARKHIVA {version}')} \\\n"
         f"    --notes {shlex.quote(notes)}"
     )
     print("\n# Re-upload the manifest after editing it (rollout change, kill switch):")
@@ -617,7 +617,7 @@ def run(args: argparse.Namespace) -> int:
         repo=args.repo,
     )
 
-    # L'asset deve chiamarsi jenny-<version>.apk: GitHub usa il nome del file
+    # L'asset deve chiamarsi arkhiva-<version>.apk: GitHub usa il nome del file
     # caricato, non l'etichetta, quindi se serve si stage una copia rinominata.
     asset_name = apk_asset_name(version)
     staged_apk = apk_source

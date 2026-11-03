@@ -15,7 +15,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from support.agent import make_loop, make_provider
 
-from jenny.agent.loop import AgentLoop
+from arkhiva.agent.loop import AgentLoop
 
 
 def _make_loop(tmp_path: Path) -> AgentLoop:
@@ -79,8 +79,8 @@ async def test_dispatch_cancellation_restores_checkpoint():
     isolation, so a future refactor that drops the cancel-time restore is
     caught by CI instead of silently regressing.
     """
-    from jenny.bus.events import InboundMessage
-    from jenny.bus.queue import MessageBus
+    from arkhiva.bus.events import InboundMessage
+    from arkhiva.bus.queue import MessageBus
 
     bus = MessageBus()
     provider = MagicMock()
@@ -88,9 +88,9 @@ async def test_dispatch_cancellation_restores_checkpoint():
     workspace = MagicMock()
     workspace.__truediv__ = MagicMock(return_value=MagicMock())
 
-    with patch("jenny.agent.loop.ContextBuilder"), \
-         patch("jenny.agent.loop.SessionManager"), \
-         patch("jenny.agent.loop.SubagentManager") as mock_sub_mgr:
+    with patch("arkhiva.agent.loop.ContextBuilder"), \
+         patch("arkhiva.agent.loop.SessionManager"), \
+         patch("arkhiva.agent.loop.SubagentManager") as mock_sub_mgr:
         mock_sub_mgr.return_value.cancel_by_session = AsyncMock(return_value=0)
         loop = AgentLoop(bus=bus, provider=provider, workspace=workspace)
 
@@ -150,8 +150,8 @@ async def test_dispatch_cancellation_after_bump_skips_restore():
     """Un turno RIPUDIATO (epoch bumpato da /stop) NON deve ripristinare il
     checkpoint dal proprio handler CancelledError: lo fa /stop in modo
     sincrono, e l'handler dello zombie può girare molto più tardi."""
-    from jenny.bus.events import InboundMessage
-    from jenny.bus.queue import MessageBus
+    from arkhiva.bus.events import InboundMessage
+    from arkhiva.bus.queue import MessageBus
 
     bus = MessageBus()
     provider = MagicMock()
@@ -159,9 +159,9 @@ async def test_dispatch_cancellation_after_bump_skips_restore():
     workspace = MagicMock()
     workspace.__truediv__ = MagicMock(return_value=MagicMock())
 
-    with patch("jenny.agent.loop.ContextBuilder"), \
-         patch("jenny.agent.loop.SessionManager"), \
-         patch("jenny.agent.loop.SubagentManager") as mock_sub_mgr:
+    with patch("arkhiva.agent.loop.ContextBuilder"), \
+         patch("arkhiva.agent.loop.SessionManager"), \
+         patch("arkhiva.agent.loop.SubagentManager") as mock_sub_mgr:
         mock_sub_mgr.return_value.cancel_by_session = AsyncMock(return_value=0)
         loop = AgentLoop(bus=bus, provider=provider, workspace=workspace)
 

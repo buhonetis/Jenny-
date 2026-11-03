@@ -1,4 +1,4 @@
-"""Una sessione del browser per agente: Jenny e ogni aiutante hanno la loro pagina.
+"""Una sessione del browser per agente: ARKHIVA e ogni aiutante hanno la loro pagina.
 
 Prima la sessione era una sola per tutta l'app: due aiutanti si rubavano la
 pagina, e la chiusura di uno cancellava i cookie dell'altro. Qui si fissano le
@@ -17,15 +17,15 @@ from types import SimpleNamespace
 
 import pytest
 
-from jenny.agent.tools import browser
-from jenny.agent.tools.browser import (
+from arkhiva.agent.tools import browser
+from arkhiva.agent.tools.browser import (
     BrowserCloseTool,
     BrowserDoTool,
     BrowserOpenTool,
     BrowserReadTool,
     BrowserSnapshotTool,
 )
-from jenny.config.tool_schemas import AndroidWebBrowserConfig
+from arkhiva.config.tool_schemas import AndroidWebBrowserConfig
 from tests.agent.tools.test_browser import FakeBridge, _allow_url, _install, _instance, _tool
 
 
@@ -257,7 +257,7 @@ class TestOwnerFromTheContext:
         tools = [cls.create(self._ctx("ab12cd34")) for cls in browser.TOOLS]
         assert {t.owner for t in tools} == {"ab12cd34"}
 
-    def test_jenny_is_main(self):
+    def test_arkhiva_is_main(self):
         assert BrowserOpenTool.create(self._ctx(None)).owner == browser.MAIN_OWNER
 
     def test_max_sessions_comes_from_the_config(self):
@@ -266,7 +266,7 @@ class TestOwnerFromTheContext:
         assert BrowserOpenTool.create(ctx).max_sessions == 5
 
     def test_the_config_default_and_alias(self):
-        from jenny.config.schema import ToolsConfig
+        from arkhiva.config.schema import ToolsConfig
 
         assert AndroidWebBrowserConfig().max_sessions == 3
         cfg = ToolsConfig.model_validate({"androidWeb": {"browser": {"maxSessions": 4}}})
@@ -310,7 +310,7 @@ class TestClosingAtTheEndOfAHelper:
         assert browser._SESSIONS == {}
 
     async def test_the_subagent_run_closes_its_lineage(self, monkeypatch):
-        from jenny.agent.subagent import SubagentManager
+        from arkhiva.agent.subagent import SubagentManager
 
         closed = []
 
@@ -328,7 +328,7 @@ class TestClosingAtTheEndOfAHelper:
         assert closed == ["ab12cd34"]
 
     async def test_no_session_no_close(self, monkeypatch):
-        from jenny.agent.subagent import SubagentManager
+        from arkhiva.agent.subagent import SubagentManager
 
         closed = []
 
@@ -341,7 +341,7 @@ class TestClosingAtTheEndOfAHelper:
         assert closed == []
 
     async def test_a_failing_close_does_not_escape_the_run(self, monkeypatch):
-        from jenny.agent.subagent import SubagentManager
+        from arkhiva.agent.subagent import SubagentManager
 
         def explode(owner):
             raise RuntimeError("main thread fermo")

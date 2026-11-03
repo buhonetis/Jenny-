@@ -14,8 +14,8 @@ from __future__ import annotations
 
 import pytest
 
-from jenny.agent.tools.self import MyTool
-from jenny.config.schema import ToolsConfig
+from arkhiva.agent.tools.self import MyTool
+from arkhiva.config.schema import ToolsConfig
 
 
 class _Loop:

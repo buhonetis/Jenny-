@@ -31,9 +31,9 @@ from pathlib import Path
 
 from support.js_harness import requires_node, run_js
 
-ASSETS = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets"
+ASSETS = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets"
 CHAT_JS = ASSETS / "mobile-chat.js"
-JENNY_JS = ASSETS / "shared" / "jenny-mascot.js"
+ARKHIVA_JS = ASSETS / "shared" / "arkhiva-mascot.js"
 SESSION_JS = ASSETS / "shared" / "session-manager.js"
 WS_JS = ASSETS / "shared" / "ws-manager.js"
 
@@ -308,14 +308,14 @@ def test_the_mascot_releases_its_turn_on_a_switch() -> None:
 
     Vale per tutti e due i gusci: l'ascolto e il rilascio stanno nella mascotte
     condivisa."""
-    jenny = _read(JENNY_JS)
-    assert "sessionManager.addEventListener('chat:switch'" in jenny
-    assert "_releaseTrackedTurn()" in jenny
-    body = re.search(r"\n  _releaseTrackedTurn\(\) \{(.*?)\n  \}", jenny, re.S)
+    arkhiva = _read(ARKHIVA_JS)
+    assert "sessionManager.addEventListener('chat:switch'" in arkhiva
+    assert "_releaseTrackedTurn()" in arkhiva
+    body = re.search(r"\n  _releaseTrackedTurn\(\) \{(.*?)\n  \}", arkhiva, re.S)
     assert body, "_releaseTrackedTurn non trovato"
     assert "this._forgetTurnState();" in body.group(1)
     # Lo stesso oblio lo usa il filo caduto (`_onWireClose`): sta in un punto solo.
-    forget = re.search(r"\n  _forgetTurnState\(\) \{(.*?)\n  \}", jenny, re.S)
+    forget = re.search(r"\n  _forgetTurnState\(\) \{(.*?)\n  \}", arkhiva, re.S)
     assert forget, "_forgetTurnState non trovato"
     head = forget.group(1)
     for field in ("_turnActive = false", "_streamTurnId = null"):

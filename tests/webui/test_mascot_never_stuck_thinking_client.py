@@ -14,7 +14,7 @@ dopo l'avrebbe chiusa. E il ``turn_end`` di ``/stop``, che porta un id diverso,
 le lasciava agganciato l'id del turno fermato, cosi' da li' in poi ignorava ogni
 ``turn_end`` — gli avvisi proattivi, che non mandano ``idle``, compresi.
 
-In node, col modulo vero (``shared/jenny-mascot.js``) e i vicini finti. Il
+In node, col modulo vero (``shared/arkhiva-mascot.js``) e i vicini finti. Il
 silenzio del parlato si simula chiamando ``_talkTick`` con l'ultimo testo gia'
 lontano: il timer vero non serve.
 """
@@ -29,7 +29,7 @@ from pathlib import Path
 from support.js_harness import requires_node, run_module
 
 ROOT = Path(__file__).resolve().parents[2]
-ASSETS = ROOT / "jenny" / "templates" / "ui" / "assets"
+ASSETS = ROOT / "arkhiva" / "templates" / "ui" / "assets"
 
 pytestmark = requires_node
 
@@ -53,7 +53,7 @@ _PRELUDE = """
 import assert from 'node:assert/strict';
 globalThis.window = { matchMedia: () => ({ matches: false }) };
 globalThis.performance = globalThis.performance || { now: () => Date.now() };
-const { JennyMascot } = await import('./shared/jenny-mascot.js');
+const { ArkhivaMascot } = await import('./shared/arkhiva-mascot.js');
 const { MotionChannels } = await import('./shared/mascot-motion.js');
 
 function classes(...initial) {
@@ -64,10 +64,10 @@ function classes(...initial) {
   };
 }
 
-/* Jenny nella chat vera, fuori all'angolo: lo stato di `JennyMascot` senza il
+/* ARKHIVA nella chat vera, fuori all'angolo: lo stato di `ArkhivaMascot` senza il
    suo DOM. Il parlato non avvia timer: il silenzio lo chiama il banco. */
-function jenny() {
-  const j = Object.create(JennyMascot.prototype);
+function arkhiva() {
+  const j = Object.create(ArkhivaMascot.prototype);
   Object.assign(j, {
     mode: 'chat', _agentState: 'idle', _turnActive: false, _pendingTurn: false,
     _streamTurnId: null, _runSeen: false, _lastClosedTurnId: null,
@@ -96,7 +96,7 @@ def _run(body: str) -> None:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         (root / "shared").mkdir()
-        shutil.copy(ASSETS / "shared" / "jenny-mascot.js", root / "shared" / "jenny-mascot.js")
+        shutil.copy(ASSETS / "shared" / "arkhiva-mascot.js", root / "shared" / "arkhiva-mascot.js")
         shutil.copy(ASSETS / "shared" / "bot-name.js", root / "shared" / "bot-name.js")
         shutil.copy(ASSETS / "shared" / "mascot-motion.js", root / "shared" / "mascot-motion.js")
         for name, text in _NEIGHBORS.items():
@@ -110,7 +110,7 @@ def test_stop_during_a_turn_ends_at_rest() -> None:
     """La sequenza misurata di `/stop` a turno in corso, con la risposta per ultima."""
     _run(
         """
-        const j = jenny();
+        const j = arkhiva();
         sent(j);
         frame(j, { event: 'goal_status', status: 'running' });
         frame(j, { event: 'delta', text: 'Questa e', turn_id: 'a1' });
@@ -134,7 +134,7 @@ def test_a_proactive_notice_after_a_stop_still_closes() -> None:
     (``message`` + ``turn_end`` col suo id, niente ``idle``) la lasciava a pensare."""
     _run(
         """
-        const j = jenny();
+        const j = arkhiva();
         sent(j);
         frame(j, { event: 'goal_status', status: 'running' });
         frame(j, { event: 'delta', text: 'Sto', turn_id: 'a1' });
@@ -156,8 +156,8 @@ def test_a_command_at_rest_answers_and_rests() -> None:
     """`/status` e `/stop` a riposo: un solo ``message``, e niente dopo."""
     _run(
         """
-        for (const reply of ['jenny v0.11.0', 'No active task to stop.']) {
-          const j = jenny();
+        for (const reply of ['arkhiva v0.11.0', 'No active task to stop.']) {
+          const j = arkhiva();
           sent(j);
           assert.equal(j._agentState, 'thinking');
           frame(j, { event: 'message', text: reply, turn_id: 's1' });
@@ -174,9 +174,9 @@ def test_a_command_the_gateway_now_closes_rests_too() -> None:
     """Dal 28/09/2026 il gateway chiude anche questi: risposta, ``turn_end``, ``idle``."""
     _run(
         """
-        const j = jenny();
+        const j = arkhiva();
         sent(j);
-        frame(j, { event: 'message', text: 'jenny v0.11.0', turn_id: 's1' });
+        frame(j, { event: 'message', text: 'arkhiva v0.11.0', turn_id: 's1' });
         frame(j, { event: 'turn_end', turn_id: 's1' });
         frame(j, { event: 'goal_status', status: 'idle' });
         silence(j);
@@ -189,7 +189,7 @@ def test_a_real_turn_still_thinks_between_its_words() -> None:
     """Il rovescio: dentro un turno vero il silenzio e' ancora il pensa."""
     _run(
         """
-        const j = jenny();
+        const j = arkhiva();
         sent(j);
         frame(j, { event: 'goal_status', status: 'running' });
         frame(j, { event: 'delta', text: 'Ora controllo.', turn_id: 't1' });
@@ -211,7 +211,7 @@ def test_a_message_sent_into_a_running_turn_keeps_waiting() -> None:
     """Un invio a turno aperto entra in quel turno: niente di nuovo da aspettare."""
     _run(
         """
-        const j = jenny();
+        const j = arkhiva();
         sent(j);
         frame(j, { event: 'goal_status', status: 'running' });
         frame(j, { event: 'delta', text: 'Sto', turn_id: 't1' });
@@ -226,7 +226,7 @@ def test_a_message_sent_into_a_running_turn_keeps_waiting() -> None:
 def test_a_dropped_wire_puts_her_at_rest() -> None:
     _run(
         """
-        const j = jenny();
+        const j = arkhiva();
         sent(j);
         frame(j, { event: 'goal_status', status: 'running' });
         assert.equal(j._agentState, 'thinking');
@@ -243,7 +243,7 @@ def test_late_work_frames_do_not_wake_the_thinking() -> None:
     """Ragionamento, file e suggerimenti arrivati dopo la chiusura."""
     _run(
         """
-        const j = jenny();
+        const j = arkhiva();
         sent(j);
         frame(j, { event: 'goal_status', status: 'running' });
         frame(j, { event: 'turn_end', turn_id: 't1' });
@@ -263,7 +263,7 @@ def test_late_work_frames_do_not_wake_the_thinking() -> None:
 def test_a_send_at_rest_forgets_a_stale_tracked_turn() -> None:
     _run(
         """
-        const j = jenny();
+        const j = arkhiva();
         j._streamTurnId = 'vecchio';
         sent(j);
         assert.equal(j._streamTurnId, null);

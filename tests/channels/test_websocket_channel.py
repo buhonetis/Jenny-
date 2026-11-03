@@ -15,33 +15,33 @@ from port_alloc import free_port, wait_listening
 from websockets.exceptions import ConnectionClosed
 from websockets.frames import Close
 
-from jenny.bus.events import OUTBOUND_META_AGENT_UI, OutboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.channels.http_utils import (
+from arkhiva.bus.events import OUTBOUND_META_AGENT_UI, OutboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.channels.http_utils import (
     issue_route_secret_matches as _issue_route_secret_matches,
 )
-from jenny.channels.http_utils import (
+from arkhiva.channels.http_utils import (
     normalize_config_path as _normalize_config_path,
 )
-from jenny.channels.http_utils import (
+from arkhiva.channels.http_utils import (
     parse_query as _parse_query,
 )
-from jenny.channels.http_utils import (
+from arkhiva.channels.http_utils import (
     parse_request_path as _parse_request_path,
 )
-from jenny.channels.websocket import (
+from arkhiva.channels.websocket import (
     WebSocketChannel,
     WebSocketConfig,
     _parse_envelope,
 )
-from jenny.config.loader import load_config, save_config
-from jenny.config.schema import Config
-from jenny.runtime.context import get_runtime_context
-from jenny.session.manager import SessionManager
-from jenny.webui.gateway_services import GatewayServices, build_gateway_services
-from jenny.webui.settings_api import settings_payload, update_provider
-from jenny.webui.transcript import append_transcript_object, read_transcript_lines
-from jenny.webui.transcript_store import transcript_revision
+from arkhiva.config.loader import load_config, save_config
+from arkhiva.config.schema import Config
+from arkhiva.runtime.context import get_runtime_context
+from arkhiva.session.manager import SessionManager
+from arkhiva.webui.gateway_services import GatewayServices, build_gateway_services
+from arkhiva.webui.settings_api import settings_payload, update_provider
+from arkhiva.webui.transcript import append_transcript_object, read_transcript_lines
+from arkhiva.webui.transcript_store import transcript_revision
 
 # -- Shared helpers (aligned with test_websocket_integration.py) ---------------
 
@@ -93,7 +93,7 @@ def bus() -> MagicMock:
 
 @pytest.fixture(autouse=True)
 def isolate_webui_workspace_state(tmp_path, monkeypatch) -> None:
-    monkeypatch.setattr("jenny.config.paths.get_data_dir", lambda: tmp_path)
+    monkeypatch.setattr("arkhiva.config.paths.get_data_dir", lambda: tmp_path)
 
 
 async def _http_get(url: str, headers: dict[str, str] | None = None) -> httpx.Response:
@@ -152,7 +152,7 @@ def test_issue_route_secret_matches_bearer_and_header() -> None:
     secret = "my-secret"
     bearer_headers = Headers([("Authorization", "Bearer my-secret")])
     assert _issue_route_secret_matches(bearer_headers, secret) is True
-    x_headers = Headers([("X-Jenny-Auth", "my-secret")])
+    x_headers = Headers([("X-ARKHIVA-Auth", "my-secret")])
     assert _issue_route_secret_matches(x_headers, secret) is True
     wrong = Headers([("Authorization", "Bearer other")])
     assert _issue_route_secret_matches(wrong, secret) is False
@@ -168,7 +168,7 @@ def test_issue_route_secret_matches_empty_secret() -> None:
 
 @pytest.mark.asyncio
 async def test_webui_message_envelope_marks_inbound_metadata(bus: MagicMock) -> None:
-    from jenny.webui.transcript import read_transcript_lines
+    from arkhiva.webui.transcript import read_transcript_lines
 
     channel = _ch(bus)
     conn = MagicMock()
@@ -213,9 +213,9 @@ async def test_webui_message_envelope_persists_user_transcript_for_refresh(
     tmp_path,
     monkeypatch,
 ) -> None:
-    from jenny.webui.transcript import build_webui_thread_response, read_transcript_lines
+    from arkhiva.webui.transcript import build_webui_thread_response, read_transcript_lines
 
-    monkeypatch.setattr("jenny.config.paths.get_data_dir", lambda: tmp_path)
+    monkeypatch.setattr("arkhiva.config.paths.get_data_dir", lambda: tmp_path)
     channel = _ch(bus)
     conn = AsyncMock()
     conn.remote_address = ("127.0.0.1", 50123)
@@ -246,9 +246,9 @@ async def test_webui_stop_control_message_is_not_persisted_as_user_bubble(
     tmp_path,
     monkeypatch,
 ) -> None:
-    from jenny.webui.transcript import read_transcript_lines
+    from arkhiva.webui.transcript import read_transcript_lines
 
-    monkeypatch.setattr("jenny.config.paths.get_data_dir", lambda: tmp_path)
+    monkeypatch.setattr("arkhiva.config.paths.get_data_dir", lambda: tmp_path)
     channel = _ch(bus)
     conn = AsyncMock()
     conn.remote_address = ("127.0.0.1", 50123)
@@ -272,7 +272,7 @@ async def test_webui_user_transcript_append_failure_does_not_block_inbound(
     def fail_append(_session_key: str, _obj: dict[str, Any]) -> None:
         raise OSError("disk full")
 
-    monkeypatch.setattr("jenny.webui.transcript.append_transcript_object", fail_append)
+    monkeypatch.setattr("arkhiva.webui.transcript.append_transcript_object", fail_append)
     channel = _ch(bus)
     conn = AsyncMock()
     conn.remote_address = ("127.0.0.1", 50123)
@@ -467,7 +467,7 @@ async def test_send_stages_external_media_as_signed_url(monkeypatch, tmp_path) -
     def fake_media_dir(channel: str | None = None):
         return ws_media if channel == "websocket" else media_root
 
-    monkeypatch.setattr("jenny.webui.media_gateway.get_media_dir", fake_media_dir)
+    monkeypatch.setattr("arkhiva.webui.media_gateway.get_media_dir", fake_media_dir)
     channel = WebSocketChannel({"enabled": True, "allowFrom": ["*"]}, bus, gateway=_basic_handler(bus))
     mock_ws = AsyncMock()
     channel._attach(mock_ws, "default")
@@ -708,7 +708,7 @@ async def test_send_delta_stream_end_rewrites_local_markdown_image(monkeypatch, 
         path.mkdir(parents=True, exist_ok=True)
         return path
 
-    monkeypatch.setattr("jenny.webui.media_gateway.get_media_dir", fake_media_dir)
+    monkeypatch.setattr("arkhiva.webui.media_gateway.get_media_dir", fake_media_dir)
     channel = WebSocketChannel(
         {"enabled": True, "allowFrom": ["*"], "streaming": True},
         bus,
@@ -740,7 +740,7 @@ async def test_send_delta_stream_end_rewrites_inline_final_text(monkeypatch, tmp
         path.mkdir(parents=True, exist_ok=True)
         return path
 
-    monkeypatch.setattr("jenny.webui.media_gateway.get_media_dir", fake_media_dir)
+    monkeypatch.setattr("arkhiva.webui.media_gateway.get_media_dir", fake_media_dir)
     channel = WebSocketChannel(
         {"enabled": True, "allowFrom": ["*"], "streaming": True},
         bus,
@@ -819,7 +819,7 @@ async def test_send_reasoning_without_subscribers_is_noop() -> None:
 
 @pytest.mark.asyncio
 async def test_stream_transcript_persists_without_subscribers() -> None:
-    from jenny.webui.transcript import build_webui_thread_response, read_transcript_lines
+    from arkhiva.webui.transcript import build_webui_thread_response, read_transcript_lines
 
     bus = MagicMock()
     channel = WebSocketChannel(
@@ -859,8 +859,8 @@ async def test_proactive_delivery_frames_form_one_closed_turn() -> None:
     ``_annotate_turn`` esce subito e il turno resta aperto sia sul filo che sul
     disco.
     """
-    from jenny.webui.metadata import WEBUI_TURN_METADATA_KEY
-    from jenny.webui.transcript import read_transcript_lines
+    from arkhiva.webui.metadata import WEBUI_TURN_METADATA_KEY
+    from arkhiva.webui.transcript import read_transcript_lines
 
     bus = MagicMock()
     channel = WebSocketChannel({"enabled": True, "allowFrom": ["*"]}, bus, gateway=_basic_handler(bus))
@@ -1050,7 +1050,7 @@ async def test_maybe_push_turn_run_wall_clock_skips_when_no_active_turn() -> Non
     channel = WebSocketChannel({"enabled": True, "allowFrom": ["*"]}, bus, gateway=_basic_handler(bus))
     mock_ws = AsyncMock()
     channel._attach(mock_ws, "default")
-    from jenny.session import webui_turns as wth
+    from arkhiva.session import webui_turns as wth
 
     wth._WEBSOCKET_TURN_WALL_STARTED_AT.clear()
     await channel._maybe_push_turn_run_wall_clock("default")
@@ -1063,7 +1063,7 @@ async def test_maybe_push_turn_run_wall_clock_replays_running() -> None:
     channel = WebSocketChannel({"enabled": True, "allowFrom": ["*"]}, bus, gateway=_basic_handler(bus))
     mock_ws = AsyncMock()
     channel._attach(mock_ws, "default")
-    from jenny.session import webui_turns as wth
+    from arkhiva.session import webui_turns as wth
 
     wth._WEBSOCKET_TURN_WALL_STARTED_AT.clear()
     try:
@@ -1192,7 +1192,7 @@ def test_settings_payload_normalizes_camel_case_provider(
 def test_settings_payload_exposes_api_type_only_for_openai(monkeypatch, tmp_path) -> None:
     config_path = tmp_path / "config.json"
     config = Config()
-    from jenny.config.schema import ProviderConfig
+    from arkhiva.config.schema import ProviderConfig
     config.providers.providers = [ProviderConfig(name="openai", format="openai_compat", api_key="test-key", api_type="responses")]
     config.providers.default = "openai"
     save_config(config, config_path)
@@ -1210,7 +1210,7 @@ def test_settings_payload_reports_workspace_sandbox(monkeypatch, tmp_path) -> No
     config.tools.restrict_to_workspace = True
     save_config(config, config_path)
     monkeypatch.setattr(get_runtime_context(), "config_path", config_path)
-    monkeypatch.setenv("JENNY_SANDBOX_ENFORCED", "macos_app_sandbox")
+    monkeypatch.setenv("ARKHIVA_SANDBOX_ENFORCED", "macos_app_sandbox")
 
     body = settings_payload()
     sandbox = body["advanced"]["workspace_sandbox"]
@@ -1441,7 +1441,7 @@ async def test_webui_message_envelope_appends_user_transcript(
     tmp_path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setattr("jenny.config.paths.get_data_dir", lambda: tmp_path)
+    monkeypatch.setattr("arkhiva.config.paths.get_data_dir", lambda: tmp_path)
     sessions = SessionManager(tmp_path / "sessions")
     channel = WebSocketChannel(
         {"enabled": True, "allowFrom": ["*"], "host": "127.0.0.1"},
@@ -1557,9 +1557,9 @@ def test_webui_thread_includes_active_run_started_at(tmp_path, monkeypatch) -> N
     from websockets.datastructures import Headers
     from websockets.http11 import Request
 
-    from jenny.session import webui_turns as wth
+    from arkhiva.session import webui_turns as wth
 
-    monkeypatch.setattr("jenny.config.paths.get_data_dir", lambda: tmp_path)
+    monkeypatch.setattr("arkhiva.config.paths.get_data_dir", lambda: tmp_path)
     key = "websocket:default"
     append_transcript_object(key, {"event": "user", "chat_id": "default", "text": "hi"})
     bus = MagicMock()
@@ -1587,7 +1587,7 @@ def test_handle_webui_thread_get_returns_json(tmp_path, monkeypatch) -> None:
     from websockets.http11 import Request
 
 
-    monkeypatch.setattr("jenny.config.paths.get_data_dir", lambda: tmp_path)
+    monkeypatch.setattr("arkhiva.config.paths.get_data_dir", lambda: tmp_path)
     key = "websocket:c1"
     append_transcript_object(key, {"event": "user", "chat_id": "c1", "text": "hi"})
     bus = MagicMock()
@@ -1611,7 +1611,7 @@ def test_handle_webui_thread_get_accepts_pagination_query(tmp_path, monkeypatch)
     from websockets.http11 import Request
 
 
-    monkeypatch.setattr("jenny.config.paths.get_data_dir", lambda: tmp_path)
+    monkeypatch.setattr("arkhiva.config.paths.get_data_dir", lambda: tmp_path)
     key = "websocket:paged-route"
     for idx in range(1, 4):
         append_transcript_object(
@@ -1649,7 +1649,7 @@ def test_handle_file_preview_returns_workspace_file(tmp_path) -> None:
     from websockets.http11 import Request
 
     workspace = tmp_path / "workspace"
-    source = workspace / "jenny" / "agent" / "hook.py"
+    source = workspace / "arkhiva" / "agent" / "hook.py"
     source.parent.mkdir(parents=True)
     source.write_text("print('hello')\n", encoding="utf-8")
 
@@ -1657,7 +1657,7 @@ def test_handle_file_preview_returns_workspace_file(tmp_path) -> None:
     gateway.http.config.token_issue_secret = "tok"
     key = "websocket:file-preview"
     enc = quote(key, safe="")
-    path = quote("jenny/agent/hook.py:12", safe="")
+    path = quote("arkhiva/agent/hook.py:12", safe="")
     req = Request(
         f"/api/sessions/{enc}/file-preview?path={path}",
         Headers([("Authorization", "Bearer tok")]),
@@ -1667,14 +1667,14 @@ def test_handle_file_preview_returns_workspace_file(tmp_path) -> None:
 
     assert resp.status_code == 200
     body = json.loads(resp.body.decode())
-    assert body["display_path"] == "jenny/agent/hook.py"
+    assert body["display_path"] == "arkhiva/agent/hook.py"
     assert body["language"] == "python"
     assert body["content"].splitlines() == ["print('hello')"]
     assert body["truncated"] is False
 
 
 def test_file_preview_normalizes_windows_file_url() -> None:
-    from jenny.webui.file_preview import _clean_preview_path
+    from arkhiva.webui.file_preview import _clean_preview_path
 
     assert _clean_preview_path("file:///C:/Users/me/project/app.py") == (
         "C:/Users/me/project/app.py"
@@ -1717,7 +1717,7 @@ def test_handle_webui_thread_get_backfills_legacy_missing_user_rows(
     from websockets.http11 import Request
 
 
-    monkeypatch.setattr("jenny.config.paths.get_data_dir", lambda: tmp_path)
+    monkeypatch.setattr("arkhiva.config.paths.get_data_dir", lambda: tmp_path)
     workspace = tmp_path / "workspace"
     sessions = SessionManager(workspace)
     key = "websocket:c-legacy"
@@ -1759,9 +1759,9 @@ def test_handle_webui_thread_get_does_not_backfill_cron_internal_prompt(
     from websockets.datastructures import Headers
     from websockets.http11 import Request
 
-    from jenny.cron.session_turns import CRON_HISTORY_META
+    from arkhiva.cron.session_turns import CRON_HISTORY_META
 
-    monkeypatch.setattr("jenny.config.paths.get_data_dir", lambda: tmp_path)
+    monkeypatch.setattr("arkhiva.config.paths.get_data_dir", lambda: tmp_path)
     workspace = tmp_path / "workspace"
     sessions = SessionManager(workspace)
     key = "websocket:c-cron"

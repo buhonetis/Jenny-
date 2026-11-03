@@ -13,7 +13,7 @@ If you are not building from source, you can skip this page.
 
 ## Operational tuning knobs
 
-Centralized in `jenny/config/runtime_env.py`, which the codebase treats as the single layer for these operational knobs (see the module docstring: "un solo layer env"). Each falls back to its default when unset, blank, or unparseable — an invalid value (e.g. non-numeric) is logged as a warning and the default is used, it does not crash the gateway.
+Centralized in `arkhiva/config/runtime_env.py`, which the codebase treats as the single layer for these operational knobs (see the module docstring: "un solo layer env"). Each falls back to its default when unset, blank, or unparseable — an invalid value (e.g. non-numeric) is logged as a warning and the default is used, it does not crash the gateway.
 
 | Variable | Default | Effect | When you'd touch it |
 |---|---|---|---|
@@ -24,7 +24,7 @@ Centralized in `jenny/config/runtime_env.py`, which the codebase treats as the s
 
 ## Provider transport timeouts
 
-Also defined in `runtime_env.py`, but consumed by the model providers (`jenny/providers/`) rather than the agent loop. For all three, a value that is non-positive or unparseable is ignored with a warning and the default is kept.
+Also defined in `runtime_env.py`, but consumed by the model providers (`arkhiva/providers/`) rather than the agent loop. For all three, a value that is non-positive or unparseable is ignored with a warning and the default is kept.
 
 | Variable | Default | Effect |
 |---|---|---|
@@ -36,7 +36,7 @@ Also defined in `runtime_env.py`, but consumed by the model providers (`jenny/pr
 
 | Variable | Default | Effect |
 |---|---|---|
-| `JENNY_WORKSPACE_SANDBOX_ENFORCED`, `JENNY_SANDBOX_ENFORCED` (legacy alias, checked if the first is unset), `JENNY_WORKSPACE_SANDBOX_PROVIDER` | unset | Markers used to detect that the process is running inside an external dev/CI sandbox and, optionally, which one. Their names are declared in `runtime_env.py`; they are read by `jenny/security/workspace_access.py`. Not relevant to the Android runtime and not something an app user would ever set. |
+| `JENNY_WORKSPACE_SANDBOX_ENFORCED`, `JENNY_SANDBOX_ENFORCED` (legacy alias, checked if the first is unset), `JENNY_WORKSPACE_SANDBOX_PROVIDER` | unset | Markers used to detect that the process is running inside an external dev/CI sandbox and, optionally, which one. Their names are declared in `runtime_env.py`; they are read by `arkhiva/security/workspace_access.py`. Not relevant to the Android runtime and not something an app user would ever set. |
 
 ## Release signing variables
 

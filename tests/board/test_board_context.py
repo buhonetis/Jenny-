@@ -4,16 +4,16 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from jenny.agent.context import ContextBuilder
-from jenny.board import model
-from jenny.board.context_block import (
+from arkhiva.agent.context import ContextBuilder
+from arkhiva.board import model
+from arkhiva.board.context_block import (
     BOARD_BLOCK_MAX_CHARS,
     board_block,
     drawer_text,
     named_cards,
     turn_lines,
 )
-from jenny.board.store import mutate_board, read_board, write_card_summary
+from arkhiva.board.store import mutate_board, read_board, write_card_summary
 
 
 def _notebook(tmp_path: Path) -> Path:
@@ -123,7 +123,7 @@ def _jobs(tmp_path: Path, monkeypatch, jobs: list[dict]) -> None:
 
     (tmp_path / "cron").mkdir(exist_ok=True)
     (tmp_path / "cron" / "jobs.json").write_text(json.dumps({"jobs": jobs}), encoding="utf-8")
-    monkeypatch.setattr("jenny.config.paths.get_workspace_path", lambda: tmp_path)
+    monkeypatch.setattr("arkhiva.config.paths.get_workspace_path", lambda: tmp_path)
 
 
 def test_a_cron_reaches_the_block_and_the_drawer(tmp_path, monkeypatch) -> None:
@@ -188,8 +188,8 @@ def _research_archive(tmp_path: Path) -> tuple[Path, Path]:
 
 
 def test_a_research_archive_says_why_it_has_no_board(tmp_path) -> None:
-    from jenny.agent.board_pass import BoardPass
-    from jenny.board.context_block import board_absence
+    from arkhiva.agent.board_pass import BoardPass
+    from arkhiva.board.context_block import board_absence
 
     ws, root = _research_archive(tmp_path)
     assert board_absence(root) == "research"
@@ -198,8 +198,8 @@ def test_a_research_archive_says_why_it_has_no_board(tmp_path) -> None:
 
 
 def test_the_first_journal_line_turns_an_archive_into_a_notebook(tmp_path) -> None:
-    from jenny.agent.board_pass import BoardPass
-    from jenny.board.context_block import board_absence
+    from arkhiva.agent.board_pass import BoardPass
+    from arkhiva.board.context_block import board_absence
 
     ws, root = _research_archive(tmp_path)
     (root / "raw" / "journal").mkdir(parents=True)
@@ -209,7 +209,7 @@ def test_the_first_journal_line_turns_an_archive_into_a_notebook(tmp_path) -> No
 
 
 def test_the_absence_follows_the_first_board_through_its_answers(tmp_path) -> None:
-    from jenny.board.context_block import board_absence
+    from arkhiva.board.context_block import board_absence
 
     root = _notebook(tmp_path)
     assert board_absence(root) == "next_pass"
@@ -236,7 +236,7 @@ def test_the_absence_follows_the_first_board_through_its_answers(tmp_path) -> No
 
 
 def test_a_notebook_without_pages_waits_for_them(tmp_path) -> None:
-    from jenny.board.context_block import board_absence
+    from arkhiva.board.context_block import board_absence
 
     root = tmp_path / "wikis" / "vuoto"
     (root / "wiki").mkdir(parents=True)
@@ -245,7 +245,7 @@ def test_a_notebook_without_pages_waits_for_them(tmp_path) -> None:
 
 
 def test_the_prompt_tells_why_there_is_no_board_and_what_does_not_decide_it(tmp_path) -> None:
-    from jenny.utils.prompt_templates import render_template
+    from arkhiva.utils.prompt_templates import render_template
 
     ws, root = _research_archive(tmp_path)
     fed = ContextBuilder(ws)._project_block_vars(root)
@@ -259,7 +259,7 @@ def test_the_prompt_tells_why_there_is_no_board_and_what_does_not_decide_it(tmp_
 
 
 def test_a_board_with_cards_keeps_the_absence_out_of_the_prompt(tmp_path) -> None:
-    from jenny.utils.prompt_templates import render_template
+    from arkhiva.utils.prompt_templates import render_template
 
     root = _notebook(tmp_path)
     _cards(root, 1, brief="In vaso 14.")
@@ -275,7 +275,7 @@ def test_who_changes_the_board_is_said_to_each_reader(tmp_path) -> None:
     """La chat lancia l'editore, l'editore usa il tool, gli altri subagent non la
     toccano. Fino al 09/10/2026 la chat leggeva «you do not change it: the
     gardener proposes», e mandava al giardiniere richieste che non poteva fare."""
-    from jenny.utils.prompt_templates import render_template
+    from arkhiva.utils.prompt_templates import render_template
 
     root = _notebook(tmp_path)
     _cards(root, 1, brief="In vaso 14.")
@@ -293,12 +293,12 @@ def test_who_changes_the_board_is_said_to_each_reader(tmp_path) -> None:
 
 
 def test_the_chat_knows_what_waits_in_the_envelope(tmp_path) -> None:
-    """Senza, a «accetta la proposta» Jenny la cercava con grep (09/10/2026)."""
+    """Senza, a «accetta la proposta» ARKHIVA la cercava con grep (09/10/2026)."""
     root = _notebook(tmp_path)
     _cards(root, 1, brief="In vaso 14.")
     mutate_board(root, lambda b: b["suggestions"].append({
         "id": "sg-x", "kind": "add_connection", "subject": "Ginkgo — Fico", "text": "Un filo?"}),
-        actor="jenny")
+        actor="arkhiva")
     assert "In the envelope, waiting for the user: «Ginkgo — Fico» (add_connection)." in \
         board_block(root)
 
@@ -397,7 +397,7 @@ def test_the_turn_gets_board_since_from_the_caller(tmp_path) -> None:
 
 
 def test_the_whole_notebook_line_has_its_crons_and_its_next_reminder(tmp_path, monkeypatch) -> None:
-    from jenny.board.context_block import notebook_line
+    from arkhiva.board.context_block import notebook_line
 
     root = _notebook(tmp_path)
     assert notebook_line(root) == ""

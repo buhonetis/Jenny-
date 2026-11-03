@@ -1,6 +1,6 @@
 """Officina: la chat sopra una vista non porta un secondo scroller.
 
-Dal 05/10/2026 toccare Jenny fuori dalla Console porta su la chat a tutto
+Dal 05/10/2026 toccare ARKHIVA fuori dalla Console porta su la chat a tutto
 schermo sopra la vista (``MobileApp.openChatOver``). Il rischio e' uno solo e
 grosso: il difetto dei manici di selezione, chiuso facendo del **documento**
 lo scroller della chat (v. ``test_chat_root_scroller_contract.py``). Una chat
@@ -16,7 +16,7 @@ from pathlib import Path
 
 from support import css_levels
 
-ASSETS = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets"
+ASSETS = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets"
 APP = (ASSETS / "mobile-app.js").read_text(encoding="utf-8")
 CSS = (ASSETS / "mobile-style.css").read_text(encoding="utf-8")
 
@@ -69,7 +69,7 @@ def test_the_view_beneath_is_pinned_inert_and_unselectable() -> None:
 def test_the_levels_stay_under_her_and_in_order() -> None:
     levels = dict(css_levels.levels(CSS))
     over = {k: v for k, v in levels.items() if "chat-over" in k}
-    assert over and all(v < 120 for v in over.values()), f"sopra Jenny: {over}"
+    assert over and all(v < 120 for v in over.values()), f"sopra ARKHIVA: {over}"
     chat = levels[":root.chat-over #view-chat"]
     assert chat < levels[":root.chat-over .dock"] < levels[":root.chat-over .drawer-backdrop"] \
         < levels[":root.chat-over .drawer"]

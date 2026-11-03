@@ -28,10 +28,10 @@ from types import SimpleNamespace
 import pytest
 from loguru import logger
 
-from jenny.agent import gardener_schedule as mod
-from jenny.agent.gardener import MAP_TARGET_CHARS
-from jenny.agent.gardener_schedule import pick_project
-from jenny.agent.gardener_state import GardenerState, write_state
+from arkhiva.agent import gardener_schedule as mod
+from arkhiva.agent.gardener import MAP_TARGET_CHARS
+from arkhiva.agent.gardener_schedule import pick_project
+from arkhiva.agent.gardener_state import GardenerState, write_state
 
 _NOW = datetime(2026, 8, 23, 21, 0, 0)
 
@@ -273,7 +273,7 @@ def test_the_journal_is_not_even_opened_when_a_cheaper_gate_is_shut(tmp_path, mo
         cursor={}, last_run_at=(_NOW - timedelta(minutes=10)).isoformat()
     ))
     opened: list[str] = []
-    from jenny.agent import gardener_schedule as mod
+    from arkhiva.agent import gardener_schedule as mod
 
     real = mod.GardenerStore.read_delta
 
@@ -671,8 +671,8 @@ def test_a_shut_gate_still_stops_a_project_whose_map_is_oversized(tmp_path):
 @pytest.mark.parametrize("status", ["running", "pausing", "paused", "blocked"])
 def test_a_notebook_held_by_a_plan_is_not_gardened(tmp_path, status):
     """Le scritture del giardiniere finirebbero nelle foto come se fossero del piano."""
-    from jenny.plan.model import apply_transition, validate_proposal
-    from jenny.plan.store import PlanStore
+    from arkhiva.plan.model import apply_transition, validate_proposal
+    from arkhiva.plan.store import PlanStore
 
     workspace = tmp_path / "workspace"
     _project(workspace, "viaggio")
@@ -698,8 +698,8 @@ def test_a_notebook_held_by_a_plan_is_not_gardened(tmp_path, status):
 
 
 def test_a_proposal_does_not_hold_the_notebook(tmp_path):
-    from jenny.plan.model import validate_proposal
-    from jenny.plan.store import PlanStore
+    from arkhiva.plan.model import validate_proposal
+    from arkhiva.plan.store import PlanStore
 
     workspace = tmp_path / "workspace"
     _project(workspace, "viaggio")

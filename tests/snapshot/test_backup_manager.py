@@ -15,14 +15,14 @@ from types import SimpleNamespace
 
 import pytest
 
-from jenny.config.schema import SnapshotConfig
-from jenny.snapshot.backup import BackupError, BackupManager
-from jenny.snapshot.engine import SnapshotEngine
-from jenny.snapshot.locations import (
+from arkhiva.config.schema import SnapshotConfig
+from arkhiva.snapshot.backup import BackupError, BackupManager
+from arkhiva.snapshot.engine import SnapshotEngine
+from arkhiva.snapshot.locations import (
     STAGED_SNAPSHOTS_DIR_NAME,
     STAGED_WORKSPACE_DIR_NAME,
 )
-from jenny.snapshot.service import SnapshotService
+from arkhiva.snapshot.service import SnapshotService
 
 _METADATA = json.dumps({"format_version": 1}).encode("utf-8")
 
@@ -128,23 +128,23 @@ def test_extract_happy_path_ignores_stray_entries(tmp_path: Path) -> None:
 
 
 def test_build_zip_metadata_and_tree(tmp_path: Path) -> None:
-    import jenny
+    import arkhiva
 
     env = _make_env(tmp_path)
     env.manager._build_zip(tmp_path / "export.zip")
     with zipfile.ZipFile(tmp_path / "export.zip") as archive:
         metadata = json.loads(archive.read("metadata.json").decode("utf-8"))
         assert metadata["format_version"] == 1
-        assert metadata["jenny_version"] == jenny.__version__
+        assert metadata["jenny_version"] == arkhiva.__version__
         assert isinstance(metadata["exported_at_ms"], int)
         assert archive.read("tree/SOUL.md") == b"anima"
 
 
-def test_jenny_version_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
-    from jenny.snapshot.backup import _jenny_version
+def test_arkhiva_version_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
+    from arkhiva.snapshot.backup import _arkhiva_version
 
-    monkeypatch.delattr("jenny.__version__")
-    assert _jenny_version() == "unknown"
+    monkeypatch.delattr("arkhiva.__version__")
+    assert _arkhiva_version() == "unknown"
 
 
 async def test_export_replaces_previous_staged_file(tmp_path: Path) -> None:
@@ -155,7 +155,7 @@ async def test_export_replaces_previous_staged_file(tmp_path: Path) -> None:
     (env.workspace / "SOUL.md").write_text("anima 2", encoding="utf-8")
     second = await env.manager.export_backup("passphrase")
 
-    staged = sorted(env.staging.glob("jenny-backup-*.jbk"))
+    staged = sorted(env.staging.glob("arkhiva-backup-*.jbk"))
     assert [str(p) for p in staged] == [second["staged_path"]]
     assert not Path(first["staged_path"]).exists() or first["staged_path"] == second[
         "staged_path"

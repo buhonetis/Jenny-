@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Icono de ARKHIVA en la barra de estado: la omega del isotipo, trazada con
+     el mismo criterio que el icono de lanzador para que ambas superficies
+     hablen el mismo idioma gráfico. El sistema usa solo el alfa, así que el
+     color es indiferente aquí. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M7.4,11.2 A4.6,4.6 0 1 1 16.6,11.2"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2.1"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M7.4,11.2 L5.6,16.2"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2.1"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M16.6,11.2 L18.4,16.2"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2.1"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M6.6,16.2 L17.4,16.2"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2.1"
+        android:strokeLineCap="round" />
+</vector>

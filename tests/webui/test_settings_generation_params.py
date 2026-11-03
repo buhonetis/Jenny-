@@ -11,10 +11,10 @@ from __future__ import annotations
 
 import pytest
 
-from jenny.config.loader import load_config, save_config
-from jenny.config.schema import Config
-from jenny.runtime.context import get_runtime_context
-from jenny.webui.settings_api import WebUISettingsError, update_agent_settings
+from arkhiva.config.loader import load_config, save_config
+from arkhiva.config.schema import Config
+from arkhiva.runtime.context import get_runtime_context
+from arkhiva.webui.settings_api import WebUISettingsError, update_agent_settings
 
 
 @pytest.fixture

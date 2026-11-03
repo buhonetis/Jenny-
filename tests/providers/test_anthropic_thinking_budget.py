@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import pytest
 
-from jenny.providers.anthropic_provider import AnthropicProvider
+from arkhiva.providers.anthropic_provider import AnthropicProvider
 
 MESSAGES = [{"role": "user", "content": "ciao"}]
 

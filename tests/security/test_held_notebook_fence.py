@@ -2,7 +2,7 @@
 
 Fra la foto A e la foto B tutto quel che cambia nel quaderno dev'essere del
 piano: «Torna a prima» disfa quel che trova. Le RPC dell'utente rispondono già
-``plan_running``; qui si prova l'altra porta, i tool di Jenny. La chat personale
+``plan_running``; qui si prova l'altra porta, i tool di ARKHIVA. La chat personale
 (e i suoi aiutanti) arriva ai quaderni attraverso la radice del workspace, e una
 pagina scritta da lì durante il piano sparirebbe col ritorno. Scrive solo un
 turno il cui scope è il quaderno stesso: i passi e gli aiutanti che lanciano.
@@ -14,13 +14,13 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.tools.filesystem import WriteFileTool
-from jenny.agent.tools.python_exec import PythonExecTool
-from jenny.agent.tools.python_exec_builtins import _register_builtin_functions
-from jenny.config.tool_schemas import PythonExecConfig
-from jenny.plan.driver import PlanDriver
-from jenny.plan.store import PlanStore
-from jenny.security.workspace_access import (
+from arkhiva.agent.tools.filesystem import WriteFileTool
+from arkhiva.agent.tools.python_exec import PythonExecTool
+from arkhiva.agent.tools.python_exec_builtins import _register_builtin_functions
+from arkhiva.config.tool_schemas import PythonExecConfig
+from arkhiva.plan.driver import PlanDriver
+from arkhiva.plan.store import PlanStore
+from arkhiva.security.workspace_access import (
     enter_workspace_scope,
     set_held_notebook_probe,
     validate_workspace_scope_payload,

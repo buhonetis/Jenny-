@@ -19,9 +19,9 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.context import ContextBuilder
+from arkhiva.agent.context import ContextBuilder
 
-pytestmark = pytest.mark.usefixtures("_configure_jenny_workspace")
+pytestmark = pytest.mark.usefixtures("_configure_arkhiva_workspace")
 
 WIKIS = "## Wikis"
 
@@ -194,14 +194,14 @@ class TestShape:
 
         assert "... (truncated)" in block
         # Il tetto e' dell'elenco; la frase dei cassetti, fissa, gli sta dopo.
-        from jenny.agent.context import _WIKIS_BLOCK_DRAWERS, _WIKIS_BLOCK_MOVE
+        from arkhiva.agent.context import _WIKIS_BLOCK_DRAWERS, _WIKIS_BLOCK_MOVE
 
         rest = block.replace(_WIKIS_BLOCK_DRAWERS, "").replace(_WIKIS_BLOCK_MOVE, "")
         assert len(rest) < 1500 * 4 + 200
 
     def test_survives_an_untouched_memory_template(self, tmp_path):
         """La regressione piu' facile: annidare il blocco nella guardia di MEMORY.md."""
-        from jenny.utils.helpers import load_bundled_template
+        from arkhiva.utils.helpers import load_bundled_template
 
         workspace = _workspace(tmp_path)
         template = load_bundled_template("memory/MEMORY.md")
@@ -218,7 +218,7 @@ class TestShape:
 
 def test_the_drawers_rule_comes_with_the_tool_that_files(tmp_path):
     """Dire «archivia con journal_append» a chi non ce l'ha e' un invito a sbagliare."""
-    from jenny.agent.context import _WIKIS_BLOCK_DRAWERS
+    from arkhiva.agent.context import _WIKIS_BLOCK_DRAWERS
 
     workspace = _workspace(tmp_path)
     _wiki(workspace, "camper", summary="Il camper: manutenzione e viaggi")

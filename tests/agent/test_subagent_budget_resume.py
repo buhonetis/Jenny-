@@ -3,7 +3,7 @@
 Prova del 24/10/2026 (Piano a lista su jenny_s22): sei aiutanti su 41 fermati dal
 budget, e nessuno ripreso davvero. Il record finiva ``failed``, la done-callback
 cancellava la storia Tier-2 appena salvata, e ``subagent_send`` cadeva sempre nel
-ramo «rilancia da zero». In piu l'annuncio portava solo gli ultimi tre tool: Jenny
+ramo «rilancia da zero». In piu l'annuncio portava solo gli ultimi tre tool: ARKHIVA
 non sapeva cosa fosse fatto e cosa restasse.
 """
 
@@ -11,11 +11,11 @@ from __future__ import annotations
 
 from typing import Any
 
-from jenny.agent.subagent import SubagentManager
-from jenny.bus.queue import MessageBus
-from jenny.providers.base import LLMResponse, ToolCallRequest
-from jenny.session.manager import SessionManager
-from jenny.utils.runtime import SUBAGENT_BUDGET_FINALIZATION_PROMPT
+from arkhiva.agent.subagent import SubagentManager
+from arkhiva.bus.queue import MessageBus
+from arkhiva.providers.base import LLMResponse, ToolCallRequest
+from arkhiva.session.manager import SessionManager
+from arkhiva.utils.runtime import SUBAGENT_BUDGET_FINALIZATION_PROMPT
 from tests.support.aio import wait_until
 from tests.support.subagent_provider_fakes import fake_provider
 
@@ -152,10 +152,10 @@ async def test_the_snapshot_offers_the_continuation_only_on_the_latest_attempt(t
 # -- revisione del 24/10: doppia ripresa, tetto, rilancio silenzioso ---------
 
 
-async def test_continue_from_the_ui_and_from_jenny_make_one_live_attempt(tmp_path):
-    """Il tasto «continua» (col lineage) e un ``subagent_send`` di Jenny col task id
+async def test_continue_from_the_ui_and_from_arkhiva_make_one_live_attempt(tmp_path):
+    """Il tasto «continua» (col lineage) e un ``subagent_send`` di ARKHIVA col task id
     vecchio: il secondo deve trovare la ripresa gia in volo e iniettarsi."""
-    from jenny.webui.subagent_routes import SubagentRoutes
+    from arkhiva.webui.subagent_routes import SubagentRoutes
 
     seen: list[dict[str, Any]] = []
     manager = _manager(tmp_path, fake_provider(_scripted(seen)))
@@ -163,7 +163,7 @@ async def test_continue_from_the_ui_and_from_jenny_make_one_live_attempt(tmp_pat
 
     first = await manager.send(SubagentRoutes._lineage_of(manager, record.task_id), "go on (ui)")
     assert manager.continuable(record.task_id) is True
-    second = await manager.send(record.task_id, "finish (jenny)")
+    second = await manager.send(record.task_id, "finish (arkhiva)")
 
     live = [t for t, task in manager._running_tasks.items() if not task.done()]
     assert (first.mode, second.mode) == ("resumed", "injected")
@@ -182,7 +182,7 @@ async def _resume_and_stop(manager: SubagentManager, target: str):
 async def test_budget_resumes_stop_at_the_cap_with_a_clear_refusal(tmp_path):
     import pytest
 
-    from jenny.agent.subagent import MAX_BUDGET_RESUMES, SubagentSendError
+    from arkhiva.agent.subagent import MAX_BUDGET_RESUMES, SubagentSendError
 
     seen: list[dict[str, Any]] = []
     manager = _manager(tmp_path, fake_provider(_scripted(seen)))
@@ -207,7 +207,7 @@ async def test_budget_resumes_stop_at_the_cap_with_a_clear_refusal(tmp_path):
 async def test_the_cap_survives_a_restart_of_the_gateway(tmp_path):
     import pytest
 
-    from jenny.agent.subagent import MAX_BUDGET_RESUMES, SubagentSendError
+    from arkhiva.agent.subagent import MAX_BUDGET_RESUMES, SubagentSendError
 
     seen: list[dict[str, Any]] = []
     manager = _manager(tmp_path, fake_provider(_scripted(seen)))
@@ -223,7 +223,7 @@ async def test_the_cap_survives_a_restart_of_the_gateway(tmp_path):
 async def test_a_budget_stop_too_long_to_resume_is_refused_not_relaunched(tmp_path):
     import pytest
 
-    from jenny.agent.subagent import SubagentSendError
+    from arkhiva.agent.subagent import SubagentSendError
 
     seen: list[dict[str, Any]] = []
     manager = _manager(tmp_path, fake_provider(_scripted(seen)))
@@ -238,8 +238,8 @@ async def test_a_budget_stop_too_long_to_resume_is_refused_not_relaunched(tmp_pa
 async def test_continue_without_restart_refuses_a_failed_helper(tmp_path):
     import pytest
 
-    from jenny.agent.runner import AgentRunResult
-    from jenny.agent.subagent import SubagentSendError
+    from arkhiva.agent.runner import AgentRunResult
+    from arkhiva.agent.subagent import SubagentSendError
 
     manager = _manager(tmp_path, fake_provider(_scripted([])))
 
@@ -261,8 +261,8 @@ async def test_a_finished_helper_without_a_history_is_not_relaunched(tmp_path):
     26/10: «relaunched from scratch», ~5 minuti l'uno). Chi e' fallito si rilancia ancora."""
     import pytest
 
-    from jenny.agent.runner import AgentRunResult
-    from jenny.agent.subagent import SubagentSendError
+    from arkhiva.agent.runner import AgentRunResult
+    from arkhiva.agent.subagent import SubagentSendError
 
     manager = _manager(tmp_path, fake_provider(_scripted([])))
 
@@ -293,8 +293,8 @@ async def test_a_finished_helper_without_a_history_is_not_relaunched(tmp_path):
 
 
 async def test_the_budget_notice_is_not_saved_in_the_history(tmp_path):
-    from jenny.session.history_meta import INJECTED_EVENT_META
-    from jenny.utils.runtime import BUDGET_NOTICE_EVENT
+    from arkhiva.session.history_meta import INJECTED_EVENT_META
+    from arkhiva.utils.runtime import BUDGET_NOTICE_EVENT
 
     seen: list[dict[str, Any]] = []
     manager = _manager(tmp_path, fake_provider(_scripted(seen)))
@@ -310,13 +310,13 @@ async def test_the_budget_notice_is_not_saved_in_the_history(tmp_path):
 
 
 async def test_the_announce_carries_the_plan_step_without_being_a_plan_turn(tmp_path):
-    from jenny.agent.loop_plan import is_plan_turn
-    from jenny.agent.tools.context import (
+    from arkhiva.agent.loop_plan import is_plan_turn
+    from arkhiva.agent.tools.context import (
         RequestContext,
         bind_request_context,
         reset_request_context,
     )
-    from jenny.plan.driver import PLAN_ID_META, PLAN_STEP_META
+    from arkhiva.plan.driver import PLAN_ID_META, PLAN_STEP_META
 
     seen: list[dict[str, Any]] = []
     manager = _manager(tmp_path, fake_provider(_scripted(seen)))

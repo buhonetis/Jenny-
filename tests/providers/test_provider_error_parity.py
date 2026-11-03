@@ -16,8 +16,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from jenny.providers.anthropic_provider import AnthropicProvider
-from jenny.providers.openai_compat_provider import OpenAICompatProvider
+from arkhiva.providers.anthropic_provider import AnthropicProvider
+from arkhiva.providers.openai_compat_provider import OpenAICompatProvider
 
 
 class _Headers(dict):
@@ -143,8 +143,8 @@ def test_the_error_becomes_the_expected_response(provider: str, case: str) -> No
 )
 def test_classify_user_error(fields, kind) -> None:
     """Il tipo per la frase all'utente: prima lo status, poi ``error_kind``."""
-    from jenny.providers.base import LLMResponse
-    from jenny.providers.retry_policy import classify_user_error
+    from arkhiva.providers.base import LLMResponse
+    from arkhiva.providers.retry_policy import classify_user_error
 
     response = LLMResponse(content="Error: x", finish_reason="error", **fields)
     assert classify_user_error(response) == kind

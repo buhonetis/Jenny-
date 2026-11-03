@@ -14,14 +14,14 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from jenny.channels.websocket import WebSocketChannel, WebSocketConfig
-from jenny.webui.gateway_services import build_gateway_services
-from jenny.webui.transcript import read_transcript_lines
+from arkhiva.channels.websocket import WebSocketChannel, WebSocketConfig
+from arkhiva.webui.gateway_services import build_gateway_services
+from arkhiva.webui.transcript import read_transcript_lines
 
 
 @pytest.fixture(autouse=True)
 def isolate_webui_workspace_state(tmp_path, monkeypatch) -> None:
-    monkeypatch.setattr("jenny.config.paths.get_data_dir", lambda: tmp_path)
+    monkeypatch.setattr("arkhiva.config.paths.get_data_dir", lambda: tmp_path)
 
 
 def _make_channel() -> WebSocketChannel:

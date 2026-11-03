@@ -13,20 +13,20 @@ from pathlib import Path
 import pytest
 from support.sessions import FakeSessions
 
-from jenny.agent.tools.context import RequestContext
-from jenny.agent.tools.cron import CronTool
-from jenny.agent.tools.registry import ToolRegistry
-from jenny.agent.turn_types import TurnOutcome
-from jenny.board.store import mutate_board, read_board
-from jenny.cron.bound_runner import run_bound_cron_job
-from jenny.cron.service import CronService
-from jenny.security.workspace_access import (
+from arkhiva.agent.tools.context import RequestContext
+from arkhiva.agent.tools.cron import CronTool
+from arkhiva.agent.tools.registry import ToolRegistry
+from arkhiva.agent.turn_types import TurnOutcome
+from arkhiva.board.store import mutate_board, read_board
+from arkhiva.cron.bound_runner import run_bound_cron_job
+from arkhiva.cron.service import CronService
+from arkhiva.security.workspace_access import (
     WorkspaceScopeResolver,
     bind_workspace_scope,
     build_workspace_scope,
     reset_workspace_scope,
 )
-from jenny.session.keys import notebook_cron_session_key, notebook_of_cron_session
+from arkhiva.session.keys import notebook_cron_session_key, notebook_of_cron_session
 
 
 @pytest.fixture
@@ -39,7 +39,7 @@ def notebook(tmp_path: Path, monkeypatch):
     # Il quaderno lo trova ``cron_link`` dalla radice del workspace; qui la
     # radice e' quella del test (senza toccare ``get_workspace_path``, che i
     # template del prompt usano per cercare le loro copie).
-    monkeypatch.setattr("jenny.board.cron_link.notebook_root",
+    monkeypatch.setattr("arkhiva.board.cron_link.notebook_root",
                         lambda name: root if name == "casa" and (root / "wiki").is_dir() else None)
     token = bind_workspace_scope(build_workspace_scope(root, "restricted"))
     try:
@@ -72,7 +72,7 @@ async def test_a_cron_asked_in_a_notebook_lands_in_a_drawer(notebook, tmp_path) 
 
 
 async def test_without_a_card_the_job_is_for_the_whole_notebook(notebook, tmp_path) -> None:
-    """Jenny sceglie, e non chiede: senza scheda il cron è di tutto il quaderno."""
+    """ARKHIVA sceglie, e non chiede: senza scheda il cron è di tutto il quaderno."""
     store = tmp_path / "jobs.json"
     tool = _tool(store)
     out = await tool.execute(action="add", message="guarda se gela", every_seconds=3600)
@@ -121,7 +121,7 @@ async def test_a_notebook_without_a_board_takes_a_job_for_the_whole_notebook(
 ) -> None:
     root = tmp_path / "workspace" / "wikis" / "vuoto"
     (root / "wiki").mkdir(parents=True)
-    monkeypatch.setattr("jenny.board.cron_link.notebook_root",
+    monkeypatch.setattr("arkhiva.board.cron_link.notebook_root",
                         lambda name: root if name == "vuoto" else None)
     tool = _tool(tmp_path / "jobs.json", "project:vuoto")
     token = bind_workspace_scope(build_workspace_scope(root, "restricted"))
@@ -193,8 +193,8 @@ async def test_a_cron_whose_card_is_gone_does_not_run(notebook, tmp_path) -> Non
 
 async def test_a_whole_notebook_monitor_keeps_the_notebook_fence(notebook, tmp_path) -> None:
     """Il segnaposto del quaderno non fa del job un cron personale: il turno resta nel recinto."""
-    from jenny.board import cron_link, model
-    from jenny.cron.types import CronSchedule
+    from arkhiva.board import cron_link, model
+    from arkhiva.cron.types import CronSchedule
 
     service = CronService(tmp_path / "jobs.json")
     job = service.add_job("annunci", CronSchedule(kind="every", every_ms=3_600_000), "cerca",
@@ -213,7 +213,7 @@ async def test_a_run_tells_the_open_board(notebook, tmp_path, monkeypatch) -> No
     async def note(name):
         told.append(name)
 
-    monkeypatch.setattr("jenny.board.notify.board_changed", note)
+    monkeypatch.setattr("arkhiva.board.notify.board_changed", note)
     store = tmp_path / "jobs.json"
     await _tool(store).execute(action="add", card="annunci", message="cerca", every_seconds=3600)
     job = CronService(store).list_jobs()[0]
@@ -223,7 +223,7 @@ async def test_a_run_tells_the_open_board(notebook, tmp_path, monkeypatch) -> No
 
 
 def test_an_old_result_key_is_read_and_moved_on_the_next_run(notebook) -> None:
-    from jenny.board import cron_link
+    from arkhiva.board import cron_link
 
     _ws, root = notebook
     old = {"notebook": "casa", "card": "annunci", "section": "s-cron"}
@@ -238,7 +238,7 @@ def test_an_old_result_key_is_read_and_moved_on_the_next_run(notebook) -> None:
 
 
 def test_a_whole_notebook_result_has_its_own_line(notebook) -> None:
-    from jenny.board import cron_link, model
+    from arkhiva.board import cron_link, model
 
     _ws, root = notebook
     link = cron_link.make_link("casa", model.NOTEBOOK)
@@ -251,7 +251,7 @@ def test_a_whole_notebook_result_has_its_own_line(notebook) -> None:
 
 async def test_removing_a_notebook_cron_from_anywhere_cleans_its_board(notebook, tmp_path) -> None:
     """Anche dalla chat personale o dall'officina: niente sezioni orfane nel cassetto."""
-    from jenny.cron.types import CronSchedule
+    from arkhiva.cron.types import CronSchedule
 
     _ws, root = notebook
     store = tmp_path / "jobs.json"

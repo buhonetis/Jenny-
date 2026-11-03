@@ -17,7 +17,7 @@ from pathlib import Path
 from support.js_harness import member, requires_node, run_js
 
 ROOT = Path(__file__).resolve().parents[2]
-APP_JS = ROOT / "jenny" / "templates" / "ui" / "assets" / "home-app.js"
+APP_JS = ROOT / "arkhiva" / "templates" / "ui" / "assets" / "home-app.js"
 
 pytestmark = requires_node
 
@@ -105,7 +105,7 @@ def test_frames_of_this_conversation_and_frames_without_a_chat_still_count() -> 
     """)
 
 
-def test_the_round_button_sends_what_is_written_even_while_jenny_works() -> None:
+def test_the_round_button_sends_what_is_written_even_while_arkhiva_works() -> None:
     """Con un turno in corso il tasto tondo e' Ferma solo a campo vuoto. Con
     una precisazione scritta manda, come l'Invio: il gateway la inietta nel
     turno. Prima la fermava e lasciava il testo nel campo (10/10/2026)."""

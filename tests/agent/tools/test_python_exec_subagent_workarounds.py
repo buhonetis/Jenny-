@@ -33,10 +33,10 @@ import threading
 
 import pytest
 
-from jenny.agent.tools.exec_session import ExecSessionManager
-from jenny.agent.tools.python_exec import PythonExecTool, PythonNamespace
-from jenny.agent.tools.python_exec_builtins import _register_builtin_functions
-from jenny.config.tool_schemas import PythonExecConfig
+from arkhiva.agent.tools.exec_session import ExecSessionManager
+from arkhiva.agent.tools.python_exec import PythonExecTool, PythonNamespace
+from arkhiva.agent.tools.python_exec_builtins import _register_builtin_functions
+from arkhiva.config.tool_schemas import PythonExecConfig
 
 
 @pytest.fixture
@@ -107,13 +107,13 @@ async def _run(tool: PythonExecTool, seen: list[int], mode: str, **call) -> str:
 
 @pytest.mark.parametrize("mode", list(_MODES))
 async def test_enumerating_sys_modules_shows_no_tool_or_host_module(tool, _spy_threads, mode):
-    """Tentativo 1: la vista di ``sys.modules`` non contiene ``jenny.*``."""
+    """Tentativo 1: la vista di ``sys.modules`` non contiene ``arkhiva.*``."""
     out = await _run(
         tool, _spy_threads, mode,
         code=(
             "import sys\n"
             "names = list(sys.modules)\n"
-            "print('HOST', [n for n in names if n.split('.')[0] == 'jenny'])\n"
+            "print('HOST', [n for n in names if n.split('.')[0] == 'arkhiva'])\n"
             "print('TOOLS', [n for n in names if 'python_exec' in n or 'tools' in n])\n"
         ),
     )
@@ -128,7 +128,7 @@ async def test_sys_modules_lookup_of_a_host_module_is_refused(tool, _spy_threads
     """Anche chiedendolo per nome, il modulo del tool non si raggiunge."""
     out = await _run(
         tool, _spy_threads, mode,
-        code="import sys\nsys.modules['jenny.agent.tools.python_exec']\n" + _PRINT_REACHED,
+        code="import sys\nsys.modules['arkhiva.agent.tools.python_exec']\n" + _PRINT_REACHED,
     )
     assert "is not accessible in python_exec" in out, out
     assert _REACHED not in out, out

@@ -20,11 +20,11 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.agent_types import AGENT_TYPES
-from jenny.agent.tools import board as board_tool
-from jenny.utils.prompt_templates import render_template
+from arkhiva.agent.agent_types import AGENT_TYPES
+from arkhiva.agent.tools import board as board_tool
+from arkhiva.utils.prompt_templates import render_template
 
-_SKILL = Path(__file__).resolve().parents[2] / "jenny" / "skills" / "llm-wiki" / "SKILL.md"
+_SKILL = Path(__file__).resolve().parents[2] / "arkhiva" / "skills" / "llm-wiki" / "SKILL.md"
 
 
 def _flat(text: str) -> str:
@@ -68,7 +68,7 @@ def test_a_to_research_report_is_the_next_step_not_the_end() -> None:
 
 def test_while_a_plan_runs_research_is_the_plans() -> None:
     """Sul Titan (26/10) questo paragrafo, letto a ogni turno di passo, mandava
-    Jenny a cercare a ogni resoconto e scavalcava il cancello del driver."""
+    ARKHIVA a cercare a ogni resoconto e scavalcava il cancello del driver."""
     prompt = _project(plan_running=True, spawn=True, web_search=True)
     assert "that is your next step" not in prompt and "Do not ask first" not in prompt
     assert "While a plan runs, research is the plan's" in prompt
@@ -92,7 +92,7 @@ def test_without_the_web_the_gap_is_told_not_researched() -> None:
 
 
 def test_the_announcement_of_a_to_research_report_does_not_say_only_be_brief() -> None:
-    from jenny.plan.model import to_research_items
+    from arkhiva.plan.model import to_research_items
 
     def announce(result: str) -> str:
         # Il renderer passa le voci contate dal parser del driver (una lettura sola).
@@ -187,7 +187,7 @@ def test_the_editor_is_told_to_drop_missing_pages_with_an_action_that_exists() -
     assert "when this job deleted or moved it" in role
     assert "otherwise name it in your report" in role
     assert "remove_pages" in board_tool._ACTIONS
-    from jenny.agent.tools import notebook as notebook_tool
+    from arkhiva.agent.tools import notebook as notebook_tool
 
     assert "remove_pages" in notebook_tool._EDIT_ACTIONS
 
@@ -201,7 +201,7 @@ def test_the_editor_writes_no_report_file_unless_asked_and_then_a_valid_audit() 
     role = _role("notebook-editor")
     assert "Do not write report files in the notebook" in role
     assert "final answer" in role
-    script = (Path(__file__).resolve().parents[2] / "jenny" / "skills" / "llm-wiki" / "scripts"
+    script = (Path(__file__).resolve().parents[2] / "arkhiva" / "skills" / "llm-wiki" / "scripts"
               / "lint_wiki.py")
     spec = importlib.util.spec_from_file_location("lint_wiki_fields", script)
     assert spec is not None and spec.loader is not None
@@ -215,7 +215,7 @@ def test_the_editor_writes_no_report_file_unless_asked_and_then_a_valid_audit() 
 def test_the_editor_reports_an_unsearched_gap_instead_of_writing_it_in_the_page() -> None:
     """Riprova del 25/10/2026: dieci righe «non documentato (query da fare: …)» nelle
     pagine. Il buco era scritto nella pagina invece che sotto To research, e nessuno
-    l'ha cercato; ``jenny/plan/audit.py`` ora lo segnala come ``unsearched_gap``."""
+    l'ha cercato; ``arkhiva/plan/audit.py`` ora lo segnala come ``unsearched_gap``."""
     role = _role("notebook-editor")
     assert "A gap nobody searched never goes into a page" in role
     assert "no \"queries to run\"" in role

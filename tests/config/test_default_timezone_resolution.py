@@ -10,10 +10,10 @@ import json
 
 import pytest
 
-from jenny.config.loader import load_config, save_config
-from jenny.config.schema import Config
-from jenny.config.store import mutate
-from jenny.runtime.context import get_runtime_context
+from arkhiva.config.loader import load_config, save_config
+from arkhiva.config.schema import Config
+from arkhiva.config.store import mutate
+from arkhiva.runtime.context import get_runtime_context
 
 
 @pytest.fixture

@@ -13,9 +13,9 @@ from types import SimpleNamespace
 
 import pytest
 
-from jenny.webui import commands
-from jenny.webui import project_delete as module
-from jenny.webui.commands import CommandError
+from arkhiva.webui import commands
+from arkhiva.webui import project_delete as module
+from arkhiva.webui.commands import CommandError
 
 
 async def test_the_command_refuses_while_someone_writes_there(
@@ -38,7 +38,7 @@ async def test_the_command_refuses_while_someone_writes_there(
 async def test_another_notebook_busy_does_not_stop_the_delete(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    from jenny.webui import home_pages
+    from arkhiva.webui import home_pages
 
     async def _no_page(kind, ref):
         return 0
@@ -61,7 +61,7 @@ async def test_a_page_that_cannot_be_taken_does_not_undo_the_notebook_delete(
 ) -> None:
     """Lo stesso involucro tollerante della cancellazione di un'app
     (``home_pages.detach_pages_quietly``): il quaderno e' gia' cancellato."""
-    from jenny.webui import home_pages
+    from arkhiva.webui import home_pages
 
     async def _broken(kind, ref):
         raise RuntimeError("disco pieno")
@@ -111,7 +111,7 @@ def test_the_commands_do_not_import_http_routes() -> None:
     da ``home_pages``, il modulo neutro, non da ``home_routes``."""
     import inspect
 
-    from jenny.webui import apps_routes
+    from arkhiva.webui import apps_routes
 
     assert "home_routes" not in inspect.getsource(commands)
     assert not hasattr(apps_routes, "_stacca_la_pagina")
@@ -127,9 +127,9 @@ async def test_the_delete_removes_the_cron_jobs_of_its_cards(
     chat personale, i job di sistema — restano. Servizio vero, sul loop (come in
     produzione: dal thread della cancellazione riarmare il timer solleverebbe).
     """
-    from jenny.cron.service import CronService
-    from jenny.cron.types import CronSchedule
-    from jenny.webui import home_pages
+    from arkhiva.cron.service import CronService
+    from arkhiva.cron.types import CronSchedule
+    from arkhiva.webui import home_pages
 
     async def _no_page(kind, ref):
         return 0

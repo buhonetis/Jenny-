@@ -1,12 +1,12 @@
-"""Le estensioni (``jenny/extensions.py``) viste dal core.
+"""Le estensioni (``arkhiva/extensions.py``) viste dal core.
 
 Due promesse:
 
 - **Il core non contiene niente di un'estensione.** La build ``foss`` impacchetta
-  solo ``jenny/`` e ``android/app/src/{main,foss}``: se lì dentro comparisse un
+  solo ``arkhiva/`` e ``android/app/src/{main,foss}``: se lì dentro comparisse un
   pezzo del Drive, la versione libera lo conterrebbe. Lo si guarda nei sorgenti
   (qui) e nell'APK (``scripts/check_foss_apk.py``).
-- **Il core funziona senza estensioni.** Sul Mac e in CI ``jenny_extensions/`` c'è
+- **Il core funziona senza estensioni.** Sul Mac e in CI ``arkhiva_extensions/`` c'è
   sempre, quindi la build senza si simula con ``extensions.reset_for_tests(())``.
 
 E quando un'estensione c'è, i suoi file WebUI si servono con le stesse regole di
@@ -23,8 +23,8 @@ from pathlib import Path
 import pytest
 from support.gateway_http import make_handler, make_request
 
-from jenny import extensions
-from jenny.utils.android_assets import (
+from arkhiva import extensions
+from arkhiva.utils.android_assets import (
     _UI_MANIFEST,
     extract_extension_ui,
     retire_withdrawn_ui_files,
@@ -37,11 +37,11 @@ ROOT = Path(__file__).resolve().parents[1]
 # (un commento che dice «la build Play ha la copia su Google Drive» non è codice).
 DRIVE_IDENTIFIERS = (
     "cloudBackup", "jennyCloud", "connectDrive", "DriveBridge", "DriveExtension",
-    "googleapis", "play-services", "cloud_backup", "jenny_extensions.drive",
-    "jenny_extensions/drive", "cloud-backup.js", "cloud-backup-dialogs",
+    "googleapis", "play-services", "cloud_backup", "arkhiva_extensions.drive",
+    "arkhiva_extensions/drive", "cloud-backup.js", "cloud-backup-dialogs",
 )
 CORE_TREES = (
-    ROOT / "jenny",
+    ROOT / "arkhiva",
     ROOT / "android" / "app" / "src" / "main",
     ROOT / "android" / "app" / "src" / "foss",
 )
@@ -92,15 +92,15 @@ def test_only_one_core_module_knows_the_extensions_package() -> None:
     """Il core conosce il pacchetto delle estensioni per nome, in un posto solo."""
     knowers = sorted(
         str(path.relative_to(ROOT))
-        for path in (ROOT / "jenny").rglob("*")
+        for path in (ROOT / "arkhiva").rglob("*")
         if path.is_file() and path.suffix in TEXT_SUFFIXES
-        and "jenny_extensions" in path.read_text(encoding="utf-8", errors="ignore")
+        and "arkhiva_extensions" in path.read_text(encoding="utf-8", errors="ignore")
     )
-    assert knowers == ["jenny/extensions.py"], knowers
+    assert knowers == ["arkhiva/extensions.py"], knowers
 
 
 def test_the_drive_native_code_lives_in_the_play_source_set() -> None:
-    play = ROOT / "android" / "app" / "src" / "play" / "java" / "com" / "flagdizero" / "jenny"
+    play = ROOT / "android" / "app" / "src" / "play" / "java" / "org" / "buhonet" / "agente" / "arkhiva"
     assert (play / "DriveBridge.kt").is_file()
     assert (play / "DriveExtension.kt").is_file()
     gradle = (ROOT / "android" / "app" / "build.gradle.kts").read_text(encoding="utf-8")
@@ -119,9 +119,9 @@ def test_without_extensions_nothing_extra_is_offered(no_extensions) -> None:
 
 
 async def test_without_extensions_the_routes_are_not_there(tmp_path, no_extensions) -> None:
-    from jenny.config.schema import SnapshotConfig
-    from jenny.snapshot.engine import SnapshotEngine
-    from jenny.snapshot.service import SnapshotService
+    from arkhiva.config.schema import SnapshotConfig
+    from arkhiva.snapshot.engine import SnapshotEngine
+    from arkhiva.snapshot.service import SnapshotService
 
     workspace = tmp_path / "workspace"
     workspace.mkdir()
@@ -205,7 +205,7 @@ def test_extension_ui_is_extracted_and_survives_the_retirement(tmp_path, with_ex
 def test_tampered_extension_code_is_served_from_the_package(tmp_path, monkeypatch, with_extensions) -> None:
     """La copia su disco è scrivibile dai tool dell'agente; il codice che si
     serve è quello del pacchetto, per le estensioni come per il core."""
-    from jenny.config import paths as paths_mod
+    from arkhiva.config import paths as paths_mod
 
     workspace = tmp_path / "workspace"
     monkeypatch.setattr(paths_mod, "get_workspace_path", lambda: workspace)
@@ -232,8 +232,8 @@ async def test_extension_routes_need_the_token(tmp_path, with_extensions) -> Non
 def test_extension_settings_keep_their_own_key_names(tmp_path) -> None:
     """``extensions`` è un dict senza modelli: le chiavi interne restano come le
     scrive l'estensione, senza camelCase, e passano dal giro salva-rileggi."""
-    from jenny.config.loader import load_config, save_config
-    from jenny.config.schema import Config
+    from arkhiva.config.loader import load_config, save_config
+    from arkhiva.config.schema import Config
 
     path = tmp_path / "config.json"
     config = Config()

@@ -20,7 +20,7 @@ BOARD = {
     "exists": True,
     "skeleton": ["Vaso e travaso", "Acqua"],
     "cards": [
-        {"id": "acero", "title": "Acero", "glyph": "leaf", "pos": {"x": 5, "y": 6, "by": "jenny"},
+        {"id": "acero", "title": "Acero", "glyph": "leaf", "pos": {"x": 5, "y": 6, "by": "arkhiva"},
          "pinned": False, "pages": 3, "signal": "new"},
         {"id": "monstera", "title": "Monstera", "glyph": "", "pos": {"x": 47, "y": 4, "by": "user"},
          "pinned": False, "pages": 1, "signal": "soon"},
@@ -29,10 +29,10 @@ BOARD = {
         {"id": "r-concime", "card": "monstera", "text": "Concime",
          "when": {"kind": "date", "date": "2026-10-10", "precision": "day"}},
     ],
-    "postits": [{"card": "monstera", "pos": {"x": 62, "y": 35, "by": "jenny"}}],
+    "postits": [{"card": "monstera", "pos": {"x": 62, "y": 35, "by": "arkhiva"}}],
     "postitRows": 3,
     "connections": [{"a": "acero", "b": "monstera", "label": "vasi dello stesso ordine",
-                     "by": "jenny"}],
+                     "by": "arkhiva"}],
     "suggestions": [{"id": "sg-ginkgo", "kind": "add_card", "subject": "Ginkgo",
                      "text": "Gli faccio un posto?"}],
     "since": [{"at": "2026-10-04T04:12:00+02:00", "kind": "sections_regenerated",
@@ -57,7 +57,7 @@ CARD = {
                    "when": {"kind": "date", "date": "2027-03-01", "precision": "month"}}],
     "userSections": [],
     "connections": [{"to": "monstera", "title": "Monstera", "label": "vasi dello stesso ordine",
-                     "by": "jenny"}],
+                     "by": "arkhiva"}],
     "corrections": [],
     "skeleton": ["Vaso e travaso", "Acqua"],
 }
@@ -107,7 +107,7 @@ def test_a_notebook_opens_on_its_board() -> None:
       assert.ok(polaroids[0].querySelector('.home-board-sig-dot'));
       assert.ok(polaroids[1].querySelector('.home-board-sig-corner.is-soon'));
       // La puntina dice chi ha scelto il posto.
-      assert.ok(polaroids[0].querySelector('.home-board-pin.is-jenny'));
+      assert.ok(polaroids[0].querySelector('.home-board-pin.is-arkhiva'));
       assert.ok(polaroids[1].querySelector('.home-board-pin.is-user'));
       // Le attese: il post-it della monstera, con la sua riga.
       assert.equal(document.querySelectorAll('.home-board-postit').length, 1);
@@ -120,7 +120,7 @@ def test_a_notebook_opens_on_its_board() -> None:
       assert.equal(rpcs('board.seen').length, 1);
       // I comandi della bacheca in testa: la lente e l'elenco.
       assert.equal($('home-board-search-open').hidden, false);
-      // L'interruttore Chat | Bacheca non c'e' piu': la chat la porta Jenny.
+      // L'interruttore Chat | Bacheca non c'e' piu': la chat la porta ARKHIVA.
       assert.equal($('home-view-switch'), null);
       // I fili si disegnano dopo le schede: niente z-index, l'ordine nel DOM.
       const wall = $('home-board-wall');
@@ -1167,7 +1167,7 @@ def test_strip_controls_work_only_up_close() -> None:
       routes['/api/apps/spesa/actions/set_done'] = { ok: true };
       routes['/api/apps/spesa/actions/clear'] = { ok: true };
       const opened = [];
-      app.appsSource().awaitJennyApps = async () => [{ slug: 'spesa' }];
+      app.appsSource().awaitARKHIVAApps = async () => [{ slug: 'spesa' }];
       app.appsActions().openApp = (slug) => opened.push(slug);
       const spesa = () => document.querySelector('.home-board-card[data-id="spesa"]');
       const box = () => spesa().querySelector('.is-checklist input');
@@ -1197,7 +1197,7 @@ def test_strip_controls_work_only_up_close() -> None:
 def test_a_tap_on_an_app_card_opens_the_app() -> None:
     _run_covers("""
       const opened = [];
-      app.appsSource().awaitJennyApps = async () => [{ slug: 'etf' }, { slug: 'orto' }];
+      app.appsSource().awaitARKHIVAApps = async () => [{ slug: 'etf' }, { slug: 'orto' }];
       app.appsActions().openApp = (slug) => opened.push(slug);
       const card = (id) => document.querySelector(`.home-board-card[data-id="${id}"]`);
       // Con lo schermo: si apre l'app, non il cassetto.
@@ -1220,7 +1220,7 @@ def test_a_tap_on_an_app_card_opens_the_app() -> None:
 @requires_jsdom
 def test_an_app_card_follows_its_data_without_reopening_jenny() -> None:
     """Sul telefono la polaroid restava al valore di prima finche' non si
-    riapriva Jenny: la bacheca non ascoltava, e chiudere l'app non la rileggeva."""
+    riapriva ARKHIVA: la bacheca non ascoltava, e chiudere l'app non la rileggeva."""
     _run_covers("""
       const { calls, frame } = await import('./boot.mjs');
       const reads = () => calls.filter((c) => c.startsWith('/api/board?')).length;
@@ -1284,7 +1284,7 @@ def test_a_board_changed_from_the_chat_redraws_itself() -> None:
       // il quaderno nasce in alto a sinistra, magari sopra il bordo della vista
       // (sul Titan il 21/10/2026). Si inquadra.
       const labelled = structuredClone(moved);
-      labelled.autoLabels = [{ card: '', pos: { x: 2, y: 3, by: 'jenny' }, rows: [] }];
+      labelled.autoLabels = [{ card: '', pos: { x: 2, y: 3, by: 'arkhiva' }, rows: [] }];
       labelled.autoRows = 3;
       routes['/api/board'] = labelled;
       frame({ event: 'board_changed', notebook: 'orto' });
@@ -1301,7 +1301,7 @@ def test_a_board_changed_from_the_chat_redraws_itself() -> None:
       assert.equal(fits, 3);
       // Il post-it libero di tutto il quaderno che compare: si inquadra.
       const freePostit = structuredClone(fewer);
-      freePostit.postits = [{ card: '', pos: { x: 30, y: 3, by: 'jenny' } }];
+      freePostit.postits = [{ card: '', pos: { x: 30, y: 3, by: 'arkhiva' } }];
       routes['/api/board'] = freePostit;
       frame({ event: 'board_changed', notebook: 'orto' });
       await wait(400);
@@ -1369,8 +1369,8 @@ def _postit_board() -> dict:
         {"id": "r-5", "card": "monstera", "text": "Radici", "when": when("2099-08-20")},
     ]
     board["postits"] = [
-        {"card": "acero", "pos": {"x": 20, "y": 50, "by": "jenny"}},
-        {"card": "monstera", "pos": {"x": 62, "y": 35, "by": "jenny"}},
+        {"card": "acero", "pos": {"x": 20, "y": 50, "by": "arkhiva"}},
+        {"card": "monstera", "pos": {"x": 62, "y": 35, "by": "arkhiva"}},
     ]
     return board
 
@@ -1389,7 +1389,7 @@ def test_each_card_has_its_postit_with_three_rows_and_a_thread() -> None:
       const rows = [...postits[1].querySelectorAll('.home-board-postit-text')].map((t) => t.textContent);
       assert.deepEqual(rows, ['Concime', 'Rinvaso', 'Margotta']);
       assert.equal(postits[1].querySelector('.home-board-postit-more').textContent, '+1 more');
-      assert.ok(postits[0].querySelector('.home-board-pin.is-jenny'), 'il suo chiodo');
+      assert.ok(postits[0].querySelector('.home-board-pin.is-arkhiva'), 'il suo chiodo');
       // Un filo per post-it, piu' quello rosso fra le schede.
       assert.equal(document.querySelectorAll('#home-board-threads line.is-postit').length, 2);
       assert.equal(document.querySelectorAll('#home-board-threads line').length, 3);
@@ -1435,14 +1435,14 @@ def _auto_board(notebook: bool = False) -> dict:
         "id": f"job{i}0000", "name": f"Cron {i}", "message": "m", "mode": "monitor",
         "schedule": sunday, "nextRunAtMs": None, "lastStatus": None, "paused": False,
         "enabled": True, "couldNotCheck": 0, "scope": "acero", "result": None, **kw}
-    board["autoLabels"] = [{"card": "acero", "pos": {"x": 30, "y": 55, "by": "jenny"}, "rows": [
+    board["autoLabels"] = [{"card": "acero", "pos": {"x": 30, "y": 55, "by": "arkhiva"}, "rows": [
         row(1, result={"at": "2026-10-18T18:30:00+02:00", "status": "ok", "text": "Gela stanotte"}),
         row(2, paused=True),
         row(3, couldNotCheck=2),
         row(4),
     ]}]
     if notebook:
-        board["autoLabels"].append({"card": "", "pos": {"x": 5, "y": 70, "by": "jenny"},
+        board["autoLabels"].append({"card": "", "pos": {"x": 5, "y": 70, "by": "arkhiva"},
                                     "rows": [row(5, scope="", name="Gelo")]})
     board["autoRows"] = 3
     return board
@@ -1531,7 +1531,7 @@ def _notebook_postit_board() -> dict:
     board = _postit_board()
     when = {"kind": "date", "date": "2099-12-01", "precision": "day"}
     board["notes"].append({"id": "r-9", "card": "", "text": "Porta dentro le piante", "when": when})
-    board["postits"].append({"card": "", "pos": {"x": 5, "y": 70, "by": "jenny"}})
+    board["postits"].append({"card": "", "pos": {"x": 5, "y": 70, "by": "arkhiva"}})
     return board
 
 
@@ -2125,14 +2125,14 @@ def test_a_drawer_without_photos_has_only_the_notes() -> None:
 def _kept_board() -> dict:
     board = json.loads(json.dumps(BOARD))
     board["notePostits"] = [{
-        "card": "acero", "pos": {"x": 5, "y": 50, "by": "jenny"}, "count": 2,
+        "card": "acero", "pos": {"x": 5, "y": 50, "by": "arkhiva"}, "count": 2,
         "rows": [
             {"text": "Il vaso bianco in cantina.", "created": "2026-10-12T09:00:00+02:00"},
             {"text": "Al vivaio dicono di potarlo.", "created": "2026-10-03T09:00:00+02:00"},
         ],
     }]
     board["galleries"] = [{
-        "card": "acero", "pos": {"x": 28, "y": 6, "by": "jenny"}, "count": 5,
+        "card": "acero", "pos": {"x": 28, "y": 6, "by": "arkhiva"}, "count": 5,
         "photos": [{"id": f"s-photo-{i}", "path": f"raw/photos/acero-{i}.jpg",
                     "caption": f"Foto numero {i}"} for i in range(3)],
     }]

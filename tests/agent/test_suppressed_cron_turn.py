@@ -2,9 +2,9 @@
 
 Prima di questa feature il silenzio da un lavoro schedulato era **impossibile**:
 un turno che finiva senza contenuto veniva sostituito con
-``EMPTY_FINAL_RESPONSE_MESSAGE`` (``jenny/agent/runner.py``, ``_finish_on_blank``)
+``EMPTY_FINAL_RESPONSE_MESSAGE`` (``arkhiva/agent/runner.py``, ``_finish_on_blank``)
 e quel placeholder veniva consegnato in chat. ``suppress_response`` disattiva
-quella sostituzione (``jenny/agent/turn_states.py``, ``_state_save``) e azzera
+quella sostituzione (``arkhiva/agent/turn_states.py``, ``_state_save``) e azzera
 l'outbound (``_state_respond``).
 
 Sono i due punti che, se regredissero, romperebbero il silenzio: il job
@@ -12,7 +12,7 @@ continuerebbe a girare, i test del runner cron resterebbero verdi, e l'utente si
 ritroverebbe "Non ho prodotto una risposta" ogni cinque minuti. Da qui il test
 dedicato.
 
-Il terzo punto, aggiunto con :mod:`jenny.session.turn_visibility`, è **da dove**
+Il terzo punto, aggiunto con :mod:`arkhiva.session.turn_visibility`, è **da dove**
 arriva la soppressione: non più un flag cron letto a mano, ma la visibilità del
 turno — e "ha parlato col tool ``message``" viaggia nel ``TurnOutcome`` invece di
 essere contrabbandato dentro il dict metadata del chiamante.
@@ -25,16 +25,16 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from jenny.agent.loop import AgentLoop, TurnContext, TurnState
-from jenny.agent.tools.message import MessageTool
-from jenny.agent.turn_types import TurnDisposition
-from jenny.bus.events import InboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.cron.session_turns import CRON_MONITOR_META, CRON_TRIGGER_META
-from jenny.providers.base import LLMResponse
-from jenny.runtime.user_text import say
-from jenny.session.keys import UNIFIED_SESSION_KEY
-from jenny.session.turn_visibility import TURN_VISIBILITY_META, mark_silent_turn
+from arkhiva.agent.loop import AgentLoop, TurnContext, TurnState
+from arkhiva.agent.tools.message import MessageTool
+from arkhiva.agent.turn_types import TurnDisposition
+from arkhiva.bus.events import InboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.cron.session_turns import CRON_MONITOR_META, CRON_TRIGGER_META
+from arkhiva.providers.base import LLMResponse
+from arkhiva.runtime.user_text import say
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.session.turn_visibility import TURN_VISIBILITY_META, mark_silent_turn
 
 # In inglese esplicito: a livello di modulo la fixture della lingua non c'e' ancora.
 EMPTY_FINAL_RESPONSE_MESSAGE = say("turn.empty", "en")
@@ -409,7 +409,7 @@ class TestSpokeViaToolTravelsInTheOutcome:
         MessageTool di default mentre il turno ne usa un altro darebbe sempre
         ``False``, e il monitor risulterebbe muto a ogni ciclo senza che nulla
         lo segnali. Il registry del turno deve avere la precedenza."""
-        from jenny.agent.tools.registry import ToolRegistry
+        from arkhiva.agent.tools.registry import ToolRegistry
 
         # Il MessageTool di default resta a mani vuote: se la FSM leggesse
         # quello, il turno passerebbe per silenzioso.
@@ -452,8 +452,8 @@ class TestOutcomeMapping:
     """``TurnOutcome.of``: i due soli fatti che il turno conosce, esaustivi."""
 
     def test_an_outbound_is_delivered(self) -> None:
-        from jenny.agent.turn_types import TurnOutcome
-        from jenny.bus.events import OutboundMessage
+        from arkhiva.agent.turn_types import TurnOutcome
+        from arkhiva.bus.events import OutboundMessage
 
         message = OutboundMessage(channel="websocket", chat_id="c", content="ciao")
         outcome = TurnOutcome.of(message, spoke_via_tool=False)
@@ -463,7 +463,7 @@ class TestOutcomeMapping:
         assert outcome.text == "ciao"
 
     def test_no_outbound_but_a_tool_delivery_still_counts_as_spoken(self) -> None:
-        from jenny.agent.turn_types import TurnOutcome
+        from arkhiva.agent.turn_types import TurnOutcome
 
         outcome = TurnOutcome.of(None, spoke_via_tool=True)
 
@@ -472,7 +472,7 @@ class TestOutcomeMapping:
         assert outcome.text == ""
 
     def test_nothing_at_all_is_a_successful_silence(self) -> None:
-        from jenny.agent.turn_types import TurnOutcome
+        from arkhiva.agent.turn_types import TurnOutcome
 
         outcome = TurnOutcome.of(None, spoke_via_tool=False)
 

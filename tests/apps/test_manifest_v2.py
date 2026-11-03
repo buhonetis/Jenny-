@@ -13,8 +13,8 @@ from pathlib import Path
 
 import pytest
 
-from jenny.apps.manifest import load_app
-from jenny.apps.summary_view import field_value, summary_view
+from arkhiva.apps.manifest import load_app
+from arkhiva.apps.summary_view import field_value, summary_view
 
 NOW = datetime(2026, 10, 6, 12, 0, tzinfo=timezone.utc)
 
@@ -156,7 +156,7 @@ def test_an_unchanged_reading_moves_the_last_one_forward(tmp_path: Path) -> None
     """Un sensore fermo letto ogni 15 minuti non riempie la collezione di copie."""
     from datetime import timedelta
 
-    from jenny.apps.reader import append_readings, read_readings
+    from arkhiva.apps.reader import append_readings, read_readings
 
     d = _write(tmp_path, "waterbot", WATERBOT, run="def run(ctx):\n    return []\n")
     acero = {"sensor": "acerello", "moisture": 55, "battery": 80, "online": False}

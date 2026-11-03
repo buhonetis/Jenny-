@@ -1,6 +1,6 @@
 """``GET /api/work``: lo snapshot della bolla di lavoro per chi si ricollega.
 
-Lo stesso payload del frame ``work_status`` (``jenny/runtime/work_status.py``),
+Lo stesso payload del frame ``work_status`` (``arkhiva/runtime/work_status.py``),
 per conversazione, con le due forme di chiave che manda la home.
 """
 
@@ -12,9 +12,9 @@ from pathlib import Path
 import pytest
 from support.gateway_http import AUTH_SECRET, make_handler, make_request
 
-from jenny.runtime import work_status
-from jenny.runtime.work_status import WorkReporter
-from jenny.webui.work_routes import chat_id_for_session_key
+from arkhiva.runtime import work_status
+from arkhiva.runtime.work_status import WorkReporter
+from arkhiva.webui.work_routes import chat_id_for_session_key
 
 
 class _Bus:

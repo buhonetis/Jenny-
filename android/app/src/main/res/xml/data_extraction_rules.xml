@@ -6,7 +6,7 @@
   15/10/2026: i dati dell'app pesano già 174 MB su un emulatore, contro una
   quota di 25 MB, quindi quel backup falliva sempre in silenzio — e se un
   giorno fosse entrato avrebbe portato config.json con le chiavi dei provider.
-  Per portarsi Jenny fuori dal telefono c'è il backup cifrato che esporta
+  Per portarsi ARKHIVA fuori dal telefono c'è il backup cifrato che esporta
   l'utente (`snapshot/backup.py`).
 
   device-transfer (da telefono a telefono, col cavo o il Wi-Fi alla prima
@@ -14,7 +14,7 @@
   dell'utente, ed è una migrazione che funziona. Fuori solo quel che si
   rigenera da sé (l'interprete estratto da Chaquopy) e i temporanei — anche
   quelli delle estensioni che una build può avere, tutti sotto `ext_tmp/`
-  (v. `jenny/extensions.py`).
+  (v. `arkhiva/extensions.py`).
 -->
 <data-extraction-rules>
     <cloud-backup>

@@ -10,8 +10,8 @@ from __future__ import annotations
 
 import asyncio
 
-from jenny.bus.events import InboundMessage, OutboundMessage
-from jenny.bus.queue import MessageBus
+from arkhiva.bus.events import InboundMessage, OutboundMessage
+from arkhiva.bus.queue import MessageBus
 
 
 def _out(content: str = "x") -> OutboundMessage:

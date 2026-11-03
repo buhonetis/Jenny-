@@ -14,14 +14,14 @@ from typing import Any
 
 from support.sessions import FakeSessions
 
-from jenny.agent.tools.registry import ToolRegistry
-from jenny.agent.turn_types import TurnOutcome
-from jenny.bus.events import InboundMessage
-from jenny.cron.bound_runner import run_bound_cron_job
-from jenny.cron.monitor_followup import MonitorFollowup, job_id_of_monitor_session
-from jenny.cron.service import CronService
-from jenny.cron.types import CronSchedule
-from jenny.session.keys import notebook_cron_session_key
+from arkhiva.agent.tools.registry import ToolRegistry
+from arkhiva.agent.turn_types import TurnOutcome
+from arkhiva.bus.events import InboundMessage
+from arkhiva.cron.bound_runner import run_bound_cron_job
+from arkhiva.cron.monitor_followup import MonitorFollowup, job_id_of_monitor_session
+from arkhiva.cron.service import CronService
+from arkhiva.cron.types import CronSchedule
+from arkhiva.session.keys import notebook_cron_session_key
 
 
 class _Agent:

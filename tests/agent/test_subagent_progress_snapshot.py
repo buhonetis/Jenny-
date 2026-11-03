@@ -10,8 +10,8 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
-from jenny.agent import subagent as subagent_module
-from jenny.agent.subagent import PROGRESS_SNAPSHOT_EVERY_S, SubagentManager, _SubagentHook
+from arkhiva.agent import subagent as subagent_module
+from arkhiva.agent.subagent import PROGRESS_SNAPSHOT_EVERY_S, SubagentManager, _SubagentHook
 
 
 def _manager(published: list) -> SimpleNamespace:

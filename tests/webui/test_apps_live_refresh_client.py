@@ -1,4 +1,4 @@
-"""Le Jenny App si accorgono dei cambi che arrivano dal gateway.
+"""Le ARKHIVA App si accorgono dei cambi che arrivano dal gateway.
 
 Due frame: ``apps_list_changed`` (un turno ha scritto in ``apps/``) e
 ``app_data_changed`` (un'azione di un'app e' girata come tool). Dal 21 al
@@ -23,16 +23,16 @@ from pathlib import Path
 from support.js_harness import requires_node, run_module
 
 ROOT = Path(__file__).resolve().parents[2]
-ASSETS = ROOT / "jenny" / "templates" / "ui" / "assets"
+ASSETS = ROOT / "arkhiva" / "templates" / "ui" / "assets"
 
 pytestmark = requires_node
 
 _NEIGHBORS = {
-    # Ogni lettura delle Jenny App si conta: e' la domanda di quasi ogni caso.
+    # Ogni lettura delle ARKHIVA App si conta: e' la domanda di quasi ogni caso.
     "api-client.js": """
 export const api = {
   reads: 0,
-  async getJennyApps() { this.reads += 1; return { apps: [{ slug: 'orto', name: 'Orto' }] }; },
+  async getARKHIVAApps() { this.reads += 1; return { apps: [{ slug: 'orto', name: 'Orto' }] }; },
   async getAndroidApps() { return { apps: [] }; },
   getSecret() { return 'ok'; },
 };
@@ -95,7 +95,7 @@ def test_a_list_already_read_is_read_again() -> None:
     _run(
         """
         const source = new AppsSource();
-        await source.loadJennyApps();
+        await source.loadARKHIVAApps();
         assert.equal(api.reads, 1);
         let notices = 0;
         source.addChangeListener(() => { notices += 1; });
@@ -132,12 +132,12 @@ def test_a_reopened_socket_reads_the_list_again() -> None:
     _run(
         """
         let screen = false;
-        api.getJennyApps = async () => {
+        api.getARKHIVAApps = async () => {
           api.reads += 1;
           return { apps: [{ slug: 'spesa', name: 'Spesa', has_screen: screen }] };
         };
         const source = new AppsSource();
-        await source.loadJennyApps();
+        await source.loadARKHIVAApps();
         // A socket giu' l'app prende lo schermo, e il frame non arriva.
         screen = true;
         wsManager.dispatchEvent(new CustomEvent('chat:open'));
@@ -166,7 +166,7 @@ def test_the_open_app_hears_that_its_data_changed() -> None:
         const actions = new AppsActions(source, { sendChatPrompt() {} });
         const mailbox = open(actions, 'orto');
         frame({ event: 'app_data_changed', slug: 'orto' });
-        assert.deepEqual(mailbox, [{ type: 'jenny:data-changed', slug: 'orto' }]);
+        assert.deepEqual(mailbox, [{ type: 'arkhiva:data-changed', slug: 'orto' }]);
         """
     )
 
@@ -207,7 +207,7 @@ def test_unrelated_frames_do_nothing() -> None:
     _run(
         """
         const source = new AppsSource();
-        await source.loadJennyApps();
+        await source.loadARKHIVAApps();
         const seen = [];
         source.onAppDataChanged((slug) => seen.push(slug));
         for (const event of ['delta', 'turn_end', 'message', 'runtime_model_updated']) {
@@ -228,9 +228,9 @@ def test_an_older_answer_does_not_overwrite_a_newer_one() -> None:
         """
         const source = new AppsSource();
         const expected = [];
-        api.getJennyApps = () => new Promise((r) => expected.push(r));
-        const before = source.loadJennyApps();
-        const second = source.loadJennyApps();
+        api.getARKHIVAApps = () => new Promise((r) => expected.push(r));
+        const before = source.loadARKHIVAApps();
+        const second = source.loadARKHIVAApps();
         expected[1]({ apps: [{ slug: 'nuova', name: 'Nuova' }] });
         await second;
         expected[0]({ apps: [{ slug: 'vecchia', name: 'Vecchia' }] });
@@ -246,8 +246,8 @@ def test_a_failed_refresh_keeps_the_list_that_was_fine() -> None:
     _run(
         """
         const source = new AppsSource();
-        await source.loadJennyApps();
-        api.getJennyApps = async () => { throw new Error('giù'); };
+        await source.loadARKHIVAApps();
+        api.getARKHIVAApps = async () => { throw new Error('giù'); };
         frame({ event: 'apps_list_changed' });
         await tick();
         assert.deepEqual(source.jennyApps.map((a) => a.slug), ['orto']);
@@ -261,12 +261,12 @@ def test_a_first_reading_that_fails_still_says_so() -> None:
     _run(
         """
         const source = new AppsSource();
-        api.getJennyApps = async () => { throw new Error('giù'); };
-        await source.loadJennyApps();
+        api.getARKHIVAApps = async () => { throw new Error('giù'); };
+        await source.loadARKHIVAApps();
         assert.deepEqual(source.jennyApps, []);
         assert.equal(source.jennyListFailed(), true);
-        api.getJennyApps = async () => ({ apps: [{ slug: 'orto' }] });
-        await source.loadJennyApps();
+        api.getARKHIVAApps = async () => ({ apps: [{ slug: 'orto' }] });
+        await source.loadARKHIVAApps();
         assert.equal(source.jennyListFailed(), false, 'una lettura buona spegne il guasto');
         """
     )

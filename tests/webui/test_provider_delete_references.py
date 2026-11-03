@@ -17,10 +17,10 @@ from pathlib import Path
 
 import pytest
 
-from jenny.config.loader import load_config, save_config
-from jenny.config.schema import Config, ModelPresetConfig, ProviderConfig
-from jenny.runtime.context import get_runtime_context
-from jenny.webui.settings_api import delete_provider
+from arkhiva.config.loader import load_config, save_config
+from arkhiva.config.schema import Config, ModelPresetConfig, ProviderConfig
+from arkhiva.runtime.context import get_runtime_context
+from arkhiva.webui.settings_api import delete_provider
 
 
 @pytest.fixture

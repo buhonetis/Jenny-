@@ -10,11 +10,11 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from jenny.agent.tools import loader as loader_mod
-from jenny.agent.tools.base import Tool
-from jenny.agent.tools.context import ToolContext
-from jenny.agent.tools.loader import ToolLoader, ToolLoadError
-from jenny.agent.tools.registry import ToolRegistry
+from arkhiva.agent.tools import loader as loader_mod
+from arkhiva.agent.tools.base import Tool
+from arkhiva.agent.tools.context import ToolContext
+from arkhiva.agent.tools.loader import ToolLoader, ToolLoadError
+from arkhiva.agent.tools.registry import ToolRegistry
 
 
 class _MinimalTool(Tool):
@@ -102,8 +102,8 @@ def test_loader_registers_exec_with_real_tools_config(tmp_path):
     """Real config objects catch bad ctx.config attribute paths that mocks hide."""
     from types import SimpleNamespace
 
-    from jenny.agent.tools.registry import ToolRegistry
-    from jenny.config.schema import ToolsConfig
+    from arkhiva.agent.tools.registry import ToolRegistry
+    from arkhiva.config.schema import ToolsConfig
 
     ctx = ToolContext(
         config=ToolsConfig(),
@@ -127,7 +127,7 @@ def test_loader_registers_exec_with_real_tools_config(tmp_path):
 
 
 def test_fs_tool_create_builds_from_context():
-    from jenny.agent.tools.filesystem import ReadFileTool
+    from arkhiva.agent.tools.filesystem import ReadFileTool
     mock_config = MagicMock()
     mock_config.restrict_to_workspace = False
     ctx = ToolContext(config=mock_config, workspace="/tmp/test")
@@ -137,7 +137,7 @@ def test_fs_tool_create_builds_from_context():
 
 
 def test_fs_tool_create_respects_restrict_to_workspace():
-    from jenny.agent.tools.filesystem import ReadFileTool
+    from arkhiva.agent.tools.filesystem import ReadFileTool
     mock_config = MagicMock()
     mock_config.restrict_to_workspace = True
     ctx = ToolContext(config=mock_config, workspace="/tmp/test")
@@ -146,7 +146,7 @@ def test_fs_tool_create_respects_restrict_to_workspace():
 
 
 def test_fs_tool_create_respects_sandbox():
-    from jenny.agent.tools.filesystem import ReadFileTool
+    from arkhiva.agent.tools.filesystem import ReadFileTool
     mock_config = MagicMock()
     mock_config.restrict_to_workspace = False
     ctx = ToolContext(config=mock_config, workspace="/tmp/test")
@@ -158,7 +158,7 @@ def test_fs_tool_create_respects_sandbox():
 
 
 async def test_message_tool_create():
-    from jenny.agent.tools.message import MessageTool
+    from arkhiva.agent.tools.message import MessageTool
     mock_bus = MagicMock()
     mock_config = MagicMock()
     ctx = ToolContext(config=mock_config, workspace="/tmp", bus=mock_bus)
@@ -167,7 +167,7 @@ async def test_message_tool_create():
 
 
 def test_spawn_tool_create():
-    from jenny.agent.tools.spawn import SpawnTool
+    from arkhiva.agent.tools.spawn import SpawnTool
     mock_mgr = MagicMock()
     mock_config = MagicMock()
     ctx = ToolContext(config=mock_config, workspace="/tmp", subagent_manager=mock_mgr)
@@ -176,14 +176,14 @@ def test_spawn_tool_create():
 
 
 def test_cron_tool_enabled_without_service():
-    from jenny.agent.tools.cron import CronTool
+    from arkhiva.agent.tools.cron import CronTool
     mock_config = MagicMock()
     ctx = ToolContext(config=mock_config, workspace="/tmp", cron_service=None)
     assert CronTool.enabled(ctx) is False
 
 
 def test_cron_tool_enabled_with_service():
-    from jenny.agent.tools.cron import CronTool
+    from arkhiva.agent.tools.cron import CronTool
     mock_service = MagicMock()
     mock_config = MagicMock()
     ctx = ToolContext(config=mock_config, workspace="/tmp", cron_service=mock_service)
@@ -191,7 +191,7 @@ def test_cron_tool_enabled_with_service():
 
 
 def test_cron_tool_create():
-    from jenny.agent.tools.cron import CronTool
+    from arkhiva.agent.tools.cron import CronTool
     mock_service = MagicMock()
     mock_config = MagicMock()
     ctx = ToolContext(
@@ -206,7 +206,7 @@ def test_cron_tool_create():
 
 
 def test_python_exec_tool_enabled():
-    from jenny.agent.tools.python_exec import PythonExecTool
+    from arkhiva.agent.tools.python_exec import PythonExecTool
     mock_config = MagicMock()
     mock_config.python_exec.enable = True
     ctx = ToolContext(config=mock_config, workspace="/tmp")
@@ -216,7 +216,7 @@ def test_python_exec_tool_enabled():
 
 
 def test_python_exec_tool_create():
-    from jenny.agent.tools.python_exec import PythonExecTool
+    from arkhiva.agent.tools.python_exec import PythonExecTool
     mock_config = MagicMock()
     mock_config.python_exec.enable = True
     mock_config.python_exec.timeout = 120
@@ -234,7 +234,7 @@ def test_python_exec_tool_create():
 
 
 def test_my_tool_enabled():
-    from jenny.agent.tools.self import MyTool
+    from arkhiva.agent.tools.self import MyTool
     mock_config = MagicMock()
     mock_config.my.enable = True
     ctx = ToolContext(config=mock_config, workspace="/tmp")
@@ -249,8 +249,8 @@ def test_my_tool_enabled():
 def test_loader_registers_the_core_tools():
     """The loader, with a full config, registers the core tools listed below
     (a subset: ``test_loader_list_matches_disk`` covers the whole list)."""
-    from jenny.agent.tools.loader import ToolLoader
-    from jenny.agent.tools.registry import ToolRegistry
+    from arkhiva.agent.tools.loader import ToolLoader
+    from arkhiva.agent.tools.registry import ToolRegistry
 
     mock_config = MagicMock()
     mock_config.python_exec.enable = True
@@ -397,7 +397,7 @@ def test_real_tool_set_loads_without_silent_failures(tmp_path):
     """The shipped tool modules must all construct — no tool quietly missing."""
     from types import SimpleNamespace
 
-    from jenny.config.schema import ToolsConfig
+    from arkhiva.config.schema import ToolsConfig
 
     ctx = ToolContext(
         config=ToolsConfig(),

@@ -15,9 +15,9 @@ from typing import Any
 
 import pytest
 
-from jenny.agent.tools import location as tools
-from jenny.config.tool_schemas import LocationConfig
-from jenny.runtime import location
+from arkhiva.agent.tools import location as tools
+from arkhiva.config.tool_schemas import LocationConfig
+from arkhiva.runtime import location
 
 
 @pytest.fixture(autouse=True)

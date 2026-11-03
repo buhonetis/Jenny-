@@ -12,10 +12,10 @@ from __future__ import annotations
 import asyncio
 import json
 
-import jenny.session.manager as session_manager
-from jenny.bus.events import InboundMessage
-from jenny.providers.base import LLMResponse, ToolCallRequest
-from jenny.session.manager import SessionManager
+import arkhiva.session.manager as session_manager
+from arkhiva.bus.events import InboundMessage
+from arkhiva.providers.base import LLMResponse, ToolCallRequest
+from arkhiva.session.manager import SessionManager
 from tests.support.agent import make_loop, make_provider
 from tests.support.aio import wait_until
 

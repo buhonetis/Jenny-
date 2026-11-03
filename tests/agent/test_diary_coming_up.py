@@ -13,21 +13,21 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent import context as context_module
-from jenny.agent.context import ContextBuilder
-from jenny.agent.diary import (
+from arkhiva.agent import context as context_module
+from arkhiva.agent.context import ContextBuilder
+from arkhiva.agent.diary import (
     DIARY_STATE_KEY,
     MAX_COMING_UP,
     diary_turn,
     upcoming_dates,
 )
-from jenny.board import model
-from jenny.board.cron_link import add_notebook_job
-from jenny.board.store import mutate_board
-from jenny.cron.service import CronService
-from jenny.cron.types import CronSchedule
+from arkhiva.board import model
+from arkhiva.board.cron_link import add_notebook_job
+from arkhiva.board.store import mutate_board
+from arkhiva.cron.service import CronService
+from arkhiva.cron.types import CronSchedule
 
-pytestmark = pytest.mark.usefixtures("_configure_jenny_workspace")
+pytestmark = pytest.mark.usefixtures("_configure_arkhiva_workspace")
 
 PERSONAL = "unified:default"
 # Un'ora vera e non una finta: lo scheduler conta il «prossimo giro» sull'orologio.
@@ -99,7 +99,7 @@ def test_what_is_not_a_date_coming_up_stays_out(cron, wikis) -> None:
 
 def test_a_removed_card_takes_its_dates_away(cron, wikis) -> None:
     """Togliere una scheda la mette nel cestino e ne mette in pausa i job."""
-    from jenny.board.removed import card_jobs
+    from arkhiva.board.removed import card_jobs
 
     _add(cron, "copper treatment", _at(timedelta(days=1)))
 

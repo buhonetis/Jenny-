@@ -6,7 +6,7 @@ from typing import Any, Literal
 
 import pytest
 
-from jenny.pydantic_compat import (
+from arkhiva.pydantic_compat import (
     AliasChoices,
     BaseModel,
     ConfigDict,

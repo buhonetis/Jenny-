@@ -1,11 +1,11 @@
-"""Tests for Jenny App manifest loading and validation."""
+"""Tests for ARKHIVA App manifest loading and validation."""
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
 
-from jenny.apps.manifest import (
+from arkhiva.apps.manifest import (
     action_param_schema,
     find_app,
     load_app,

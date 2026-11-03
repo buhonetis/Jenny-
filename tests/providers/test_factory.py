@@ -8,10 +8,10 @@ from __future__ import annotations
 
 import pytest
 
-from jenny.config.schema import Config, ProviderConfig
-from jenny.providers.anthropic_provider import AnthropicProvider
-from jenny.providers.factory import make_provider
-from jenny.providers.openai_compat_provider import OpenAICompatProvider
+from arkhiva.config.schema import Config, ProviderConfig
+from arkhiva.providers.anthropic_provider import AnthropicProvider
+from arkhiva.providers.factory import make_provider
+from arkhiva.providers.openai_compat_provider import OpenAICompatProvider
 
 
 def _config(*providers: ProviderConfig, default: str | None = None, **agent_defaults) -> Config:

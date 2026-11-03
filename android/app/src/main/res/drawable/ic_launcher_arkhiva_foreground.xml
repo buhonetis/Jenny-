@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Isotipo ARKHIVA Ω: la letra omega trazada con tres golpes (arco, patas y
+     travesaño) en el acento cian sobre obsidiana. Vectorial y sin texto: no
+     depende de ninguna fuente instalada en el dispositivo. Dibujado dentro de
+     la zona segura de 66dp del icono adaptativo (108x108). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:pathData="M38,58 A16,16 0 1 1 70,58"
+        android:strokeColor="#00FFC2"
+        android:strokeWidth="6"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M38,58 L32,70"
+        android:strokeColor="#00FFC2"
+        android:strokeWidth="6"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M70,58 L76,70"
+        android:strokeColor="#00FFC2"
+        android:strokeWidth="6"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M34,70 L74,70"
+        android:strokeColor="#00FFC2"
+        android:strokeWidth="6"
+        android:strokeLineCap="round" />
+</vector>

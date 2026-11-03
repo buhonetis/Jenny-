@@ -6,8 +6,8 @@ import json
 
 import pytest
 
-from jenny.apps.executor import AppActionError, execute_action
-from jenny.apps.manifest import action_param_schema, find_app
+from arkhiva.apps.executor import AppActionError, execute_action
+from arkhiva.apps.manifest import action_param_schema, find_app
 
 MANIFEST = {
     "name": "Note",

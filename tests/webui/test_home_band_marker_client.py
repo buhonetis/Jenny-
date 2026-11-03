@@ -22,7 +22,7 @@ _HEAD = """
 import assert from 'node:assert/strict';
 import { boot, tick, frame } from './boot.mjs';
 const marked = () => [...document.querySelectorAll('#home-thread .home-at-band')];
-const replies = () => [...document.querySelectorAll('#home-thread > .home-msg-jenny')];
+const replies = () => [...document.querySelectorAll('#home-thread > .home-msg-arkhiva')];
 const reply = async (turn, text) => {
   frame({ event: 'stream_end', chat_id: 'default', turn_id: turn, text });
   frame({ event: 'turn_end', chat_id: 'default', turn_id: turn, latency_ms: 18100 });

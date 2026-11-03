@@ -18,7 +18,7 @@ import pytest
 from support.gateway_http import AUTH_SECRET, make_handler, make_request
 from websockets.http11 import Request as WsRequest
 
-from jenny.webui.ws_http import GatewayHTTPHandler
+from arkhiva.webui.ws_http import GatewayHTTPHandler
 
 _PATH = "/api/webui/cron"
 
@@ -93,8 +93,8 @@ def test_a_getter_that_raises_is_treated_as_no_service(workspace):
 
 
 def test_a_real_service_comes_back_as_json(workspace, monkeypatch):
-    from jenny.cron.service import CronService
-    from jenny.cron.types import CronJob, CronPayload, CronSchedule
+    from arkhiva.cron.service import CronService
+    from arkhiva.cron.types import CronJob, CronPayload, CronSchedule
 
     cron = CronService(workspace / "cron" / "jobs.json")
     cron.register_system_job(CronJob(
@@ -103,7 +103,7 @@ def test_a_real_service_comes_back_as_json(workspace, monkeypatch):
         payload=CronPayload(kind="system_event"),
     ))
 
-    import jenny.config.loader as loader
+    import arkhiva.config.loader as loader
 
     monkeypatch.setattr(loader, "load_config", lambda: SimpleNamespace(
         workspace_path=workspace,
@@ -124,7 +124,7 @@ def test_a_real_service_comes_back_as_json(workspace, monkeypatch):
 
 
 def test_a_failing_payload_becomes_a_500_and_not_a_traceback(workspace, monkeypatch):
-    import jenny.webui.cron_routes as routes
+    import arkhiva.webui.cron_routes as routes
 
     def _boom(_cron):
         raise OSError("disco")
@@ -143,7 +143,7 @@ def test_the_payload_is_built_off_the_event_loop(workspace, monkeypatch):
     La spia e' su ``asyncio.to_thread``, non sul thread reale: quel che va
     fissato e' la scelta, non l'implementazione di asyncio.
     """
-    import jenny.webui.cron_routes as routes
+    import arkhiva.webui.cron_routes as routes
 
     seen: list[object] = []
     real_to_thread = asyncio.to_thread
@@ -168,7 +168,7 @@ def test_the_store_is_read_on_the_loop_not_in_the_thread(workspace, monkeypatch)
     eseguito tornava dovuto e ripartiva. Il payload lavora su una copia."""
     import threading
 
-    from jenny.cron.service import CronService
+    from arkhiva.cron.service import CronService
 
     cron = CronService(workspace / "cron" / "jobs.json")
     loop_thread = threading.current_thread()
@@ -190,8 +190,8 @@ def test_the_store_is_read_on_the_loop_not_in_the_thread(workspace, monkeypatch)
 
 # ── pausa, ripresa, eliminazione dall'officina ──────────────────────────────
 
-from jenny.cron.service import CronService  # noqa: E402
-from jenny.cron.types import CronJob, CronPayload, CronSchedule  # noqa: E402
+from arkhiva.cron.service import CronService  # noqa: E402
+from arkhiva.cron.types import CronJob, CronPayload, CronSchedule  # noqa: E402
 
 _BOUND = {"session_key": "websocket:chat-1", "origin_channel": "websocket", "origin_chat_id": "chat-1"}
 
@@ -285,7 +285,7 @@ def test_run_now_is_still_not_a_route(workspace, service):
 
 def test_the_logs_of_a_failing_getter_are_in_english(workspace):
     """I log sono in inglese (AGENTS.md), anche quando il getter solleva."""
-    from jenny.webui.cron_routes import CronRoutes
+    from arkhiva.webui.cron_routes import CronRoutes
 
     def _boom():
         raise RuntimeError("container a meta' costruzione")

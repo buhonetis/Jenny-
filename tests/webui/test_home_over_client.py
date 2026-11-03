@@ -1,10 +1,10 @@
-"""Jenny e' la porta della chat: la chat vera sale sopra la pagina.
+"""ARKHIVA e' la porta della chat: la chat vera sale sopra la pagina.
 
 Dal 05/10/2026 il tocco sulla mascotte, dove la chat non c'e', porta su la
 chat vera — la stessa `#home-chat`, spostata e non copiata — a tutto schermo,
 in un velo (`#home-over`) che lascia vedere la pagina sotto senza farla
 toccare. Sopra la bacheca di un quaderno e' la chat del quaderno; altrove la
-personale. Si chiude ritoccando Jenny o con Indietro. Prima c'era la
+personale. Si chiude ritoccando ARKHIVA o con Indietro. Prima c'era la
 minichat, una domanda a un turno in un fumetto.
 
 Qui gira la casa intera (`support/home_dom.py`): pista, stanze, trasloco,
@@ -23,7 +23,7 @@ import assert from 'node:assert/strict';
 import { boot, tick, $ } from './boot.mjs';
 const app = await boot();
 await tick(30);
-const tap = () => app.jenny._onTap();
+const tap = () => app.arkhiva._onTap();
 const over = () => $('home-over');
 const chatIn = () => $('home-chat').parentElement;
 """
@@ -41,8 +41,8 @@ assert.equal(chatIn(), over(), 'la chat non e\\u2019 salita nel velo');
 assert.equal(app.homePages.order[app.homePages.index], 'app', 'la pagina sotto e\\u2019 cambiata');
 assert.equal(app.currentKey(), 'websocket:default');
 assert.equal(document.querySelector('.home-showcase').inert, true, 'la pagina sotto si tocca ancora');
-assert.ok(!app.jenny.el.inert, 'lei non e\\u2019 piu\\u2019 il bottone che chiude');
-assert.equal(app.jenny.el.getAttribute('aria-expanded'), 'true');
+assert.ok(!app.arkhiva.el.inert, 'lei non e\\u2019 piu\\u2019 il bottone che chiude');
+assert.equal(app.arkhiva.el.getAttribute('aria-expanded'), 'true');
 assert.equal(document.querySelectorAll('#home-chat').length, 1, 'la chat e\\u2019 stata copiata');
 """)
 
@@ -56,7 +56,7 @@ tap();
 await tick(30);
 assert.ok(blurred().includes(document.querySelector('.home-showcase')), 'la pagina sotto non e\\u2019 sfocata');
 assert.ok(!blurred().includes(over()), 'il velo sfoca la chat');
-assert.ok(!blurred().includes(app.jenny.el), 'Jenny e\\u2019 sfocata');
+assert.ok(!blurred().includes(app.arkhiva.el), 'ARKHIVA e\\u2019 sfocata');
 assert.ok(!blurred().some((el) => el.tagName === 'DIALOG'), 'un dialogo aperto da sotto sarebbe sfocato');
 tap();
 await tick(10);
@@ -89,7 +89,7 @@ await tick(30);
 tap();
 await tick(10);
 assert.equal(app.chatOver, false);
-assert.equal(app.jenny.el.getAttribute('aria-expanded'), 'false');
+assert.equal(app.arkhiva.el.getAttribute('aria-expanded'), 'false');
 """)
 
 
@@ -144,7 +144,7 @@ tap();
 await tick(30);
 over().dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
 assert.equal(app.chatOver, true, 'un tocco sul velo ha chiuso la chat');
-assert.equal(app.jenny.motion('squash'), 'nudge', 'lei non ha detto «chiudi da me»');
+assert.equal(app.arkhiva.motion('squash'), 'nudge', 'lei non ha detto «chiudi da me»');
 """)
 
 
@@ -295,7 +295,7 @@ tap();
 await tick(30);
 $('home-over-name').dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
 assert.equal(app.chatOver, true, 'un tocco sul titolo ha chiuso la chat');
-assert.equal(app.jenny.motion('squash'), 'nudge', 'il titolo si comporta da comando');
+assert.equal(app.arkhiva.motion('squash'), 'nudge', 'il titolo si comporta da comando');
 """)
 
 
@@ -304,7 +304,7 @@ def test_on_the_chat_page_a_tap_says_hello() -> None:
 tap();
 await tick(10);
 assert.equal(app.chatOver, false, 'la chat e\\u2019 salita sopra se stessa');
-assert.equal(app.jenny.motion('squash'), 'greet');
+assert.equal(app.arkhiva.motion('squash'), 'greet');
 """)
 
 
@@ -323,7 +323,7 @@ assert.equal(app.chatOver, true, 'Indietro ha chiuso la chat sotto l\\u2019immag
 """)
 
 
-def test_jenny_stands_on_the_composer_of_the_chat_over_the_page() -> None:
+def test_arkhiva_stands_on_the_composer_of_the_chat_over_the_page() -> None:
     run_home(_HEAD + """
 app.homePages.goToId('settings', { animated: false });
 await tick(10);

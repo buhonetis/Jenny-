@@ -9,9 +9,9 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock
 
-from jenny.config.schema import Config
-from jenny.runtime.cron_dispatch import CronDispatcher
-from jenny.utils import clock
+from arkhiva.config.schema import Config
+from arkhiva.runtime.cron_dispatch import CronDispatcher
+from arkhiva.utils import clock
 
 
 def _dispatcher(**kwargs) -> CronDispatcher:

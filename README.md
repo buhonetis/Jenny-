@@ -1,295 +1,119 @@
-<div align="center">
+# ARKHIVA Ω · ARKHIVA Mobile
 
-<img src="docs/img/banner.png" alt="Jenny — a local-first personal AI agent that lives on your Android phone" width="820">
+**Agente cognitivo soberano, local-first, que vive en tu teléfono Android.**
 
-### A local-first personal AI agent that lives on your Android phone
+ARKHIVA Mobile es la distribución móvil de ARKHIVA Ω: un agente que recuerda de forma
+permanente, actúa por su cuenta cuando se lo pides, escribe sus propias mini-apps y puede
+ser la pantalla de inicio del teléfono. La memoria, los archivos y las conversaciones no
+salen del dispositivo: inferencia local por defecto (`127.0.0.1:11434`) y proveedor remoto
+solo si tú lo configuras, con tu propia clave.
 
-It remembers you permanently, acts on a schedule without being asked, writes its own
-mini-apps on request, and can *be* your phone's home screen. Your memory, files and
-conversations stay on the device. Bring your own API key — or run a model on your own
-hardware and keep the whole loop offline.
-
-[![Download the APK](https://img.shields.io/badge/Download-APK-3DDC84?style=for-the-badge&logo=android&logoColor=white)](../../releases/latest)
-
-[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Platform: Android 8+](https://img.shields.io/badge/Platform-Android_8%2B-3DDC84.svg)](#quick-start)
-[![Python 3.11 embedded](https://img.shields.io/badge/Python-3.11_embedded-yellow.svg)](https://jenny.flagdizero.com/docs/internals/architecture/)
-[![BYOK: 40+ providers](https://img.shields.io/badge/BYOK-40%2B_LLM_providers-orange.svg)](https://jenny.flagdizero.com/docs/reference/providers/)
-[![Local-first](https://img.shields.io/badge/Data-on--device-brightgreen.svg)](#privacy-and-security)
-
-[**Documentation**](https://jenny.flagdizero.com/docs/) · [Quick start](#quick-start) · [Features](#what-it-can-do) · [Privacy & security](#privacy-and-security) · [Limitations](#known-limitations) · [FAQ](#faq)
-
-</div>
-
-<!-- Captured on the Android emulator at 1080x1920 (a 16:9 phone) with
-     `scripts/capture_screenshots.sh`. Unretouched framebuffer grabs; only the status bar is
-     in Android's demo mode (fixed clock, full battery, no notification icons).
-
-     Width 200 is not arbitrary: GitHub's README column is 838px and does not grow with the
-     window (`container-lg` caps it). Four images at 200px plus the inter-tag whitespace come
-     to ~814px, so the row holds on desktop and stacks on mobile instead of wrapping into a
-     ragged 3+1. At 215px it no longer fits. -->
-
-<p align="center">
-  <img src="docs/img/hero-chat.png"  alt="Jenny reading back data from a mini-app she wrote herself, in chat" width="200">
-  <img src="docs/img/apps.png"       alt="A mini-app the AI agent wrote on request: a meal log for a cat"   width="200">
-  <img src="docs/img/themes.png"     alt="Settings, with the theme picker and Synthwave '84 selected"         width="200">
-  <img src="docs/img/notebook-board.png" alt="A notebook's board: one card per subject, written from the wiki the agent keeps" width="200">
-</p>
+- **Paquete / applicationId:** `org.buhonet.agente.arkhiva`
+- **Etiqueta visible:** ARKHIVA Mobile
+- **Versión:** `1.0.0-SOBERANO` (`versionCode 100`)
+- **Licencia:** AGPL-3.0 (ver [LICENSE](LICENSE)) — se mantiene AGPL-3.0 íntegra
 
 ---
 
-## An AI agent that runs on your phone, not in someone's cloud
+## Doctrina
 
-Jenny is an Android app with an embedded Python runtime. It registers as a HOME activity, so
-if you want, pressing Home lands you in a conversation instead of a grid of icons. A
-foreground service keeps the agent alive with the screen off — which is what makes scheduled
-work and proactive messages possible at all.
+ARKHIVA Ω se rige por un extracto canónico propio (`Ω-EXTRACT-BUHONET-001`,
+v4.1.0-MOONSHOT). Los cuatro pilares que tocan este repositorio:
 
-If you have ever self-hosted an AI agent on a server, this is that: except the host is a
-phone you already own, it has a screen, and its battery is the UPS.
+| Pilar | Qué significa aquí |
+|---|---|
+| **Freno Epistemológico** | El agente no afirma lo que no puede verificar: distingue lo observado, lo inferido y lo que ignora. Nunca inventa una herramienta, un archivo ni un resultado. |
+| **WORM** | La memoria se escribe una vez y se versiona; no se reescribe el pasado para tapar un error. Los archivos canónicos viven en `Vault_Memoria/`. |
+| **MAREA / VRAM** | Presupuesto explícito de contexto y de llamadas al modelo. Cuando se agota, el agente para y lo dice, en vez de degradarse en silencio. |
+| **Enjambre** | Papeles especializados (ECCO, LadyBITx, WATCHDOG, NOXIA, NAMAAH, JOLLYROGERS) sobre el mismo bus de herramientas, sin privilegios implícitos. |
 
-**It is built by one person, not a polished consumer product.** Sideloaded, no store and no silent auto-updates (Jenny tells you when a release exists and installs it only when you confirm), and the
-[known limitations](#known-limitations) are listed in full rather than discovered later.
+## Qué hace
 
-## Is it actually free software?
+- **Memoria permanente** en Markdown legible, dentro de `Vault_Memoria/`, con consolidación
+  periódica (Dream) y mantenimiento de cuadernos (Gardener).
+- **Cuadernos (notebooks)** como wikis locales con páginas, tablero, recordatorios y chat
+  propio; el chat personal es el cuaderno raíz.
+- **Trabajo programado**: recordatorios, comprobaciones recurrentes y alertas condicionales
+  mediante trabajos `cron`, con modo `reminder` y modo `monitor`.
+- **Mini-apps** construidas a petición, con su propia interfaz y datos locales.
+- **Pantalla de inicio** completa: la WebUI puede sustituir al launcher.
 
-The question worth answering first, because "AI agent" plus "API key" usually means a
-proprietary service with an open-source shell.
+## Primera puesta en marcha
 
-- **The app is AGPL-3.0**, all of it, and it builds from this repository with no extra steps.
-- **There is no service of mine anywhere.** No account, no sign-up, no telemetry, no
-  analytics, no crash reporter, no server of mine in the loop. Not a policy — there is
-  nowhere for me to look from.
-- **The model provider is your choice, and it is optional.** Point Jenny at Ollama or
-  LM Studio on your own hardware and the loop is fully offline: no traffic leaves your
-  network. See [local models](https://jenny.flagdizero.com/docs/reference/local-models/).
+1. Instala el APK (sideload) o compílalo (ver abajo).
+2. Si vas a usar inferencia local, arranca un servidor compatible con OpenAI Chat
+   Completions y deja que escuche en el teléfono o en la máquina que declares:
+   ```bash
+   ollama serve            # por defecto 127.0.0.1:11434
+   ollama pull qwen2.5-coder:3b
+   ```
+3. Abre ARKHIVA Mobile. El perfil local-first apunta a `http://127.0.0.1:11434/v1/` con el
+   modelo `qwen2.5-coder:3b`; puedes cambiarlo por entorno:
 
-If you use a hosted provider, then yes — your prompts go to that provider under your own key,
-and Jenny depends on a non-free network service for as long as you choose one. That is your
-decision per install, not a property of the app.
+   | Variable | Efecto |
+   |---|---|
+   | `ARKHIVA_LOCAL_BASE_URL` | Endpoint compatible con OpenAI |
+   | `ARKHIVA_LOCAL_MODEL` | Modelo por defecto |
+   | `ARKHIVA_LOCAL_API_KEY` | Clave (irrelevante en servidores locales) |
+   | `ARKHIVA_LOCAL_TIMEOUT` | Timeout en segundos |
 
-## What it can do
+   Los nombres de estos *knobs* están centralizados en `arkhiva/config/runtime_env.py`.
+4. La red del APK solo permite tráfico en claro hacia el gateway local y los hosts
+   enumerados en `android/app/src/main/res/xml/network_security_config.xml`
+   (`127.0.0.1`, `localhost`, `10.0.2.2`, `10.8.0.1`, `100.120.133.77`). Cualquier otro
+   servicio debe ser HTTPS.
 
-**🧠 Permanent on-device memory.** Every couple of hours a background pass replays the recent
-conversation and distils it into structured Markdown on disk: who you are, the agent's own
-behavioural notes, an index of durable context, and any procedure it saw you repeat, written
-down as a reusable skill. Noise is pruned, signal accumulates. It's plain Markdown on the
-device, so switching provider doesn't cost you your memory.
-→ [Memory](https://jenny.flagdizero.com/docs/using/memory/)
+## Compilar
 
-**📚 It builds you a wiki.** Feed it articles, notes, PDFs or web pages and ask it to compile
-them: you get cross-linked Markdown pages — concepts and entities, joined by `[[wikilinks]]` —
-behind the notebook they belong to. The notebook opens on its **board**: one card per subject,
-each with a drawer summarising the pages it comes from, plus the reminders and threads that
-matter now (that's the fourth screenshot above). Driven entirely from chat through a built-in `llm-wiki` skill: create one, ingest a
-source, compile, ask it questions, run a lint pass for dead links and orphan pages. It does
-**not** update itself — every step is a request you make, or a job you schedule. Multiple wikis
-live side by side as plain files in the workspace, so they're editable and backed up like
-everything else. → [Wiki](https://jenny.flagdizero.com/docs/using/wiki/)
-
-**⚡ It acts on its own.** Reminders, one-shot actions and recurring jobs ("every Monday,
-summarise my week"). When one fires, **it messages you first**, screen off. It reads and
-writes files, executes Python, and searches the web through a real hidden Chrome WebView
-rather than a plain fetch, so JavaScript-rendered pages work.
-→ [Scheduling](https://jenny.flagdizero.com/docs/using/scheduling/) ·
-[Tools](https://jenny.flagdizero.com/docs/reference/tools/)
-
-**🛠️ It writes its own Android mini-apps.** Describe one in chat — "something to track my
-plants" — and the agent builds it: UI, typed actions, persistent storage, installed into its
-own app grid. Each action becomes a callable tool, so the same app is usable by you, by the
-agent in conversation, and by anything that triggers a turn, **including cron**. That last one
-is what makes "alert me if the basil needs water" work end to end.
-→ [Mini-apps](https://jenny.flagdizero.com/docs/using/mini-apps/)
-
-**📱 It can be your Android launcher.** It declares `HOME` + `DEFAULT` + `LAUNCHER` and handles
-the Home gesture, listing and launching your installed apps from a panel inside the UI. Seven
-visual themes and a draggable mascot that is the door to the chat: tap her anywhere and the
-conversation comes up over what you are looking at. Judged purely as a launcher it would
-be a bad one — no widgets, folders or icon packs. The launcher part is the *how*, not the
-*what*. → [Launcher setup](https://jenny.flagdizero.com/docs/start/launcher-setup/)
-
-**💬 Optional [Telegram bridge](https://jenny.flagdizero.com/docs/using/telegram/)** for
-reaching the agent from anywhere — outbound-only, your own bot token, so nothing on your
-network becomes reachable from the internet. Messages through it pass through Telegram's
-servers; your memory and files never do. Off by default.
-
-## Quick start
-
-Download the APK from [**Releases**](../../releases/latest) — Android 8.0 or newer, ~72 MB,
-most of which is the embedded CPython runtime. Verify it against the hash published on the
-release page:
+Requisitos: JDK 17, Android SDK 35, Python 3.11 para los tests.
 
 ```bash
-shasum -a 256 jenny-2.0.0.apk
+# APK de depuración
+./gradlew :app:assembleDebug
+
+# APK de release firmado (sideload) — crea antes tu keystore
+keytool -genkeypair -v -keystore arkhiva-release.jks -alias arkhiva \
+        -keyalg RSA -keysize 4096 -validity 10000
+# declara las credenciales en android/keystore.properties (no se versiona)
+./gradlew :app:assembleRelease
 ```
 
-Android will ask you to allow installing from outside the Play Store. The APK is signed with
-my own key (RSA 4096, schemes v2 and v3) — no store vouches for it, which is the deal with
-sideloading, and checking the hash is how you confirm you got the file I built. Then launch it,
-follow onboarding, paste your API key. No account to create, at any point.
+El keystore y sus contraseñas **no** se versionan: `android/keystore.properties` y
+`*.jks` están ignorados. Si redistribuyes el APK, usa tu propia firma.
 
-Or **build it yourself** — the whole thing builds from this repository, which is rather the
-point of not having a store in the middle.
+## Tests
 
-[Installing](https://jenny.flagdizero.com/docs/start/install/) ·
-[first run](https://jenny.flagdizero.com/docs/start/first-run/) ·
-[build from source](https://jenny.flagdizero.com/docs/contribute/build-from-source/) ·
-[is it for you?](https://jenny.flagdizero.com/docs/start/is-jenny-for-you/)
+```bash
+python -m pytest -q
+```
 
-## Privacy and security
+Estado actual de la migración (ver [docs/REBRANDING.md](docs/REBRANDING.md)): 14 366 pasan,
+393 se omiten y **226 fallan**. Todos los fallos restantes son expectativas de test que
+fijan la redacción **inglesa o italiana** de los prompts; el corpus se tradujo al español
+por decisión de producto (`todo_es`). No son regresiones de comportamiento y su triaje está
+en curso.
 
-Memory, conversations, files and generated apps live in the app's private storage. The web UI
-is served on **loopback by default** (`127.0.0.1`) — no port exposed to your network, nothing
-to reverse-proxy, no inbound attack surface unless you deliberately rebind it. The API is
-token-gated even on loopback, because Android does not isolate loopback TCP between apps.
+## Privacidad y seguridad
 
-Jenny makes six kinds of outbound connection — your provider, Bing when it searches,
-`api.telegram.org` if you enabled the bridge, any URL you or the agent explicitly fetch,
-OpenRouter's attribution headers when that's your provider, and a daily check for a new
-release. **None of them carries anything about you.** (Beyond these, there are only the
-connections you set up yourself: SSH to hosts you register, and the HTTP actions of mini-apps you
-install.) The update check is a plain `GET` of the
-`latest.json` published with the release: no identifier, no version, no headers of ours, no
-query string — a public file fetched and compared on the device. It is the only one that goes
-to a server this project controls, and the only one you did not switch on: it runs every 24h,
-and `updates.enabled: false` stops it. Jenny declares 16 permissions and asks for **no**
-camera, microphone, contacts, SMS, call log, background location or storage.
-→ [Every connection and permission](https://jenny.flagdizero.com/docs/reference/android-permissions/)
+- Sin telemetría. Sin cuenta. Sin servicio en la nube por defecto.
+- La memoria y los cuadernos son Markdown en el almacenamiento de la app, en
+  `Vault_Memoria/`, accesible al usuario.
+- Regla de no exfiltración en el corpus cognitivo: el agente no envía datos del dispositivo
+  a terceros, ni los incluye en llamadas a herramientas que no sean las declaradas.
+- El sandbox del workspace está activo y el acceso a red de la app es una lista blanca.
 
-Two disclosures I would rather you hear from me than discover:
+## Origen y atribución
 
-- **Your prompts go to whichever provider you chose.** On-device storage is not on-device
-  inference. If a location fix ends up in the agent's reasoning, it ends up in that prompt.
-- **The copy on Google Drive (Play Store build) is only as strong as the password you choose for it.** It is
-  encrypted and opt-in, and it opens with that password alone — Google holds the copy, not a
-  way to read it. Forget the password and lose the phone, and the copy is gone too: nobody can
-  recover it. Someone who gets into your Google account can try passwords against it, so pick
-  a long one. (Android's own backup takes nothing from Jenny.)
-  → [Privacy in detail](https://jenny.flagdizero.com/docs/internals/privacy/)
+ARKHIVA Mobile es una bifurcación de **jenny-android-ai-agent**, obra original de
+**flagdizero** (<https://github.com/flagdizero/jenny-android-ai-agent>), publicada bajo
+AGPL-3.0.
 
-Security, short version: **`python_exec` is not a sandbox** — arbitrary Python, in-process; the
-module lists are a usability guardrail, not containment. **Provider keys are plain text**,
-protected by the app sandbox and readable by the agent's own file tools. **Prompt injection is
-not solved** — nobody's is; asking Jenny to "read this URL and do what it says" is handing a
-stranger your tools. [**SECURITY.md**](SECURITY.md) is the long version, written to be useful
-rather than reassuring — read it before you point this at anything you care about.
-→ [Security model](https://jenny.flagdizero.com/docs/internals/security-model/)
+Este repositorio conserva la licencia AGPL-3.0 y **debe seguir siendo AGPL-3.0** si se
+redistribuye o se expone como servicio en red. Todos los cambios respecto al original están
+documentados en [docs/REBRANDING.md](docs/REBRANDING.md) y en [CHANGELOG.md](CHANGELOG.md).
+Las marcas, el nombre y la identidad visual del proyecto original pertenecen a su autor y no
+se reclaman aquí.
 
-## Known limitations
-
-Collected in one place rather than scattered, so you can judge before installing.
-
-- **Sideload only.** A signed APK on Releases, and the source. No Play Store, no F-Droid
-  listing. Jenny does check daily whether a newer release exists and can install it when you
-  say so, but nothing updates itself behind you: Android still shows its own install prompt.
-- **Not a full launcher.** No widgets, folders, icon packs or wallpaper management.
-- **Web search is Bing-only.** A real CAPTCHA page fails rather than being solved.
-- **Subagents are a tool, not an orchestrator.** The agent *can* delegate to background
-  subagents, but nothing decomposes a request and drives it to completion on its own —
-  delegation is a per-turn decision by the model. A big job in a notebook can become a
-  step-by-step plan, which the code drives one step at a time.
-- **Mini-apps can't reach authenticated servers.** Declaring `auth` in a manifest is refused
-  outright until there's a credential store.
-- **Small models struggle.** The agent loop leans hard on instruction-following and
-  tool-calling; quality tracks the model, and below the frontier tier it varies a lot.
-- **Battery is unmeasured.** It idles cheaply and asks for battery-optimisation exemption,
-  but I haven't published numbers and won't invent them.
-- **Android only.** Not a temporary gap — the whole design assumes a device you own that
-  stays on.
-
-## Status and roadmap
-
-**2.0.** It has been my daily driver for months, and since 1.0 a change that breaks
-something you rely on gets a new major number — see the
-[changelog](CHANGELOG.md). It is still one person's project with rough edges, onboarding most of
-all, which is exactly where feedback is worth most.
-
-Not promised, roughly in order: measured battery numbers · voice in and out · a credential
-store so mini-apps can reach authenticated servers · the agent operating other apps on the
-phone · richer system surfaces.
-
-## Contributing
-
-Issues and PRs welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) and
-[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Contributions need a
-[DCO](https://developercertificate.org/) sign-off (`git commit -s`).
-
-The most useful contribution right now isn't code: install it, try to set it up without
-reading anything, and tell me exactly where you got stuck.
-
-If the idea seems worth existing, a **star** is what makes it findable by the next person who
-would want it — GitHub's search ranks on them, and this project has no marketing budget.
-
-## Architecture
-
-A native Android app with an embedded CPython 3.11 (Chaquopy 17), `minSdk 26` /
-`targetSdk 34`. The agent runs as a persistent foreground service and serves a mobile-first
-SPA over loopback. Messages flow through an async bus that decouples the channel from the
-core. Over 15,000 tests; CI runs `ruff`, `pytest` on 3.11 and 3.12, and `pyright` — blocking on the
-subsystems that are already type-clean, advisory on the rest, which is the honest state of a
-codebase being tightened rather than one pretending to be finished.
-
-→ [Architecture](https://jenny.flagdizero.com/docs/internals/architecture/) ·
-[Concepts](https://jenny.flagdizero.com/docs/internals/concepts/) ·
-[The agent turn](https://jenny.flagdizero.com/docs/internals/agent-turn/)
-
-## License, trademark, and upstream
-
-Code is [**AGPL-3.0**](LICENSE). Jenny is a fork of
-[nanobot](https://github.com/HKUDS/nanobot) (MIT, by Xubin Ren) — what this fork keeps,
-removes and rewrites is documented in [FORK_BOUNDARY.md](FORK_BOUNDARY.md), and upstream's
-license is reproduced verbatim in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) along with
-every bundled library and font.
-
-The **Jenny name, logo and mascot artwork are not** under the AGPL grant — see
-[TRADEMARK.md](TRADEMARK.md). Fork the code freely; ship it under your own name.
-
-*Developed by [flagDiZero](https://github.com/flagdizero). Copyright © 2026 Ludovico Ragno.*
-
-## FAQ
-
-**Is this a launcher like Nova or Niagara?**
-No — the launcher is the *how*, not the *what*. Jenny is a personal AI agent; being the home
-screen is what makes it present instead of an app you remember to open.
-
-**Does it really work offline, with local models?**
-Yes — Ollama and LM Studio through the OpenAI-compatible engine. With the model on your LAN
-and the Telegram bridge off, no traffic leaves your network at all. Expect quality to track
-the model.
-
-**What does it cost?**
-The app is free and open source. You pay your provider directly, or nothing with a local model.
-My marginal AI cost is zero, so there is no incentive to ration your usage — an architectural
-fact, not a pricing promise.
-
-**Why AGPL, if it never touches a server?**
-So a hosted fork can't take the work closed. Personal use is unaffected.
-
-## On the record
-
-So they can be held against me: **BYOK is free, forever** — using Jenny with your own key
-will never require a subscription, an account, or a payment to me. And **local-first is the
-architecture, not a launch feature.** Don't trust that sentence; check the permissions and the
-source. That's why they're public.
-
-## Support the project
-
-No subscription to sell you and BYOK stays free, so donations are the only thing funding the
-work.
-
-<!-- Height pinned on both: the Ko-fi badge is 223x30 while the Buy Me a Coffee
-     one is 545x153, so at natural size they render wildly mismatched. -->
-<a href="https://ko-fi.com/flagdizero"><img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Support me on Ko-fi" height="30"></a>
-&nbsp;
-<a href="https://buymeacoffee.com/flagdizero"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy me a coffee" height="30"></a>
-
----
-
-<div align="center">
-
-*Local-first personal AI agent for Android · on-device memory · BYOK · offline-capable · AGPL-3.0*
-
-**[Documentation](https://jenny.flagdizero.com/docs/) · [Quick start](#quick-start) · [Report an issue](../../issues)**
-
-</div>
+> Nota de cumplimiento: al ser una obra derivada de código AGPL-3.0, la distribución de este
+> APK obliga a ofrecer el código fuente correspondiente. Si publicas una release, publica
+> también el tag exacto desde el que se compiló.

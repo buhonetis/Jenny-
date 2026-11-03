@@ -83,15 +83,15 @@ def test_initial_model_preset_unknown_falls_back(tmp_path):
 
 
 async def _effort_sent(loop, hide: tuple[str, ...] = ("plan_propose",)) -> object:
-    """Il ``reasoning_effort`` che un turno di Jenny manda al provider (assente: ``"-"``).
+    """Il ``reasoning_effort`` che un turno di ARKHIVA manda al provider (assente: ``"-"``).
 
     Il registro del turno e' quello del loop meno *hide*: di default un turno
     normale, che puo' delegare (``spawn``) e non sta scrivendo un piano.
     """
     from unittest.mock import AsyncMock, MagicMock
 
-    from jenny.agent.tools.registry import ToolRegistryView
-    from jenny.providers.base import LLMResponse
+    from arkhiva.agent.tools.registry import ToolRegistryView
+    from arkhiva.providers.base import LLMResponse
 
     loop.provider.chat_with_retry = AsyncMock(return_value=LLMResponse(content="ok"))
     loop.tools.get_definitions = MagicMock(return_value=[])
@@ -106,7 +106,7 @@ def _with_global_effort(loop, effort: str | None):
     return loop
 
 
-async def test_jenny_reasoning_reaches_her_turn(tmp_path):
+async def test_arkhiva_reasoning_reaches_her_turn(tmp_path):
     """Il suo ragionamento va nella richiesta; senza, decide il provider (per tutti)."""
     low = make_loop(tmp_path, bare=True, patch_deps=True, main_reasoning_effort="low")
     _with_global_effort(low, "medium")
@@ -136,7 +136,7 @@ async def test_jennys_reasoning_stays_off_when_everyones_is_off(tmp_path):
 
 
 async def test_a_preset_with_its_own_reasoning_wins_over_jennys(tmp_path):
-    """«deep» chiede ``high`` a tutti: Jenny non lo smentisce col suo ``low``."""
+    """«deep» chiede ``high`` a tutti: ARKHIVA non lo smentisce col suo ``low``."""
     loop = make_loop(
         tmp_path, bare=True, model_presets=PRESETS, patch_deps=True, main_reasoning_effort="low",
     )
@@ -145,14 +145,14 @@ async def test_a_preset_with_its_own_reasoning_wins_over_jennys(tmp_path):
     assert await _effort_sent(loop) == "-"
     assert loop.provider.generation.reasoning_effort == "high"
     # «fast» lo lascia al provider (``None``), per tutti: e' il ragionamento
-    # spento, e Jenny non lo riaccende col suo ``low``.
+    # spento, e ARKHIVA non lo riaccende col suo ``low``.
     await loop.set_model_preset("fast")
     assert loop.provider.generation.reasoning_effort is None
     assert await _effort_sent(loop) == "-"
 
 
 def test_jennys_reasoning_is_low_by_default_and_null_means_same_as_helpers():
-    from jenny.config.schema import Config
+    from arkhiva.config.schema import Config
 
     assert Config().agents.defaults.main_reasoning_effort == "low"
     config = Config.model_validate({"agents": {"defaults": {"mainReasoningEffort": None}}})

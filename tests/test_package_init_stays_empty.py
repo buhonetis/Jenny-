@@ -1,9 +1,9 @@
 """Importare una foglia non deve tirarsi dietro il package intero.
 
-``jenny/apps/__init__.py`` ri-esportava ``execute_action`` per comodità, e
+``arkhiva/apps/__init__.py`` ri-esportava ``execute_action`` per comodità, e
 quella riga veniva eseguita da **ogni** import nel package: ``import
-jenny.apps.storage`` — un modulo che di suo tocca config e filesystem — caricava
-113 moduli invece di 35, fra cui tutto ``jenny.agent`` e ``jenny.providers``.
+arkhiva.apps.storage`` — un modulo che di suo tocca config e filesystem — caricava
+113 moduli invece di 35, fra cui tutto ``arkhiva.agent`` e ``arkhiva.providers``.
 Su Chaquopy quel conto si paga all'avvio del gateway, ogni volta.
 
 La comodità non la usava nessuno: gli import via facciata erano zero contro 415
@@ -26,8 +26,8 @@ REPO = Path(__file__).resolve().parents[1]
 
 # Foglie che non hanno ragione di conoscere l'agente, e il grafo che non devono
 # tirarsi dietro.
-LEAVES = ["jenny.apps.storage", "jenny.bus.events", "jenny.cron.types"]
-FORBIDDEN_PREFIXES = ("jenny.agent.", "jenny.providers.")
+LEAVES = ["arkhiva.apps.storage", "arkhiva.bus.events", "arkhiva.cron.types"]
+FORBIDDEN_PREFIXES = ("arkhiva.agent.", "arkhiva.providers.")
 
 
 def _modules_loaded_by(leaf: str) -> set[str]:
@@ -35,7 +35,7 @@ def _modules_loaded_by(leaf: str) -> set[str]:
     pieno di tutto, e la misura direbbe sempre di sì."""
     code = (
         f"import {leaf}, sys, json;"
-        "print(json.dumps([m for m in sys.modules if m.startswith('jenny')]))"
+        "print(json.dumps([m for m in sys.modules if m.startswith('arkhiva')]))"
     )
     done = subprocess.run(
         [sys.executable, "-c", code], cwd=REPO, capture_output=True, text=True, timeout=120
@@ -58,7 +58,7 @@ def test_a_leaf_import_does_not_drag_in_the_agent(leaf: str) -> None:
     )
 
 
-@pytest.mark.parametrize("package", ["jenny.apps", "jenny.bus", "jenny.cron"])
+@pytest.mark.parametrize("package", ["arkhiva.apps", "arkhiva.bus", "arkhiva.cron"])
 def test_the_package_init_has_no_imports(package: str) -> None:
     """Anche l'``__init__`` vuoto va difeso al livello del sorgente.
 

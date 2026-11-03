@@ -15,10 +15,10 @@ from types import SimpleNamespace
 import pytest
 from support.gateway_http import AUTH_SECRET, make_handler, make_request
 
-from jenny.webui.subagent_routes import CONTINUE_AFTER_BUDGET_TEXT
+from arkhiva.webui.subagent_routes import CONTINUE_AFTER_BUDGET_TEXT
 
 
-# Nomi identici a quelli di jenny/agent/subagent.py: la rotta riconosce gli
+# Nomi identici a quelli di arkhiva/agent/subagent.py: la rotta riconosce gli
 # errori per nome di classe, senza importare l'agente.
 class SubagentSendError(RuntimeError):
     pass

@@ -1,6 +1,6 @@
 """Il prompt non deve insegnare tool che non esistono in quello scope.
 
-Sul telefono Jenny ha chiamato ``grep`` in modalita orchestratore, dove non
+Sul telefono ARKHIVA ha chiamato ``grep`` in modalita orchestratore, dove non
 c'era. Non se l'era inventato: glielo dicevano ``identity.md`` e la skill
 ``memory``, che ha ``always: true`` e quindi entra in *ogni* prompt con cinque
 esempi. A sette righe di distanza il contratto dei tool dichiarava il contrario.
@@ -19,8 +19,8 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.context import ContextBuilder
-from jenny.agent.tools.loader import ToolLoader, declared_tool_name
+from arkhiva.agent.context import ContextBuilder
+from arkhiva.agent.tools.loader import ToolLoader, declared_tool_name
 
 # Nomi che il prompt cita *per vietarli* o per descrivere un altrove: la
 # citazione e voluta, e toglierla peggiorerebbe il prompt. Ogni voce va
@@ -79,9 +79,9 @@ def _prompt(workspace: Path, *, orchestrator: bool) -> str:
 @pytest.fixture
 def workspace(tmp_path: Path):
     """Workspace vero: i template e le skill si leggono da li, non dal package."""
-    from jenny.config import paths as paths_mod
-    from jenny.runtime.context import get_runtime_context
-    from jenny.utils.helpers import sync_workspace_templates
+    from arkhiva.config import paths as paths_mod
+    from arkhiva.runtime.context import get_runtime_context
+    from arkhiva.utils.helpers import sync_workspace_templates
 
     previous = get_runtime_context().workspace_dir
     root = tmp_path / "workspace"
@@ -137,7 +137,7 @@ def test_the_prompt_ends_with_the_generated_inventory(workspace, orchestrator):
     prompt = _prompt(workspace, orchestrator=orchestrator)
     tail = prompt.rsplit("\n\n---\n\n", 1)[-1]
 
-    assert tail.lstrip().startswith("# The tools you actually have")
+    assert tail.lstrip().startswith("# Las herramientas que realmente tienes")
     for name in _tool_names_in_scope("orchestrator" if orchestrator else "core"):
         assert name in tail
 
@@ -148,8 +148,8 @@ def test_a_missing_inventory_template_does_not_break_the_prompt(workspace):
 
     prompt = _prompt(workspace, orchestrator=True)
 
-    assert "# The tools you actually have" not in prompt
-    assert "Orchestrator Mode" in prompt
+    assert "# Las herramientas que realmente tienes" not in prompt
+    assert "Modo orquestador" in prompt
 
 
 def test_no_inventory_when_the_caller_does_not_offer_one(workspace):
@@ -158,7 +158,7 @@ def test_no_inventory_when_the_caller_does_not_offer_one(workspace):
         include_memory_recent_history=False
     )
 
-    assert "# The tools you actually have" not in prompt
+    assert "# Las herramientas que realmente tienes" not in prompt
 
 
 def _skills_section(workspace: Path, *, orchestrator: bool, tools: list[str]) -> str:
@@ -169,7 +169,7 @@ def _skills_section(workspace: Path, *, orchestrator: bool, tools: list[str]) ->
 
 
 def test_who_delegates_does_not_see_the_app_builders_guide(workspace):
-    """Il 28/10/2026 sul s22 Jenny leggeva ``app-creator`` e ne seguiva le fasi a
+    """Il 28/10/2026 sul s22 ARKHIVA leggeva ``app-creator`` e ne seguiva le fasi a
     domande prima di ogni ``spawn`` dell'``app-builder``: 30-40 s e una conferma in piu'."""
     orchestrating = _skills_section(workspace, orchestrator=True, tools=["read_file", "spawn"])
     assert "**cron**" in orchestrating

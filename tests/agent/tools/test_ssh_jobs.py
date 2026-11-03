@@ -25,9 +25,9 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.tools.ssh_backends.base import SshTarget
-from jenny.agent.tools.ssh_backends.dev import DevSshBackend
-from jenny.agent.tools.ssh_jobs import (
+from arkhiva.agent.tools.ssh_backends.base import SshTarget
+from arkhiva.agent.tools.ssh_backends.dev import DevSshBackend
+from arkhiva.agent.tools.ssh_jobs import (
     STATUS_FINISHED,
     STATUS_RUNNING,
     STATUS_STOPPED,
@@ -50,7 +50,7 @@ from jenny.agent.tools.ssh_jobs import (
 # *collection* su una macchina che non ce l'ha — come il runner della CI.
 asyncssh = pytest.importorskip("asyncssh")
 
-TEST_USER = "jenny"
+TEST_USER = "arkhiva"
 POLL_BYTES = 4096
 
 
@@ -401,7 +401,7 @@ def test_the_registry_is_written_as_a_list_of_objects(tmp_path):
 
 
 def test_pruning_never_drops_a_running_job(tmp_path):
-    from jenny.agent.tools import ssh_jobs
+    from arkhiva.agent.tools import ssh_jobs
 
     store = SshJobStore(path=tmp_path / "registry.json")
     jobs = store._load()
@@ -427,7 +427,7 @@ def test_pruning_never_drops_a_running_job(tmp_path):
 
 
 def test_default_registry_path_lives_in_the_runtime_dir():
-    from jenny.config.paths import get_runtime_subdir
+    from arkhiva.config.paths import get_runtime_subdir
 
     reset_job_store()
     try:
@@ -445,7 +445,7 @@ def test_prune_drops_stale_records_whatever_their_status(tmp_path, monkeypatch):
     "in corso" da un mese non e in corso: e un record non piu verificabile, e
     tenerlo darebbe al modello un elenco di lavori vivi che non esistono.
     """
-    from jenny.agent.tools.ssh_jobs import SshJob, SshJobStore
+    from arkhiva.agent.tools.ssh_jobs import SshJob, SshJobStore
 
     old = datetime.now() - timedelta(days=45)
     recent = datetime.now() - timedelta(days=1)
@@ -474,7 +474,7 @@ def test_prune_drops_stale_records_whatever_their_status(tmp_path, monkeypatch):
 
 def test_prune_keeps_records_with_an_unreadable_timestamp(tmp_path):
     """Un record scritto da una versione futura non deve sparire per il formato."""
-    from jenny.agent.tools.ssh_jobs import SshJob, SshJobStore
+    from arkhiva.agent.tools.ssh_jobs import SshJob, SshJobStore
 
     jobs = {
         "weird": SshJob(

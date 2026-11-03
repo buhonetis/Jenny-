@@ -14,8 +14,8 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.tools.filesystem import ReadFileTool
-from jenny.agent.tools.search import FindFilesTool, GrepTool
+from arkhiva.agent.tools.filesystem import ReadFileTool
+from arkhiva.agent.tools.search import FindFilesTool, GrepTool
 
 
 @pytest.fixture

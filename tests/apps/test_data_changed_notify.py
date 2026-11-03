@@ -1,8 +1,8 @@
 """Una scrittura dallo schermo e un lettore che ricalcola avvisano la WebUI.
 
 Sul telefono (06/10/2026) la polaroid del portafoglio restava al valore di
-prima finché non si riapriva Jenny: l'avviso partiva solo quando era il tool
-di Jenny a scrivere.
+prima finché non si riapriva ARKHIVA: l'avviso partiva solo quando era il tool
+di ARKHIVA a scrivere.
 """
 
 from __future__ import annotations
@@ -12,9 +12,9 @@ from pathlib import Path
 
 import pytest
 
-from jenny.apps import notify
-from jenny.apps.executor import execute_action
-from jenny.apps.reader import run_reader
+from arkhiva.apps import notify
+from arkhiva.apps.executor import execute_action
+from arkhiva.apps.reader import run_reader
 
 LIST = {
     "name": "Spesa", "description": "x",
@@ -53,7 +53,7 @@ async def test_a_write_from_the_screen_is_announced(tmp_path: Path, heard) -> No
     _app(tmp_path, "spesa", LIST)
     await execute_action(tmp_path, "spesa", "add", {"what": "latte"})
     assert heard == ["spesa"]
-    # Il tool di Jenny avvisa da se': niente doppione.
+    # Il tool di ARKHIVA avvisa da se': niente doppione.
     await execute_action(tmp_path, "spesa", "add", {"what": "uova"}, announce=False)
     assert heard == ["spesa"]
 

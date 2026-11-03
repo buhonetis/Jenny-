@@ -27,12 +27,12 @@ from unittest.mock import AsyncMock, MagicMock
 import httpx
 import pytest
 
-from jenny.channels import ws_remote
-from jenny.channels.websocket import WebSocketChannel, WebSocketConfig
-from jenny.channels.ws_remote import RemoteListener
-from jenny.webui import apps_routes, settings_routes, static_cache, ws_http
-from jenny.webui.gateway_services import build_gateway_services
-from jenny.webui.phone_only import PHONE_ONLY_ROUTES
+from arkhiva.channels import ws_remote
+from arkhiva.channels.websocket import WebSocketChannel, WebSocketConfig
+from arkhiva.channels.ws_remote import RemoteListener
+from arkhiva.webui import apps_routes, settings_routes, static_cache, ws_http
+from arkhiva.webui.gateway_services import build_gateway_services
+from arkhiva.webui.phone_only import PHONE_ONLY_ROUTES
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -142,7 +142,7 @@ async def test_phone_actions_are_refused_from_remote_and_still_work_locally(
 
 
 async def test_accessibility_settings_are_refused_from_remote(rig, monkeypatch) -> None:
-    from jenny.runtime import screen
+    from arkhiva.runtime import screen
 
     calls = _spy(monkeypatch, screen, "open_screen_settings", True)
 
@@ -155,7 +155,7 @@ async def test_accessibility_settings_are_refused_from_remote(rig, monkeypatch) 
 
 
 async def test_the_overlay_permission_page_is_refused_from_remote(rig, monkeypatch) -> None:
-    from jenny.runtime import floating
+    from arkhiva.runtime import floating
 
     calls = _spy(monkeypatch, floating, "open_permission_settings", True)
 
@@ -196,16 +196,16 @@ async def test_an_unauthenticated_remote_call_is_still_a_401(rig) -> None:
 
 async def test_the_page_knows_it_is_remote(rig) -> None:
     async def body() -> None:
-        r = await rig.get(rig.remote, "/webui/bootstrap", **{"X-Jenny-Auth": "remote-key"})
+        r = await rig.get(rig.remote, "/webui/bootstrap", **{"X-ARKHIVA-Auth": "remote-key"})
         assert r.json()["remote"] is True
-        r = await rig.get(rig.local, "/webui/bootstrap", **{"X-Jenny-Auth": "master-secret"})
+        r = await rig.get(rig.local, "/webui/bootstrap", **{"X-ARKHIVA-Auth": "master-secret"})
         assert r.json()["remote"] is False
 
     await _with(rig, body)
 
 
 async def test_the_floating_mascot_is_not_available_from_remote(rig, monkeypatch) -> None:
-    from jenny.webui import settings_api
+    from arkhiva.webui import settings_api
 
     monkeypatch.setattr(settings_api, "_android_context", lambda: object())
     monkeypatch.setattr(settings_routes, "_enrich_floating", AsyncMock())

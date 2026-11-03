@@ -14,7 +14,7 @@ import re
 from pathlib import Path
 
 APP = (
-    Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets" / "mobile-app.js"
+    Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets" / "mobile-app.js"
 ).read_text(encoding="utf-8")
 
 

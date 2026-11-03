@@ -18,7 +18,7 @@ Pull requests target **`main`**, from a short-lived branch of your own; releases
 `main`. The code builds
 two Gradle flavors: `foss` (GitHub and F-Droid, no Google library) and `play` (the Play Store,
 which adds the encrypted copy on Google Drive). Code only `play` needs lives outside the core —
-`jenny_extensions/` for Python and its WebUI files, `android/app/src/play/` for Kotlin — so the
+`arkhiva_extensions/` for Python and its WebUI files, `android/app/src/play/` for Kotlin — so the
 `foss` build contains none of it. See [Building from source](docs/contribute/build-from-source.md#two-flavors).
 
 ## Developer Certificate of Origin (DCO)
@@ -71,7 +71,7 @@ project name and logo are covered by a separate
   The boundaries, and the limits already accepted, are described in
   [Security model](docs/internals/security-model.md).
 - Test on a real device when possible, and say which one.
-- If you change a prompt under `jenny/templates/agent/`, a skill, or a tool
+- If you change a prompt under `arkhiva/templates/agent/`, a skill, or a tool
   description, run [`scripts/behaviour_check.py`](scripts/behaviour/README.md)
   against an emulator and paste the rates that moved. Several of Jenny's
   guarantees are sentences the model honours, not code, and no test goes red
@@ -79,7 +79,7 @@ project name and logo are covered by a separate
 
 ## Design rules
 
-- **The core stays small; extend at the edges.** `jenny/agent/loop.py` and
+- **The core stays small; extend at the edges.** `arkhiva/agent/loop.py` and
   `runner.py` are the critical path: a feature that can live in a channel, a
   tool or a skill goes there.
 - **Duplication over premature abstraction.** Channels and providers may repeat
@@ -87,13 +87,13 @@ project name and logo are covered by a separate
 - **The HTTP surface is for reads.** `/api/` never reads a request body, so its
   parameters travel in the query string or a header. Anything that writes, or
   carries content or a secret, is a command over the WebSocket
-  (`jenny/webui/commands.py`, see [WebSocket protocol](docs/reference/websocket.md#commands-rpc)).
+  (`arkhiva/webui/commands.py`, see [WebSocket protocol](docs/reference/websocket.md#commands-rpc)).
   Do not smuggle a payload into a header.
-- **Every `config.json` write goes through `jenny/config/store.py::mutate()`**
+- **Every `config.json` write goes through `arkhiva/config/store.py::mutate()`**
   (see [`AGENTS.md`](AGENTS.md)); calling `save_config()` directly loses other
   writers' changes silently.
 - **Explicit over magical.** Configuration is declared in
-  `jenny/config/schema.py`; bad input raises instead of being corrected. The one
+  `arkhiva/config/schema.py`; bad input raises instead of being corrected. The one
   exception is loading an unusable `config.json`, which falls back loudly (to
   the `.bak`, or to defaults with the broken file kept) because on a phone a
   config the gateway refuses is an app nobody can repair.

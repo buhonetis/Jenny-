@@ -20,10 +20,10 @@ from support.kotlin_source import read_code
 ROOT = Path(__file__).resolve().parents[1]
 RES = ROOT / "android/app/src/main/res"
 SPLASH_XML = RES / "values-v31/themes.xml"
-CSS = ROOT / "jenny/templates/ui/assets/mobile-style.css"
-THEME_JS = ROOT / "jenny/templates/ui/assets/shared/theme.js"
-MAIN_ACTIVITY = ROOT / "android/app/src/main/java/com/flagdizero/jenny/MainActivity.kt"
-PREFIX = "Theme.Jenny.Splash."
+CSS = ROOT / "arkhiva/templates/ui/assets/mobile-style.css"
+THEME_JS = ROOT / "arkhiva/templates/ui/assets/shared/theme.js"
+MAIN_ACTIVITY = ROOT / "android/app/src/main/java/org/buhonet/agente/arkhiva/MainActivity.kt"
+PREFIX = "Theme.Arkhiva.Splash."
 
 
 def _css_block(selector: str) -> str:
@@ -59,10 +59,30 @@ def _splash_styles() -> dict[str, dict[str, str]]:
         name = style.get("name", "")
         if name.startswith(PREFIX):
             styles[name[len(PREFIX):]] = {
-                item.get("name", "").removeprefix("android:"): (item.text or "").strip().lower()
+                item.get("name", "").removeprefix("android:"): _resolve_color(
+                    (item.text or "").strip().lower()
+                )
                 for item in style.iter("item")
             }
     return styles
+
+
+def _resolve_color(value: str) -> str:
+    """Risolve un ``@color/nome`` nella sua definizione esadecimale.
+
+    Dalla rinomina in ARKHIVA gli stili nativi usano la tavolozza di
+    ``values/colors.xml`` invece di ripetere gli esadecimali: due copie del
+    colore di sfondo si disallineavano in silenzio. Il confronto con il CSS
+    resta lo stesso, ma va fatto sul valore risolto.
+    """
+    if not value.startswith("@color/"):
+        return value
+    name = value.removeprefix("@color/")
+    tree = ET.parse(RES / "values" / "colors.xml")
+    for color in tree.getroot().iter("color"):
+        if color.get("name") == name:
+            return (color.text or "").strip().lower()
+    raise AssertionError(f"@color/{name} non definito in values/colors.xml")
 
 
 @pytest.fixture(scope="module")
@@ -96,19 +116,24 @@ def test_the_splash_backgrounds_are_all_different() -> None:
 
 def test_the_default_splash_is_the_default_theme(themes) -> None:
     tree = ET.parse(SPLASH_XML)
-    base = next(s for s in tree.getroot().iter("style") if s.get("name") == "Theme.Jenny")
-    items = {i.get("name"): (i.text or "").strip().lower() for i in base.iter("item")}
+    base = next(s for s in tree.getroot().iter("style") if s.get("name") == "Theme.Arkhiva")
+    items = {
+        i.get("name"): _resolve_color((i.text or "").strip().lower()) for i in base.iter("item")
+    }
     default_id = re.search(r"DEFAULT_THEME = '([a-z0-9]+)'", THEME_JS.read_text()).group(1)
     assert items["android:windowSplashScreenBackground"] == themes[default_id][0]
     # Stesso colore per la starting window sotto Android 12 e per il ripiego
     # della schermata di caricamento.
     base_xml = (RES / "values/themes.xml").read_text(encoding="utf-8")
-    assert f'name="android:windowBackground">{themes[default_id][0]}<' in base_xml
+    resolved = _resolve_color(
+        re.search(r'name="android:windowBackground">([^<]+)<', base_xml).group(1).strip().lower()
+    )
+    assert resolved == themes[default_id][0], (resolved, themes[default_id][0])
     default_bg = re.search(r"DEFAULT_BG = 0x([0-9A-Fa-f]{8})", read_code(MAIN_ACTIVITY))
     assert default_bg and default_bg.group(1).lower() == "ff" + themes[default_id][0][1:]
 
 
 def test_main_activity_offers_every_splash_style() -> None:
     kotlin = read_code(MAIN_ACTIVITY)
-    listed = set(re.findall(r"R\.style\.Theme_Jenny_Splash_(\w+)", kotlin))
+    listed = set(re.findall(r"R\.style\.Theme_ARKHIVA_Splash_(\w+)", kotlin))
     assert listed == set(_splash_styles()), listed

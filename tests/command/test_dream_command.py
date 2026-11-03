@@ -21,13 +21,13 @@ from types import SimpleNamespace
 import pytest
 from support.aio import other_tasks, settle_tasks
 
-from jenny.agent.memory import MemoryStore
-from jenny.bus.events import InboundMessage
-from jenny.command.builtin import register_builtin_commands
-from jenny.command.router import CommandContext, CommandRouter
-from jenny.config.loader import save_config
-from jenny.config.schema import Config
-from jenny.utils.helpers import sync_workspace_templates
+from arkhiva.agent.memory import MemoryStore
+from arkhiva.bus.events import InboundMessage
+from arkhiva.command.builtin import register_builtin_commands
+from arkhiva.command.router import CommandContext, CommandRouter
+from arkhiva.config.loader import save_config
+from arkhiva.config.schema import Config
+from arkhiva.utils.helpers import sync_workspace_templates
 
 # MEMORY.md deve essere abbastanza grande da poter finire *sopra* un budget
 # plausibile: è lo stato reale sul device ed è il caso che la conferma deve
@@ -54,8 +54,8 @@ def workspace(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     la cache va invalidata o la prima chiamata della suite fissa la root per
     tutte le altre.
     """
-    from jenny.runtime.context import get_runtime_context
-    from jenny.utils import prompt_templates
+    from arkhiva.runtime.context import get_runtime_context
+    from arkhiva.utils import prompt_templates
 
     ws = tmp_path / "workspace"
     ws.mkdir(parents=True)
@@ -156,7 +156,7 @@ class TestRegistration:
         assert router.is_dispatchable_command("/dream budget memory 6000")
 
     def test_the_palette_no_longer_offers_an_argument(self):
-        from jenny.command.specs import BUILTIN_COMMAND_SPECS
+        from arkhiva.command.specs import BUILTIN_COMMAND_SPECS
 
         spec = {s.command: s for s in BUILTIN_COMMAND_SPECS}["/dream"]
 

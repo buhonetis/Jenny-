@@ -2,7 +2,7 @@
 <!-- Configurazione di ScreenService: sola lettura.
 
      Nessun `accessibilityEventTypes`: il servizio non ascolta niente, legge le
-     finestre solo quando Jenny viene chiamata dalla mascotte (ScreenSnapshots).
+     finestre solo quando ARKHIVA viene chiamata dalla mascotte (ScreenSnapshots).
      Niente `canPerformGestures`: non può toccare né scrivere. Niente
      `isAccessibilityTool`: non è uno strumento per la disabilità, e dichiararlo
      sarebbe falso. -->

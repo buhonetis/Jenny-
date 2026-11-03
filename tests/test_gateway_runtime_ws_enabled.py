@@ -9,8 +9,8 @@ wrote into ``config.json`` themselves.
 
 from __future__ import annotations
 
-from jenny.config.schema import Config
-from jenny.gateway_runtime import _apply_gateway_overrides
+from arkhiva.config.schema import Config
+from arkhiva.gateway_runtime import _apply_gateway_overrides
 
 
 def test_ws_port_forces_enabled_default_true_when_unset():

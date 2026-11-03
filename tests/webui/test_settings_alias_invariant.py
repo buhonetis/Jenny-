@@ -28,9 +28,9 @@ import inspect
 
 import pytest
 
-from jenny.config.schema import Config, ProviderConfig, ProvidersConfig
-from jenny.providers.factory import provider_fingerprint
-from jenny.webui.settings_api import (
+from arkhiva.config.schema import Config, ProviderConfig, ProvidersConfig
+from arkhiva.providers.factory import provider_fingerprint
+from arkhiva.webui.settings_api import (
     LIVE_FROM_DISK_ALIASES,
     WebUISettingsError,
     _apply_agent_settings,
@@ -141,15 +141,15 @@ def test_every_reread_alias_is_really_reread_from_disk(alias: str, tmp_path, mon
     """
     import json
 
-    from jenny.config.loader import save_config
-    from jenny.runtime.context import get_runtime_context
-    from jenny.runtime.user_text import current_bot_name
+    from arkhiva.config.loader import save_config
+    from arkhiva.runtime.context import get_runtime_context
+    from arkhiva.runtime.user_text import current_bot_name
 
     path = tmp_path / "config.json"
     monkeypatch.setattr(get_runtime_context(), "config_path", path)
     config = _baseline()
     save_config(config, path)
-    assert current_bot_name() == "Jenny"
+    assert current_bot_name() == "ARKHIVA"
 
     changed, restart_required = _apply_agent_settings(config, {alias: ["Ada"]})
     assert changed and not restart_required

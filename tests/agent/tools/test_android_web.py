@@ -7,15 +7,15 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from jenny.agent.tools import android_web
-from jenny.agent.tools.android_web import (
+from arkhiva.agent.tools import android_web
+from arkhiva.agent.tools.android_web import (
     AndroidWebFetchTool,
     AndroidWebSearchTool,
     _looks_like_captcha,
     _parse_search_response,
 )
-from jenny.config.schema import ToolsConfig
-from jenny.config.tool_schemas import AndroidWebFetchConfig, AndroidWebSearchConfig
+from arkhiva.config.schema import ToolsConfig
+from arkhiva.config.tool_schemas import AndroidWebFetchConfig, AndroidWebSearchConfig
 
 RESULTS = [
     {"title": "Python", "url": "https://python.org", "snippet": "Official site"},
@@ -576,7 +576,7 @@ _BROWSER_TEXT = "Il testo dell'articolo, letto dal browser. " * 40
 
 def _allow_public(monkeypatch):
     """Validazione senza DNS: passa tutto tranne il loopback e la rete locale."""
-    import jenny.security.network as net
+    import arkhiva.security.network as net
 
     def fake(url, **kw):
         blocked = "127.0.0.1" in url or "192.168." in url
@@ -592,7 +592,7 @@ class TestFetchFallsBackToTheBrowser:
         return AndroidWebFetchTool(android_context=object(), timeout=5, owner="ab12cd34")
 
     def _browser(self, monkeypatch, result):
-        from jenny.agent.tools import browser
+        from arkhiva.agent.tools import browser
 
         calls = []
 
@@ -859,13 +859,13 @@ class TestFetchReadsDirectlyFirst:
         """Wikimedia rifiuta col 403 un browser finto dal telefono, e accetta un nome con recapito."""
         import httpx
 
-        from jenny.security.fetch import JENNY_USER_AGENT
+        from arkhiva.security.fetch import ARKHIVA_USER_AGENT
 
         agents = []
 
         def handler(req):
             agents.append(req.headers["user-agent"])
-            if req.headers["user-agent"] != JENNY_USER_AGENT:
+            if req.headers["user-agent"] != ARKHIVA_USER_AGENT:
                 return httpx.Response(403, text="Please respect our robot policy")
             return httpx.Response(200, headers={"content-type": "text/html"}, text=_LONG_ARTICLE)
 
@@ -874,7 +874,7 @@ class TestFetchReadsDirectlyFirst:
         with patch.object(android_web, "_bridge_fetch", bridge):
             out = json.loads(await self._tool().execute("https://it.wikipedia.org/wiki/Calathea"))
         assert out["extractor"] == "direct"
-        assert agents == [android_web.BROWSER_USER_AGENT, JENNY_USER_AGENT]
+        assert agents == [android_web.BROWSER_USER_AGENT, ARKHIVA_USER_AGENT]
 
     async def test_a_redirect_to_the_local_network_is_not_followed(self, monkeypatch):
         import httpx

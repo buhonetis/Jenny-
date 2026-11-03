@@ -17,14 +17,14 @@ from types import SimpleNamespace
 
 import pytest
 
-from jenny.agent.gardener import GardenerOutcome
-from jenny.bus.events import InboundMessage
-from jenny.command.builtin import (
+from arkhiva.agent.gardener import GardenerOutcome
+from arkhiva.bus.events import InboundMessage
+from arkhiva.command.builtin import (
     _format_gardener_outcome,
     cmd_gardener,
     register_builtin_commands,
 )
-from jenny.command.router import CommandContext, CommandRouter
+from arkhiva.command.router import CommandContext, CommandRouter
 
 
 @pytest.fixture()
@@ -59,7 +59,7 @@ class TestRegistration:
         assert router.is_dispatchable_command("/gardener viaggio")
 
     def test_is_listed_among_builtin_commands(self):
-        from jenny.command.specs import BUILTIN_COMMAND_SPECS
+        from arkhiva.command.specs import BUILTIN_COMMAND_SPECS
 
         specs = {spec.command: spec for spec in BUILTIN_COMMAND_SPECS}
 
@@ -353,15 +353,15 @@ class TestTheWorkBubble:
     async def test_the_bubble_opens_at_once_and_closes_with_the_outcome(
         self, tmp_path, monkeypatch
     ):
-        from jenny.bus.events import OUTBOUND_META_WORK_ID, OUTBOUND_META_WORK_STATUS
-        from jenny.runtime import work_status
+        from arkhiva.bus.events import OUTBOUND_META_WORK_ID, OUTBOUND_META_WORK_STATUS
+        from arkhiva.runtime import work_status
 
         work_status.reset_registry()
         root = tmp_path / "wikis" / "viaggio"
         (root / "wiki").mkdir(parents=True)
         (root / "wiki" / "index.md").write_text("# viaggio\n", "utf-8")
         monkeypatch.setattr(
-            "jenny.config.loader.load_config",
+            "arkhiva.config.loader.load_config",
             lambda: SimpleNamespace(workspace_path=tmp_path, wiki=SimpleNamespace(wikis_dir="wikis")),
         )
         seen: dict = {}
@@ -371,7 +371,7 @@ class TestTheWorkBubble:
             reporter.enter("pages")
             return GardenerOutcome(status="written", writes=3)
 
-        monkeypatch.setattr("jenny.agent.gardener.run_gardener", _pass)
+        monkeypatch.setattr("arkhiva.agent.gardener.run_gardener", _pass)
 
         frames: list = []
         texts: list = []
