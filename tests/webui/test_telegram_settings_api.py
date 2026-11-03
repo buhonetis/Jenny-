@@ -44,7 +44,7 @@ class FakeAPI:
     async def get_me(self):
         if FakeAPI.fail is not None:
             raise FakeAPI.fail
-        return {"username": "jenny_bot"}
+        return {"username": "arkhiva_bot"}
 
     async def set_my_commands(self, commands):
         if FakeAPI.fail_commands is not None:
@@ -98,7 +98,7 @@ async def test_save_token_validates_and_generates_code(tmp_path, monkeypatch) ->
     payload = await save_telegram_token(TOKEN)
 
     assert payload["enabled"] is True
-    assert payload["bot_username"] == "jenny_bot"
+    assert payload["bot_username"] == "arkhiva_bot"
     assert payload["paired"] is False
     assert len(payload["pairing_code"]) == 6
 
@@ -287,7 +287,7 @@ async def test_provider_added_during_pairing_is_not_lost(tmp_path, monkeypatch) 
                 "api_base": "http://127.0.0.1:8080/v1",
             })
             provider_added.set()
-            return {"username": "jenny_bot"}
+            return {"username": "arkhiva_bot"}
 
     monkeypatch.setattr("arkhiva.channels.telegram_api.TelegramAPI", SlowAPI)
 

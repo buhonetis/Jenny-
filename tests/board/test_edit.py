@@ -190,7 +190,7 @@ def test_what_the_editor_does_the_gardener_cannot_undo(notebook: Path) -> None:
 
     for undo in (drop_card, take_page_back):
         with pytest.raises(BoardOwnershipError):
-            mutate_board(notebook, undo, actor=model.JENNY)
+            mutate_board(notebook, undo, actor=model.ARKHIVA)
 
 
 async def test_a_removed_card_goes_to_the_trash_and_its_cron_pauses(notebook: Path) -> None:
@@ -212,7 +212,7 @@ async def test_an_accepted_removal_is_a_trash_with_undo_too(notebook: Path) -> N
     _seed(notebook)
     mutate_board(notebook, lambda b: b["suggestions"].append({
         "id": "sg-acero", "kind": "remove_card", "subject": "Acero", "card": "acero",
-        "text": "Ferma da tempo."}), actor=model.JENNY)
+        "text": "Ferma da tempo."}), actor=model.ARKHIVA)
     cron = _Cron()
     await edit.respond_suggestion(notebook, "sg-acero", "yes", cron=cron)
     board = read_board(notebook)

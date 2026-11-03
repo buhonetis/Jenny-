@@ -733,7 +733,7 @@ def reminder_job(cron: Any, root: Path, rid: str) -> Any:
     if job is None or (job.payload.board or {}).get("notebook") != root.name:
         raise BoardEditError("not_found", f"no reminder `{rid}` in this notebook")
     # Un ricorrente di questo quaderno c'è, ma non è un promemoria: dirgli «non
-    # esiste» manda a cercarlo altrove (jenny_s22, 01/11/2026).
+    # esiste» manda a cercarlo altrove (arkhiva_s22, 01/11/2026).
     if not is_note(job.schedule.kind, job.payload.condition):
         raise BoardEditError(
             "bad_request",
@@ -945,9 +945,9 @@ def accept_suggestion(board: dict[str, Any], suggestion: Mapping[str, Any],
         x, y = model.free_slot(board, notes, box=box, near=target)
         card = {
             "id": card_id, "title": model.clean_text(title, model.MAX_TITLE) or card_id,
-            "titleBy": model.JENNY,
+            "titleBy": model.ARKHIVA,
             "pages": [p for p in pages if p not in owners],
-            "pos": {"x": x, "y": y, "by": model.JENNY},
+            "pos": {"x": x, "y": y, "by": model.ARKHIVA},
             "glyph": glyph, "userSections": [], "created": stamp,
         }
         if size:
@@ -989,7 +989,7 @@ def accept_suggestion(board: dict[str, Any], suggestion: Mapping[str, Any],
             and len(board["connections"]) < model.MAX_CONNECTIONS
         ):
             board["connections"].append({
-                "a": a, "b": b, "label": suggestion.get("label") or "", "by": model.JENNY,
+                "a": a, "b": b, "label": suggestion.get("label") or "", "by": model.ARKHIVA,
             })
             model.add_since(board, "connection_added", a=a, b=b)
     elif kind == "attach_page":

@@ -19,7 +19,7 @@ from .ui_paths import EXT_UI, ROOT
 
 CLOUD_JS = (EXT_UI / "cloud-backup.js").read_text(encoding="utf-8")
 ONBOARDING_JS = (EXT_UI / "onboarding.js").read_text(encoding="utf-8")
-KOTLIN = ROOT / "android" / "app" / "src" / "play" / "java" / "com" / "flagdizero" / "arkhiva"
+KOTLIN = ROOT / "android" / "app" / "src" / "play" / "java" / "com" / "buhonet" / "arkhiva"
 
 pytestmark = requires_node
 
@@ -51,7 +51,7 @@ def test_the_kotlin_side_answers_the_same_names() -> None:
     drive = read_source(KOTLIN / "DriveExtension.kt")
     assert 'override val name = "drive"' in drive
     assert '"connectDrive" ->' in drive
-    assert 'notifyJs("jennyCloud", "onDriveConnected"' in drive
+    assert 'notifyJs("arkhivaCloud", "onDriveConnected"' in drive
     callbacks = re.search(r"const CALLBACKS = \[([^\]]+)\]", CLOUD_JS).group(1)
     assert "'onDriveConnected'" in callbacks
     assert "listOf(DriveExtension)" in read_source(KOTLIN / "Extensions.kt")

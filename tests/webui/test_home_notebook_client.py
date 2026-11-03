@@ -522,7 +522,7 @@ assert.equal(pin.disabled, true, 'con le pagine piene si puo\\u2019 ancora appen
 
 // La scheda di una ARKHIVA App e' quella di `shared/apps-actions.js`: e' li' che
 // il nome diverso spegneva il cancello.
-app.appsSource().jennyApps = [{ slug: 'garden', name: 'Garden' }];
+app.appsSource().arkhivaApps = [{ slug: 'garden', name: 'Garden' }];
 app.appsActions().showARKHIVAAppSheet('garden');
 const appPin = document.querySelector('#arkhiva-app-sheet-actions [data-action="pin"]');
 assert.ok(appPin, document.getElementById('arkhiva-app-sheet-actions')?.innerHTML);

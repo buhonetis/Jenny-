@@ -6,11 +6,11 @@ A tool is a Python class in `arkhiva/agent/tools/` that the LLM can call; this p
 
 Every built-in tool is a `Tool` subclass (`arkhiva/agent/tools/base.py`) living in a module under `arkhiva/agent/tools/`. There is no plugin directory scanned at runtime and no entry-point discovery: the set of tool modules is a fixed, hardcoded list, and each module explicitly declares which classes it exports as tools.
 
-This is a deliberate fork boundary (see [`FORK_BOUNDARY.md`](../../FORK_BOUNDARY.md)): upstream nanobot used implicit `dir()` reflection to find tool classes, which is order-sensitive and lets a typo silently drop a tool. Jenny replaced that with two explicit lists that fail loudly instead.
+This is a deliberate fork boundary (see [`FORK_BOUNDARY.md`](../../FORK_BOUNDARY.md)): upstream nanobot used implicit `dir()` reflection to find tool classes, which is order-sensitive and lets a typo silently drop a tool. Arkhiva replaced that with two explicit lists that fail loudly instead.
 
 ## Explicit registration
 
-`arkhiva/agent/tools/loader.py` defines `_HARDCODED_TOOL_MODULES`, the list of module names under `jenny.agent.tools` that get imported at startup:
+`arkhiva/agent/tools/loader.py` defines `_HARDCODED_TOOL_MODULES`, the list of module names under `arkhiva.agent.tools` that get imported at startup:
 
 ```python
 _HARDCODED_TOOL_MODULES = [
@@ -85,7 +85,7 @@ These are programming errors: deterministic, reproducible on every boot, and cat
 
 After adding a tool, check `loader.failures` (or the startup log) rather than assuming "no crash" means "registered".
 
-Jenny App actions (`<slug>_<action>`, see [Write a mini-app](write-a-mini-app.md)) are re-synced into the same registry every turn and follow a *different* rule: a name colliding with a built-in tool is skipped with a warning rather than raising, so a malformed or malicious app manifest can't crash the gateway or shadow a core tool.
+Arkhiva App actions (`<slug>_<action>`, see [Write a mini-app](write-a-mini-app.md)) are re-synced into the same registry every turn and follow a *different* rule: a name colliding with a built-in tool is skipped with a warning rather than raising, so a malformed or malicious app manifest can't crash the gateway or shadow a core tool.
 
 ## Anatomy of a tool
 

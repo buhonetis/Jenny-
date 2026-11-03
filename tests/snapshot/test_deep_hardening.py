@@ -284,7 +284,7 @@ async def test_full_lifecycle_byte_fidelity(tmp_path: Path, monkeypatch) -> None
 
     # Marker e sanity file consumati; storia importata attiva.
     assert not (runtime_root / MARKER_FILE_NAME).exists()
-    assert not any(workspace.rglob(".jenny_restore_manifest.json"))
+    assert not any(workspace.rglob(".arkhiva_restore_manifest.json"))
     restored_engine = SnapshotEngine(workspace, runtime_root / "snapshots")
     history = restored_engine.list_snapshots()
     ids = {s["id"] for s in history}

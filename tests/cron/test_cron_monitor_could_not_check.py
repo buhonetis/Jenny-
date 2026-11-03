@@ -300,7 +300,7 @@ class TestTheSilentOutcomes:
         assert "`checked=true`" in prompt
 
     async def test_a_partial_check_is_not_a_quiet_one(self) -> None:
-        """Il 01/11/2026, su jenny_s22: un monitor che doveva confrontare lo
+        """Il 01/11/2026, su arkhiva_s22: un monitor che doveva confrontare lo
         sha256 di un file ha letto il file, non ha calcolato niente (il main
         agent non ha `python_exec`) e ha chiamato `nothing_to_report`. Un
         controllo fatto a metà va a un aiutante o è un CHECK_FAILED."""

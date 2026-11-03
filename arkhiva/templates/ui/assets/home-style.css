@@ -1505,7 +1505,7 @@ body.home {
 
 /* I due tratti: sfumano verso i bordi, e respirano verso il centro. Cedono
    per primi: su un telefono stretto la frase piu' lunga del vocabolario
-   («snooping through your stuff», 13/10/2026 su jenny_s22) li mangia fino a
+   («snooping through your stuff», 13/10/2026 su arkhiva_s22) li mangia fino a
    zero prima di essere tagliata lei. A frase corta si dividono il posto a
    meta', e la riga resta centrata. */
 .home-typing-rule {
@@ -2864,7 +2864,7 @@ body.home {
 
    Due geometrie. Nella chat di un quaderno (`.is-path`) i margini sono quelli
    di `.home-head`, cosi' QUADERNI e il quaderno stanno al pixel dove stavano
-   sulla bacheca e la riga si allunga solo di «› JENNY». Nella chat di sempre
+   sulla bacheca e la riga si allunga solo di «› ARKHIVA». Nella chat di sempre
    c'e' solo il nome di lei, e sta dove sta il suo nome nella fila: 18 px. */
 .home-over-head {
   flex: none;
@@ -4783,7 +4783,7 @@ dialog.home-photo-viewer[open] { display: flex; }
 .home-drawer-cal-row.is-paused, .home-drawer-cal-next.is-paused { opacity: 0.6; }
 .home-drawer-cal-text { font-size: 15px; line-height: 1.35; }
 /* Al posto del giorno, una condizione («umidita < 5»): nei 52 px di un giorno
-   andava a capo e toccava il testo (jenny_s22, 01/11/2026). La colonna si fa
+   andava a capo e toccava il testo (arkhiva_s22, 01/11/2026). La colonna si fa
    larga quanto serve, fino a meta' riga. */
 .home-drawer-cal-row.is-condition {
   grid-template-columns: fit-content(50%) minmax(0, 1fr) 44px;
@@ -5118,7 +5118,7 @@ dialog.home-photo-viewer[open] { display: flex; }
 /* «Controlla ogni» accanto alla sua tendina, su una riga: e' una parola del
    modulo, non l'etichetta di una scheda (`.home-board-label`, in inchiostro e
    a mano, centrata e in `cqw`, sul foglio del modulo si leggeva appena e andava
-   a capo — jenny_s22, 01/11/2026). */
+   a capo — arkhiva_s22, 01/11/2026). */
 .home-board-row.is-every { align-items: center; }
 .home-board-form-label {
   flex: none;
@@ -5531,7 +5531,7 @@ dialog.home-photo-viewer[open] { display: flex; }
   padding-bottom: 0;
   /* Senza barra: la sua larghezza la toglieva alla griglia e non alle
      suggerite, e le colonne delle due non stavano piu' una sotto l'altra
-     (4 px di scarto all'ultima, visto su jenny_square). */
+     (4 px di scarto all'ultima, visto su arkhiva_square). */
   scrollbar-width: none;
 }
 #launcher-sheet .launcher-list::-webkit-scrollbar { display: none; }

@@ -1171,7 +1171,7 @@ export class LauncherController {
          Chromium: `dragstart` e poi `pointercancel`, che spegne il timer della
          pressione lunga. La scheda (e Disinstalla) non si apriva sulle app
          Android, si' sulle ARKHIVA App, che hanno un glifo. Misurato su
-         jenny_square il 06/10/2026, quando l'icona e' diventata quasi tutta
+         arkhiva_square il 06/10/2026, quando l'icona e' diventata quasi tutta
          la cella. */
       img.draggable = false;
       iconWrap.appendChild(img);

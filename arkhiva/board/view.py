@@ -110,7 +110,7 @@ def _place_near(
     """
     x, y = model.free_slot(board, notes, box=box, near=near, extra=placed, anchor=anchor)
     placed.append((x, y, x + box[0], y + box[1]))
-    return {"x": x, "y": y, "by": model.JENNY}
+    return {"x": x, "y": y, "by": model.ARKHIVA}
 
 
 def _place_free(
@@ -122,7 +122,7 @@ def _place_free(
     """Il primo posto libero del muro per un oggetto senza scheda (di tutto il quaderno)."""
     x, y = model.free_slot(board, notes, box=box, extra=placed)
     placed.append((x, y, x + box[0], y + box[1]))
-    return {"x": x, "y": y, "by": model.JENNY}
+    return {"x": x, "y": y, "by": model.ARKHIVA}
 
 
 def _postit_pos(

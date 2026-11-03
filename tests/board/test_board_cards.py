@@ -76,7 +76,7 @@ async def test_rename_makes_the_title_the_users(ctx, notebook: Path) -> None:
     assert (card["title"], card["titleBy"]) == ("Acerello", "user")
     # E da li' ARKHIVA non lo riscrive.
     with pytest.raises(BoardOwnershipError):
-        mutate_board(notebook, lambda b: b["cards"][0].update(title="Acero"), actor=model.JENNY)
+        mutate_board(notebook, lambda b: b["cards"][0].update(title="Acero"), actor=model.ARKHIVA)
 
 
 async def test_remove_and_undo_put_back_place_threads_and_pages(ctx, notebook: Path) -> None:
@@ -106,7 +106,7 @@ async def test_arkhiva_cannot_touch_the_removed_cards(ctx, notebook: Path) -> No
     _seed(notebook)
     await dispatch_command(ctx, "board.card.remove", {"wiki": "piante", "id": "acero"})
     with pytest.raises(BoardOwnershipError):
-        mutate_board(notebook, lambda b: b.update(removedCards=[]), actor=model.JENNY)
+        mutate_board(notebook, lambda b: b.update(removedCards=[]), actor=model.ARKHIVA)
 
 
 async def test_a_removed_card_pauses_its_crons_and_undo_resumes_them(

@@ -321,7 +321,7 @@ def test_the_board_written_by_a_helper_is_undone(board_ws: Path) -> None:
 
 
 def test_the_board_is_undone_by_pieces_when_the_home_stamped_it_after(board_ws: Path) -> None:
-    """La casa che ridisegna la bacheca ci timbra ``lastSeen`` (prova su jenny_s22
+    """La casa che ridisegna la bacheca ci timbra ``lastSeen`` (prova su arkhiva_s22
     del 26/10/2026): a file intero risultava «cambiata da altri» quasi sempre."""
     root = board_ws / "wikis" / "piante"
     before = _board(board_ws)

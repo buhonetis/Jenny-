@@ -37,8 +37,8 @@ BOARD_VERSION = 1
 # Chi possiede un pezzo. Il giardiniere scrive come ``arkhiva``; l'interfaccia
 # come ``user``.
 USER = "user"
-JENNY = "arkhiva"
-ACTORS = (USER, JENNY)
+ARKHIVA = "arkhiva"
+ACTORS = (USER, ARKHIVA)
 
 # ── Le soglie ────────────────────────────────────────────────────────────────
 # Costanti e non manopole: sono la forma del prodotto, non una taratura per
@@ -210,7 +210,7 @@ def _clamp(value: Any, low: float, high: float, default: float) -> float:
     return round(max(low, min(high, float(value))), 2)
 
 
-def _owner(value: Any, default: str = JENNY) -> str:
+def _owner(value: Any, default: str = ARKHIVA) -> str:
     return value if value in ACTORS else default
 
 
@@ -270,7 +270,7 @@ def empty_board(skeleton: Iterable[str] = ()) -> dict[str, Any]:
     return normalize_board({"skeleton": list(skeleton)})
 
 
-def _normalize_pos(raw: Any, default_by: str = JENNY) -> dict[str, Any] | None:
+def _normalize_pos(raw: Any, default_by: str = ARKHIVA) -> dict[str, Any] | None:
     if not isinstance(raw, Mapping):
         return None
     known = {
@@ -340,7 +340,7 @@ def _normalize_card(raw: Any) -> dict[str, Any] | None:
         "title": title,
         "titleBy": _owner(raw.get("titleBy")),
         "pages": _str_list(raw.get("pages")),
-        "pos": _normalize_pos(raw.get("pos")) or {"x": 0.0, "y": 0.0, "by": JENNY},
+        "pos": _normalize_pos(raw.get("pos")) or {"x": 0.0, "y": 0.0, "by": ARKHIVA},
         "pinned": bool(raw.get("pinned", False)),
         "glyph": raw["glyph"] if isinstance(raw.get("glyph"), str)
         and _GLYPH_RE.match(raw["glyph"]) else "",

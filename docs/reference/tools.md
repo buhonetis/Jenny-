@@ -1,18 +1,18 @@
 # Tool reference
 
-Every capability Jenny can invoke on its own — files, code execution, web, device sensors, scheduling, self-diagnosis and app updates, and whatever your Jenny Apps expose — documented tool by tool.
+Every capability Arkhiva can invoke on its own — files, code execution, web, device sensors, scheduling, self-diagnosis and app updates, and whatever your Arkhiva Apps expose — documented tool by tool.
 
 ## The list is dynamic
 
-There is no fixed tool count. What Jenny actually has available in a given conversation depends on:
+There is no fixed tool count. What Arkhiva actually has available in a given conversation depends on:
 
 - **Config toggles** — most tools can be disabled in `workspace/config.json` (Location and SSH also from the workshop's Hands drawer; see the table at the end of this page).
 - **The runtime platform** — `web_search`, `web_fetch` and `get_location` only register when an Android context is available (they are backed by Android-only bridges: a hidden WebView and the location bridge). On any other platform they simply do not exist. `ui_view` registers whenever a WebUI query service is present rather than on a platform check, and `download_file` has no platform gate at all.
-- **Installed Jenny Apps** — every app under `workspace/apps/` contributes one tool per declared action, re-synced every turn.
+- **Installed Arkhiva Apps** — every app under `workspace/apps/` contributes one tool per declared action, re-synced every turn.
 
 - **The agent's scope** — the main agent loads either the `orchestrator` scope (default, see `agents.defaults.orchestratorMode`) or the historical `core` scope; a subagent loads the `subagent` scope, narrowed further by its agent type. The four SSH tools sit in a scope of their own, `remote`, which **no** agent loads by default — only the `sysadmin` subagent type asks for it. The same install therefore exposes different tools to the orchestrator, to a `sysadmin` subagent, and to every other subagent.
 
-A conversation agent can draw on **49** named built-in tools: 48 registered through the standard loader (51 classes: a few names have one class per scope — `app` has three, see [The `app` tool and who writes apps](#the-app-tool-and-who-writes-apps), and [`notebook`](#notebook) two) (`arkhiva/agent/tools/loader.py`, which imports 27 modules — `self.py` among them, with an empty `TOOLS` list) plus `my`, which is registered by hand in `arkhiva/agent/loop.py` because it needs a live reference to the running agent loop. Two more tool classes are built outside the loader too, so the loader's module list is not a complete inventory of the tool surface: `memory` (`MemoryEntryTool` in `memory_entries.py`), which needs the memory store and is given only to Dream's own runs (see [The internal registry: Dream](#the-internal-registry-dream)), and `AppActionTool` (`app_actions.py`), instantiated once per declared app action and re-synced every turn. No single agent sees all 49 at once — see the scope note above. Add to that N dynamic app tools. If you ask Jenny to list its tools, expect the number to vary between installs.
+A conversation agent can draw on **49** named built-in tools: 48 registered through the standard loader (51 classes: a few names have one class per scope — `app` has three, see [The `app` tool and who writes apps](#the-app-tool-and-who-writes-apps), and [`notebook`](#notebook) two) (`arkhiva/agent/tools/loader.py`, which imports 27 modules — `self.py` among them, with an empty `TOOLS` list) plus `my`, which is registered by hand in `arkhiva/agent/loop.py` because it needs a live reference to the running agent loop. Two more tool classes are built outside the loader too, so the loader's module list is not a complete inventory of the tool surface: `memory` (`MemoryEntryTool` in `memory_entries.py`), which needs the memory store and is given only to Dream's own runs (see [The internal registry: Dream](#the-internal-registry-dream)), and `AppActionTool` (`app_actions.py`), instantiated once per declared app action and re-synced every turn. No single agent sees all 49 at once — see the scope note above. Add to that N dynamic app tools. If you ask Arkhiva to list its tools, expect the number to vary between installs.
 
 Below, tools are grouped into ten categories. Each entry gives the exact tool name the model calls, what it does for you in practice, the parameters worth knowing, hard numeric limits, the config toggle that controls it, and any gotcha worth knowing before you rely on it.
 
@@ -24,7 +24,7 @@ Fifteen of the tools below are marked **subagent-only**. The config toggle on th
 
 ## 1. Files and workspace
 
-All seven tools in this group share the same access boundary — which is not the same as all seven being available to the same agent. With `security.restrictToWorkspace` at its default of `true`, every read and write any of them performs is confined to the workspace, plus `skills/`, the media directory, and — if `tools.file.exposePackageSource` is on (default `true`) — a read-only view of Jenny's own source code.
+All seven tools in this group share the same access boundary — which is not the same as all seven being available to the same agent. With `security.restrictToWorkspace` at its default of `true`, every read and write any of them performs is confined to the workspace, plus `skills/`, the media directory, and — if `tools.file.exposePackageSource` is on (default `true`) — a read-only view of Arkhiva's own source code.
 
 Who holds which, in the default configuration: the orchestrator gets `read_file`, `list_dir` and a reduced `grep`. `write_file`, `edit_file`, `apply_patch` and `find_files` are **subagent-only**.
 
@@ -52,7 +52,7 @@ Config: `tools.file.enable` (default `true`). Gotcha: CRLF line endings are norm
 
 Creates a new file, or **replaces an existing one entirely** with the given content. Parent directories are created automatically.
 
-There is no confirmation prompt and no undo built into the tool. If Jenny overwrites something you wanted to keep, the only way back is the workspace's automatic snapshot system (see the Backup and restore page) — `write_file` itself keeps no history.
+There is no confirmation prompt and no undo built into the tool. If Arkhiva overwrites something you wanted to keep, the only way back is the workspace's automatic snapshot system (see the Backup and restore page) — `write_file` itself keeps no history.
 
 Config: `tools.file.enable` (default `true`). **Subagent-only** in the default orchestrator mode.
 
@@ -253,7 +253,7 @@ Config: `tools.location.enable` (default `true`), `tools.location.telegramTtlS` 
 
 ### ui_view
 
-A **pull** model for letting Jenny see the screen: there is no ambient screen access. Jenny sees the current view only at the exact moment it calls this tool, which queries the connected WebUI client for the active view's HTML (chat, wiki, workspace, apps, settings, graph) and, if a Jenny App is open, that app's HTML too.
+A **pull** model for letting Arkhiva see the screen: there is no ambient screen access. Arkhiva sees the current view only at the exact moment it calls this tool, which queries the connected WebUI client for the active view's HTML (chat, wiki, workspace, apps, settings, graph) and, if a Arkhiva App is open, that app's HTML too.
 
 - No parameters.
 - Only works while the WebUI is attached in the foreground for that turn. From Telegram, from a cron-triggered turn, or with the app backgrounded/screen off, it either fails immediately (no client attached) or times out after ~6 seconds — **this is by design, not a bug**. In both failure cases the tool's own error message tells the model to just ask the user what they see instead of retrying.
@@ -263,7 +263,7 @@ Config: no dedicated toggle — it registers whenever the underlying query servi
 
 ### screen
 
-What was on the phone's screen when you wrote to Jenny from the **floating mascot**. Not a live view: tapping the mascot takes one reading of the app underneath (its text, the page address if it is a browser, and a screenshot of that app's window alone, without the mascot, the status bar or the keyboard), and the tool reads that reading.
+What was on the phone's screen when you wrote to Arkhiva from the **floating mascot**. Not a live view: tapping the mascot takes one reading of the app underneath (its text, the page address if it is a browser, and a screenshot of that app's window alone, without the mascot, the status bar or the keyboard), and the tool reads that reading.
 
 | Parameter | Behavior |
 |---|---|
@@ -272,14 +272,14 @@ What was on the phone's screen when you wrote to Jenny from the **floating masco
 
 - **It exists only in the turn that came from the mascot.** From the app's chat, from Telegram, from a reminder, the tool is not offered at all, and there is no screen to read: the reading happens at the tap and nowhere else.
 - A reading lives in memory, one at a time, for ten minutes or until the next tap; after that the tool says it is gone. Nothing is written to disk until the tool is asked for a picture.
-- **Apps that block screenshots are not read at all**, text included. Android withholds a secure window's pixels (banking apps, password managers, incognito tabs) but not its accessibility text; Jenny drops both.
+- **Apps that block screenshots are not read at all**, text included. Android withholds a secure window's pixels (banking apps, password managers, incognito tabs) but not its accessibility text; Arkhiva drops both.
 - Password fields never come through.
 - Everything it returns is untrusted, like a web page: the turn is marked as such (see [Security model](../internals/security-model.md#subagents-and-untrusted-content)).
 - **The reading is timed.** It runs before the bubble opens — the open chat covers the app, and Android then hides it from the accessibility service — so it stops after about half a second and marks itself truncated. A long article arrives whole (about 0.15 s for 20,000 characters); a very long page arrives from the top, and the result says so and points to its address for the rest. Scrolling does not change what is read.
 - Text is capped at 30,000 characters per reading.
-- With the accessibility service off, Jenny is told so in the bubble's turn, and can say where to turn it on.
+- With the accessibility service off, Arkhiva is told so in the bubble's turn, and can say where to turn it on.
 
-Config: the **Reads the screen** switch under **Floating mascot** (home **Settings → Jenny**), which leads to Android's Accessibility settings — Android lets only you turn an accessibility service on. Requires Android 14 or newer.
+Config: the **Reads the screen** switch under **Floating mascot** (home **Settings → Arkhiva**), which leads to Android's Accessibility settings — Android lets only you turn an accessibility service on. Requires Android 14 or newer.
 
 ---
 
@@ -322,8 +322,8 @@ Gotcha: **there is no TTY and no stdin.** An interactive command doesn't prompt,
 
 Long remote commands, detached from the connection. Actions: `start`, `poll`, `stop`, `list`.
 
-- `start` launches the command with `nohup` writing to a log file on the server (`<jobLogDir>/<job_id>.log`, default `jobLogDir` is `/tmp/jenny-jobs`), records the remote pid, and returns a `job_id` immediately. The exit code is written to a sibling `.rc` file, because by the time anyone polls, the process no longer exists to be asked.
-- `poll` returns **only the output produced since the previous poll**, plus liveness and the exit code once there is one. The byte cursor is kept by Jenny — never by the model — and it is persisted, so it survives context compaction, a gateway restart, and days of elapsed time. If the log was rotated or truncated under it, the cursor resets to 0 rather than reading garbage.
+- `start` launches the command with `nohup` writing to a log file on the server (`<jobLogDir>/<job_id>.log`, default `jobLogDir` is `/tmp/arkhiva-jobs`), records the remote pid, and returns a `job_id` immediately. The exit code is written to a sibling `.rc` file, because by the time anyone polls, the process no longer exists to be asked.
+- `poll` returns **only the output produced since the previous poll**, plus liveness and the exit code once there is one. The byte cursor is kept by Arkhiva — never by the model — and it is persisted, so it survives context compaction, a gateway restart, and days of elapsed time. If the log was rotated or truncated under it, the cursor resets to 0 rather than reading garbage.
 - `stop` sends SIGTERM to the process's children and then to the process itself. Best-effort by construction: a deep process tree or a program that ignores SIGTERM survives, and only a subsequent `poll` says what really happened.
 - `list` is answered from the local registry with **no connection at all**, so pending jobs stay readable when the host is unreachable or its key has changed.
 - Parameters: `host`, `action`, `command` (required for `start`) and `job_id` (required for `poll` and `stop`).
@@ -356,9 +356,9 @@ Config: `tools.ssh.maxTransferBytes`, `security.restrictToWorkspace` (the local 
 
 ### cron
 
-Schedules everything Jenny does later. Actions: `add`, `list`, `remove`, `pause`, `resume`. There are two kinds of job only, one-time and recurring.
+Schedules everything Arkhiva does later. Actions: `add`, `list`, `remove`, `pause`, `resume`. There are two kinds of job only, one-time and recurring.
 
-- `add` requires a `message` (the instruction Jenny executes when the job fires) plus **exactly one** schedule:
+- `add` requires a `message` (the instruction Arkhiva executes when the job fires) plus **exactly one** schedule:
   - `every_seconds` — recurring interval.
   - `cron_expr` — a cron expression (`"0 9 * * *"`), optionally with an explicit `tz` (IANA name). `tz` is **only** accepted alongside `cron_expr` — passing it with `every_seconds` or `date` is an error.
   - `date` — a one-time job: the day (`"YYYY-MM-DD"`) or just the month (`"YYYY-MM"`, "around March"), plus `time` (`"HH:MM"`) only when the user said a time. Without `time` a day rings at 09:00 and a month at 09:00 on the 1st, and both are shown as a day or a month; with `time` it rings then. The job deletes itself after it fires. The hour is a field of its own so that the model leaves it out rather than inventing one: there is no `at` any more, and a call that sends it, or hides a time inside `date`, is refused with the shape to use.
@@ -373,14 +373,14 @@ Schedules everything Jenny does later. Actions: `add`, `list`, `remove`, `pause`
   - A monitor still costs a full turn every cycle even when it says nothing. Silence saves the notification, not the tokens.
   - The mode is fixed at creation: to change it, remove the job and create it again.
 - `remove`, `pause` and `resume` need a `job_id` from `list`.
-- `list` also shows a job the user paused from the workshop (Hands), marked as paused since a given time, so Jenny does not recreate it; a one-time job that already fired is gone.
+- `list` also shows a job the user paused from the workshop (Hands), marked as paused since a given time, so Arkhiva does not recreate it; a one-time job that already fired is gone.
 - System-managed jobs show up in `list` for transparency but are **protected** — removal is refused with an explanation, not silently ignored. `list` prints the purpose of each next to it: `dream` (memory consolidation), the [gardener](../using/gardener.md), the notebook clock (`reminders`) and the update check. Each is registered only if its own config enables it — `agents.defaults.dream.enabled`, `agents.defaults.gardener.enabled`, `wiki.enabled`, `updates.enabled` — so a disabled one is absent from `list` rather than present and idle.
 - Jobs cannot be created from inside another cron job's own execution (no self-scheduling chains).
 - In a notebook conversation, `list` and `remove` see only that notebook's jobs. `cron` is closed on a read-only turn, wherever that turn happens.
 
 Config: no direct user toggle; the default timezone comes from the device/config, not a tool setting.
 
-Gotcha: seeing `dream`, `gardener` and `reminders` in the list is expected, not a sign of something wrong — they are Jenny's own periodic jobs, meant to be visible but not removable. To stop one, turn it off in config; there is no way to delete it from the job list.
+Gotcha: seeing `dream`, `gardener` and `reminders` in the list is expected, not a sign of something wrong — they are Arkhiva's own periodic jobs, meant to be visible but not removable. To stop one, turn it off in config; there is no way to delete it from the job list.
 
 ### spawn
 
@@ -422,7 +422,7 @@ The practical consequence: turn `tools.file.enable` off and asking for a `writer
 
 If *every* required tool is unavailable **and** something can say why in terms you can act on — SSH switched off, no host registered, web access off — the spawn is refused with that sentence instead of starting an agent that would improvise. When the cause is the runtime rather than a setting (the web tools off Android, where no switch would help), the spawn proceeds and the loss is only logged. Partial loss is never a refusal.
 
-The researcher/writer and researcher/coder splits narrow what each type can reach, but they are not the security boundary: `operator` holds the whole toolset, and `python_exec`'s `http_get`/`http_post` reach public sites. The boundary is a per-job policy that removes no tool — once a job has read outside content it can no longer write the files Jenny loads on her own (those become drafts you approve in the app), and once it has also read your personal data it can send data only to the sites its task names. See [Subagents and untrusted content](../internals/security-model.md#subagents-and-untrusted-content). An unknown `agent_type` is rejected with the list of valid ones; a persisted record carrying a type that no longer exists degrades to `operator` so its work stays relaunchable.
+The researcher/writer and researcher/coder splits narrow what each type can reach, but they are not the security boundary: `operator` holds the whole toolset, and `python_exec`'s `http_get`/`http_post` reach public sites. The boundary is a per-job policy that removes no tool — once a job has read outside content it can no longer write the files Arkhiva loads on her own (those become drafts you approve in the app), and once it has also read your personal data it can send data only to the sites its task names. See [Subagents and untrusted content](../internals/security-model.md#subagents-and-untrusted-content). An unknown `agent_type` is rejected with the list of valid ones; a persisted record carrying a type that no longer exists degrades to `operator` so its work stays relaunchable.
 
 Config: `agents.defaults.maxConcurrentSubagents` (default 3), `agents.defaults.subagentStallThresholdSeconds` (default 180), `agents.defaults.subagentToolErrorBudget` (default 3).
 
@@ -432,7 +432,7 @@ Available to the main agent only in orchestrator mode (`agents.defaults.orchestr
 
 - `subagent_status(task_id?)` lists running and recently finished subagents (id, type, state, phase, elapsed and idle time, last tool, result summary, whether an automatic relaunch is still allowed).
 - `subagent_cancel(task_id)` stops one running subagent; the others keep going, and a cancelled subagent reports nothing back.
-- `subagent_restart(task_id, extra_instructions?)` relaunches a failed or stalled job as the next attempt of the same lineage, optionally with a corrective note. Automatic relaunches stop after 3 attempts per job; a manual relaunch is never capped. When Jenny relaunches a job that failed, that turn writes nothing to the chat: you hear only from the relaunched attempt.
+- `subagent_restart(task_id, extra_instructions?)` relaunches a failed or stalled job as the next attempt of the same lineage, optionally with a corrective note. Automatic relaunches stop after 3 attempts per job; a manual relaunch is never capped. When Arkhiva relaunches a job that failed, that turn writes nothing to the chat: you hear only from the relaunched attempt.
 - `subagent_send(task_id, message, quick?)` talks to a subagent that already exists, so a follow-up ("no, change the title") does not mean re-specifying the whole job. One tool, three behaviours picked by the manager: the subagent is **still running** → the message is injected mid-run and reaches it at its next step without stopping it; it **finished** and its conversation is still within the retention window → it **resumes** from that conversation plus your message; anything else (failed, stalled, history aged out) → the job is **relaunched** with the message as a corrective note. The result text says which one happened.
 
 Subagent conversations are kept as sessions under the key `subagent:<lineage_id>` — internal keys, never listed as user conversations. Retention is deliberately short: the **3 most recent finished jobs per conversation, for 6 hours**. Resuming re-sends the subagent's whole conversation to the model, so a long window would make every follow-up expensive; past the window the loss is small, because the real output is the artifact on disk, not the transcript. A resume occupies a concurrency slot like a spawn (`quick=true` may use the reserved one) but does **not** consume the 3-attempt automatic-relaunch budget — a directed continuation is not a retry of a failure.
@@ -454,7 +454,7 @@ Gotcha: if the model uses `message` instead of a normal reply for the current co
 
 ### nothing_to_report
 
-The counterpart to `message` on a silent scheduled run (a monitor, or the turn where a subagent's result comes back to one). On those turns Jenny's written answer is delivered nowhere, so `message` is the only way to reach you — which made "I have nothing to say" the *absence* of an action, and small models express that by sending a message with a placeholder in it. Real examples that reached the chat before this tool existed: `silent`, `noop`, `placeholder`, an Italian "all fine" line, and two empty bubbles.
+The counterpart to `message` on a silent scheduled run (a monitor, or the turn where a subagent's result comes back to one). On those turns Arkhiva's written answer is delivered nowhere, so `message` is the only way to reach you — which made "I have nothing to say" the *absence* of an action, and small models express that by sending a message with a placeholder in it. Real examples that reached the chat before this tool existed: `silent`, `noop`, `placeholder`, an Italian "all fine" line, and two empty bubbles.
 
 - `task` is optional: the number of the check being declared, when the run's prompt lists numbered checks.
 - Nothing is delivered and no notification is raised. A run that calls it is still recorded as `silenced`, exactly like one that said nothing at all.
@@ -469,11 +469,11 @@ Gotcha: it is not a way to report a check that *failed*. A check that could not 
 
 ## 7. Self-diagnosis and updates
 
-`my`, `get_source` and `get_recent_logs` let Jenny look at her own runtime; `update_status` and `install_update`, at the end of this section, deal with the app itself.
+`my`, `get_source` and `get_recent_logs` let Arkhiva look at her own runtime; `update_status` and `install_update`, at the end of this section, deal with the app itself.
 
 ### my
 
-The tool Jenny uses to check — and, if allowed, change — its own runtime state.
+The tool Arkhiva uses to check — and, if allowed, change — its own runtime state.
 
 - `check` with no key gives a full overview: model, `max_iterations`, `context_window_tokens`, token usage, workspace, active subagents. `check` with a dot-path key (e.g. `_last_usage.prompt_tokens`, `android_web_config.enable`) drills into one value.
 - `set` is **disabled by default** (`tools.my.allowSet=false` — the only tool toggle whose default is restrictive rather than permissive). When enabled, it only allows changing whitelisted keys: `max_iterations` (1–100), `context_window_tokens` (4096–1,000,000), `model`, `model_preset` — plus a free-form scratchpad (up to 64 JSON-safe keys) for notes the agent wants to keep across turns.
@@ -481,23 +481,23 @@ The tool Jenny uses to check — and, if allowed, change — its own runtime sta
 
 Config: `tools.my.enable` (default `true`), `tools.my.allowSet` (default `false`).
 
-Gotcha: the scratchpad is **not** long-term memory — it's wiped on every app restart. If you want Jenny to remember something across restarts, that's what Dream/MEMORY.md is for, not this tool's scratchpad.
+Gotcha: the scratchpad is **not** long-term memory — it's wiped on every app restart. If you want Arkhiva to remember something across restarts, that's what Dream/MEMORY.md is for, not this tool's scratchpad.
 
 ### get_source
 
-Returns the source code of Jenny's own package, by dotted path (e.g. `jenny.agent.tools.android_web._looks_like_captcha`).
+Returns the source code of Arkhiva's own package, by dotted path (e.g. `arkhiva.agent.tools.android_web._looks_like_captcha`).
 
-- Read-only, and restricted to the `jenny` package itself — anything else is refused.
+- Read-only, and restricted to the `arkhiva` package itself — anything else is refused.
 - Output capped at 50,000 characters.
 - On packaged (no-`.py`) builds it falls back to reading from the extracted source-asset tree instead of `inspect.getsource`.
 
-Config: `tools.introspect.enable` (default `true`). This is how Jenny self-diagnoses ("why does web_search keep failing?") without guessing from bytecode; it does not let Jenny modify its own code.
+Config: `tools.introspect.enable` (default `true`). This is how Arkhiva self-diagnoses ("why does web_search keep failing?") without guessing from bytecode; it does not let Arkhiva modify its own code.
 
 ### get_recent_logs
 
 Reads recent runtime log lines (DEBUG and above) from an in-memory ring buffer.
 
-- On Android, loguru's normal output goes to Logcat, which is unreachable without `adb` — this tool is the only way Jenny (and you, through it) can see why something failed at runtime.
+- On Android, loguru's normal output goes to Logcat, which is unreachable without `adb` — this tool is the only way Arkhiva (and you, through it) can see why something failed at runtime.
 - `module_filter` narrows by substring (e.g. `"android_web"`); `count` defaults to 50, max 200.
 
 | Limit | Value |
@@ -506,11 +506,11 @@ Reads recent runtime log lines (DEBUG and above) from an in-memory ring buffer.
 | Default count returned | 50 |
 | Max count | 200 |
 
-Config: `tools.diagnostics.enable` (default `true`). Gotcha: the buffer **empties on every app restart** — asking Jenny to "check its logs" only works for things that happened since the app last started. This is the recommended first troubleshooting step for a failing tool. Note also that log lines can contain URLs visited and file names — worth knowing before pasting logs into a screenshot or bug report.
+Config: `tools.diagnostics.enable` (default `true`). Gotcha: the buffer **empties on every app restart** — asking Arkhiva to "check its logs" only works for things that happened since the app last started. This is the recommended first troubleshooting step for a failing tool. Note also that log lines can contain URLs visited and file names — worth knowing before pasting logs into a screenshot or bug report.
 
 ### update_status
 
-Reports whether a newer version of the Jenny app is available for this device, and how far along a started installation is.
+Reports whether a newer version of the Arkhiva app is available for this device, and how far along a started installation is.
 
 - Reads local state only: **no network call and no side effects**, so it is safe to call whenever you ask "is there an update?". The check that fetches the manifest is the periodic `update_check` job, not this tool (see `updates.*` in [Configuration](configuration.md)).
 - Android-only: it registers only when an Android context is present. Scope `core` + `orchestrator`: the agent you talk to has it, never a subagent.
@@ -519,21 +519,21 @@ Reports whether a newer version of the Jenny app is available for this device, a
 
 Downloads and installs the pending app update on this device.
 
-- **Requires `confirm=true`** — the only parameter, and a call without it is refused. Jenny should set it only after you asked, in this conversation, for the update to be installed now.
-- **Destructive and final.** Android replaces the app and kills the process, so Jenny restarts and the conversation is cut off mid-turn — she does not get to report back. Ask before calling it.
-- Requires the "Install unknown apps" permission for Jenny; without it `PackageInstaller` refuses the session. Android normally still shows its own install prompt (see [Android permissions](android-permissions.md)).
+- **Requires `confirm=true`** — the only parameter, and a call without it is refused. Arkhiva should set it only after you asked, in this conversation, for the update to be installed now.
+- **Destructive and final.** Android replaces the app and kills the process, so Arkhiva restarts and the conversation is cut off mid-turn — she does not get to report back. Ask before calling it.
+- Requires the "Install unknown apps" permission for Arkhiva; without it `PackageInstaller` refuses the session. Android normally still shows its own install prompt (see [Android permissions](android-permissions.md)).
 - Android-only and scoped `core` + `orchestrator`, same as `update_status`; refused on a read-only turn.
 
 ---
 
 ## 8. App tools
 
-Every action declared in an installed Jenny App's `<workspace>/apps/<slug>/app.json` becomes a native tool named `<slug>_<action>` (the slug's hyphens are kept as-is, never normalized, so `my-app` and `my_app` can't collide with each other).
+Every action declared in an installed Arkhiva App's `<workspace>/apps/<slug>/app.json` becomes a native tool named `<slug>_<action>` (the slug's hyphens are kept as-is, never normalized, so `my-app` and `my_app` can't collide with each other).
 
 - The app-tool set is **re-synced every turn**: editing a manifest makes new/changed tools available on the very next turn, no restart needed.
 - A broken app (invalid manifest) contributes zero tools — it doesn't crash tool loading, it's just silently absent (with a warning in the logs).
 - If an app declares an action name that collides with a built-in tool name, that action is skipped with a warning rather than overriding the built-in.
-- Jenny can act on an app's data through these tools even while the app's own screen is closed — the app UI and the tool layer are independent.
+- Arkhiva can act on an app's data through these tools even while the app's own screen is closed — the app UI and the tool layer are independent.
 - In a notebook's chat, the actions that **write** to an app not placed on that notebook's board are not offered at all (reads are): they would be refused anyway (`arkhiva/apps/permissions.py`).
 
 ### The `app` tool and who writes apps
@@ -564,7 +564,7 @@ Gotcha: because the tool count depends on what's installed, don't expect a stabl
 
 Searches long-term memory for facts that were **removed from the active files and moved to the archive** — what Dream distilled away rather than what it kept.
 
-- `query`: words to search for, matched inside words regardless of accents and case, and weighted so that a rare word counts more than a common one. Jenny passes them in both Italian and English, because the archive is written in both. No match is reported as "nothing matched these words", never as "never said".
+- `query`: words to search for, matched inside words regardless of accents and case, and weighted so that a rare word counts more than a common one. Arkhiva passes them in both Italian and English, because the archive is written in both. No match is reported as "nothing matched these words", never as "never said".
 - Without `query` it lists the archive, one line per fact, newest first, in pages of about 12,000 characters (`page`, from 1). A fact rewritten several times is one line, its newest archived wording with the number of earlier ones; a fact marked `RETRACTED` was removed because you said it was never true.
 - `ids` opens facts in full, with every earlier wording and, when it still exists, the current wording in `USER.md` or `MEMORY.md`.
 - Scope `core` + `orchestrator`: it is the agent you talk to that has it, not a subagent.
@@ -583,16 +583,16 @@ Searches the notes taken on the personal conversation: one entry per stretch tha
 Appends one line to a notebook's working journal (`raw/journal/<today>.md`) — the notebook of the conversation, or, from the personal chat, the one named in `notebook` — and leaves a short copy of it in the [diary](../using/memory.md#the-diary-what-happened-in-your-notebooks).
 
 - Meant for the moment something is said that will still be true next week — a constraint, a decision, a preference, a name, a date, something done.
-- `notebook` (personal chat only) files the fact into that notebook without you opening it: the notebooks are Jenny's drawers. A name that is not an existing notebook is refused with the list of the ones that exist — the tool never creates a notebook. Without `notebook`, from the personal chat the line goes to Jenny's own diary only. Inside a notebook, only that notebook's journal can be written, and a subagent cannot fill the drawers from outside them.
-- Parameters: `text` (required, one short line, at most 500 characters — a longer one is refused as page material; the timestamp and the leading dash are added for you) and `attribution`, `said` when you stated the fact yourself or `inferred` when Jenny concluded it (default `inferred`). Only a `said` line can later become a decided page.
+- `notebook` (personal chat only) files the fact into that notebook without you opening it: the notebooks are Arkhiva's drawers. A name that is not an existing notebook is refused with the list of the ones that exist — the tool never creates a notebook. Without `notebook`, from the personal chat the line goes to Arkhiva's own diary only. Inside a notebook, only that notebook's journal can be written, and a subagent cannot fill the drawers from outside them.
+- Parameters: `text` (required, one short line, at most 500 characters — a longer one is refused as page material; the timestamp and the leading dash are added for you) and `attribution`, `said` when you stated the fact yourself or `inferred` when Arkhiva concluded it (default `inferred`). Only a `said` line can later become a decided page.
 - The only tool in this group a subagent also gets (`core`, `orchestrator`, `subagent`), and it has no config toggle: it is always registered.
 
 ### suggest_notebook
 
 Offers to continue the conversation in one of your notebooks: a button «Open the notebook …» appears under the reply, and you decide with a tap.
 
-- Meant for the moment a personal-chat conversation has become work on one notebook's subject — several exchanges, a plan to lay out — and never for a passing fact (that is `journal_append` with `notebook`). Offered once: if you stay, Jenny goes on where you are.
-- Parameters: `notebook` (an existing notebook; any other name is refused with the list) and `context`, one line on what you were working on. That line is written to the [diary](../using/memory.md#the-diary-what-happened-in-your-notebooks) as being about the notebook, so in the notebook's chat Jenny knows where you came from.
+- Meant for the moment a personal-chat conversation has become work on one notebook's subject — several exchanges, a plan to lay out — and never for a passing fact (that is `journal_append` with `notebook`). Offered once: if you stay, Arkhiva goes on where you are.
+- Parameters: `notebook` (an existing notebook; any other name is refused with the list) and `context`, one line on what you were working on. That line is written to the [diary](../using/memory.md#the-diary-what-happened-in-your-notebooks) as being about the notebook, so in the notebook's chat Arkhiva knows where you came from.
 - Only in the personal chat in the app: hidden in a notebook, on Telegram, in a notification reply and in silent turns. Scope `core` + `orchestrator`; not for subagents.
 
 ### board
@@ -681,7 +681,7 @@ The workshop's **Hands** drawer governs exactly two tool settings, and SSH gets 
 | Self-inspection (`my`) | No | `tools.my.enable`, `tools.my.allowSet` |
 | Source introspection (`get_source`) | No | `tools.introspect.enable` |
 | Log access (`get_recent_logs`) | No | `tools.diagnostics.enable` |
-| Jenny Apps / app tools | No | `apps.enabled` (+ `httpTimeoutS`, `maxCollectionBytes`) |
+| Arkhiva Apps / app tools | No | `apps.enabled` (+ `httpTimeoutS`, `maxCollectionBytes`) |
 | Subagent concurrency | No | `agents.defaults.maxConcurrentSubagents` |
 | Subagent stall threshold | No | `agents.defaults.subagentStallThresholdSeconds` |
 | Orchestrator mode (main agent's toolset) | No | `agents.defaults.orchestratorMode` |
@@ -694,5 +694,5 @@ The SSH switch is **asymmetric**, which is worth knowing before you file a bug: 
 
 Two settings apply across almost every tool in this page, not just one:
 
-- **`security.restrictToWorkspace`** (default `true`) confines file reads/writes (`read_file`, `write_file`, `edit_file`, `apply_patch`, `list_dir`, `find_files`, `grep`), `python_exec`'s file I/O (`open`, `os.open`, pathlib), `ssh_transfer`'s local side, and `message`'s attachment paths to the workspace, plus `skills/`, the media directory, and (if enabled) Jenny's own read-only source tree. Turning it off is an application-level policy change, not an OS sandbox — see the Security model page.
+- **`security.restrictToWorkspace`** (default `true`) confines file reads/writes (`read_file`, `write_file`, `edit_file`, `apply_patch`, `list_dir`, `find_files`, `grep`), `python_exec`'s file I/O (`open`, `os.open`, pathlib), `ssh_transfer`'s local side, and `message`'s attachment paths to the workspace, plus `skills/`, the media directory, and (if enabled) Arkhiva's own read-only source tree. Turning it off is an application-level policy change, not an OS sandbox — see the Security model page.
 - **`security.ssrfWhitelist`** (default empty list of CIDRs) is checked by every tool that makes outbound network requests on the model's behalf: `web_fetch`, `download_file`, and the `http_get`/`http_post` helpers inside `python_exec`. The SSH tools do **not** need it: they have their own, wider policy that allows private LAN ranges and the CGNAT range Tailscale uses, blocking only loopback and link-local/metadata. An SSH host is typed by you in Settings and host-key pinned by hand, so it needs no whitelist entry — and giving it one here would have opened CGNAT to `web_fetch` too, where the model picks the address. It exists to let you deliberately open specific private-network ranges (a Tailscale CIDR, for example) without disabling the SSRF protection everywhere else. It does **not** apply to LLM provider calls themselves — those are a separate, explicit configuration (see Providers and models).

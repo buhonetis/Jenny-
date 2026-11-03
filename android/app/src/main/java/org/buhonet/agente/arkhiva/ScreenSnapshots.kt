@@ -42,7 +42,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  * `takeScreenshotOfWindow` (API 34) fotografa la sola finestra dell'app: la
  * mascotte, la barra di stato e la tastiera — che sono finestre loro — restano
  * fuori, e non serve correre contro l'animazione della chat che si apre.
- * Misurato su `jenny_s22`: 10-23 ms, contro i 90-260 del display intero, che la
+ * Misurato su `arkhiva_s22`: 10-23 ms, contro i 90-260 del display intero, che la
  * mascotte invece la includeva. Sotto API 34 la funzione non c'è: il servizio
  * si accende ma la lettura si dichiara non supportata ([supported]).
  *
@@ -219,7 +219,7 @@ object ScreenSnapshots {
      * `{"off": true}` se il servizio è spento, `{"expired": true}` se l'ultima
      * lettura è scaduta. Così ARKHIVA dice cosa fare invece di un vago «non vedo
      * niente» — o di un falso «lo schermo è spento» per una lettura solo vecchia
-     * (visti tutti e due su `jenny_s22` il 13/10/2026). `null` negli altri casi
+     * (visti tutti e due su `arkhiva_s22` il 13/10/2026). `null` negli altri casi
      * — Android sotto il 14, o una lettura che non ha trovato nessuna app sotto.
      */
     fun offSummary(): String? = when {

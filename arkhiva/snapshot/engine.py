@@ -31,7 +31,7 @@ from arkhiva.utils.path import atomic_write
 # Esclusioni di default (path POSIX relativi alla radice del workspace).
 # Le directory runtime reali (store snapshot, staging) vengono escluse anche
 # per prefisso calcolato in ``__init__`` — necessario perché il runtime dir
-# può ancora chiamarsi ``.minijenny`` su installazioni esistenti.
+# può ancora chiamarsi ``.miniarkhiva`` su installazioni esistenti.
 DEFAULT_EXCLUDE_GLOBS: tuple[str, ...] = (
     "ui/**",
     "logs/**",

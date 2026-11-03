@@ -20,7 +20,7 @@ import org.json.JSONObject
  * `extensionCall("drive", "connectDrive")`. Se l'accesso c'è già la risposta è
  * immediata; se serve il consenso si apre la schermata di Google e l'esito
  * arriva dal launcher. In tutti i casi la pagina riceve
- * `window.jennyCloud.onDriveConnected("granted" | "denied" | "unavailable")`.
+ * `window.arkhivaCloud.onDriveConnected("granted" | "denied" | "unavailable")`.
  */
 object DriveExtension : NativeExtension {
     private const val TAG = "DriveExtension"
@@ -83,7 +83,7 @@ object DriveExtension : NativeExtension {
         }
 
         private fun answer(value: String) {
-            activity.notifyJs("jennyCloud", "onDriveConnected", JSONObject.quote(value))
+            activity.notifyJs("arkhivaCloud", "onDriveConnected", JSONObject.quote(value))
         }
     }
 }

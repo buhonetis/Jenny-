@@ -1,6 +1,6 @@
 """Un aiutante fermato al budget non butta il lavoro: si riprende con la sua storia.
 
-Prova del 24/10/2026 (Piano a lista su jenny_s22): sei aiutanti su 41 fermati dal
+Prova del 24/10/2026 (Piano a lista su arkhiva_s22): sei aiutanti su 41 fermati dal
 budget, e nessuno ripreso davvero. Il record finiva ``failed``, la done-callback
 cancellava la storia Tier-2 appena salvata, e ``subagent_send`` cadeva sempre nel
 ramo «rilancia da zero». In piu l'annuncio portava solo gli ultimi tre tool: ARKHIVA

@@ -97,6 +97,10 @@ def _run(body: str) -> None:
         root = Path(tmp)
         (root / "shared").mkdir()
         shutil.copy(ASSETS / "shared" / "arkhiva-mascot.js", root / "shared" / "arkhiva-mascot.js")
+        shutil.copy(
+            ASSETS / "shared" / "mascot-assets.gen.js",
+            root / "shared" / "mascot-assets.gen.js",
+        )
         shutil.copy(ASSETS / "shared" / "bot-name.js", root / "shared" / "bot-name.js")
         shutil.copy(ASSETS / "shared" / "mascot-motion.js", root / "shared" / "mascot-motion.js")
         for name, text in _NEIGHBORS.items():

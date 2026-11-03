@@ -144,9 +144,9 @@ def test_output_dedups_across_snapshots(tmp_path: Path) -> None:
 
 
 def test_store_self_exclusion_with_legacy_runtime_dir(tmp_path: Path) -> None:
-    """Lo store non si auto-include nemmeno col runtime dir legacy .minijenny."""
+    """Lo store non si auto-include nemmeno col runtime dir legacy .miniarkhiva."""
     _make_workspace(tmp_path)
-    engine = SnapshotEngine(tmp_path, tmp_path / ".minijenny" / "snapshots")
+    engine = SnapshotEngine(tmp_path, tmp_path / ".miniarkhiva" / "snapshots")
     first = engine.create_snapshot(trigger="manual", now_ms=1000)
     assert first is not None
     # Il primo snapshot ha creato blob/manifest dentro .miniarkhiva/snapshots:

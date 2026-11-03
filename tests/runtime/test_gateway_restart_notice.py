@@ -144,7 +144,7 @@ def test_the_channel_is_its_own_quiet_but_visible_one() -> None:
     assert "NotificationManager.IMPORTANCE_LOW" in channel
     assert "createNotificationChannel(" in channel
     src = read_source("RestartNotice")
-    assert re.search(r'CHANNEL_ID\s*=\s*"jenny_restart"', src)
+    assert re.search(r'CHANNEL_ID\s*=\s*"arkhiva_restart"', src)
     for key in ("restart_channel_name", "restart_channel_description"):
         assert f"R.string.{key}" in channel
 

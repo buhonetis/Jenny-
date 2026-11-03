@@ -83,7 +83,7 @@ def migrate_legacy_reminders(
         why = rem.get("why") if isinstance(rem.get("why"), str) else ""
         why = why.removeprefix("wiki/") if why and (root / "wiki" / why).is_file() else None
         meta = {
-            "by": rem.get("by") if rem.get("by") in (model.USER, model.JENNY) else model.USER,
+            "by": rem.get("by") if rem.get("by") in (model.USER, model.ARKHIVA) else model.USER,
             "legacyId": rid,
         }
         try:

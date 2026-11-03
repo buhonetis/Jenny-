@@ -171,7 +171,7 @@ class HomeApp {
     this.arkhiva = new ArkhivaMascot(document.querySelector('.home-shell'), {
       chat: {
         isOpen: () => this.chatOver,
-        onScreen: () => !this.chatOver && this._jennyInChat,
+        onScreen: () => !this.chatOver && this._arkhivaInChat,
         open: () => this.openChatOver(),
         close: () => this.closeChatOver(),
       },
@@ -316,10 +316,10 @@ class HomeApp {
       onUpdates: () => this.openUpdates(),
       onBackup: () => this.openBackup(),
     });
-    /* `jennyRoom` e non `arkhiva`: quella e' lei, lo sprite che cammina sul
+    /* `arkhivaRoom` e non `arkhiva`: quella e' lei, lo sprite che cammina sul
        bordo. Questa e' la stanza che dice com'e' fatta. */
-    this.jennyRoom = new HomeARKHIVA({
-      onChange: () => this.you.sayARKHIVA(this.jennyRoom.value()),
+    this.arkhivaRoom = new HomeARKHIVA({
+      onChange: () => this.you.sayARKHIVA(this.arkhivaRoom.value()),
       onFloating: (floating) => this._keepFloating(floating),
       onSettingsBack: () => this._refreshFloating(),
       onName: (name) => this._keepName(name),
@@ -407,9 +407,9 @@ class HomeApp {
        — lo dice la tavola, che la disegna a `right:-56px` mentre nelle due
        della chat sta a `-30px` — ma se l'avevi messa via tu, tornando non deve
        ricomparire: quella era una tua decisione, non lo stato della stanza. */
-    this._jennyWasOut = true;
+    this._arkhivaWasOut = true;
     // La chat e' a schermo per lei? v. `_syncARKHIVAPlace`.
-    this._jennyInChat = true;
+    this._arkhivaInChat = true;
 
     /* Il nome della conversazione personale e' il nome di lei: `bot_name`
        delle impostazioni, che arriva dopo (v. `_readName`). Non si legge
@@ -1303,7 +1303,7 @@ class HomeApp {
    *  rilettura fallita lascia a schermo quel che c'era. */
   async _openSettings() {
     this.you.open();
-    this.you.sayARKHIVA(this.jennyRoom.value());
+    this.you.sayARKHIVA(this.arkhivaRoom.value());
     const gen = this._settingsGen;
     const cached = this._settings ? await this._settings : null;
     if (cached && gen === this._settingsGen) this._paintSettings(cached);
@@ -1316,11 +1316,11 @@ class HomeApp {
   /* Le righe di «Tu e ARKHIVA» e le stanze che si aprono da li', da un payload
      di `/api/settings` (`null` = lettura fallita, cioe' «non lo so»). */
   _paintSettings(data) {
-    this.jennyRoom.setFloating(data?.floating || null);
+    this.arkhivaRoom.setFloating(data?.floating || null);
     /* Lettura fallita: `null`, cioe' «non lo so», non un nome vuoto. */
-    this.jennyRoom.setName(data ? data.agent?.bot_name || '' : null);
+    this.arkhivaRoom.setName(data ? data.agent?.bot_name || '' : null);
     if (data) this._applyBotName(data.agent?.bot_name);
-    this.you.sayARKHIVA(this.jennyRoom.value());
+    this.you.sayARKHIVA(this.arkhivaRoom.value());
     this.modelRoom.setSettings(data);
     this.you.sayModel(this.modelRoom.value());
     this.updatesRoom.setVersion(data?.version || null);
@@ -1334,7 +1334,7 @@ class HomeApp {
    *  chiesto. */
   openARKHIVA() {
     this._setView('arkhiva');
-    this.jennyRoom.open();
+    this.arkhivaRoom.open();
   }
 
   /** «Chi risponde»: le marche configurate e i loro modelli. Ci si arriva da
@@ -1385,7 +1385,7 @@ class HomeApp {
     const data = await this._askSettings({ fresh: true });
     if (!data?.floating) return;
     this._keepFloating(data.floating);
-    this.jennyRoom.setFloating(data.floating);
+    this.arkhivaRoom.setFloating(data.floating);
   }
 
   /* Il nome appena salvato nella stanza di lei: va nella cache, o alla
@@ -1418,7 +1418,7 @@ class HomeApp {
     // La riga delle Impostazioni, la sua stanza e il testo della finestra
     // flottante portano il nome: rinominata li' dentro, cambiano subito.
     this.you?.applyTranslations();
-    this.jennyRoom?.applyTranslations();
+    this.arkhivaRoom?.applyTranslations();
     if (this.view === 'arkhiva') this._applyHead();
     this._applyConversationTexts();
   }
@@ -1632,7 +1632,7 @@ class HomeApp {
          era del quaderno, torna alla conversazione della pagina. Cambiare
          vista non basta: aperta dalla pagina chat («Ci spostiamo?», un posto
          ripreso all'avvio), la bacheca lasciava li' la chat del quaderno sotto
-         la foto della personale, i due fili uno sull'altro e la scheda JENNY
+         la foto della personale, i due fili uno sull'altro e la scheda ARKHIVA
          accesa su una chat che scriveva nel quaderno (s22, 28/10/2026). */
       if (!this._setView('chat', () => this.goBackOneRoom())) return true;
       this.homePages?.settleChat?.();
@@ -1713,7 +1713,7 @@ class HomeApp {
     if (!this.homePages?.pages?.some((s) => s.kind === 'app')) return;
     this._appNamesRequested = true;
     const source = this.appsSource();
-    if (source.jennyApps?.length) return;
+    if (source.arkhivaApps?.length) return;
     source.loadARKHIVAApps?.().then(() => this.strip?.draw()).catch(() => {});
   }
 
@@ -1751,14 +1751,14 @@ class HomeApp {
   _syncARKHIVAPlace() {
     if (this.chatOver) return;
     const inChat = this.view === 'chat' && (!this._entry || this._hasComposer(this._entry));
-    if (inChat === this._jennyInChat) return;
-    this._jennyInChat = inChat;
+    if (inChat === this._arkhivaInChat) return;
+    this._arkhivaInChat = inChat;
     if (inChat) {
       this.arkhiva.setChatOnScreen(true);
-      this.arkhiva.setOut(this._jennyWasOut);
+      this.arkhiva.setOut(this._arkhivaWasOut);
       return;
     }
-    this._jennyWasOut = this.arkhiva.el.classList.contains('out');
+    this._arkhivaWasOut = this.arkhiva.el.classList.contains('out');
     this.arkhiva.setChatOnScreen(false);
     this.arkhiva.setOut(false);
   }
@@ -2142,7 +2142,7 @@ class HomeApp {
   /** Il nome che l'elenco delle app da' a uno slug, se l'elenco e' gia' stato
    *  letto: la fila lo scrive sopra la pagina di un'app appesa. */
   appName(slug) {
-    return this._apps?.jennyApps?.find?.((a) => a.slug === slug)?.name || null;
+    return this._apps?.arkhivaApps?.find?.((a) => a.slug === slug)?.name || null;
   }
 
   /** Il tasto Home di Android, quando ARKHIVA e' il launcher — premuto **mentre
@@ -2229,7 +2229,7 @@ class HomeApp {
        Prima Indietro chiudeva il foglio e lasciava aperta la foto. */
     const lightbox = document.querySelector('.image-lightbox');
     if (lightbox) {
-      if (typeof lightbox.__jennyClose === 'function') lightbox.__jennyClose();
+      if (typeof lightbox.__arkhivaClose === 'function') lightbox.__arkhivaClose();
       else lightbox.remove();
       return true;
     }
@@ -2442,7 +2442,7 @@ class HomeApp {
     }
     const lightbox = document.querySelector('.image-lightbox');
     if (!lightbox) return;
-    if (typeof lightbox.__jennyClose === 'function') lightbox.__jennyClose();
+    if (typeof lightbox.__arkhivaClose === 'function') lightbox.__arkhivaClose();
     else lightbox.remove();
   }
 
@@ -2989,7 +2989,7 @@ class HomeApp {
   }
 
   /* La testa del velo: dove scrivi. In un quaderno, il percorso della sua
-     bacheca con lei in fondo — «‹ QUADERNI › ● FILM › JENNY» — e la riga
+     bacheca con lei in fondo — «‹ QUADERNI › ● FILM › ARKHIVA» — e la riga
      sotto il suo nome del colore del quaderno: e' la ARKHIVA di quel quaderno.
      Nella chat di sempre solo il nome di lei, con la riga d'accento, com'e'
      nella fila quando ci sei.
@@ -3077,8 +3077,8 @@ class HomeApp {
     this.staged?.applyTranslations();
     this.plan?.applyTranslations();
     this._applyPlanLock();
-    this.jennyRoom?.applyTranslations();
-    this.you?.sayARKHIVA(this.jennyRoom?.value());
+    this.arkhivaRoom?.applyTranslations();
+    this.you?.sayARKHIVA(this.arkhivaRoom?.value());
     this.newNotebook?.setAttribute('aria-label', i18n.t('home.who.newNotebook'));
     this.board?.applyTranslations();
     this.drawer?.applyTranslations();

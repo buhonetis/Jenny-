@@ -71,7 +71,7 @@ def test_an_open_miniapp_is_described_over_any_view() -> None:
         _script(
             """
 AppState.currentMode = 'hands';
-window.mobileApp._appsSource = { jennyApps: [{ slug: 'spesa', name: 'Spesa' }] };
+window.mobileApp._appsSource = { arkhivaApps: [{ slug: 'spesa', name: 'Spesa' }] };
 window.mobileApp._appsActions = {
   _openApp: { slug: 'spesa' },
   requestAppHtml: async () => '<ul><li>latte</li></ul>',

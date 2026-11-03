@@ -2,7 +2,7 @@ This file provides guidance to AI coding agents working with this repository.
 
 ## Project Overview
 
-Jenny is a lightweight AI agent framework written in Python with a built-in mobile-first WebUI served from `arkhiva/templates/ui/`. It centers around an async agent loop that receives messages over WebSocket, invokes an LLM provider, executes tools, and manages session memory.
+Arkhiva is a lightweight AI agent framework written in Python with a built-in mobile-first WebUI served from `arkhiva/templates/ui/`. It centers around an async agent loop that receives messages over WebSocket, invokes an LLM provider, executes tools, and manages session memory.
 
 **Android is the only runtime target.**
 
@@ -13,21 +13,21 @@ pytest tests/config/ -v
 ruff check arkhiva/ arkhiva_extensions/
 ```
 
-The gateway is started by the Android runtime via `jenny.android_entry.run_gateway()`.
+The gateway is started by the Android runtime via `arkhiva.android_entry.run_gateway()`.
 
 ## Android Build & Deploy
 
 The Android project lives in the `android/` directory.
 
-**Every on-device test runs on the Android emulator `jenny_s22`** (AVD: 1080×1920 @ 420 dpi,
+**Every on-device test runs on the Android emulator `arkhiva_s22`** (AVD: 1080×1920 @ 420 dpi,
 arm64, android-37, a phone-shaped screen), and only there. Do not install on, uninstall from or
 test against any other device, even when one shows up in `adb devices`. The serial does not say
 which AVD it is — `emulator-5554` goes to whichever emulator started first — so check the name,
 then pin it with `ANDROID_SERIAL` on every `adb`/Gradle command.
 
 ```bash
-~/Library/Android/sdk/emulator/emulator -avd jenny_s22 -no-snapshot-load &
-adb -s emulator-5554 emu avd name   # must say jenny_s22
+~/Library/Android/sdk/emulator/emulator -avd arkhiva_s22 -no-snapshot-load &
+adb -s emulator-5554 emu avd name   # must say arkhiva_s22
 cd android && ANDROID_SERIAL=emulator-5554 ANDROID_HOME=$HOME/Library/Android/sdk ./gradlew app:installPlayDebug
 ```
 
@@ -67,9 +67,9 @@ Messages flow through an async `MessageBus` (`arkhiva/bus/queue.py`) that decoup
 - **Config** (`arkhiva/config/schema.py`, `loader.py`, `store.py`): Pydantic-*style* configuration (`arkhiva/pydantic_compat/`, stdlib-only — see [`FORK_BOUNDARY.md`](./FORK_BOUNDARY.md)) loaded from `workspace/config.json` inside the project root. Supports camelCase aliases for JSON compatibility. **Every write goes through `store.mutate()`** — see the rule under [Config & security](#config--security); calling `save_config()` directly reintroduces a silent data-loss bug that no test will catch for you.
 - **WebUI** (`arkhiva/templates/ui/`): Mobile-first HTML/JS served by the gateway, in two shells that share `assets/shared/`: the home (`index.html` + `home-*.js`, the default) and the workshop (`workshop.html` + `mobile-*.js`), reached from the home's Settings page; `onboarding.html` is a third, first-run document. Both shells talk to the gateway over the same WebSocket used for chat, plus HTTP routes under `/api/`.
 - **WebUI HTTP API** (`arkhiva/webui/`): The `/api/` route handlers backing the SPA (apps, settings, media, skills, transcript, token usage, workspaces, file preview, etc.), plus gateway service/token wiring.
-- **Jenny Apps** (`arkhiva/apps/`): Runtime for user-authored mini-apps — `manifest.py`, `executor.py`, `storage.py`, `summary.py`, `http.py`, `proxy.py`, `token.py`. See [Write a mini-app](docs/contribute/write-a-mini-app.md).
+- **Arkhiva Apps** (`arkhiva/apps/`): Runtime for user-authored mini-apps — `manifest.py`, `executor.py`, `storage.py`, `summary.py`, `http.py`, `proxy.py`, `token.py`. See [Write a mini-app](docs/contribute/write-a-mini-app.md).
 - **Command Router** (`arkhiva/command/`): Slash command routing and built-in command handlers.
-- **Scheduler** (`arkhiva/cron/`): everything Jenny does later is a job in `cron/jobs.json`, one-time or recurring, each labelled with where, when, what and why; a periodic check is a recurring `monitor` job. The heartbeat (`HEARTBEAT.md`) was retired on 31/10/2026: `cron/retired_heartbeat.py` tells a user upgrading from 2.0.0, once, which of its checks stopped.
+- **Scheduler** (`arkhiva/cron/`): everything Arkhiva does later is a job in `cron/jobs.json`, one-time or recurring, each labelled with where, when, what and why; a periodic check is a recurring `monitor` job. The heartbeat (`HEARTBEAT.md`) was retired on 31/10/2026: `cron/retired_heartbeat.py` tells a user upgrading from 2.0.0, once, which of its checks stopped.
 - **Skills** (`arkhiva/skills/`): Built-in skill definitions loaded into agent context.
 - **Security** (`arkhiva/security/`): Workspace policy/access + network SSRF protections.
 
@@ -87,7 +87,7 @@ Large classes are split into focused mixins/leaf modules composed via MRO (behav
 
 - **Never write `config.json` outside `config/store.py::mutate()`.** It reads the file *inside* the lock it writes under, so no caller can hold a stale copy; `save_config()` rewrites the whole file, so a stale copy silently erases whatever another writer just changed. Slow I/O (network, subprocess) belongs **before** entering `mutate`, never inside the callback — the lock is held for its whole duration. `mutate` also carries through keys this version's schema does not know, keeps a `.bak`, writes atomically and restores `chmod 600`; none of that happens if you bypass it. Two documented exceptions, both commented on the spot: `config/bootstrap.py` (runs before the event loop) and any wholesale restore.
 - `config/schema.py::SecurityConfig` (`config.security`) is the canonical home for `restrict_to_workspace`/`ssrf_whitelist`. Only `restrict_to_workspace` is mirrored onto `ToolsConfig` for the tool layer — `ssrf_whitelist` lives on `SecurityConfig` alone, and writing `tools.ssrf_whitelist` is silently dropped. A validator migrates legacy config.
-- `config/runtime_env.py` is the single layer for operational `JENNY_*` env knobs.
+- `config/runtime_env.py` is the single layer for operational `ARKHIVA_*` env knobs.
 - Tools are registered via an explicit `TOOLS = [...]` list per module (read by `agent/tools/loader.py`); name collisions and missing `TOOLS` raise `ToolLoadError` at startup, a failing `enabled()`/`create()` disables only that tool.
 
 ## Project-Specific Notes
@@ -100,11 +100,11 @@ reason in the comment itself. The public references are
 [`FORK_BOUNDARY.md`](./FORK_BOUNDARY.md) for what this fork keeps and drops.
 
 - **Design boards are not in the repo.** Some code comments cite «tavole» — design boards
-  such as `Quaderno.dc.html` or the artifact *Jenny UI: Utente e Operatore* — that lived
+  such as `Quaderno.dc.html` or the artifact *Arkhiva UI: Utente e Operatore* — that lived
   outside the repository. Where a comment and the code disagree, the code wins. Do not go
   looking for the files, and do not cite a board as the only justification for a new decision.
 - **`docs/` has a second consumer outside this repo.** The website
-  (`flagdizero/jenny-site`) generates its `/docs/**` routes from these files at build
+  (`buhonet/arkhiva-site`) generates its `/docs/**` routes from these files at build
   time, deriving each page's title from the `# H1` and its sidebar position from the
   `docs/<section>/` folder. So moving, renaming or re-nesting a file under `docs/`
   changes a public URL and the site's navigation — it is not a repo-local edit. The

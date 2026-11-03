@@ -132,7 +132,7 @@ class TestSheStandsOnTop:
         """Alla prima apertura dopo l'avvio l'inset della tastiera non arriva
         (``ime=0`` con la tastiera su) e il sistema **rimpicciolisce** la
         finestra: la pillola sale senza cambiare né padding né altezza. Lei la
-        segue solo se guarda dove la pillola è sullo schermo (``jenny_s22``,
+        segue solo se guarda dove la pillola è sullo schermo (``arkhiva_s22``,
         13/10/2026: restava a y=1370, dietro la tastiera)."""
         source = _read()
         follow = _fun(source, "private fun followPill(ctx: Context)")

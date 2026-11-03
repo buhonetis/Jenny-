@@ -217,13 +217,13 @@ class App {
       open: () => this.actions.push('tu aperta'),
       sayUpdates: (v) => this.versions.push(v),
       sayBackup: (v) => { this.backupValue = v; },
-      sayARKHIVA: (v) => { this.jennyValue = v; },
+      sayARKHIVA: (v) => { this.arkhivaValue = v; },
       sayModel: (v) => { this.modelValue = v; },
     };
     /* Il nome di ARKHIVA viaggia con lo stesso payload della finestra
        flottante: una lettura sola per due campi della stessa stanza. */
     this.names = [];
-    this.jennyRoom = {
+    this.arkhivaRoom = {
       applyTranslations: () => {},
       open: () => this.actions.push('arkhiva aperta'),
       setFloating: (v) => this.floating.push(v),
@@ -253,8 +253,8 @@ class App {
       value: () => 'OpenCode',
     };
     this.view = 'chat';
-    this._jennyWasOut = true;
-    this._jennyInChat = true;
+    this._arkhivaWasOut = true;
+    this._arkhivaInChat = true;
     this._measureFloor = () => this.actions.push('pavimento rimisurato');
     /* La bacheca, il cassetto e il loro foglio: moduli loro, coi loro banchi.
        Qui interessa che il guscio li apra e li chiuda. */
@@ -298,10 +298,10 @@ class App {
       stop: () => this.actions.push('riga ferma'),
     };
     this.arkhiva = {
-      el: { classList: { contains: () => this._jennyOut } },
-      setOut: (v) => { this._jennyOut = v; this.actions.push('fuori:' + v); },
-      setChatOnScreen: (v) => { this.jennyChat = v; },
-      setExpanded: (v) => { this.jennyExpanded = v; },
+      el: { classList: { contains: () => this._arkhivaOut } },
+      setOut: (v) => { this._arkhivaOut = v; this.actions.push('fuori:' + v); },
+      setChatOnScreen: (v) => { this.arkhivaChat = v; },
+      setExpanded: (v) => { this.arkhivaExpanded = v; },
       nudge: () => this.actions.push('sobbalzo'),
     };
     /* Il velo (`home-over.js`, banco suo): qui si misura chi lo apre e lo
@@ -328,7 +328,7 @@ class App {
         return this.showConversation(key);
       },
     };
-    this._jennyOut = true;
+    this._arkhivaOut = true;
     this.who = {
       known: [{ name: 'piante', modified: 1 }],
       invalidate: () => this.actions.push('elenco da rileggere'),
@@ -942,15 +942,15 @@ def test_leaving_the_chat_puts_arkhiva_away_and_coming_back_restores_her() -> No
       await app.switchConversation(projectKey('orto'));
 
       app._setView('board');
-      assert.equal(app._jennyOut, false, 'nelle pagine non si e\\u2019 messa via');
+      assert.equal(app._arkhivaOut, false, 'nelle pagine non si e\\u2019 messa via');
       app._setView('chat');
-      assert.equal(app._jennyOut, true, 'tornando non e\\u2019 uscita');
+      assert.equal(app._arkhivaOut, true, 'tornando non e\\u2019 uscita');
 
       // Ora messa via a mano, dentro la chat.
-      app._jennyOut = false;
+      app._arkhivaOut = false;
       app._setView('board');
       app._setView('chat');
-      assert.equal(app._jennyOut, false, 'la stanza ha disfatto una scelta dell\\u2019utente');
+      assert.equal(app._arkhivaOut, false, 'la stanza ha disfatto una scelta dell\\u2019utente');
     """)
 
 
@@ -1250,7 +1250,7 @@ def test_a_settings_call_that_failed_is_tried_again() -> None:
     """)
 
 
-def test_her_room_hangs_off_you_and_jenny() -> None:
+def test_her_room_hangs_off_you_and_arkhiva() -> None:
     """Indietro sbuccia una stanza per volta anche di qua: da lei si torna alla
     pagina Impostazioni, non alla chat — e da li', alla chat."""
     _run_js("""
@@ -1499,7 +1499,7 @@ def test_the_row_asks_for_the_app_names_once_and_only_the_light_list() -> None:
       let draws = 0;
       app.strip.draw = () => { draws += 1; };
       app.appsSource = () => ({
-        jennyApps: [],
+        arkhivaApps: [],
         loadARKHIVAApps: () => { requested.push('arkhiva'); return Promise.resolve(); },
         ensureLoaded: () => requested.push('tutto'),
       });
@@ -2152,7 +2152,7 @@ def test_a_page_without_composer_sends_her_to_the_edge() -> None:
       const app = home();
       app._entry = { id: 'app', kind: 'app' };
       app._syncARKHIVAPlace();
-      assert.equal(app.jennyChat, false, 'fuori dalla chat lei crede di averla a schermo');
+      assert.equal(app.arkhivaChat, false, 'fuori dalla chat lei crede di averla a schermo');
       assert.deepEqual(app.actions, ['fuori:false']);
       app._entry = { id: 'settings', kind: 'settings' };
       app.actions.length = 0;
@@ -2160,7 +2160,7 @@ def test_a_page_without_composer_sends_her_to_the_edge() -> None:
       assert.deepEqual(app.actions, [], 'fra due pagine senza chat resta dov\\'e\\'');
       app._entry = { id: 'chat', kind: 'chat' };
       app._syncARKHIVAPlace();
-      assert.equal(app.jennyChat, true);
+      assert.equal(app.arkhivaChat, true);
       assert.deepEqual(app.actions, ['fuori:true'], 'tornando si rimette com\\'era');
     """)
 
@@ -2169,7 +2169,7 @@ def test_put_away_in_the_chat_she_stays_away_on_the_way_back() -> None:
     _run_js("""
       const app = home();
       app._entry = { id: 'chat', kind: 'chat' };
-      app._jennyOut = false;
+      app._arkhivaOut = false;
       app._entry = { id: 'app', kind: 'app' };
       app._syncARKHIVAPlace();
       app._entry = { id: 'chat', kind: 'chat' };
@@ -2184,9 +2184,9 @@ def test_a_room_counts_as_away_even_on_the_chat_page() -> None:
       const app = home();
       app._entry = { id: 'chat', kind: 'chat' };
       app._setView('arkhiva');
-      assert.equal(app.jennyChat, false);
+      assert.equal(app.arkhivaChat, false);
       app._setView('chat');
-      assert.equal(app.jennyChat, true);
+      assert.equal(app.arkhivaChat, true);
     """)
 
 

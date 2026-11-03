@@ -223,7 +223,7 @@ async def test_pause_and_resume_from_the_tool(tmp_path) -> None:
 
 
 def test_the_hour_is_a_field_of_its_own(tmp_path) -> None:
-    """Il 01/11/2026, su jenny_s22, «il 20 novembre ricordami…» diventava
+    """Il 01/11/2026, su arkhiva_s22, «il 20 novembre ricordami…» diventava
     ``at="…T09:00:00"``: con l'ora dentro la data il modello doveva inventarla
     per riempire un ISO. Ora l'ora è ``time``, che si omette; ``at`` non c'è."""
     tool = CronTool(CronService(tmp_path / "cron" / "jobs.json"), default_timezone=_TZ)
@@ -271,7 +271,7 @@ async def test_a_time_hidden_in_the_date_or_on_a_month_is_refused(tmp_path, date
 
 
 def test_a_one_time_date_already_past_is_refused_everywhere(tmp_path) -> None:
-    """Il 01/11/2026, su jenny_s22, la passata della bacheca ha scritto «verso
+    """Il 01/11/2026, su arkhiva_s22, la passata della bacheca ha scritto «verso
     marzo» come ``2026-03``: il job è nato scaduto ed è suonato subito, otto mesi
     prima. Ora ``CronService`` lo rifiuta, per chiunque scriva."""
     service = CronService(tmp_path / "cron" / "jobs.json")

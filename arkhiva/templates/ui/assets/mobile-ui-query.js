@@ -43,7 +43,7 @@ export class UiQueryResponder extends ShellResponder {
     const actions = window.mobileApp?._appsActions;
     const open = actions?._openApp;
     if (open) {
-      const meta = window.mobileApp?._appsSource?.jennyApps?.find((a) => a.slug === open.slug);
+      const meta = window.mobileApp?._appsSource?.arkhivaApps?.find((a) => a.slug === open.slug);
       let appHtml = null;
       try {
         appHtml = await actions.requestAppHtml(2000);

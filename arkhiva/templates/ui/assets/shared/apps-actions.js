@@ -197,7 +197,7 @@ export class AppsActions {
     }
   }
   async openApp(slug) {
-    const app = this.source.jennyApps.find(a => a.slug === slug);
+    const app = this.source.arkhivaApps.find(a => a.slug === slug);
     if (!app) return;
     if (app.broken) {
       const ok = await confirmDialog(
@@ -395,7 +395,7 @@ export class AppsActions {
       return;
     }
     if (msg.type === 'arkhiva:discuss') {
-      const app = this.source.jennyApps.find(a => a.slug === open.slug);
+      const app = this.source.arkhivaApps.find(a => a.slug === open.slug);
       const name = app?.name || open.slug;
       const text = String(msg.text || '').slice(0, 4000);
       /* La casa apre la chat **sopra** l'app (il velo): si parla di quel che si
@@ -495,7 +495,7 @@ export class AppsActions {
     }
   }
   showARKHIVAAppSheet(slug) {
-    const app = this.source.jennyApps.find(a => a.slug === slug);
+    const app = this.source.arkhivaApps.find(a => a.slug === slug);
     if (!app) return;
 
     const sheet = document.getElementById('arkhiva-app-sheet');
@@ -600,7 +600,7 @@ export class AppsActions {
    *  un'altra scheda. Posarla e' anche darle il permesso: la chat di quel
    *  quaderno potra' usarla. */
   async showPlaceSheet(slug) {
-    const app = this.source.jennyApps.find(a => a.slug === slug);
+    const app = this.source.arkhivaApps.find(a => a.slug === slug);
     const sheet = document.getElementById('arkhiva-app-sheet');
     if (!app || !sheet) return;
     const title = document.getElementById('arkhiva-app-sheet-title');

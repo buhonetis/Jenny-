@@ -689,7 +689,7 @@ class Consolidator:
             # proprio la compattazione a riassumere *quella* conversazione.
             # Con un tetto: senza, una chiamata rimasta appesa teneva la sessione
             # in ``AutoCompact._archiving`` fino al riavvio, cioe' senza piu'
-            # compattazione per inattivita' (visto su jenny_s22 il 26/10/2026: la
+            # compattazione per inattivita' (visto su arkhiva_s22 il 26/10/2026: la
             # chiamata delle 00:53 ancora senza risposta alle 01:12). Allo scadere
             # e' un fallimento come gli altri, e chi riprova riprova.
             from arkhiva.config.runtime_env import llm_timeout_s

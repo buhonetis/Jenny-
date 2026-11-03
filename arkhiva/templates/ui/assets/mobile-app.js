@@ -489,7 +489,7 @@ class MobileApp {
         dismiss: () => {
           const lightbox = document.querySelector('.image-lightbox');
           if (!lightbox) return;
-          if (typeof lightbox.__jennyClose === 'function') lightbox.__jennyClose();
+          if (typeof lightbox.__arkhivaClose === 'function') lightbox.__arkhivaClose();
           else lightbox.remove();
         },
       },

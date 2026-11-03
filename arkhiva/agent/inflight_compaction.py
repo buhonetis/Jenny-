@@ -281,7 +281,7 @@ def format_range(
     I risultati si dividono quel che *max_chars* lascia, e si tagliano solo se non
     ci stanno interi: un tetto fisso per risultato (era 1.500 caratteri) toglieva
     proprio il dato a meta' di un file, che e' quel che il checkpoint deve tenere —
-    visto su jenny_s22 il 26/10/2026, con i codici al carattere 5.000 di file da
+    visto su arkhiva_s22 il 26/10/2026, con i codici al carattere 5.000 di file da
     10.000. Sotto *min_result_chars* a testa non si scende: allora cadono i passi
     piu' vecchi (come fa Codex quando la sua compattazione sfora), e la richiesta e
     i messaggi dell'utente sono gia' fuori di qui, alla lettera.

@@ -2540,7 +2540,7 @@ class MainActivity : AppCompatActivity() {
     // ── Backup: helper I/O (thread di background + callback JS) ──
 
     private fun notifyBackupJs(callback: String, ok: Boolean) {
-        notifyJs("jennyBackup", callback, ok.toString())
+        notifyJs("arkhivaBackup", callback, ok.toString())
     }
 
     /**

@@ -116,7 +116,7 @@ async def test_arkhiva_reasoning_reaches_her_turn(tmp_path):
     assert await _effort_sent(same) == "-"
 
 
-async def test_jennys_reasoning_only_where_she_delegates(tmp_path):
+async def test_arkhivas_reasoning_only_where_she_delegates(tmp_path):
     """Senza ``spawn`` (core mode) il lavoro e' suo, con ``plan_propose`` scrive un piano.
 
     In entrambi i casi decide il ragionamento di tutti, non il suo ``low``.
@@ -128,14 +128,14 @@ async def test_jennys_reasoning_only_where_she_delegates(tmp_path):
     assert await _effort_sent(loop) == "low"
 
 
-async def test_jennys_reasoning_stays_off_when_everyones_is_off(tmp_path):
+async def test_arkhivas_reasoning_stays_off_when_everyones_is_off(tmp_path):
     """Ragionamento di tutti spento: ``low`` accenderebbe il thinking a chi l'ha tolto."""
     loop = make_loop(tmp_path, bare=True, patch_deps=True, main_reasoning_effort="low")
     _with_global_effort(loop, None)
     assert await _effort_sent(loop) == "-"
 
 
-async def test_a_preset_with_its_own_reasoning_wins_over_jennys(tmp_path):
+async def test_a_preset_with_its_own_reasoning_wins_over_arkhivas(tmp_path):
     """«deep» chiede ``high`` a tutti: ARKHIVA non lo smentisce col suo ``low``."""
     loop = make_loop(
         tmp_path, bare=True, model_presets=PRESETS, patch_deps=True, main_reasoning_effort="low",
@@ -151,7 +151,7 @@ async def test_a_preset_with_its_own_reasoning_wins_over_jennys(tmp_path):
     assert await _effort_sent(loop) == "-"
 
 
-def test_jennys_reasoning_is_low_by_default_and_null_means_same_as_helpers():
+def test_arkhivas_reasoning_is_low_by_default_and_null_means_same_as_helpers():
     from arkhiva.config.schema import Config
 
     assert Config().agents.defaults.main_reasoning_effort == "low"

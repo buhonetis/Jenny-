@@ -16,7 +16,7 @@ def _configure_arkhiva_workspace(
     tmp_path_factory: pytest.TempPathFactory,
 ) -> Generator[None, None, None]:
     """Provide a temporary workspace for the entire test suite."""
-    data_dir = tmp_path_factory.mktemp("jenny_data")
+    data_dir = tmp_path_factory.mktemp("arkhiva_data")
     workspace = data_dir / "workspace"
     workspace.mkdir(parents=True, exist_ok=True)
     sync_workspace_templates(workspace, silent=True)

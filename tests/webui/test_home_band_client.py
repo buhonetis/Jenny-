@@ -199,7 +199,7 @@ console.log('ok');
 def test_no_shape_around_a_place_card() -> None:
     """La scheda di un posto e' una scatola larga 312 che accanto alla sagoma
     non sta: finiva sotto, e fra lei e l'ora restava mezzo schermo vuoto
-    (jenny_s22, 02/11/2026). Un blocco che la contiene non ha sagoma."""
+    (arkhiva_s22, 02/11/2026). Un blocco che la contiene non ha sagoma."""
     out = _run_js("""
 for (const cls of ['place-card', 'place-list']) {
   const { block, band, mascot } = thread({ text: 300 });

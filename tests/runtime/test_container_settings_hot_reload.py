@@ -119,7 +119,7 @@ def test_identical_settings_still_short_circuit(container_with_agent, monkeypatc
     agent._apply_provider_switch.assert_not_called()
 
 
-def test_jennys_reasoning_reaches_the_live_agent(container_with_agent, monkeypatch) -> None:
+def test_arkhivas_reasoning_reaches_the_live_agent(container_with_agent, monkeypatch) -> None:
     """Il ragionamento della sola ARKHIVA vive sull'agente, non sul provider: arriva a caldo."""
     container, agent = container_with_agent
     config = _config()

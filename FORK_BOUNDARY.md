@@ -1,10 +1,10 @@
 # Fork Boundary
 
-This document defines what Jenny keeps, removes, and changes relative to upstream [nanobot](https://github.com/HKUDS/nanobot).
+This document defines what Arkhiva keeps, removes, and changes relative to upstream [nanobot](https://github.com/HKUDS/nanobot).
 
 ## What This Fork Is
 
-Jenny is an Android-only AI agent framework focused on:
+Arkhiva is an Android-only AI agent framework focused on:
 
 - **Gateway** — Single async entry point serving the WebView UI and WebSocket channel.
 - **WebSocket channel** — The sole communication path between the in-app WebView and the agent.
@@ -46,7 +46,7 @@ All of the following subsystems are present and actively used:
 
 ## Migration Notes from Upstream
 
-If migrating from upstream nanobot to Jenny:
+If migrating from upstream nanobot to Arkhiva:
 
 1. **Config** — `workspace/config.json` schema is compatible. Remove any channel-specific config keys (Discord token, Slack bot token, etc.).
 2. **Shell exec** — Any agent instructions referencing `shell_exec` or `bash` tool should be updated to use `python_exec`.

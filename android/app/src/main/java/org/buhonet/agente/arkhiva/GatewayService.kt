@@ -34,7 +34,7 @@ class GatewayService : Service() {
 
     companion object {
         private const val TAG = "ARKHIVA"
-        private const val NOTIFICATION_CHANNEL_ID = "jenny_gateway"
+        private const val NOTIFICATION_CHANNEL_ID = "arkhiva_gateway"
         private const val NOTIFICATION_ID = 1
         // Distinto dai request code degli alert (NotifierBridge usa tag.hashCode()),
         // così i due PendingIntent non si sovrascrivono a vicenda.
@@ -786,7 +786,7 @@ class GatewayService : Service() {
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setContentTitle(getString(R.string.gateway_notification_title))
             .setContentText(getString(R.string.gateway_notification_text))
-            .setSmallIcon(R.drawable.ic_stat_jenny)
+            .setSmallIcon(R.drawable.ic_stat_arkhiva)
             .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_notification_large))
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)

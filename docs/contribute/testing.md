@@ -1,6 +1,6 @@
 # Testing
 
-How to run Jenny's test suite, lint, and type checks locally, and what CI enforces on every pull request.
+How to run Arkhiva's test suite, lint, and type checks locally, and what CI enforces on every pull request.
 
 ## Running the tests
 
@@ -24,7 +24,7 @@ pytest tests/config/ -v
 
 ### Coverage
 
-CI runs `pytest` without coverage. Coverage was **removed** from it, and `pytest-cov` is not even installed there: the `python_exec` sandbox intercepts every path operation for the duration of an `execute` and refuses the ones outside the workspace, the coverage tracer's own path reads fall inside that window, and the tests asserting a clean record fail. Widening the sandbox's exemption to accommodate the tracer would weaken a security boundary on a platform we do not ship, so the measurement went instead — it had kept CI red for three releases. `[tool.coverage.*]` stays in `pyproject.toml` for a local `pytest -q --cov=jenny`, where you can see those failures and know to ignore them.
+CI runs `pytest` without coverage. Coverage was **removed** from it, and `pytest-cov` is not even installed there: the `python_exec` sandbox intercepts every path operation for the duration of an `execute` and refuses the ones outside the workspace, the coverage tracer's own path reads fall inside that window, and the tests asserting a clean record fail. Widening the sandbox's exemption to accommodate the tracer would weaken a security boundary on a platform we do not ship, so the measurement went instead — it had kept CI red for three releases. `[tool.coverage.*]` stays in `pyproject.toml` for a local `pytest -q --cov=arkhiva`, where you can see those failures and know to ignore them.
 
 ## What a test should check
 
@@ -53,7 +53,7 @@ Configured in `pyproject.toml`'s `[tool.ruff]` / `[tool.ruff.lint]`: line length
 
 ## Type checking
 
-Jenny uses `pyright` in `basic` mode (config in `pyrightconfig.json`, `include: ["jenny"]`, excluding `arkhiva/templates` and `arkhiva/skills`). It's a static check only — zero runtime impact — but it runs in two tiers with different consequences:
+Arkhiva uses `pyright` in `basic` mode (config in `pyrightconfig.json`, `include: ["arkhiva"]`, excluding `arkhiva/templates` and `arkhiva/skills`). It's a static check only — zero runtime impact — but it runs in two tiers with different consequences:
 
 ```bash
 # BLOCKING subset — must stay green, this is what CI fails the build on:
@@ -95,7 +95,7 @@ NODE_PATH=$PWD/node_modules pytest -q -n auto --dist worksteal
 
 `node_modules/` is not in `.gitignore`: delete it afterwards rather than committing it.
 
-CI validates the Android code path on a plain host runner (installing `jenny` with `pip install -e ".[dev]"`) rather than inside an actual Android build — Android is the only supported runtime target for the shipped app, but the Python side of the codebase is what CI exercises directly.
+CI validates the Android code path on a plain host runner (installing `arkhiva` with `pip install -e ".[dev]"`) rather than inside an actual Android build — Android is the only supported runtime target for the shipped app, but the Python side of the codebase is what CI exercises directly.
 
 ## Language and style conventions that tests should also follow
 

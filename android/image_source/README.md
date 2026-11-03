@@ -1,14 +1,14 @@
 # image_source/
 
-Sorgenti "grezze" (disegnate dall'artista) dell'arte di Jenny e i due script
+Sorgenti "grezze" (disegnate dall'artista) dell'arte di Arkhiva e i due script
 che le esportano verso il resto del repo. Niente in questa cartella viene
 letto a runtime: è solo il punto di partenza della build degli asset.
 
 ## Cosa c'è
 
 - `icon.png` — sorgente dell'icona app (viso + linee, sfondo trasparente).
-- `jenny-side.PNG`, `jenny-side-talk.PNG`, `jenny-hang.PNG`, `jenny-fall.PNG`,
-  `jenny-ground.PNG`, `jenny-walk1.PNG`, `jenny-walk2.PNG`, `hello1/2.PNG`,
+- `arkhiva-side.PNG`, `arkhiva-side-talk.PNG`, `arkhiva-hang.PNG`, `arkhiva-fall.PNG`,
+  `arkhiva-ground.PNG`, `arkhiva-walk1.PNG`, `arkhiva-walk2.PNG`, `hello1/2.PNG`,
   `idle.PNG` — pose della mascotte, canvas 3000×3000, tutte cablate in
   `gen_pose_webp.py`.
 - `think.PNG`, `talk_1a.PNG`, `talk_1b.PNG` — pose cotte di prima dei due
@@ -56,7 +56,7 @@ si vede.
 | facce | `face_front_normal`, `face_front_normal_talk` | la coppia del parlato |
 | | `face_front_thinking` | mentre aspetta la risposta |
 | | `face_front_happy`, `face_front_sad`, `face_front_angry` | le tre reazioni |
-| di lato | `body_side_idle` | il corpo di `jenny-side` senza faccia |
+| di lato | `body_side_idle` | il corpo di `arkhiva-side` senza faccia |
 | | `face_side_happy`, `face_side_sad`, `face_side_angry` | le tre reazioni al bordo (dal 28/09/2026) |
 
 In riserva, **importati e non esportati** (10): `face_{front,side}_{happy,sad,angry}_talk`
@@ -71,12 +71,12 @@ Attenzione ai nomi del saluto: `body_front_wave1` è il corpo di `hello1` e
 incrociati, e all'import si sono raddrizzati.
 
 **Manca la coppia neutra `side`** (`face_side_normal` e il suo `_talk`): non
-serve, perché al bordo senza umore resta la posa cotta `jenny-side`, e con un
+serve, perché al bordo senza umore resta la posa cotta `arkhiva-side`, e con un
 umore la faccia è quella dell'umore (`SIDE_FACE`, dal 28/09/2026: prima al bordo
 l'umore non si mostrava, e l'utente lo cercava). Se
 un giorno servisse, **si deriva dall'arte cotta** invece di disegnarla:
-`body_side_idle` è `jenny-side` senza faccia, quindi basta tenere di
-`jenny-side.PNG` i pixel che si discostano dal corpo e azzerare l'alfa
+`body_side_idle` è `arkhiva-side` senza faccia, quindi basta tenere di
+`arkhiva-side.PNG` i pixel che si discostano dal corpo e azzerare l'alfa
 altrove. Verificato: ricomposta torna con uno scarto massimo di 15 su 13 pixel
 di frangia (bocca chiusa) e di 2 su nessun pixel (bocca aperta).
 
@@ -112,9 +112,9 @@ Lo script:
      inscritta limita la dimensione massima della mascotte a quella cifra;
      sotto questa soglia niente viene tagliato dalla maschera.
    - **B. Icona della status bar**: non esce più da qui. È il fiore ✿,
-     un vettore tenuto a mano in `drawable/ic_stat_jenny.xml` (il perché è
+     un vettore tenuto a mano in `drawable/ic_stat_arkhiva.xml` (il perché è
      nel commento del file): la sagoma della mascotte a 24dp non si leggeva.
-     Non rimettere i PNG `drawable-<dpi>/ic_stat_jenny.png`: vincerebbero sul
+     Non rimettere i PNG `drawable-<dpi>/ic_stat_arkhiva.png`: vincerebbero sul
      vettore e tornerebbe l'icona vecchia.
    - **C. Notification large icon** (`drawable-nodpi/ic_notification_large.png`):
      sfondo nero pieno + mascotte all'80% del canvas.
@@ -136,11 +136,11 @@ quadrato intero ridotto a 768×768 (`SIZE`) con lo stesso fattore per tutti,
 qualità 80. La scala relativa fra le pose non viene mai toccata a valle.
 
 A runtime (`arkhiva/templates/ui/assets/shared/mascot-drag.js`) il layer di volo
-`.jenny-fly` coincide esattamente col box della mascotte — tutte le img sono
+`.arkhiva-fly` coincide esattamente col box della mascotte — tutte le img sono
 `width:100%` dello stesso quadrato condiviso, quindi nessuna scala o offset
 viene calcolata lì. L'unica costante calcolata a **build time** in
 `gen_pose_webp.py` è il pivot della posa appesa (`HAND_PIVOT`): la punta
-della manica alzata ("la mano") su `jenny-hang.png`, misurata a mano perché
+della manica alzata ("la mano") su `arkhiva-hang.png`, misurata a mano perché
 la sagoma in quella zona è ambigua (le ciocche superano la manica in
 altezza). Lo script stampa `PIVOT_X`/`PIVOT_Y` come frazione del canvas: quei
 due valori vanno copiati a mano nelle costanti `PIVOT_X`/`PIVOT_Y` di
@@ -148,7 +148,7 @@ due valori vanno copiati a mano nelle costanti `PIVOT_X`/`PIVOT_Y` di
 
 ### Regole di utilizzo delle pose (runtime, non generazione)
 
-Gli stati "in posizione" (`shared/jenny-mascot.js`, lo stesso per casa e
+Gli stati "in posizione" (`shared/arkhiva-mascot.js`, lo stesso per casa e
 officina dal 24/09/2026), a mascotte intera sono **due livelli**, corpo e
 faccia (v. *Due livelli* sopra):
 
@@ -181,7 +181,7 @@ la mascotte viene trascinata:
   di `fall` congelata al momento del contatto.
 - **walk1**/**walk2**: alternate ogni `WALK_FRAME_MS` (500ms) durante il
   rientro verso il bordo.
-- **hello1**/**hello2**: saluto a due frame usato dalla mini Jenny
+- **hello1**/**hello2**: saluto a due frame usato dalla mini Arkhiva
   dell'onboarding (`mobile-onboarding.js`): cade dall'alto (`fall`), atterra
   stordita (`ground`), poi alterna hello1/hello2 e si ferma in `idle`.
 
@@ -189,10 +189,10 @@ la mascotte viene trascinata:
 
 `FILES` mappa nome-posa → PNG sorgente e scrive **10 webp** cotti in
 `arkhiva/templates/ui/assets/`, uno per posa:
-`jenny-{side,side-talk,hang,fall,ground,walk1,walk2,hello1,hello2,idle}.webp`.
+`arkhiva-{side,side-talk,hang,fall,ground,walk1,walk2,hello1,hello2,idle}.webp`.
 `LAYERS` ne aggiunge **13 a due livelli**,
-`jenny-<stem coi trattini>.webp` (per esempio `body_front_idle.PNG` →
-`jenny-body-front-idle.webp`). Ogni sorgente deve essere esattamente 3000×3000
+`arkhiva-<stem coi trattini>.webp` (per esempio `body_front_idle.PNG` →
+`arkhiva-body-front-idle.webp`). Ogni sorgente deve essere esattamente 3000×3000
 (assert esplicito) o lo script si ferma.
 
 ## Rigenerare
@@ -228,10 +228,10 @@ In cartella ci sono tre famiglie: le 10 pose cotte in `FILES`, i 13 livelli
 in `LAYERS`, e ciò che **non** si esporta di proposito — i 10 livelli in
 riserva (v. *Due livelli*) e le tre pose cotte che fanno da riferimento al
 test dei livelli (`think`, `talk_1a`, `talk_1b`). `idle.PNG` oggi serve solo
-alla mini Jenny dell'onboarding (`JENNY_POSES`): la mascotte intera è a due
+alla mini Arkhiva dell'onboarding (`ARKHIVA_POSES`): la mascotte intera è a due
 livelli.
 
 Se si cablano nuovi sorgenti, aggiornare `FILES` (o `LAYERS`) qui e i
-riferimenti runtime: `ART`/`BODY`/`FACE` in `shared/jenny-mascot.js`,
-`FLY_POSES` in `shared/mascot-drag.js`, `JENNY_POSES` in
+riferimenti runtime: `ART`/`BODY`/`FACE` in `shared/arkhiva-mascot.js`,
+`FLY_POSES` in `shared/mascot-drag.js`, `ARKHIVA_POSES` in
 `mobile-onboarding.js`.

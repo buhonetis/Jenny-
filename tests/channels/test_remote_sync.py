@@ -1,6 +1,6 @@
 """Il telefono resta allineato con le chat fatte da un altro dispositivo.
 
-Misurato il 14/10/2026 su jenny_s22 + Mac via Tailscale: il transcript era gia'
+Misurato il 14/10/2026 su arkhiva_s22 + Mac via Tailscale: il transcript era gia'
 completo, ma dal vivo il telefono riceveva le risposte di ARKHIVA senza le
 domande scritte dal Mac, la casa non rileggeva tornando visibile, e ogni
 risposta faceva suonare il telefono. Qui le tre regole:

@@ -836,6 +836,7 @@ def sync_workspace_templates(workspace: Path, silent: bool = False) -> list[str]
     # ``skip_existing`` qui sotto vedrebbe comunque un file esistente e passerebbe
     # oltre: le tre politiche si leggono nell'ordine in cui sono descritte.
     from arkhiva.utils.android_assets import (
+        _DATA_ASSETS,
         _SYSTEM_PROMPT_TEMPLATES,
         _USER_OWNED_TEMPLATES,
         retire_withdrawn_templates,
@@ -865,7 +866,7 @@ def sync_workspace_templates(workspace: Path, silent: bool = False) -> list[str]
         "arkhiva.templates", workspace, skip_existing=True, only=_USER_OWNED_TEMPLATES,
     )
     n_prompts = extract_package_dir(
-        "arkhiva.templates", workspace, only=_SYSTEM_PROMPT_TEMPLATES,
+        "arkhiva.templates", workspace, only=[*_SYSTEM_PROMPT_TEMPLATES, *_DATA_ASSETS],
     )
     added.append(f"agent prompts ({n_prompts} files)")
 

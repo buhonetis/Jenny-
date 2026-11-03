@@ -3145,7 +3145,7 @@ dialog.image-lightbox::backdrop { background: transparent; }
   display: block;
   /* Larghezza fissa che si stringe solo se manca spazio. Con `min(100%, …)`
      seguiva il messaggio di ARKHIVA, che e' largo quanto il suo testo: dopo un
-     «Eccola:» la cartolina restava stretta (visto su jenny_s22). */
+     «Eccola:» la cartolina restava stretta (visto su arkhiva_s22). */
   width: 312px;
   max-width: 100%;
   margin: 8px 0 4px;
@@ -3300,7 +3300,7 @@ dialog.image-lightbox::backdrop { background: transparent; }
 .place-list-map { display: none; position: relative; height: 104px; overflow: hidden; background: var(--surface-2); }
 .place-list.has-map .place-list-map { display: block; }
 /* Spilli e «sei qui» stanno nel riquadro delle tessere, che arrivano dopo di
-   loro: senza z-index le immagini ci finivano sopra (visto su jenny_s22). */
+   loro: senza z-index le immagini ci finivano sopra (visto su arkhiva_s22). */
 .place-tiles .place-num,
 .place-tiles .place-dot { z-index: 1; }
 .place-num {
@@ -4088,7 +4088,7 @@ dialog.image-lightbox::backdrop { background: transparent; }
 /* Schermo basso: via il dock, che li' costa un quarto dell'altezza. La soglia
    era 500 px, pensata per un telefono in orizzontale (330-390 px utili), e
    prendeva anche il quadrato da 1440 px a 480 dpi dell'emulatore
-   `jenny_square`: 480 px CSS, 432 tolte le due barre di sistema. Li'
+   `arkhiva_square`: 480 px CSS, 432 tolte le due barre di sistema. Li'
    l'officina restava **senza navigazione**, per sempre (visto il 27/09/2026).
    A 380 il quadrato e il Titan 2 (566) tengono il dock; l'orizzontale e lo
    schermo con la tastiera aperta lo tolgono ancora. */

@@ -17,7 +17,7 @@ from support.kotlin_source import read_source
 
 ROOT = Path(__file__).resolve().parents[2]
 SETTINGS_JS = ROOT / "arkhiva" / "templates" / "ui" / "assets" / "mobile-settings.js"
-MAIN_ACTIVITY = ROOT / "android" / "app" / "src" / "main" / "java" / "com" / "flagdizero" / "arkhiva" / "MainActivity.kt"
+MAIN_ACTIVITY = ROOT / "android" / "app" / "src" / "main" / "java" / "com" / "buhonet" / "arkhiva" / "MainActivity.kt"
 
 
 @requires_node

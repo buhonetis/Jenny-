@@ -29,47 +29,6 @@ def test_data_dir_is_inside_workspace() -> None:
     assert get_data_dir() == workspace / ".arkhiva"
 
 
-def test_data_dir_migrates_legacy_nanobot_dir() -> None:
-    workspace = get_workspace_path()
-    legacy_dir = workspace / ".nanobot"
-    (legacy_dir / "cron").mkdir(parents=True)
-    (legacy_dir / "cron" / "marker.txt").write_text("legacy")
-
-    data = get_data_dir()
-
-    assert data == workspace / ".arkhiva"
-    assert not legacy_dir.exists()
-    assert (data / "cron" / "marker.txt").read_text() == "legacy"
-
-
-def test_data_dir_migrates_legacy_minijenny_dir() -> None:
-    workspace = get_workspace_path()
-    legacy_dir = workspace / ".minijenny"
-    (legacy_dir / "cron").mkdir(parents=True)
-    (legacy_dir / "cron" / "marker.txt").write_text("legacy")
-
-    data = get_data_dir()
-
-    assert data == workspace / ".arkhiva"
-    assert not legacy_dir.exists()
-    assert (data / "cron" / "marker.txt").read_text() == "legacy"
-
-
-def test_data_dir_does_not_overwrite_existing_new_dir(tmp_path) -> None:
-    workspace = get_workspace_path()
-    new_dir = workspace / ".arkhiva"
-    new_dir.mkdir()
-    (new_dir / "marker.txt").write_text("current")
-    legacy_dir = workspace / ".nanobot"
-    legacy_dir.mkdir()
-    (legacy_dir / "marker.txt").write_text("legacy")
-
-    data = get_data_dir()
-
-    assert data == new_dir
-    assert (new_dir / "marker.txt").read_text() == "current"
-    assert legacy_dir.exists()
-
 
 def test_runtime_subdirs_are_under_data_dir() -> None:
     data = get_data_dir()

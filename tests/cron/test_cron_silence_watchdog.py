@@ -202,7 +202,7 @@ class TestTheServiceCallsIt:
 
 
 class TestAWarnedMonitorIsLeftAlone:
-    """Il 01/11/2026, su jenny_s22: un monitor con il file sparito ha avvisato in
+    """Il 01/11/2026, su arkhiva_s22: un monitor con il file sparito ha avvisato in
     chat al terzo giro (CHECK_WARNED) e, dal sesto, la sentinella ha aggiunto a
     ogni giro «non ha completato il controllo da 6 giri»: un secondo avviso per
     lo stesso guasto, a chi lo sapeva già. L'avviso ora ha la sua ora, e la

@@ -1292,7 +1292,7 @@
         "you": "Annullato: {count} file rimessi com'erano prima di lei.",
         "youOne": "Annullato: 1 file rimesso com'era prima di lei.",
         "arkhiva": "Ho annullato le sue modifiche: {count} file rimessi com'erano.",
-        "jennyOne": "Ho annullato la sua modifica: 1 file rimesso com'era.",
+        "arkhivaOne": "Ho annullato la sua modifica: 1 file rimesso com'era.",
         "nothing": "Annullato: non aveva cambiato niente.",
         "keptOthers": "{count} lasciati come sono, perché li ha cambiati anche qualcun altro: {files}",
         "keptOthersOne": "1 lasciato com'è, perché l'ha cambiato anche qualcun altro: {files}",

@@ -1,6 +1,6 @@
 # Behaviour check
 
-Some of Jenny's guarantees are not code. They are sentences in a prompt or a tool description,
+Some of Arkhiva's guarantees are not code. They are sentences in a prompt or a tool description,
 and they hold because the model chooses to honour them: "forget X" is answered with "Dream will
 apply it", a conditional check becomes a `monitor` and not a reminder that speaks every hour, a
 fact said in a notebook goes to the journal with one `journal_append`. Each of these was once
@@ -90,7 +90,7 @@ error owned 2→1. The five that live in Python were calibrated on 12/10/2026 wi
 3+3 runs: researcher type 3→0, consolidator skip 3→0, heartbeat silence 3→0, goal stays open
 3→0; plain reminder only 3→2 — the check reads it right, but DeepSeek keeps `reminder` for a
 daily nudge even when told to use `monitor`. Inverting Dream's budget rule did not move it, so that scenario is a probe. A scenario whose promise has no sentence at all is a **probe**
-(`kind="probe"`): it says how Jenny behaves, not whether a prompt edit changed it.
+(`kind="probe"`): it says how Arkhiva behaves, not whether a prompt edit changed it.
 
 ## Usage
 

@@ -266,7 +266,7 @@ async def test_a_result_with_only_stalled_siblings_wakes_at_once(workspace: Path
     assert len(rig.model.calls) == 1
 
 
-async def test_the_timer_wakes_jenny(workspace: Path) -> None:
+async def test_the_timer_wakes_arkhiva(workspace: Path) -> None:
     rig = Rig(workspace, wake_after=0.05)
     await rig.start()
     rig.helper("h1")

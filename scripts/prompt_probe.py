@@ -142,7 +142,7 @@ async def probe(workspace: Path, chat: str, message: str, *,
         raise SystemExit("the turn did not reach the provider")
     first = turn_requests[0]
     report = measure(first)
-    report["jenny_estimate"] = estimate_prompt_tokens_chain(
+    report["arkhiva_estimate"] = estimate_prompt_tokens_chain(
         provider, provider.model, first.get("messages") or [], first.get("tools"))[0]
     report["summaries"] = len(provider.requests) - len(turn_requests)
     report["request"] = first
@@ -167,7 +167,7 @@ def main() -> None:
         args.save.write_text(json.dumps(request, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"messages {report['messages']} · tools {report['tool_count']} · "
           f"{report['total_chars']:,} chars ≈ {report['real_tokens_estimate']:,} real tokens · "
-          f"ARKHIVA's estimate {report['jenny_estimate']:,} · "
+          f"ARKHIVA's estimate {report['arkhiva_estimate']:,} · "
           f"summaries before the turn {report['summaries']}")
     for name, size in report["parts"].items():
         share = 100 * size / max(1, report["total_chars"])

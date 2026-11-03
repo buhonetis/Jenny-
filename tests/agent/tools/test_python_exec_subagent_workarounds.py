@@ -1,6 +1,6 @@
 """I tentativi di aggirare il guard di ``python_exec`` visti sul device restano respinti.
 
-Il 04/10/2026, sull'emulatore ``jenny_s22`` (build 1.0.0 debug da ``main``), un
+Il 04/10/2026, sull'emulatore ``arkhiva_s22`` (build 1.0.0 debug da ``main``), un
 subagent «analyst» a cui era stato chiesto uno script per un rapporto sulle
 innaffiature ha sbattuto contro il guard (``argparse``, ``subprocess``,
 ``os.system``) e ha provato a girarci intorno con tre chiamate, riprodotte qui

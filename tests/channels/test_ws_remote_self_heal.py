@@ -338,7 +338,7 @@ async def test_the_app_opens_only_after_two_broadcasts_and_pauses_grow() -> None
 
 
 async def test_the_app_opens_once_then_arkhiva_waits_for_the_user() -> None:
-    """Tailscale senza accesso (jenny_s22, 25/10/2026): ogni apertura metteva il
+    """Tailscale senza accesso (arkhiva_s22, 25/10/2026): ogni apertura metteva il
     suo login sopra ARKHIVA, ogni 2-10 minuti per sempre. Ora si apre una volta;
     se non basta, ARKHIVA smette del tutto e il pannello lo dice."""
     revive = _Revive()

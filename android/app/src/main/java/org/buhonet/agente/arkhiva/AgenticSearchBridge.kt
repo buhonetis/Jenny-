@@ -31,13 +31,13 @@ class AgenticSearchBridge(context: Context) {
         private const val MAX_RESULTS_DEFAULT = 10
 
         // Il segno sul documento che c'era prima di un caricamento (v. evaluateOnPage).
-        private const val MARK_STALE_JS = "window.__jennyStale = true"
+        private const val MARK_STALE_JS = "window.__arkhivaStale = true"
         private const val STALE_RESULT = "\"__arkhiva_stale__\""
         private const val MARK_STALE_FALLBACK_MS = 500L
 
         /** [js] letto solo se il documento non è quello di prima del caricamento. */
         private fun readUnlessStale(js: String): String =
-            "(function() { if (window.__jennyStale === true) return '__arkhiva_stale__';\n" +
+            "(function() { if (window.__arkhivaStale === true) return '__arkhiva_stale__';\n" +
                 "return (\n$js\n); })()"
 
         @Volatile

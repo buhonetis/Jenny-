@@ -73,5 +73,5 @@ await tick(10);
 app.openARKHIVA();
 await tick(30);
 assert.equal(reads, 2, 'dopo un errore le regole non si rileggono piu\\u2019');
-assert.equal(app.jennyRoom.rulesEl.value, 'Be brief.');
+assert.equal(app.arkhivaRoom.rulesEl.value, 'Be brief.');
 """)
