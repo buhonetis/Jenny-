@@ -208,7 +208,7 @@ class TestTheGeometry:
         """Il posto si misura sul palco, che segue anche la finestra
         rimpicciolita dalla tastiera; lo schermo meno l'inset è solo il ripiego.
         Col conto sullo schermo una risposta lunga spingeva la pillola fuori
-        dalla finestra (``jenny_s22``, 13/10/2026)."""
+        dalla finestra (``arkhiva_s22``, 13/10/2026)."""
         source = _read()
         body = _fun(source, "private fun syncListCap(ctx: Context)")
         assert "(row.parent as? View)?.height" in body

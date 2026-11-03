@@ -33,7 +33,7 @@ const confirmDialog = async (message, okText) => {{
 class Widget {{
   constructor() {{
     this._busy = false;
-    this.status = {{ paired: true, paired_username: 'mario', bot_username: 'jenny_bot' }};
+    this.status = {{ paired: true, paired_username: 'mario', bot_username: 'arkhiva_bot' }};
   }}
   render() {{ calls.render += 1; }}
 {member(_PAIRING, "_unpair")}

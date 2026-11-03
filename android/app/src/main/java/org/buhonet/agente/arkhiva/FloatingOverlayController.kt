@@ -359,7 +359,7 @@ object FloatingOverlayController {
      */
     private const val CHAT_BLUR_DP = 24
 
-    private const val PREFS = "jenny_floating"
+    private const val PREFS = "arkhiva_floating"
 
     // Fra le preferenze non c'e' il bordo: e' sempre il destro (24/09/2026).
     //
@@ -1195,7 +1195,7 @@ object FloatingOverlayController {
         // (`filterTouchesWhenObscured`: «Accedi con Google», le conferme) lo
         // scartano — e non si poteva toccare niente finché c'era la mascotte.
         // Visto il 15/10/2026: Claude rispondeva, Accedi con Google no; su
-        // jenny_s22 `dumpsys window` dava il palco `fillxfill`, `isVisible=true`
+        // arkhiva_s22 `dumpsys window` dava il palco `fillxfill`, `isVisible=true`
         // con ARKHIVA parcheggiata. Da fermo non disegna niente (velo, arte del
         // volo e campo sono tutti GONE), quindi toglierlo non toglie niente; una
         // vista radice GONE rende invisibile la finestra, che smette di coprire.
@@ -1274,7 +1274,7 @@ object FloatingOverlayController {
      *
      * **Con la sfocatura** basta un filo: la pagina sotto è già senza lettere,
      * e il velo serve solo a dare profondità. **Senza**, il velo è quasi una
-     * superficie: misurato su jenny_s22 sopra una pagina di Wikipedia, al 55%
+     * superficie: misurato su arkhiva_s22 sopra una pagina di Wikipedia, al 55%
      * in cima i titoli della pagina si leggevano ancora e uno finiva dentro il
      * chip. All'85% resta l'ombra della pagina, non le sue lettere.
      */
@@ -1376,7 +1376,7 @@ object FloatingOverlayController {
         // schermo intero, e Android toglie dall'elenco delle finestre
         // accessibili quelle che una finestra così copre per intero: con la
         // chat aperta Chrome per il servizio non esiste, e quando torna
-        // ricostruisce l'albero un pezzo alla volta. Misurato su `jenny_s22`
+        // ricostruisce l'albero un pezzo alla volta. Misurato su `arkhiva_s22`
         // il 13/10/2026: lette in parallelo all'apertura, una pagina da 24k
         // caratteri ne dava 880, e alla seconda prova zero. La lettura dura
         // ~0,3 s e ha un tetto (v. [ScreenSnapshots.capture]); a servizio
@@ -2426,7 +2426,7 @@ object FloatingOverlayController {
      * dichiararlo (v. [followPill]). Con una risposta lunga la lista si
      * prendeva allora l'altezza di uno schermo senza tastiera e spingeva la
      * pillola fuori dalla finestra — il campo spariva, e lei finiva sopra le
-     * bolle (`jenny_s22`, 13/10/2026). L'altezza del palco segue tutti e due i
+     * bolle (`arkhiva_s22`, 13/10/2026). L'altezza del palco segue tutti e due i
      * casi: nel primo la finestra è più bassa, nel secondo l'inset sta già nel
      * padding della riga. Lo schermo resta il ripiego prima del primo layout.
      */
@@ -3125,7 +3125,7 @@ object FloatingOverlayController {
      * a questa finestra (`ime=0` per tutta l'apertura, con la tastiera su) e la
      * **ridimensiona** invece: la pillola sale sopra la tastiera senza cambiare
      * né padding né altezza, e lei restava dov'era — dietro la tastiera
-     * (`jenny_s22`, 13/10/2026). Guardando dove la pillola è *disegnata*, ogni
+     * (`arkhiva_s22`, 13/10/2026). Guardando dove la pillola è *disegnata*, ogni
      * causa — inset, finestra ridimensionata, testo che va a capo — porta allo
      * stesso conto.
      */

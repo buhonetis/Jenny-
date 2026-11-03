@@ -327,7 +327,7 @@ def test_a_redraw_after_invalidate_reads_the_list_again() -> None:
     """Creato un quaderno (`invalidate`), il ridisegno che arriva senza `show()`
     — il cambio di conversazione, il ResizeObserver al ritorno sui Quaderni —
     non resta su «Caricamento…»: va a rileggere l'elenco, una volta sola.
-    Visto su jenny_square il 10/10/2026, pagina ferma sugli scheletri."""
+    Visto su arkhiva_square il 10/10/2026, pagina ferma sugli scheletri."""
     _run("""
       const panel = await open(LIST);
       let reads = 0;

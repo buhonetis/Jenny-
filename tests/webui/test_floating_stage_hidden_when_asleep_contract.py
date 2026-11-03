@@ -6,7 +6,7 @@ Android lo segnalava all'app sotto come «schermata coperta»
 (``FLAG_WINDOW_IS_OBSCURED``). Le schermate che si difendono dal tapjacking
 (``filterTouchesWhenObscured``: «Accedi con Google», le conferme) scartavano ogni
 tocco finche' ARKHIVA era a schermo; le app normali no — Claude rispondeva, Accedi
-con Google no (15/10/2026). Su jenny_s22 ``dumpsys window`` dava il palco
+con Google no (15/10/2026). Su arkhiva_s22 ``dumpsys window`` dava il palco
 ``fillxfill`` e ``isVisible=true`` con ARKHIVA parcheggiata.
 
 Ora da ferma la vista radice del palco e' ``GONE`` (la finestra diventa

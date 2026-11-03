@@ -94,7 +94,7 @@ globalThis.fetch = async (url, opts) => {
 };
 
 const { AppsActions } = await import('./shared/apps-actions.js');
-const source = { onAppDataChanged() {}, jennyApps: [
+const source = { onAppDataChanged() {}, arkhivaApps: [
   { slug: 'orto', name: 'Orto <b>' },
   { slug: 'meteo', name: 'Meteo', view_kind: 'external' },
 ] };

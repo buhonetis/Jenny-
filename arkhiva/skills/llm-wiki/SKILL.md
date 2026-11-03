@@ -19,7 +19,7 @@ locked: true
 # LLM Wiki — Karpathy Knowledge Base Pattern
 
 > **Experimental skill — iterating.**
-> Original skill by Lewis Liu (lylewis@outlook.com). Multi-wiki version extended and maintained by Ludovico Ragno (flagdizero). · Inspired by [Karpathy's llm-wiki Gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
+> Original skill by Lewis Liu (lylewis@outlook.com). Multi-wiki version extended and maintained by Ludovico Ragno (buhonet). · Inspired by [Karpathy's llm-wiki Gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
 
 ## Core idea
 
@@ -48,7 +48,7 @@ workspace/
 │   ├── _index.md          ← Workspace registry — the ONLY bridge across wikis
 │   ├── erbario/           ← A wiki root (wikis/<name>/)
 │   ├── loops/
-│   └── nanobot/
+│   └── arkhiva/
 └── skills/llm-wiki/       ← This skill (a checkout of the llm-wiki repo)
 ```
 

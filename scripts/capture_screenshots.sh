@@ -37,7 +37,7 @@ SHOTS=(
 "helper-stop|A notebook chat with a helper that already changed a file -> Stop her: the three-choice sheet."
 )
 
-# The 2.0 set (31/10/2026) was shot on jenny_s22 in English, with invented data only
+# The 2.0 set (31/10/2026) was shot on arkhiva_s22 in English, with invented data only
 # (the repo is public): a "garden" notebook with six plants, a soil-sensor app and a
 # cat's meal log, answered by a scripted fake provider. The plant photos on the board
 # are public domain or CC0, from Wikimedia Commons: "Citrus x limon flowers" (Ben Cody,

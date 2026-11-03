@@ -299,7 +299,7 @@ _ONE_SHOT_RETRY_MS = 5 * 60 * 1000
 def _refuse_past_one_time(schedule: CronSchedule, now_ms: int) -> None:
     """Un singolo nuovo con la data gia' passata si rifiuta, invece di suonare subito.
 
-    Il 01/11/2026, su jenny_s22, la passata della bacheca ha scritto «verso
+    Il 01/11/2026, su arkhiva_s22, la passata della bacheca ha scritto «verso
     marzo» come ``2026-03``: il marzo gia' passato. Il job e' nato scaduto, e un
     ``at`` scaduto suona al primo giro (e' il recupero di chi era spento): il
     promemoria del rinvaso e' arrivato otto mesi in anticipo, ed e' sparito. Lo

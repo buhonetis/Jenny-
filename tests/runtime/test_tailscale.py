@@ -95,7 +95,7 @@ async def test_open_app_shows_tailscale_then_brings_arkhiva_back(monkeypatch) ->
 
 async def test_if_arkhiva_could_not_come_back_the_app_is_not_opened(monkeypatch) -> None:
     """Senza la mascotte a schermo Android blocca il ritorno (visto su
-    jenny_s22): il gesto si dice solo messaggio, e l'ascoltatore non lo conta
+    arkhiva_s22): il gesto si dice solo messaggio, e l'ascoltatore non lo conta
     come app vista."""
     ctx = _Context()
     _on_phone(monkeypatch, ctx)

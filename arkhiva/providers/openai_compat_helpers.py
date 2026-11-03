@@ -32,7 +32,7 @@ _ALNUM = string.ascii_letters + string.digits
 _STANDARD_TC_KEYS = frozenset({"id", "type", "index", "function"})
 _STANDARD_FN_KEYS = frozenset({"name", "arguments"})
 _DEFAULT_OPENROUTER_HEADERS = {
-    "HTTP-Referer": "https://github.com/flagdizero/jenny-android-ai-agent",
+    "HTTP-Referer": "https://github.com/buhonetis/Arkhiva-",
     "X-OpenRouter-Title": "ARKHIVA",
     "X-OpenRouter-Categories": "android-agent,personal-agent",
 }

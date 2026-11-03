@@ -855,7 +855,7 @@ class TestFetchReadsDirectlyFirst:
         bridge.assert_called_once()
         assert out["extractor"] == "webview"
 
-    async def test_a_site_refusing_the_browser_is_asked_again_as_jenny(self, monkeypatch):
+    async def test_a_site_refusing_the_browser_is_asked_again_as_arkhiva(self, monkeypatch):
         """Wikimedia rifiuta col 403 un browser finto dal telefono, e accetta un nome con recapito."""
         import httpx
 

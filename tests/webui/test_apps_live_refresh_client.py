@@ -103,7 +103,7 @@ def test_a_list_already_read_is_read_again() -> None:
         // La rilettura non torna «in caricamento»: il cassetto aperto non
         // deve riaccendere lo scheletro per una risposta che arriva subito.
         assert.equal(source.isLoadingLists(), true, 'le Android non sono lette: resta vero');
-        assert.equal(source._jennyLoaded, true);
+        assert.equal(source._arkhivaLoaded, true);
         await tick();
         assert.equal(api.reads, 2);
         assert.equal(notices, 1, 'chi guarda il cassetto deve saperlo');
@@ -143,7 +143,7 @@ def test_a_reopened_socket_reads_the_list_again() -> None:
         wsManager.dispatchEvent(new CustomEvent('chat:open'));
         await tick();
         assert.equal(api.reads, 2, 'la riapertura non ha riletto l\\u2019elenco');
-        assert.equal(source.jennyApps[0].has_screen, true);
+        assert.equal(source.arkhivaApps[0].has_screen, true);
         """
     )
 
@@ -235,7 +235,7 @@ def test_an_older_answer_does_not_overwrite_a_newer_one() -> None:
         await second;
         expected[0]({ apps: [{ slug: 'vecchia', name: 'Vecchia' }] });
         await before;
-        assert.deepEqual(source.jennyApps.map((a) => a.slug), ['nuova']);
+        assert.deepEqual(source.arkhivaApps.map((a) => a.slug), ['nuova']);
         """
     )
 
@@ -250,8 +250,8 @@ def test_a_failed_refresh_keeps_the_list_that_was_fine() -> None:
         api.getARKHIVAApps = async () => { throw new Error('giù'); };
         frame({ event: 'apps_list_changed' });
         await tick();
-        assert.deepEqual(source.jennyApps.map((a) => a.slug), ['orto']);
-        assert.equal(source.jennyListFailed(), false);
+        assert.deepEqual(source.arkhivaApps.map((a) => a.slug), ['orto']);
+        assert.equal(source.arkhivaListFailed(), false);
         """
     )
 
@@ -263,10 +263,10 @@ def test_a_first_reading_that_fails_still_says_so() -> None:
         const source = new AppsSource();
         api.getARKHIVAApps = async () => { throw new Error('giù'); };
         await source.loadARKHIVAApps();
-        assert.deepEqual(source.jennyApps, []);
-        assert.equal(source.jennyListFailed(), true);
+        assert.deepEqual(source.arkhivaApps, []);
+        assert.equal(source.arkhivaListFailed(), true);
         api.getARKHIVAApps = async () => ({ apps: [{ slug: 'orto' }] });
         await source.loadARKHIVAApps();
-        assert.equal(source.jennyListFailed(), false, 'una lettura buona spegne il guasto');
+        assert.equal(source.arkhivaListFailed(), false, 'una lettura buona spegne il guasto');
         """
     )

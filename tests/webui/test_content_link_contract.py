@@ -42,7 +42,7 @@ ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "arkhiva" / "templates" / "ui" / "assets"
 CHAT_JS = ASSETS / "mobile-chat.js"
 MAIN_ACTIVITY = (
-    ROOT / "android" / "app" / "src" / "main" / "java" / "com" / "flagdizero" / "arkhiva" / "MainActivity.kt"
+    ROOT / "android" / "app" / "src" / "main" / "java" / "com" / "buhonet" / "arkhiva" / "MainActivity.kt"
 )
 
 # Tutto ciò che, eseguito prima di preventDefault(), lascerebbe partire la

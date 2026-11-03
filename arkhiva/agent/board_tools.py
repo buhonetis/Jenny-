@@ -131,7 +131,7 @@ class BoardAssignPageTool(_BoardTool):
             target["pages"].append(page)
 
         try:
-            mutate_board(st.root, apply, actor=model.JENNY)
+            mutate_board(st.root, apply, actor=model.ARKHIVA)
         except LookupError:
             return st.refuse(f"there is no card `{card}`")
         except ValueError:
@@ -274,7 +274,7 @@ class BoardAddReminderTool(_BoardTool):
         try:
             job = add_notebook_job(st.cron, st.root.name, card, name=clean, message=message,
                                    schedule=schedule, why=page or None,
-                                   origin_metadata={"by": model.JENNY})
+                                   origin_metadata={"by": model.ARKHIVA})
         except ValueError as exc:
             return st.refuse(f"the reminder was not added: {exc}")
         st.reminders.append(job.id)
@@ -416,7 +416,7 @@ class BoardSuggestTool(_BoardTool):
             b["suggestions"].append({"id": sid, **spec})
 
         try:
-            mutate_board(st.root, apply, actor=model.JENNY)
+            mutate_board(st.root, apply, actor=model.ARKHIVA)
         except BoardOwnershipError as exc:  # pragma: no cover — difesa in profondita'
             return st.refuse(str(exc))
         st.suggestions.append(sid_holder[0])
@@ -521,7 +521,7 @@ class BoardProposeBoardTool(_BoardTool):
                 "skeleton": sk, "cards": specs,
             })
 
-        mutate_board(st.root, apply, actor=model.JENNY)
+        mutate_board(st.root, apply, actor=model.ARKHIVA)
         st.proposed_skeleton = sk
         st.proposed_cards = {s["id"]: s["pages"] for s in specs}
         st.queue = [(s["id"], s["title"], list(s["pages"])) for s in specs]

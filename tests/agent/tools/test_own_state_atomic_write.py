@@ -60,7 +60,7 @@ def _own_files(store: MemoryStore) -> list[Path]:
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("which", ["memory_file", "soul_file", "user_file"])
-async def test_edit_file_writes_jennys_own_files_atomically(dream, atomic_spy, which):
+async def test_edit_file_writes_arkhivas_own_files_atomically(dream, atomic_spy, which):
     store, tools = dream
     target = getattr(store, which)
 
@@ -75,7 +75,7 @@ async def test_edit_file_writes_jennys_own_files_atomically(dream, atomic_spy, w
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("which", ["memory_file", "soul_file", "user_file"])
-async def test_apply_patch_writes_jennys_own_files_atomically(dream, atomic_spy, which):
+async def test_apply_patch_writes_arkhivas_own_files_atomically(dream, atomic_spy, which):
     store, tools = dream
     target = getattr(store, which)
 

@@ -7,7 +7,7 @@ per mostrarla com'è stata detta.
 
 L'ora è un pezzo a sé (*time*), non una parte della data: chi non ce l'ha la
 omette, invece di doversela inventare per riempire un ISO completo. È ciò che
-faceva il modello col vecchio ``at`` del tool ``cron`` (jenny_s22, 01/11/2026:
+faceva il modello col vecchio ``at`` del tool ``cron`` (arkhiva_s22, 01/11/2026:
 «il 20 novembre» diventava ``…T09:00:00`` quattro volte su quattro).
 """
 

@@ -23,7 +23,7 @@ STAGED_WORKSPACE_DIR_NAME = "workspace_staged"
 STAGED_SNAPSHOTS_DIR_NAME = "snapshots_staged"
 MARKER_FILE_NAME = "restore_pending.json"
 SAFETY_DIR_PREFIX = "workspace_pre_restore_"
-SANITY_FILE_NAME = ".jenny_restore_manifest.json"
+SANITY_FILE_NAME = ".arkhiva_restore_manifest.json"
 
 # I piani a lista (``arkhiva/plan/``). Stanno qui accanto a ``snapshots/`` e non
 # nel package del piano perche' questo modulo e' la pianta della runtime root:

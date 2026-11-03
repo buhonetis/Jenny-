@@ -66,7 +66,7 @@ class TestLastLocation:
 
     async def test_an_empty_cache_asks_the_last_known_once(self, tmp_path, monkeypatch):
         """Appena acceso il gateway la cache è vuota: la prima scheda non deve
-        restare senza distanza (visto su jenny_s22)."""
+        restare senza distanza (visto su arkhiva_s22)."""
         monkeypatch.setattr("arkhiva.config.loader.load_config", lambda: _config())
         asked: list[bool] = []
 

@@ -442,7 +442,7 @@ class BoardPass:
             if state.resolved:
                 model.add_since(board, "corrections_applied", count=len(state.resolved))
 
-        mutate_board(self.root, apply, actor=model.JENNY)
+        mutate_board(self.root, apply, actor=model.ARKHIVA)
 
 
 async def run_board_pass(

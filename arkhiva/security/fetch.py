@@ -47,7 +47,7 @@ BROWSER_USER_AGENT = (
 # telefono un browser finto riceve 403 «robot policy», e ``python-httpx`` pure. Il
 # modello, rifiutato, riprovava e poi ripiegava su fonti peggiori.
 ARKHIVA_USER_AGENT = (
-    f"ARKHIVA/{__version__} (Android; +https://github.com/flagdizero/jenny-android-ai-agent)"
+    f"ARKHIVA/{__version__} (Android; +https://github.com/buhonetis/Arkhiva-)"
 )
 
 Validator = Callable[[str], tuple[bool, str | None]]

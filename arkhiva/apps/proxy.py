@@ -64,7 +64,7 @@ from loguru import logger
 
 from arkhiva.security.network import validate_app_server_target
 
-COOKIE_NAME = "jenny_app_view"
+COOKIE_NAME = "arkhiva_app_view"
 MAX_HEADER_BYTES = 64 * 1024
 DEFAULT_IDLE_TIMEOUT_S = 30 * 60.0
 _CRLF2 = b"\r\n\r\n"

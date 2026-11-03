@@ -33,7 +33,7 @@ import pytest
 from arkhiva.utils.android_assets import _SKILLS_MANIFEST, _SYSTEM_PROMPT_TEMPLATES
 from arkhiva.utils.helpers import load_bundled_template
 
-_JENNY = Path(__file__).resolve().parents[2] / "arkhiva"
+_ARKHIVA = Path(__file__).resolve().parents[2] / "arkhiva"
 
 
 def _template(name: str) -> str:
@@ -227,7 +227,7 @@ def test_platform_notes_is_not_a_bundled_skill() -> None:
         "viene riestratta a ogni boot e tutto ciò che il review pass ci ha spostato "
         "dentro sparisce al riavvio successivo."
     )
-    on_disk = (_JENNY / "skills" / _PLATFORM_NOTES)
+    on_disk = (_ARKHIVA / "skills" / _PLATFORM_NOTES)
     assert not on_disk.exists(), (
         f"arkhiva/skills/{_PLATFORM_NOTES}/ esiste nel package: la destinazione del "
         "review pass non può essere contenuto di sistema."

@@ -19,7 +19,7 @@ import androidx.core.graphics.drawable.IconCompat
  * Python via Chaquopy (`jclass("org.buhonet.agente.arkhiva.NotifierBridge")`), mai
  * istanziato da Kotlin — stesso pattern di InstalledAppsBridge.
  *
- * Usa un canale dedicato `jenny_alerts` (IMPORTANCE_HIGH, suono/vibrazione di
+ * Usa un canale dedicato `arkhiva_alerts` (IMPORTANCE_HIGH, suono/vibrazione di
  * sistema) separato dal canale silenzioso del foreground service, così
  * l'utente può personalizzarne la suoneria dalle impostazioni Android senza
  * toccare la notifica persistente del gateway.
@@ -32,7 +32,7 @@ class NotifierBridge(context: Context) {
 
     companion object {
         private const val TAG = "NotifierBridge"
-        private const val CHANNEL_ID = "jenny_alerts"
+        private const val CHANNEL_ID = "arkhiva_alerts"
         // ID fisso + tag variabile: alert con lo stesso tag si sostituiscono
         // (niente pila infinita per la stessa sorgente), tag diversi convivono.
         // `internal` perché `ReplyReceiver` cancella con questo ID l'alert a cui
@@ -133,7 +133,7 @@ class NotifierBridge(context: Context) {
                 context, replyRequestCode(tag), intent, replyIntentFlags()
             )
             return NotificationCompat.Action.Builder(
-                R.drawable.ic_stat_jenny,
+                R.drawable.ic_stat_arkhiva,
                 context.getString(R.string.reply_action_label),
                 pending
             )
@@ -179,12 +179,12 @@ class NotifierBridge(context: Context) {
                     .setContentTitle(appContext.getString(R.string.reply_failed_title))
                     .setContentText(appContext.getString(R.string.reply_failed_text))
                     .setStyle(NotificationCompat.BigTextStyle().bigText(text))
-                    .setSmallIcon(R.drawable.ic_stat_jenny)
+                    .setSmallIcon(R.drawable.ic_stat_arkhiva)
                     .setAutoCancel(true)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setCategory(NotificationCompat.CATEGORY_ERROR)
                     .addAction(
-                        R.drawable.ic_stat_jenny,
+                        R.drawable.ic_stat_arkhiva,
                         appContext.getString(R.string.reply_retry_label),
                         retry
                     )
@@ -208,7 +208,7 @@ class NotifierBridge(context: Context) {
         /** ARKHIVA, come interlocutore. La `key` tiene ferma l'identità fra una
          *  ricostruzione e l'altra: senza, ogni `addMessage` rischia di sembrare
          *  un mittente nuovo. */
-        private fun jennyPerson(context: Context): Person =
+        private fun arkhivaPerson(context: Context): Person =
             Person.Builder()
                 .setName(context.getString(R.string.reply_bot_name))
                 .setKey("arkhiva")
@@ -276,7 +276,7 @@ class NotifierBridge(context: Context) {
             // mini-app aperta compresa, invece che in chat. Porta anche il
             // gettone che la distingue da un'action scritta da un'altra app.
             val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_stat_jenny)
+                .setSmallIcon(R.drawable.ic_stat_arkhiva)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
@@ -447,7 +447,7 @@ class NotifierBridge(context: Context) {
             val first = if (label.isEmpty()) body else "$label · $body"
             val style = NotificationCompat.MessagingStyle(userPerson(context))
             if (first.isNotEmpty()) {
-                style.addMessage(first, alert.`when`, jennyPerson(context))
+                style.addMessage(first, alert.`when`, arkhivaPerson(context))
             }
             return style
         }
@@ -557,7 +557,7 @@ class NotifierBridge(context: Context) {
         // non una scheda nuova. È il caso normale di una risposta: la domanda
         // l'utente l'ha scritta *dentro* quella notifica, e la risposta deve
         // comparire lì sotto.
-        if (appendToConversation(appContext, tag, body, jennyPerson(appContext), silent = false)) {
+        if (appendToConversation(appContext, tag, body, arkhivaPerson(appContext), silent = false)) {
             return true
         }
         return try {

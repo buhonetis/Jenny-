@@ -95,7 +95,7 @@ async def test_apply_patch_as_the_helper_wrote_it_on_the_titan(ws: Path) -> None
 
 
 async def test_a_dry_run_tells_the_truth_about_the_id(ws: Path) -> None:
-    """Al collaudo su jenny_s22 l'aiutante ha notato che il dry-run diceva
+    """Al collaudo su arkhiva_s22 l'aiutante ha notato che il dry-run diceva
     «succeeded» per una patch che la scrittura vera rifiutava."""
     edits = [{"path": str(_agents(ws)), "action": "replace",
               "old_text": f"id: {ID}\n", "new_text": ""}]

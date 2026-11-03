@@ -238,7 +238,7 @@ def test_a_short_screen_hides_her_only_where_the_dock_goes() -> None:
 
 
 def test_the_square_emulator_keeps_the_workshop_dock() -> None:
-    """Con la soglia a 500 px il dock spariva sul quadrato di `jenny_square`
+    """Con la soglia a 500 px il dock spariva sul quadrato di `arkhiva_square`
     (1440 px a 480 dpi: 480 px CSS, 432 tolte barra di stato e barra dei
     gesti), e l'officina restava senza navigazione. La soglia sta sotto quel
     quadrato, ed e' una sola per dock e mascotte."""

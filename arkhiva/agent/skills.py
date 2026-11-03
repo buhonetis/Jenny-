@@ -349,10 +349,10 @@ class SkillsLoader:
         payload = data.get("arkhiva")
         if not isinstance(payload, dict):
             # Compatibilidad: las skills escritas para el linaje original
-            # declaran su metadata bajo la clave ``jenny``. Se acepta como
+            # declaran su metadata bajo la clave ``arkhiva``. Se acepta como
             # alias heredado para no invalidar skills de usuario ya existentes
             # (el formato es el mismo; solo cambia el nombre de la clave).
-            payload = data.get("jenny")
+            payload = data.get("arkhiva")
         return payload if isinstance(payload, dict) else {}
 
     def _check_requirements(self, skill_meta: dict) -> bool:

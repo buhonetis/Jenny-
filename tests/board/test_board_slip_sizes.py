@@ -28,7 +28,7 @@ def test_arkhiva_cannot_change_the_size(notebook) -> None:
         "id": "pf", "title": "Portafoglio", "pos": {"x": 1, "y": 1}, "size": "M",
         "app": {"slug": "pf", "params": {}}}))
     with pytest.raises(BoardOwnershipError):
-        mutate_board(notebook, lambda b: b["cards"][0].update(size="XL"), actor=model.JENNY)
+        mutate_board(notebook, lambda b: b["cards"][0].update(size="XL"), actor=model.ARKHIVA)
     assert read_board(notebook)["cards"][0]["size"] == "M"
 
 

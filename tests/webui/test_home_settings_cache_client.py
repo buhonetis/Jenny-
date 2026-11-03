@@ -115,7 +115,7 @@ class Home {{
     this._settings = null;
     this._settingsGen = 0;
     this.you = {{ open() {{}}, sayARKHIVA() {{}}, sayModel() {{}}, sayUpdates() {{}}, sayBackup() {{}} }};
-    this.jennyRoom = room('j');
+    this.arkhivaRoom = room('j');
     this.modelRoom = room('m');
     this.updatesRoom = room('u');
     this.backupRoom = room('b');

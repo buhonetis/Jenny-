@@ -27,7 +27,7 @@ from support.kotlin_source import read_source
 ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "arkhiva" / "templates" / "ui" / "assets"
 APP_JS = ASSETS / "mobile-app.js"
-MAIN_ACTIVITY = ROOT / "android" / "app" / "src" / "main" / "java" / "com" / "flagdizero" / "arkhiva" / "MainActivity.kt"
+MAIN_ACTIVITY = ROOT / "android" / "app" / "src" / "main" / "java" / "com" / "buhonet" / "arkhiva" / "MainActivity.kt"
 
 
 def _app() -> str:
@@ -205,16 +205,16 @@ def test_escape_is_the_same_chain_as_the_hardware_back() -> None:
 
 def test_the_lightbox_no_longer_keeps_its_own_escape_listener() -> None:
     """Instradato Esc sulla catena, il listener locale è la stessa divergenza che
-    la catena elimina. Il resto del cleanup però deve restare: ``__jennyClose``
+    la catena elimina. Il resto del cleanup però deve restare: ``__arkhivaClose``
     è l'unico modo di chiudere la lightbox senza perdere ``onClose``
     (revokeObjectURL)."""
     lightbox = (ASSETS / "shared" / "image-lightbox.js").read_text(encoding="utf-8")
     assert "addEventListener('keydown'" not in lightbox
     assert "'Escape'" not in lightbox
-    assert "overlay.__jennyClose = close;" in lightbox
+    assert "overlay.__arkhivaClose = close;" in lightbox
 
     layers = _method(_app(), "_overlayLayers")
-    assert "__jennyClose" in layers, (
+    assert "__arkhivaClose" in layers, (
         "la lightbox va chiusa dal proprio handler: remove() salta il cleanup"
     )
 
@@ -278,7 +278,7 @@ def test_the_lightbox_layer_and_its_owner_agree_on_class_and_handle() -> None:
     """Contratto cross-file, e nessuno dei due lati sa dell'altro.
 
     Il livello lightbox della catena cerca ``.image-lightbox`` nel documento e
-    chiama ``overlay.__jennyClose``: due stringhe scritte in ``mobile-app.js``
+    chiama ``overlay.__arkhivaClose``: due stringhe scritte in ``mobile-app.js``
     e onorate in ``shared/image-lightbox.js``. Rinominare la classe (o il
     campo) da una parte sola non rompe niente di visibile — semplicemente
     Indietro smette di vedere la lightbox e chiude la schermata sotto, con
@@ -291,8 +291,8 @@ def test_the_lightbox_layer_and_its_owner_agree_on_class_and_handle() -> None:
     assert "overlay.className = 'image-lightbox';" in lightbox, (
         "la classe che la catena interroga non è più quella che l'overlay si mette"
     )
-    assert "__jennyClose" in layers
-    assert "overlay.__jennyClose = close;" in lightbox, (
+    assert "__arkhivaClose" in layers
+    assert "overlay.__arkhivaClose = close;" in lightbox, (
         "senza l'handle esposto la catena ripiega su remove(), che salta onClose "
         "(e con lui revokeObjectURL: gli object URL del workspace restano appesi)"
     )

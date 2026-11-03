@@ -15,7 +15,7 @@ import { placeTarget, renderPlaces } from './place-card.js';
    messaggi con tre posti non fa tre richieste, e un fix di un minuto fa per
    «1,2 km da te» va benissimo. Un «non c'e'» non si ricorda: appena aperta
    l'app la cache del gateway e' vuota, e il posto mandato subito dopo restava
-   senza distanza per un minuto (visto su jenny_s22). */
+   senza distanza per un minuto (visto su arkhiva_s22). */
 const FIX_TTL_MS = 60_000;
 let fixAt = 0;
 let fixPromise = null;

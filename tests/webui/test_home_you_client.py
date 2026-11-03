@@ -269,12 +269,12 @@ def test_the_words_come_back_when_the_language_changes() -> None:
       you.workshopName.textContent = '';
       you.workshopHint.textContent = '';
       you.themeDesc.textContent = '';
-      you.jennyLabel.textContent = '';
+      you.arkhivaLabel.textContent = '';
       you.applyTranslations();
       assert.equal(you.themeLabel.textContent, i18n.t('settings.themeLabel'));
       assert.equal(you.workshopName.textContent, i18n.t('home.workshop'));
       assert.equal(you.workshopHint.textContent, i18n.t('home.you.workshopHint'));
-      assert.equal(you.jennyLabel.textContent, i18n.t('home.arkhiva.title', { name: 'ARKHIVA' }));
+      assert.equal(you.arkhivaLabel.textContent, i18n.t('home.arkhiva.title', { name: 'ARKHIVA' }));
       assert.equal(you.themeDesc.textContent, i18n.t('themes.chanel.desc'));
     """)
 
@@ -329,7 +329,7 @@ def test_the_row_that_leads_to_her_says_how_she_is_now() -> None:
     _run_js("""
       const you = room();
       you.sayARKHIVA('piccola \u00b7 flottante');
-      assert.equal(you.jennyValue.textContent, 'piccola \u00b7 flottante');
+      assert.equal(you.arkhivaValue.textContent, 'piccola \u00b7 flottante');
       you.sayARKHIVA(undefined);
-      assert.equal(you.jennyValue.textContent, '', 'il valore di prima e\u2019 rimasto');
+      assert.equal(you.arkhivaValue.textContent, '', 'il valore di prima e\u2019 rimasto');
     """)

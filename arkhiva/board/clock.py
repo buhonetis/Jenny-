@@ -88,7 +88,7 @@ def watch_app_sections(workspace: Path, root: Path, *, timezone_name: str | None
             model.add_since(b, "app_event", card=card["id"], title=card["title"],
                             app=view.get("name") or view.get("slug"), state=view.get("state"))
 
-    mutate_board(root, apply, actor=model.JENNY)
+    mutate_board(root, apply, actor=model.ARKHIVA)
     return len(events)
 
 

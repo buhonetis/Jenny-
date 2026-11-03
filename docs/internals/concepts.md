@@ -1,8 +1,8 @@
 # Concepts
 
-The mental model behind Jenny: one small core loop, one long-running gateway process, and a single continuous conversation.
+The mental model behind Arkhiva: one small core loop, one long-running gateway process, and a single continuous conversation.
 
-Use this page when you want to understand how Jenny works before touching advanced settings. It explains the moving parts without requiring you to read the source first. If you want source-file ownership and extension points instead, read [Architecture](./architecture.md) after this page.
+Use this page when you want to understand how Arkhiva works before touching advanced settings. It explains the moving parts without requiring you to read the source first. If you want source-file ownership and extension points instead, read [Architecture](./architecture.md) after this page.
 
 ## Runtime shape
 
@@ -15,22 +15,22 @@ Use this page when you want to understand how Jenny works before touching advanc
 | Memory | Workspace files and session history that keep useful context across turns, consolidated periodically by Dream |
 | Gateway | The single long-running process that serves every channel and the HTTP API behind the WebUI |
 
-The long-running path is the gateway, started by the Android runtime via `jenny.android_entry.run_gateway()`: it receives messages from the Android WebView over WebSocket (and, if paired, from Telegram), publishes them to the agent loop, and sends replies back out through the channels via the outbound dispatcher.
+The long-running path is the gateway, started by the Android runtime via `arkhiva.android_entry.run_gateway()`: it receives messages from the Android WebView over WebSocket (and, if paired, from Telegram), publishes them to the agent loop, and sends replies back out through the channels via the outbound dispatcher.
 
 ## Config vs workspace
 
-Jenny is Android-only. The gateway's workspace lives inside the app's own private storage, not on shared/external storage and not inside the project checkout:
+Arkhiva is Android-only. The gateway's workspace lives inside the app's own private storage, not on shared/external storage and not inside the project checkout:
 
 | Path | Meaning |
 |---|---|
 | `<filesDir>/workspace/config.json` | Instance configuration: providers, model defaults, tools, gateway, and runtime options |
 | `<filesDir>/workspace/` | Agent workspace: memory, sessions, uploads, cron jobs, skills, mini-apps, and generated artifacts |
 
-Because the workspace is app-private storage, nothing outside the Jenny app can read or write it directly — not even other apps on the same phone — and it disappears if the app is uninstalled (see [Backup and restore](../using/backup.md) for how to get data out before that happens). The config file controls what Jenny may use; the workspace is where Jenny keeps state for that install.
+Because the workspace is app-private storage, nothing outside the Arkhiva app can read or write it directly — not even other apps on the same phone — and it disappears if the app is uninstalled (see [Backup and restore](../using/backup.md) for how to get data out before that happens). The config file controls what Arkhiva may use; the workspace is where Arkhiva keeps state for that install.
 
 ## Config format
 
-`config.json` accepts both camelCase and snake_case keys on read, but Jenny always writes the file back out with camelCase aliases — for example `apiKey`, `modelPresets`, `restrictToWorkspace`, and `maxToolResultChars`. The docs use camelCase for the same reason. The one exception is the free-form `websocket` block, which is kept as written: its keys (such as `token_issue_secret`) stay snake_case.
+`config.json` accepts both camelCase and snake_case keys on read, but Arkhiva always writes the file back out with camelCase aliases — for example `apiKey`, `modelPresets`, `restrictToWorkspace`, and `maxToolResultChars`. The docs use camelCase for the same reason. The one exception is the free-form `websocket` block, which is kept as written: its keys (such as `token_issue_secret`) stay snake_case.
 
 `config.json` is created automatically on first boot with a per-install secret and no provider configured; you normally never hand-edit it (the file is even hidden from the in-app file browser). See [First run](../start/first-run.md) for the onboarding flow, and [Configuration reference](../reference/configuration.md) if you do need the full key-by-key reference.
 
@@ -46,7 +46,7 @@ A normal turn follows this flow:
 
 ## Gateway and WebUI
 
-There is one entry point and one process: `jenny.android_entry.run_gateway()`, started by the Android app and never invoked as a separate desktop process in normal use. It serves the embedded WebUI, the scheduled jobs, Dream, and every channel out of the same asyncio event loop.
+There is one entry point and one process: `arkhiva.android_entry.run_gateway()`, started by the Android app and never invoked as a separate desktop process in normal use. It serves the embedded WebUI, the scheduled jobs, Dream, and every channel out of the same asyncio event loop.
 
 **There is no `/health` endpoint.** On the device, the WebSocket handshake and the HTTP API behind the WebUI (`/api/...`) share one port — `gateway.port`, `18790` by default — so the WebView can reach both from a single origin without a CORS story. That sharing is enforced by the Android entry point itself (`run_gateway(..., port=18790)` forces both the gateway port and the WebSocket port to the same value at startup), not by anything you configure. The production UI is served over that same WebSocket channel, rendered inside the Android app's WebView; nothing about it assumes a desktop browser.
 
@@ -78,9 +78,9 @@ See [Providers and models](../reference/providers.md) for practical setup and [C
 
 ## Channels and sessions
 
-Jenny has four channels: the built-in WebSocket channel (always active — it's how the in-app WebUI talks to the gateway), an optional Telegram bot paired from Settings, and two that exist only on Android — a reply typed into one of Jenny's notifications, and the floating mascot's bubble. All four are owned by the same outbound dispatcher, which fans replies out to whichever channels are active.
+Arkhiva has four channels: the built-in WebSocket channel (always active — it's how the in-app WebUI talks to the gateway), an optional Telegram bot paired from Settings, and two that exist only on Android — a reply typed into one of Arkhiva's notifications, and the floating mascot's bubble. All four are owned by the same outbound dispatcher, which fans replies out to whichever channels are active.
 
-Every inbound message from any channel routes into the same single unified conversation session (`unified:default`) — Jenny is a single-user assistant with one continuous thread, not a per-channel or per-device conversation. This has a sharp edge worth knowing up front: because there is only one session, `/new` issued from Telegram resets the WebUI's conversation too, and vice versa — whoever has access to the paired bot can reset the chat on the phone. Internal work (cron, Dream) runs under separate internal session keys so it never pollutes the user-visible conversation.
+Every inbound message from any channel routes into the same single unified conversation session (`unified:default`) — Arkhiva is a single-user assistant with one continuous thread, not a per-channel or per-device conversation. This has a sharp edge worth knowing up front: because there is only one session, `/new` issued from Telegram resets the WebUI's conversation too, and vice versa — whoever has access to the paired bot can reset the chat on the phone. Internal work (cron, Dream) runs under separate internal session keys so it never pollutes the user-visible conversation.
 
 There is one user-visible exception to "a single session": a **project** conversation (`project:<name>`), opened from the scope chip and bound to one folder under `<workspace>/wikis/`. It has its own session file, its own transcript, and its own memory rules — it is archived into `history.jsonl` under its own key, never enters the personal chat's prompt, and Dream digests it in a separate batch that can write only to `USER.md` (identity facts about you), never to `MEMORY.md` or `SOUL.md`. Only the WebSocket channel can name a project; a Telegram message stays personal whatever it contains. Session keys are therefore classified three ways, not two — `personal`, `project`, `internal` — and anything unrecognised is treated as internal rather than personal, so an unregistered kind can never reach the memory files. See [Projects](../using/projects.md) for the user-facing design.
 
@@ -88,7 +88,7 @@ See [Telegram bridge](../using/telegram.md) for the channel-specific asymmetries
 
 ## Memory, sessions, and Dream
 
-Jenny uses three related stores:
+Arkhiva uses three related stores:
 
 | Store | Location | Purpose |
 |---|---|---|

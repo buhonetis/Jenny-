@@ -73,7 +73,7 @@ async def test_target_equal_to_bare_arkhiva_resolves_package():
         "builtins",
         "../etc/passwd",
         "arkhiva/../../etc/passwd",
-        "jennywrong",  # prefisso stringa ma non un vero sotto-pacchetto arkhiva.*
+        "arkhivawrong",  # prefisso stringa ma non un vero sotto-pacchetto arkhiva.*
         "",
     ],
 )

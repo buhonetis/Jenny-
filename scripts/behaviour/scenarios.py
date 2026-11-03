@@ -895,7 +895,7 @@ DIARY = [
 # Dalla chat personale un fatto finisce nel quaderno a cui appartiene, senza che
 # l'utente lo apra; un fatto sulla persona resta alla persona; un argomento nuovo
 # non diventa un quaderno alla prima frase. Il quaderno finto e' il camper: sul
-# jenny_s22 non c'e' niente che gli somigli (piante, gatti, cassa, serra).
+# arkhiva_s22 non c'e' niente che gli somigli (piante, gatti, cassa, serra).
 
 _CAMPER = "Il camper: manutenzione, officine, ricambi e viaggi in camper."
 

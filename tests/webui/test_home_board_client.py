@@ -1218,7 +1218,7 @@ def test_a_tap_on_an_app_card_opens_the_app() -> None:
 
 
 @requires_jsdom
-def test_an_app_card_follows_its_data_without_reopening_jenny() -> None:
+def test_an_app_card_follows_its_data_without_reopening_arkhiva() -> None:
     """Sul telefono la polaroid restava al valore di prima finche' non si
     riapriva ARKHIVA: la bacheca non ascoltava, e chiudere l'app non la rileggeva."""
     _run_covers("""

@@ -1483,7 +1483,7 @@ async def update_floating_settings(query: QueryParams) -> dict[str, Any]:
     payload["floating"]["active"] = applied
     # E lo stato della lettura dello schermo, che vive sotto la mascotte: senza,
     # la riga «Legge lo schermo» non compariva accendendo la mascotte, ma solo
-    # alla prossima apertura delle Impostazioni (visto su ``jenny_s22``,
+    # alla prossima apertura delle Impostazioni (visto su ``arkhiva_s22``,
     # 13/10/2026).
     if payload["floating"].get("available"):
         from arkhiva.runtime.screen import screen_state

@@ -1,6 +1,6 @@
 # Architecture
 
-This page maps Jenny's runtime behavior to source files; use it when debugging internals, reviewing a PR, or adding a provider/channel/tool.
+This page maps Arkhiva's runtime behavior to source files; use it when debugging internals, reviewing a PR, or adding a provider/channel/tool.
 
 For the product-level mental model, read [Concepts](./concepts.md) first.
 
@@ -80,13 +80,13 @@ Useful docs:
 
 ## Channels
 
-Jenny has **four** channels, all owned by `WebSocketDispatcher` (`arkhiva/channels/dispatcher.py`), which fans outbound bus messages out to whichever channels are active:
+Arkhiva has **four** channels, all owned by `WebSocketDispatcher` (`arkhiva/channels/dispatcher.py`), which fans outbound bus messages out to whichever channels are active:
 
 | Channel | File | Notes |
 |---|---|---|
 | WebSocket (WebUI) | `arkhiva/channels/websocket.py` (+ `ws_sender.py`, `ws_parsing.py`) | Always enabled on Android; serves the mobile WebUI over the same port as the HTTP API. |
 | Telegram | `arkhiva/channels/telegram.py` | Optional, personal-bot channel; created only if `telegram.enabled` is true and a `bot_token` is set. Paired via a 6-digit code; it shares the single unified session with the WebUI, so `/new` from either one resets the other too. |
-| Notification | `arkhiva/channels/notification.py` | Android only. A reply typed into one of Jenny's notifications comes in on this channel, and her answer goes back as a system alert. No connection of its own. |
+| Notification | `arkhiva/channels/notification.py` | Android only. A reply typed into one of Arkhiva's notifications comes in on this channel, and her answer goes back as a system alert. No connection of its own. |
 | Floating | `arkhiva/channels/floating.py` | Android only. The floating mascot's bubble: what you type there comes in on this channel, and the answer is shown in the bubble. |
 
 `WebSocketDispatcher` also owns retry, delta coalescing for streaming updates, and progress-message filtering per channel — see [`dispatcher.py`](../../arkhiva/channels/dispatcher.py). This is a decomposition, not a generic channel registry: the four channels are wired explicitly in `_init_channel()`/`_init_telegram()`/`_init_notification()`/`_init_floating()`, not discovered.
@@ -99,7 +99,7 @@ Useful docs:
 
 ## WebUI and Gateway
 
-The gateway (started by the Android runtime via `jenny.android_entry.run_gateway(data_dir, android_context, port=18790)`) starts:
+The gateway (started by the Android runtime via `arkhiva.android_entry.run_gateway(data_dir, android_context, port=18790)`) starts:
 
 - the WebSocket channel, the Telegram channel if configured, and — when an Android context is present — the notification and floating channels (all via `WebSocketDispatcher`);
 - the workspace-scoped cron service;
@@ -140,7 +140,7 @@ Tools are **explicitly registered**, not discovered by scanning the filesystem. 
 | 17 | `nothing_to_report.py` | `NothingToReportTool` | Lets a silent scheduled run declare that there is nothing for the user to see, instead of sending an empty message. `core` + `orchestrator` |
 | 18 | `apply_patch.py` | `ApplyPatchTool` | Atomic multi-file patch application with rollback |
 | 19 | `exec_session.py` | `ListExecSessionsTool`, `WriteStdinTool` | Manage long-running `python_exec` sessions (poll/stdin/terminate) |
-| 20 | `introspect.py` | `GetSourceTool` | Read-only access to Jenny's own bundled Python source |
+| 20 | `introspect.py` | `GetSourceTool` | Read-only access to Arkhiva's own bundled Python source |
 | 21 | `diagnostics.py` | `GetRecentLogsTool` | Reads the in-memory log ring buffer |
 | 22 | `ui_view.py` | `UiViewTool` | Pull-based view of what's on screen right now; fails from Telegram, cron, or with the screen off |
 | 23 | `ssh.py` | `SshHostsTool`, `SshExecTool`, `SshJobTool`, `SshTransferTool` | Remote machines over SSH. Scope `remote`, which no agent loads by default — only the `sysadmin` subagent type asks for it |
@@ -153,7 +153,7 @@ The numbering is the load order in `_HARDCODED_TOOL_MODULES`, which is the order
 
 `self.py`'s module-level `TOOLS` list is deliberately empty. `MyTool` (the `my` introspection/self-check tool) needs a live reference to the running `AgentLoop`, which the generic loader can't provide, so it is instantiated and registered by hand in `AgentLoop._register_default_tools()`, gated on `tools.my.enable`. Two other tool classes are built outside the loader for the same reason — `memory` (`MemoryEntryTool`) needs the memory store, and is registered only in Dream's own registry (`MemoryStore.build_dream_tools`), never in a conversation agent's; and `AppActionTool` (`app_actions.py`) is instantiated once per declared app action and synced per turn by `AppToolsSyncer` — so this list is not a complete inventory of the tool surface.
 
-`ToolLoader.discover()` therefore returns 51 tool classes across those 27 modules — 48 names, since `app` has three classes and `notebook` two, one per scope — plus the manually-registered `MyTool`: 49 built-in tools a conversation agent can draw on. Not all of them are necessarily *registered* at runtime, and no single agent ever sees all 49: `ToolLoader.load()` filters by the caller's `scope` against each tool's `_scopes` (`core`, `orchestrator`, `subagent`, `remote`), then optionally by an `allow` list of names (that is how agent types narrow their toolset), then checks each tool's `enabled(ctx)` against the current config. The live tool count for a given install therefore depends on the config toggles *and* on which agent is asking. On top of the built-ins, Jenny Apps register their own dynamic `<slug>_<action>` tools per turn (`AppToolsSyncer`) — see [Mini-apps](../using/mini-apps.md) and [Tool reference](../reference/tools.md) for the full, toggle-aware picture.
+`ToolLoader.discover()` therefore returns 51 tool classes across those 27 modules — 48 names, since `app` has three classes and `notebook` two, one per scope — plus the manually-registered `MyTool`: 49 built-in tools a conversation agent can draw on. Not all of them are necessarily *registered* at runtime, and no single agent ever sees all 49: `ToolLoader.load()` filters by the caller's `scope` against each tool's `_scopes` (`core`, `orchestrator`, `subagent`, `remote`), then optionally by an `allow` list of names (that is how agent types narrow their toolset), then checks each tool's `enabled(ctx)` against the current config. The live tool count for a given install therefore depends on the config toggles *and* on which agent is asking. On top of the built-ins, Arkhiva Apps register their own dynamic `<slug>_<action>` tools per turn (`AppToolsSyncer`) — see [Mini-apps](../using/mini-apps.md) and [Tool reference](../reference/tools.md) for the full, toggle-aware picture.
 
 Tool behavior is part of the model contract: user-visible tool names, schemas, and error messages should be treated as an interface — changing them affects how the model uses the tool, so keep changes intentional and covered by tests.
 

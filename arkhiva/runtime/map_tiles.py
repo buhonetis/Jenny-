@@ -29,7 +29,7 @@ from loguru import logger
 from arkhiva import __version__
 
 TILE_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-USER_AGENT = f"ARKHIVA/{__version__} (+https://github.com/flagdizero/jenny-android-ai-agent)"
+USER_AGENT = f"ARKHIVA/{__version__} (+https://github.com/buhonetis/Arkhiva-)"
 
 MIN_ZOOM = 2
 MAX_ZOOM = 18

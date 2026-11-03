@@ -31,7 +31,7 @@ On top of that:
 - **A notebook with a turn in flight is skipped outright**, whatever the silence setting says.
 - **One pass per notebook at a time.** A second pass on the same notebook is *refused*, not queued — two passes would overwrite each other's pages.
 - **You always win.** The pass re-checks whether you are active in that notebook before *every* write. If you come back mid-pass it stands down, keeps whatever pages already landed, and leaves the journal marked unread so the next pass sees those lines again. (`/stop` in the notebook chat does not cancel a pass — the pass runs under its own session key. Coming back is the mechanism.)
-- Being a periodic job, it only runs while Jenny is running — see [Scheduling and proactivity](./scheduling.md).
+- Being a periodic job, it only runs while Arkhiva is running — see [Scheduling and proactivity](./scheduling.md).
 
 There is a **second reason** a pass can start, with no new journal lines at all: the notebook's map has grown past its 2,000-character ceiling *and* is bigger than the last pass left it. Then the gardener goes in for the map alone, moving prose out to the pages it belongs to. If a prune leaves the map still over the ceiling, it is not retried until the map grows again — a reason that stays true after a pass would otherwise loop forever.
 
@@ -57,13 +57,13 @@ And these rules govern what it does inside `wiki/`:
 - **A page that outgrows the budget is split, not shortened.** Past 6,000 characters a page stops entering conversations entirely, so it is cut along the things it talks about: each part becomes a page named after its own thing, carrying the sentences that were already about it, moved word for word. The original keeps its name and one part and links to the others. Nothing is deleted and no sentence is re-worded — which is why a split counts as a promotion rather than a rewrite.
 - **Never delete a page, or a section of one.** A split (and a map prune) move text verbatim into a page the original links to; that is the only exception, and it is not a deletion.
 - **A workspace snapshot is taken before every pass**, tagged `pre_gardener`, so a pass that made a mess is recoverable from the [snapshot](./backup.md) list. Two honest limits: "never delete a page" is a prompt rule and not enforced by the toolbox — a page overwritten with nothing would succeed — and if the snapshot itself fails, the pass runs anyway and says so in the log rather than refusing to work.
-- **It does not settle contradictions.** If two pages disagree, or a journal line denies a page marked `decided`, it leaves both alone and writes the question into the map's **Open** section — one line, naming both pages. In a notebook without a board, the map is part of every turn, so the question reaches the person who can answer it. In a notebook with a [board](./board.md), the board takes the map's place on every turn, and the Open section is read only when Jenny opens `wiki/index.md`. Deciding it itself is the one thing it must not do.
+- **It does not settle contradictions.** If two pages disagree, or a journal line denies a page marked `decided`, it leaves both alone and writes the question into the map's **Open** section — one line, naming both pages. In a notebook without a board, the map is part of every turn, so the question reaches the person who can answer it. In a notebook with a [board](./board.md), the board takes the map's place on every turn, and the Open section is read only when Arkhiva opens `wiki/index.md`. Deciding it itself is the one thing it must not do.
 
 ## What a pass can see
 
-A pass is given: the unread journal lines, the map, the list of pages that exist (marked with which of them are already over the page budget), your recent messages in that notebook's conversation, and Jenny's identity files (`SOUL.md`, `USER.md`, `memory/MEMORY.md`).
+A pass is given: the unread journal lines, the map, the list of pages that exist (marked with which of them are already over the page budget), your recent messages in that notebook's conversation, and Arkhiva's identity files (`SOUL.md`, `USER.md`, `memory/MEMORY.md`).
 
-It is **not** given the list of your other wikis (the `## Wikis` block) or the tail of your personal conversation. Both used to arrive and were closed deliberately: the choice of notebook has already been made, and a maintenance pass with no user to talk to has no business carrying either your private life or an inventory of your other notebooks into a page you will read. Jenny's identity stays, because the pass writes prose you read and the alternative is the one actor with no idea who it is writing for.
+It is **not** given the list of your other wikis (the `## Wikis` block) or the tail of your personal conversation. Both used to arrive and were closed deliberately: the choice of notebook has already been made, and a maintenance pass with no user to talk to has no business carrying either your private life or an inventory of your other notebooks into a page you will read. Arkhiva's identity stays, because the pass writes prose you read and the alternative is the one actor with no idea who it is writing for.
 
 The transcript it sees is a window — the recent stretch, capped — not the whole record.
 
@@ -81,13 +81,13 @@ A notebook with a [board](./board.md) is curated in a second turn, after the wik
 2. **New pages into drawers.** A page that is in no drawer and new since the last pass goes into a card's drawer when it clearly belongs to one. Otherwise it stays off the board, still searchable.
 3. **Rewrite the drawers whose pages changed** — and only those. The code keeps a fingerprint of each drawer's pages; a drawer whose pages are unchanged is not sent to the model at all. A rewritten drawer has a brief and the skeleton sections the pages have material for, two short sentences each, every one citing its pages. A section whose meaning did not change is copied as it was, so that the blue dot means something.
 4. **Reminders from the journal.** A new journal line that decides or plans something with a date becomes a dated reminder on the card it is about, pointing at the page that explains why. Not a fact, not a wish without a date, not something already done, and never the same reminder twice.
-5. **Proposals**, at most **2** per pass, into the [envelope](./board.md#the-envelope-jennys-proposals): a new card, putting a card away, a thread, a page into a drawer, a mini-app section. Proposing nothing is a normal outcome.
+5. **Proposals**, at most **2** per pass, into the [envelope](./board.md#the-envelope-arkhivas-proposals): a new card, putting a card away, a thread, a page into a drawer, a mini-app section. Proposing nothing is a normal outcome.
 
-A notebook with pages and no board gets, instead, its **first board** as one proposal: the skeleton (yours, if you asked Jenny for one) and up to 9 cards, with every drawer already written.
+A notebook with pages and no board gets, instead, its **first board** as one proposal: the skeleton (yours, if you asked Arkhiva for one) and up to 9 cards, with every drawer already written.
 
 What the board pass cannot do is decided by its tools and by the board's write funnel, not by its prompt: there is no tool to move, add or remove a card, to change your sections, threads or skeleton, or to take a page out of a drawer, and a proposal you already declined is refused. Its file tools write only inside `wiki/`, and it is told to use them only to apply a correction. The *since you last looked* rows on the board are written by the code from what the tools actually did.
 
-The gardener does maintenance and proposals, and nothing you ask for: a change you want — split a card, move pages, put a card away — you ask for in the notebook's chat, where Jenny hands it to the [notebook editor](./board.md#asking-jenny). What the editor does counts as yours, so this pass cannot undo it; a journal line that records such a request is history to the pass, not a task.
+The gardener does maintenance and proposals, and nothing you ask for: a change you want — split a card, move pages, put a card away — you ask for in the notebook's chat, where Arkhiva hands it to the [notebook editor](./board.md#asking-arkhiva). What the editor does counts as yours, so this pass cannot undo it; a journal line that records such a request is history to the pass, not a task.
 
 Some things are left out on purpose:
 

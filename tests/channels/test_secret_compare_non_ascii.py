@@ -54,10 +54,10 @@ def test_every_gateway_check_is_false_on_non_ascii_token(supplied: str) -> None:
     # un valore con surrogati o fuori da Latin-1, e qui conta cosa fanno le
     # funzioni con qualunque stringa arrivi (16.0, sul Mac, la lascia passare).
     bearer = {"Authorization": f"Bearer {supplied}"}
-    jenny_auth = {"X-ARKHIVA-Auth": supplied}
+    arkhiva_auth = {"X-ARKHIVA-Auth": supplied}
     none: dict[str, str] = {}
     assert issue_route_secret_matches(bearer, SECRET) is False
-    assert issue_route_secret_matches(jenny_auth, SECRET) is False
+    assert issue_route_secret_matches(arkhiva_auth, SECRET) is False
     assert check_api_secret(bearer, "/api/x", SECRET) is False
     assert check_api_secret(none, "/api/x?token=" + supplied, SECRET) is False
     assert check_app_secret(bearer, "/apps/a/", SECRET, "a") is False

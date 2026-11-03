@@ -106,7 +106,7 @@ def _run(body: str, *, app: dict, pages: str | None) -> None:
             const calls = [];
             const APP = {json.dumps(app)};
             const source = {{
-              jennyApps: [APP],
+              arkhivaApps: [APP],
               async loadARKHIVAApps() {{ calls.push(['rilette']); }},
               onAppDataChanged() {{ return () => {{}}; }},
             }};

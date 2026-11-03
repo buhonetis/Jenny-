@@ -33,7 +33,7 @@ _UI_ASSETS = ROOT / "arkhiva" / "templates" / "ui" / "assets"
 _SETTINGS_JS = _UI_ASSETS / "mobile-settings.js"
 _STYLE_CSS = _UI_ASSETS / "mobile-style.css"
 _MAIN_ACTIVITY = (
-    ROOT / "android" / "app" / "src" / "main" / "java" / "com" / "flagdizero" / "arkhiva"
+    ROOT / "android" / "app" / "src" / "main" / "java" / "com" / "buhonet" / "arkhiva"
     / "MainActivity.kt"
 )
 

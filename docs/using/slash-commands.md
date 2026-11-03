@@ -24,7 +24,7 @@ Two consequences worth naming. Working on a notebook is always done **from insid
 
 Two commands — `/stop` and `/status` — are handled on a "priority" fast path that runs even while a turn is actively streaming or a tool is executing. The rest wait for the current dispatch to be free, which in practice is rarely noticeable.
 
-Server-side command responses follow the language set for Jenny (`agents.defaults.language`, Italian or English): the confirmation text, the usage and error messages, `/help`, and the `/status`/`/model` output. The examples below show the English text.
+Server-side command responses follow the language set for Arkhiva (`agents.defaults.language`, Italian or English): the confirmation text, the usage and error messages, `/help`, and the `/status`/`/model` output. The examples below show the English text.
 
 ## The server commands
 
@@ -77,7 +77,7 @@ In a notebook, `/stop` also ends a [plan](plans.md): during the planning it drop
 No arguments. Output is a fixed-format block (rendered as plain text, not markdown), for example:
 
 ```text
-🐈 jenny v2.0.0
+🐈 arkhiva v2.0.0
 🧠 Model: gpt-4o
 📊 Tokens: 1234 in / 567 out (40% cached)
 📚 Context: 12k/131k (12% of input budget)
@@ -220,7 +220,7 @@ The other direction is refused the same way: `/dream`, `/model` or `/skill` sent
 Available skills (3):
 
 - **weather** — Look up current weather and forecasts.
-- **app-creator** — Guide the user through building a new Jenny App.
+- **app-creator** — Guide the user through building a new Arkhiva App.
 - **llm-wiki** — Maintain the workspace wiki (scaffold, ingest, compile).
 ```
 
@@ -235,7 +235,7 @@ No skills available.
 In the personal chat:
 
 ```text
-✿ jenny commands:
+✿ arkhiva commands:
 /new — Stop the current task and start a fresh conversation.
 /stop — Cancel the active agent turn for this chat. Helpers working in the background keep going: stop each from its own bubble, or send /stop all to stop everything.
 /status — Display runtime, provider, and channel status.

@@ -10,7 +10,7 @@
  *  E' un `<dialog>` aperto con `showModal()`: il foglio da cui si apre e' gia'
  *  nel top layer, e un `div` con qualunque `z-index` gli starebbe sotto. Porta
  *  la classe `image-lightbox` per la catena di Indietro della casa
- *  (`HomeApp.handleHardwareBack` la chiude prima dei fogli, con `__jennyClose`)
+ *  (`HomeApp.handleHardwareBack` la chiude prima dei fogli, con `__arkhivaClose`)
  *  e per il «c'e' qualcosa aperto?» di ARKHIVA.
  *
  *  I `blob:` delle foto sono della galleria (`PhotoUrls`): qui non si revocano.
@@ -108,7 +108,7 @@ export function openPhotoViewer({ photos, index = 0, title = '', urlOf, words, o
     box.remove();
     if (previousFocus && previousFocus.isConnected) previousFocus.focus?.();
   };
-  box.__jennyClose = close;
+  box.__arkhivaClose = close;
   x.addEventListener('click', close);
   box.addEventListener('cancel', (e) => {
     e.preventDefault();

@@ -436,8 +436,8 @@ async def test_all_write_surfaces_agree_on_one_root(env: Env) -> None:
 
 # ── 2. la metà strutturale: nessuna settima implementazione ────────────────
 
-_JENNY = Path(__file__).resolve().parents[2] / "arkhiva"
-_TOOLS_DIR = _JENNY / "agent" / "tools"
+_ARKHIVA = Path(__file__).resolve().parents[2] / "arkhiva"
+_TOOLS_DIR = _ARKHIVA / "agent" / "tools"
 
 # I moduli sotto ``agent/tools/`` che hanno una sonda qui sopra.
 _PROBED_MODULES = {module for module, _probe in _SURFACES.values()}
@@ -529,7 +529,7 @@ def test_allowed_root_only_delegates() -> None:
     risposte tornano a essere sette, e nessun test di comportamento lo vede —
     perché in quel momento il valore sarebbe ancora lo stesso.
     """
-    source = (_JENNY / "security" / "workspace_access.py").read_text(encoding="utf-8")
+    source = (_ARKHIVA / "security" / "workspace_access.py").read_text(encoding="utf-8")
     tree = ast.parse(source)
     cls = next(
         n

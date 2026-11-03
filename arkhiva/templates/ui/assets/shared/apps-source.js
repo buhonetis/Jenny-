@@ -37,11 +37,11 @@ import { wsManager } from './ws-manager.js';
 export class AppsSource {
   constructor() {
     /** Le ARKHIVA App, come le manda il gateway. */
-    this.jennyApps = [];
+    this.arkhivaApps = [];
     /** Le app Android lanciabili, come le manda il ponte nativo. */
     this.androidApps = [];
 
-    this._jennyLoaded = false;
+    this._arkhivaLoaded = false;
     this._androidLoaded = false;
     this._failed = { arkhiva: false, android: false };
 
@@ -71,7 +71,7 @@ export class AppsSource {
        il tocco nel cassetto apriva il suo foglio invece dell'app, fino al
        riavvio. */
     wsManager.addEventListener('chat:open', () => {
-      if (this._jennyLoaded) this.loadARKHIVAApps();
+      if (this._arkhivaLoaded) this.loadARKHIVAApps();
     });
   }
 
@@ -100,7 +100,7 @@ export class AppsSource {
   /** Avvia le fetch che mancano. Idempotente: chiamarla a ogni apertura del
    *  cassetto non rifa' il lavoro gia' fatto, ma ritenta quello fallito. */
   ensureLoaded() {
-    if (!this._jennyLoaded || this._failed.arkhiva) this.loadARKHIVAApps();
+    if (!this._arkhivaLoaded || this._failed.arkhiva) this.loadARKHIVAApps();
     if (!this._androidLoaded || this._failed.android) this.loadAndroidApps();
   }
 
@@ -119,12 +119,12 @@ export class AppsSource {
    */
   awaitARKHIVAApps() {
     this.ensureLoaded();
-    if (this._jennyLoaded) return Promise.resolve(this.jennyApps);
+    if (this._arkhivaLoaded) return Promise.resolve(this.arkhivaApps);
     return new Promise((resolve) => {
       const detach = this.addChangeListener(() => {
-        if (!this._jennyLoaded) return;
+        if (!this._arkhivaLoaded) return;
         detach();
-        resolve(this.jennyApps);
+        resolve(this.arkhivaApps);
       });
     });
   }
@@ -132,7 +132,7 @@ export class AppsSource {
   /** Vero finche' una delle due risposte non e' tornata. Distingue «non c'e'
    *  niente» da «non e' ancora arrivato niente». */
   isLoadingLists() {
-    return !(this._jennyLoaded && this._androidLoaded);
+    return !(this._arkhivaLoaded && this._androidLoaded);
   }
 
   /** Almeno una lista non si e' potuta leggere. Terza risposta accanto a
@@ -147,7 +147,7 @@ export class AppsSource {
   /** La lista delle **ARKHIVA App** non si e' potuta leggere. Serve a chi deve
    *  dire «quest'app non c'e' piu'»: con la lista rotta la risposta e' «non lo
    *  so», e dire «sparita» a un'app che c'e' sarebbe peggio di tacere. */
-  jennyListFailed() {
+  arkhivaListFailed() {
     return this._failed.arkhiva;
   }
 
@@ -175,16 +175,16 @@ export class AppsSource {
     }
     if (token !== this._seqARKHIVA) return;
     if (apps) {
-      this.jennyApps = apps;
+      this.arkhivaApps = apps;
       this._failed.arkhiva = false;
-    } else if (!this._jennyLoaded || this._failed.arkhiva) {
-      this.jennyApps = [];
+    } else if (!this._arkhivaLoaded || this._failed.arkhiva) {
+      this.arkhivaApps = [];
       this._failed.arkhiva = true;
     }
     /* Altrimenti una rilettura e' fallita su un elenco che era buono: lo si
        tiene, invece di svuotare il cassetto e accenderne l'errore per un
        attimo di gateway occupato. */
-    this._jennyLoaded = true;
+    this._arkhivaLoaded = true;
     this._emit();
   }
 
@@ -314,7 +314,7 @@ export class AppsSource {
    */
   _onFrame(msg) {
     if (msg?.event === 'apps_list_changed') {
-      if (this._jennyLoaded) this.loadARKHIVAApps();
+      if (this._arkhivaLoaded) this.loadARKHIVAApps();
       return;
     }
     if (msg?.event === 'app_data_changed' && msg.slug) {
@@ -355,7 +355,7 @@ export class AppsSource {
    */
   launcherEntries() {
     const rows = [];
-    for (const app of this.jennyApps) {
+    for (const app of this.arkhivaApps) {
       const problem = app.broken ? (app.error || i18n.t('apps.invalidManifest')) : null;
       rows.push({
         key: `arkhiva:${app.slug}`, id: app.slug, kind: 'arkhiva',

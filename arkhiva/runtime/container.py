@@ -542,7 +542,7 @@ class GatewayContainer:
                 snapshots_dir_for(config.workspace_path),
                 exclude_globs=config.snapshots.exclude_globs,
                 # Esclusione per path reale: vale anche quando il runtime dir
-                # ha ancora il nome legacy (.minijenny).
+                # ha ancora il nome legacy (.miniarkhiva).
                 exclude_dirs=(get_data_dir() / "logs",),
             ),
             config.snapshots,

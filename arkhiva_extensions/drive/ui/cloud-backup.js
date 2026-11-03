@@ -2,7 +2,7 @@
  *
  *  Il gateway fa il lavoro (`/api/backup/cloud*`, `arkhiva_extensions/drive/`);
  *  il nativo fa una cosa sola, quella che vuole una schermata di sistema:
- *    connectDrive() → consenso Google → window.jennyCloud.onDriveConnected(stato)
+ *    connectDrive() → consenso Google → window.arkhivaCloud.onDriveConnected(stato)
  *  (`DriveExtension.kt`, raggiunto dal comando generico `extensionCall`).
  *
  *  Questo file e' dell'estensione Drive e la build senza estensioni non lo
@@ -59,7 +59,7 @@ export function cloudRestore(snapshotId) {
 const CALLBACKS = ['onDriveConnected'];
 const _waiting = {};
 
-window.jennyCloud = Object.fromEntries(CALLBACKS.map((name) => [name, (value) => {
+window.arkhivaCloud = Object.fromEntries(CALLBACKS.map((name) => [name, (value) => {
   const cb = _waiting[name];
   _waiting[name] = null;
   if (cb) cb(String(value));

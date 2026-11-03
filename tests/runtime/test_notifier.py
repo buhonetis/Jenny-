@@ -39,7 +39,7 @@ def _meta(kind: str, label: str | None = None) -> dict[str, Any]:
 
 
 @pytest.fixture(autouse=True)
-def _italian_jenny(monkeypatch):
+def _italian_arkhiva(monkeypatch):
     """Lingua e nome fissati: i titoli dipendono da ``config.json``, e qui no."""
     monkeypatch.setattr(user_text, "current_language", lambda: "it")
     monkeypatch.setattr(notifier, "current_bot_name", lambda: "ARKHIVA")

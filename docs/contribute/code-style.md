@@ -1,6 +1,6 @@
 # Code Style
 
-The conventions a Jenny pull request is expected to follow — tooling settings, the two-tier type check, and the language rules that decide what gets written in Italian and what stays in English.
+The conventions a Arkhiva pull request is expected to follow — tooling settings, the two-tier type check, and the language rules that decide what gets written in Italian and what stays in English.
 
 ## Language and runtime
 
@@ -29,7 +29,7 @@ ruff check arkhiva/ arkhiva_extensions/ tests/
 
 ## Type checking
 
-Pyright runs in `basic` mode (`pyrightconfig.json`, `include: ["jenny"]`, excluding `arkhiva/templates` and `arkhiva/skills`). It is a static check with zero runtime impact, and it runs in two tiers with very different consequences:
+Pyright runs in `basic` mode (`pyrightconfig.json`, `include: ["arkhiva"]`, excluding `arkhiva/templates` and `arkhiva/skills`). It is a static check with zero runtime impact, and it runs in two tiers with very different consequences:
 
 ```bash
 # BLOCKING subset — must stay error-clean:
@@ -64,7 +64,7 @@ Lint, blocking type check, tests — the same sequence CI gates on. Commits also
 
 ## Which language to write in
 
-Jenny's codebase is bilingual on purpose, and the split is by *audience*, not by file:
+Arkhiva's codebase is bilingual on purpose, and the split is by *audience*, not by file:
 
 | What | Language | Note |
 |---|---|---|

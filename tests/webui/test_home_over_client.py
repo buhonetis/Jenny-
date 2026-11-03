@@ -152,7 +152,7 @@ def test_in_a_notebook_the_head_is_the_board_path_with_her_at_the_end() -> None:
     """La fila delle pagine resta sotto il velo, sfocata: senza una testa non
     si sapeva se si scriveva in un quaderno o nella chat di sempre. Dal
     22/10/2026 nella chat di un quaderno e' il percorso della bacheca piu' una
-    voce: «‹ QUADERNI › ● ORTO › JENNY»."""
+    voce: «‹ QUADERNI › ● ORTO › ARKHIVA»."""
     run_home(_HEAD + """
 await app.switchConversation('project:orto');
 await tick(30);

@@ -88,7 +88,7 @@ class TestSummary:
 
     def test_an_expired_reading_asks_for_a_new_tap(self):
         """Dopo dieci minuti la lettura non c'è più: ARKHIVA non deve credere lo
-        schermo spento (lo ha fatto, su ``jenny_s22``), ma chiedere un tocco."""
+        schermo spento (lo ha fatto, su ``arkhiva_s22``), ma chiedere un tocco."""
         metadata = {rs.SCREEN_META_KEY: rs.parse_summary('{"expired": true}')}
         (line,) = rs.screen_runtime_lines(metadata)
         assert "ten minutes old" in line and "tap the mascot again" in line
@@ -304,7 +304,7 @@ class TestBoundaryWithKotlin:
     def test_the_tap_reads_first_and_opens_the_chat_after(self):
         """Il palco della chat copre l'app a schermo intero, e Android la toglie
         dalle finestre accessibili: letta in parallelo all'apertura, una pagina
-        da 24k caratteri ne dava 880 (``jenny_s22``, 13/10/2026). La chat si
+        da 24k caratteri ne dava 880 (``arkhiva_s22``, 13/10/2026). La chat si
         apre nella callback della lettura, mai prima."""
         src = read_source(KT / "FloatingOverlayController.kt")
         expand = src[src.index("private fun expand()"):src.index("private fun openChat()")]

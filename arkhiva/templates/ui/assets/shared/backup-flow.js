@@ -4,7 +4,7 @@
  *   exportBackup(stagedPath, suggestedName) → picker SAF CreateDocument
  *   importBackup()                          → picker SAF OpenDocument
  *   restartApp()                            → riavvio completo del processo
- * e risponde in modo asincrono chiamando window.jennyBackup.onExportDone(ok)
+ * e risponde in modo asincrono chiamando window.arkhivaBackup.onExportDone(ok)
  * / onImportPicked(ok) via evaluateJavascript.
  */
 
@@ -25,7 +25,7 @@ async function _exclusive(fn) {
   try { return await fn(); } finally { _busy = false; }
 }
 
-window.jennyBackup = {
+window.arkhivaBackup = {
   onExportDone(ok) {
     const cb = _pending.export; _pending.export = null;
     if (cb) cb(!!ok);
