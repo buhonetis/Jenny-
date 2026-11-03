@@ -1,0 +1,38 @@
+{
+  "_comment": "Catálogo de la mascota de ARKHIVA: arte, tiempos y umores. Fuente única. shared/mascot-assets.gen.js se genera desde aquí con scripts/gen_mascot_assets.py; no se edita a mano.",
+  "art": {
+    "side": "/html-mobile/assets/arkhiva-side.webp",
+    "sideTalk": "/html-mobile/assets/arkhiva-side-talk.webp",
+    "sideBody": "/html-mobile/assets/arkhiva-body-side-idle.webp",
+    "body": {
+      "idle": "/html-mobile/assets/arkhiva-body-front-idle.webp",
+      "hand": "/html-mobile/assets/arkhiva-body-front-hand.webp",
+      "think": "/html-mobile/assets/arkhiva-body-front-think.webp"
+    },
+    "face": {
+      "normal": "/html-mobile/assets/arkhiva-face-front-normal.webp",
+      "talk": "/html-mobile/assets/arkhiva-face-front-normal-talk.webp",
+      "thinking": "/html-mobile/assets/arkhiva-face-front-thinking.webp",
+      "happy": "/html-mobile/assets/arkhiva-face-front-happy.webp",
+      "sad": "/html-mobile/assets/arkhiva-face-front-sad.webp",
+      "angry": "/html-mobile/assets/arkhiva-face-front-angry.webp"
+    },
+    "sideFace": {
+      "happy": "/html-mobile/assets/arkhiva-face-side-happy.webp",
+      "sad": "/html-mobile/assets/arkhiva-face-side-sad.webp",
+      "angry": "/html-mobile/assets/arkhiva-face-side-angry.webp"
+    },
+    "wave": {
+      "a": "/html-mobile/assets/arkhiva-hello1.webp",
+      "b": "/html-mobile/assets/arkhiva-hello2.webp"
+    }
+  },
+  "timing": {
+    "mouthFrameMs": 260,
+    "talkSwitchMs": 2600,
+    "quietToThinkMs": 1000,
+    "moodHoldMs": 12000,
+    "slideMs": 300
+  },
+  "moods": ["happy", "sad", "angry"]
+}

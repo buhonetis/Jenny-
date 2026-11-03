@@ -30,84 +30,26 @@ import { bindMascotDrag, buildFlyLayer } from './mascot-drag.js';
 import { botName } from './bot-name.js';
 import { applyMascotSize } from './mascot.js';
 import { MotionChannels } from './mascot-motion.js';
+import {
+  BODY, FACE, MOOD_FACES, MOOD_HOLD_MS, MOUTH_FRAME_MS, SIDE, SIDE_BODY, SIDE_FACE,
+  SIDE_TALK, SLIDE_MS, TALK_ANIM_SWITCH_MS, TALK_QUIET_TO_THINK_MS, WAVE,
+} from './mascot-assets.gen.js';
 
-/* Arte "cotta" (faccia disegnata dentro, una sola img): serve al bordo, dove
+/* ── Catalogo de arte y tiempos: dataset, no código ──
+   Rutas de sprite, duración de la boca, permanencia de cada pose de habla,
+   retención del umor y milisegundos del deslizamiento viven en
+   `assets/datasets/mascot.json`. `mascot-assets.gen.js` es el módulo que lo
+   publica, generado con `python scripts/gen_mascot_assets.py`: se genera en vez
+   de cargarse con `fetch` porque la mascota se construye en el arranque, sin un
+   `await` donde encajar la espera, y porque `import ... with { type: 'json' }`
+   ata la app a una versión de WebView que muchos teléfonos soportados no
+   tienen. Un test falla si el módulo generado deja de coincidir con el dataset.
+
+   Arte "cotta" (faccia disegnata dentro, una sola img): serve al bordo, dove
    la mascotte sporge a metà e una faccia non si leggerebbe. */
-const ART = {
-  side: '/html-mobile/assets/arkhiva-side.webp',
-  sideTalk: '/html-mobile/assets/arkhiva-side-talk.webp',
-};
+const ART = { side: SIDE, sideTalk: SIDE_TALK };
 const SIDE_TALK_ANIM = [ART.side, ART.sideTalk];
-
-/* ── Arte a due livelli ──
-   A mascotte intera il disegno è due img impilate sullo stesso quadrato: il
-   CORPO porta il gesto, la FACCIA l'espressione. Sono ortogonali, quindi
-   "triste mentre pensa" non è un disegno in più ma una composizione, e nel
-   parlato sbatte solo la faccia (6 kB) invece di un corpo intero (22 kB). */
-const BODY = {
-  idle: '/html-mobile/assets/arkhiva-body-front-idle.webp',
-  hand: '/html-mobile/assets/arkhiva-body-front-hand.webp',
-  think: '/html-mobile/assets/arkhiva-body-front-think.webp',
-};
-/* `normal`/`talk` sono le due bocche del parlato; `thinking` è la faccia
-   dell'attesa; le altre tre sono gli umori del backend. Nei sorgenti il nome
-   senza suffisso è la faccia di RIPOSO di quell'espressione — per happy è un
-   sorriso a bocca aperta, ed è giusto così. */
-const FACE = {
-  normal: '/html-mobile/assets/arkhiva-face-front-normal.webp',
-  talk: '/html-mobile/assets/arkhiva-face-front-normal-talk.webp',
-  thinking: '/html-mobile/assets/arkhiva-face-front-thinking.webp',
-  happy: '/html-mobile/assets/arkhiva-face-front-happy.webp',
-  sad: '/html-mobile/assets/arkhiva-face-front-sad.webp',
-  angry: '/html-mobile/assets/arkhiva-face-front-angry.webp',
-};
-/* Di lato, al bordo, con un umore vivo: il corpo della posa cotta senza la
-   faccia, e la faccia dell'umore sopra — la stessa composizione a due livelli
-   di quando e' fuori, sull'orientamento `side`. Senza umore resta la posa
-   cotta (`ART.side`): la faccia neutra di lato non c'e', e non serve.
-   Fino al 28/09/2026 al bordo l'umore non si vedeva: «da docked una faccia non
-   si legge», si era detto, e i sorgenti di lato erano rimasti in riserva in
-   android/image_source/. Dall'utente: le espressioni devono agganciarsi anche
-   li'. */
-const SIDE_BODY = '/html-mobile/assets/arkhiva-body-side-idle.webp';
-const SIDE_FACE = {
-  happy: '/html-mobile/assets/arkhiva-face-side-happy.webp',
-  sad: '/html-mobile/assets/arkhiva-face-side-sad.webp',
-  angry: '/html-mobile/assets/arkhiva-face-side-angry.webp',
-};
-/* Il gesto del parlato alterna questi due ogni TALK_ANIM_SWITCH_MS. */
 const TALK_BODIES = [BODY.idle, BODY.hand];
-const MOUTH_FRAME_MS = 260; // apri/chiudi bocca
-const TALK_ANIM_SWITCH_MS = 2600; // permanenza su una posa di parlato
-const TALK_QUIET_TO_THINK_MS = 1000; // silenzio testo -> torna a pensa
-
-/* ── Umore ──
-   Dopo il turn_end il backend può mandare un frame `mascot_mood` con la
-   reazione di ARKHIVA alla risposta appena data (arkhiva/session/mascot_mood.py:
-   letta dagli emoji che lei stessa ha scritto). Qui è la FACCIA, non un
-   quarto stato: fuori da FACE, al bordo da SIDE_FACE; perde contro il pensa,
-   e decade da sé dopo MOOD_HOLD_MS.
-
-   Sono le etichette del backend (`MOODS` meno `neutral`, che non manda frame) e
-   un sottoinsieme di FACE: le altre chiavi di FACE sono facce di stato, non
-   umori, e un frame che ne nominasse una si scarta. Un contratto in
-   tests/webui tiene allineate le due liste. */
-const MOOD_FACES = ['happy', 'sad', 'angry'];
-const MOOD_HOLD_MS = 12000; // quanto dura una faccia prima di tornare a normale
-
-/* Il saluto vero: i due fotogrammi col braccio alzato dell'onboarding, che
-   si alternano nel livello `.arkhiva-wave` (v. `_buildDom`). */
-const WAVE = {
-  a: '/html-mobile/assets/arkhiva-hello1.webp',
-  b: '/html-mobile/assets/arkhiva-hello2.webp',
-};
-
-/* I gesti (v. shared/mascot-motion.js): il catalogo e l'imbuto sono
-   condivisi con la ARKHIVA dell'onboarding. */
-/* Quanto dura lo scivolamento dal bordo (`transition: right` di
-   `.arkhiva-duo`): il saluto aspetta che lei sia fuori del tutto, perche' un
-   braccio alzato mentre e' ancora mezza dietro il bordo non si vedrebbe. */
-const SLIDE_MS = 300;
 
 export class ArkhivaMascot {
   /**

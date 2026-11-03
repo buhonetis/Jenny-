@@ -17,6 +17,7 @@ due i gusci.
 
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
@@ -41,13 +42,29 @@ def _rules(css: str, selector_re: str) -> list[str]:
 
 def test_the_art_is_named_in_one_module_only() -> None:
     """Le tabelle degli sprite esistono una volta. Un secondo file che nomina
-    un corpo o una faccia e' una seconda ARKHIVA che comincia."""
+    un corpo o una faccia e' una seconda ARKHIVA che comincia.
+
+    Dalla conversione in dataset il nome vive in **un file di dati**
+    (`assets/datasets/mascot.json`) e nel modulo che ne e' generato
+    (`shared/mascot-assets.gen.js`). Nessun altro `.js` puo' nominare uno
+    sprite: se compare un terzo file, qualcuno sta ricostruendo la tabella a
+    mano.
+    """
     naming = sorted(
         str(f.relative_to(ASSETS))
         for f in ASSETS.rglob("*.js")
         if "vendor" not in f.parts and any(a in f.read_text(encoding="utf-8") for a in _ART)
     )
-    assert naming == ["shared/arkhiva-mascot.js"], naming
+    assert naming == ["shared/mascot-assets.gen.js"], naming
+
+    dataset = json.loads((ASSETS / "datasets" / "mascot.json").read_text(encoding="utf-8"))
+    art = dataset["art"]
+    flat = [
+        art["side"], art["sideTalk"], art["sideBody"],
+        *art["body"].values(), *art["face"].values(), *art["sideFace"].values(),
+        *art["wave"].values(),
+    ]
+    assert flat and all("/assets/arkhiva-" in src for src in flat), flat
 
 
 def test_talking_uses_the_raised_hand() -> None:

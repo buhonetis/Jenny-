@@ -41,6 +41,9 @@ from arkhiva.utils.android_assets import _UI_MANIFEST
 
 ASSETS = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets"
 ARKHIVA_JS = ASSETS / "shared" / "arkhiva-mascot.js"
+# Il catalogo (facce, corpi, MOOD_FACES) vive nel dataset ed è pubblicato dal
+# modulo generato: i contratti lo leggono lì, non nel sorgente della mascotte.
+GEN_JS = ASSETS / "shared" / "mascot-assets.gen.js"
 MOTION_JS = ASSETS / "shared" / "mascot-motion.js"
 
 node = requires_node
@@ -67,6 +70,8 @@ _METHODS = (
     "_stopMotion",
 )
 _CONSTS = (
+    "SIDE",
+    "SIDE_TALK",
     "ART",
     "SIDE_TALK_ANIM",
     "BODY",
@@ -92,19 +97,31 @@ def _method(source: str, name: str) -> str:
 
 def _const(source: str, name: str) -> str:
     # Il ``;`` puo' essere seguito da un commento di riga: senza ammetterlo la
-    # cattura correrebbe fino al ``;`` della costante successiva.
-    m = re.search(rf"^const {name} = (.*?);[ \t]*(?://.*)?$", source, re.S | re.M)
+    # cattura correrebbe fino al ``;`` della costante successiva. ``export``
+    # e' ammesso perche' il catalogo vive in ``mascot-assets.gen.js``, che e'
+    # un modulo ES e non un frammento.
+    m = re.search(rf"^(?:export )?const {name} = (.*?);[ \t]*(?://.*)?$", source, re.S | re.M)
     assert m, f"{name} non trovata"
     return m.group(1)
 
 
 def _dict_const(source: str, name: str) -> dict[str, str]:
-    return dict(re.findall(r"(\w+):\s*'([^']+)'", _const(source, name)))
+    # Il modulo generato scrive JSON (virgolette doppie), il sorgente della
+    # mascotte scrive apici: il parser accetta le due forme.
+    return dict(
+        re.findall(r"""(\w+):\s*(['"])(.+?)\2""", _const(source, name))
+        and [(m[0], m[2]) for m in re.findall(r"""(\w+):\s*(['"])(.+?)\2""", _const(source, name))]
+    )
 
 
 def _harness() -> str:
     arkhiva = ARKHIVA_JS.read_text(encoding="utf-8")
-    consts = "\n".join(f"const {name} = {_const(arkhiva, name)};" for name in _CONSTS)
+    # Il catalogo (ART, BODY, FACE, MOOD_FACES, tempi) vive nel dataset ed e'
+    # pubblicato da ``mascot-assets.gen.js``: le costanti si cercano in tutti e
+    # due i sorgenti, e restano costanti perche' lo script le inietta.
+    catalog = GEN_JS.read_text(encoding="utf-8")
+    sources = arkhiva + "\n" + catalog
+    consts = "\n".join(f"const {name} = {_const(sources, name)};" for name in _CONSTS)
     methods = "\n".join(_method(arkhiva, name) + "," for name in _METHODS)
     return f"""
 import assert from 'node:assert/strict';
@@ -476,7 +493,7 @@ def test_clearing_redraws_once_and_is_idempotent() -> None:
 
 
 def test_mood_faces_cover_every_backend_label_except_neutral() -> None:
-    faces = set(re.findall(r"'(\w+)'", _const(ARKHIVA_JS.read_text(encoding="utf-8"), "MOOD_FACES")))
+    faces = set(re.findall(r"""['"](\w+)['"]""", _const(GEN_JS.read_text(encoding="utf-8"), "MOOD_FACES")))
     expected = {m for m in MOODS if m != NEUTRAL_MOOD}
     assert faces == expected, (
         f"MOOD_FACES (JS) e MOODS (Python) divergono: {sorted(faces)} vs {sorted(expected)}"
@@ -484,20 +501,20 @@ def test_mood_faces_cover_every_backend_label_except_neutral() -> None:
 
 
 def test_every_mood_has_a_drawn_face() -> None:
-    source = ARKHIVA_JS.read_text(encoding="utf-8")
-    faces = set(re.findall(r"'(\w+)'", _const(source, "MOOD_FACES")))
+    source = GEN_JS.read_text(encoding="utf-8")
+    faces = set(re.findall(r"""['"](\w+)['"]""", _const(source, "MOOD_FACES")))
     assert faces <= set(_dict_const(source, "FACE")), "un umore senza faccia in FACE"
     assert faces == set(_dict_const(source, "SIDE_FACE")), "un umore senza faccia di lato"
 
 
 def test_every_layer_the_client_names_exists_and_ships() -> None:
     """Corpo senza faccia è una ARKHIVA senza volto: qui si controlla file per file."""
-    source = ARKHIVA_JS.read_text(encoding="utf-8")
+    source = GEN_JS.read_text(encoding="utf-8")
     urls = {
         **_dict_const(source, "BODY"),
         **_dict_const(source, "FACE"),
         **{f"side-{k}": v for k, v in _dict_const(source, "SIDE_FACE").items()},
-        "side-body": _const(source, "SIDE_BODY").strip("'"),
+        "side-body": _const(source, "SIDE_BODY").strip("'\""),
     }
     assert len(urls) == 13, sorted(urls)
     manifest = set(_UI_MANIFEST)

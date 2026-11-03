@@ -27,6 +27,7 @@ import pytest
 
 from arkhiva.utils.android_assets import (
     _RETIRED_TEMPLATE_DIGESTS,
+    _DATA_ASSETS,
     _SYSTEM_PROMPT_TEMPLATES,
     _TEMPLATES_MANIFEST,
     _USER_OWNED_TEMPLATES,
@@ -90,11 +91,18 @@ def test_every_prompt_under_agent_is_treated_as_a_system_prompt(workspace: Path)
 
 
 def test_the_two_lists_cover_the_manifest_exactly(workspace: Path) -> None:
-    """Nessun file può cadere fra le due politiche, né essere in entrambe."""
+    """Nessun file può cadere fra le due politiche, né essere in entrambe.
+
+    Le tre liste sono tre politiche, e la terza è nata il 03/11/2026: i
+    **dati** (``_DATA_ASSETS``, il dataset degli umori) viaggiano nel pacchetto
+    insieme ai prompt perché il lettore è lo stesso, ma non si renderizzano con
+    Jinja e un test che li tratta come prompt non deve trovarli fra i template.
+    """
     assert set(_USER_OWNED_TEMPLATES).isdisjoint(_SYSTEM_PROMPT_TEMPLATES)
-    assert set(_USER_OWNED_TEMPLATES) | set(_SYSTEM_PROMPT_TEMPLATES) == set(
-        _TEMPLATES_MANIFEST
-    )
+    assert set(_SYSTEM_PROMPT_TEMPLATES).isdisjoint(_DATA_ASSETS)
+    assert set(_USER_OWNED_TEMPLATES) | set(_SYSTEM_PROMPT_TEMPLATES) | set(
+        _DATA_ASSETS
+    ) == set(_TEMPLATES_MANIFEST)
 
 
 # -- il sottoinsieme dichiarato ---------------------------------------------

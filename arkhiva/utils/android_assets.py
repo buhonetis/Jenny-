@@ -55,7 +55,16 @@ _SYSTEM_PROMPT_TEMPLATES = [
     "agent/types/app-builder.md", "agent/types/notebook-editor.md",
 ]
 
-_TEMPLATES_MANIFEST = [*_USER_OWNED_TEMPLATES, *_SYSTEM_PROMPT_TEMPLATES]
+# Dati, non prosa: tabelle che il codice legge e che nessuno deve poter
+# sovrascrivere dal workspace. Viaggiano nel pacchetto insieme ai prompt perché
+# il lettore e' lo stesso (``pkgutil.get_data("arkhiva", ...)``), ma non sono
+# template: non si renderizzano con Jinja e un test che li tratta come prompt
+# non deve trovarli in ``_SYSTEM_PROMPT_TEMPLATES``.
+_DATA_ASSETS = [
+    "datasets/mascot_mood.json",
+]
+
+_TEMPLATES_MANIFEST = [*_USER_OWNED_TEMPLATES, *_SYSTEM_PROMPT_TEMPLATES, *_DATA_ASSETS]
 
 # Le versioni *ritirate* dei template dell'utente: digest sha256 del testo
 # strippato → etichetta della finestra di release che le spediva.
@@ -251,6 +260,7 @@ _UI_MANIFEST = [
     "assets/home-you.js",
     "assets/home-updates.js",
     "assets/home-who.js",
+    "assets/datasets/mascot.json",
     "assets/i18n/en.json",
     "assets/i18n/it.json",
     "assets/arkhiva-body-front-hand.webp",
@@ -318,6 +328,7 @@ _UI_MANIFEST = [
     "assets/shared/longpress.js",
     "assets/shared/markdown.js",
     "assets/shared/native-bridge.js",
+    "assets/shared/mascot-assets.gen.js",
     "assets/shared/mascot-drag.js",
     "assets/shared/mascot-motion.js",
     "assets/shared/mascot-squash.js",
