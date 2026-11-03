@@ -1,9 +1,9 @@
 """Il saluto di un quaderno appena nato (``project.greet``).
 
-Le regole stanno nella docstring di ``jenny/webui/project_greet.py``: qui si
+Le regole stanno nella docstring di ``arkhiva/webui/project_greet.py``: qui si
 misura che valgano — solo su una chat vuota, mai sotto un turno, mai una chat
 vuota per colpa del modello, e un messaggio che arriva per la strada degli
-avvisi di Jenny (sessione, frame, ``turn_end``).
+avvisi di ARKHIVA (sessione, frame, ``turn_end``).
 """
 
 from __future__ import annotations
@@ -15,11 +15,11 @@ from typing import Any
 
 import pytest
 
-from jenny.session.manager import Session
-from jenny.webui import commands
-from jenny.webui import project_greet as module
-from jenny.webui.commands import CommandError
-from jenny.webui.metadata import WEBUI_TURN_METADATA_KEY
+from arkhiva.session.manager import Session
+from arkhiva.webui import commands
+from arkhiva.webui import project_greet as module
+from arkhiva.webui.commands import CommandError
+from arkhiva.webui.metadata import WEBUI_TURN_METADATA_KEY
 
 
 class _Sessions:
@@ -80,7 +80,7 @@ async def _greet(
         wiki_root=tmp_path / "wikis" / "orto",
         workspace=tmp_path,
         language=language,
-        bot_name="Jenny",
+        bot_name="ARKHIVA",
         session_manager=sessions,
         bus=bus,
         llm=(provider, "model-x") if provider is not None else None,

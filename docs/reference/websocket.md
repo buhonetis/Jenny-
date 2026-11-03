@@ -50,7 +50,7 @@ Only `path`, `allowFrom`, the token and TLS fields and `streaming` are honoured 
 Use the same entry point the Android runtime uses, and pass the address you want:
 
 ```python
-from jenny.android_entry import run_gateway
+from arkhiva.android_entry import run_gateway
 run_gateway("/path/to/data_dir", host="127.0.0.1", port=8765)
 ```
 
@@ -534,8 +534,8 @@ correlate a reply to.
 `token_issue_secret` at handshake time may run a command, even if `websocket_requires_token`
 is `false` — otherwise a mutation would sit on a weaker gate than `/api/`. And like `/api/`,
 which answers `401` to everyone when no secret is set, without a secret every command is
-refused with `forbidden`. Commands live in `jenny/webui/commands.py`
-(transport-agnostic); the frame handling is `jenny/channels/ws_rpc.py`.
+refused with `forbidden`. Commands live in `arkhiva/webui/commands.py`
+(transport-agnostic); the frame handling is `arkhiva/channels/ws_rpc.py`.
 
 ## Configuration Reference
 

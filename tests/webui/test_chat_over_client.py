@@ -14,7 +14,7 @@ from pathlib import Path
 
 from support.js_harness import member, requires_node, run_js
 
-ASSETS = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets"
+ASSETS = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets"
 APP = (ASSETS / "mobile-app.js").read_text(encoding="utf-8")
 
 pytestmark = requires_node
@@ -108,7 +108,7 @@ def test_closing_puts_everything_back() -> None:
       assert.equal(views.settings.inert, false);
       for (const c of ['mode-chat', 'chat-over', 'chat-over-app']) assert.ok(!root.classList.has(c), c);
       assert.equal(app.deactivated, 1);
-      assert.equal(app.revalidated, 1, 'la vista sotto non rilegge quel che Jenny ha cambiato');
+      assert.equal(app.revalidated, 1, 'la vista sotto non rilegge quel che ARKHIVA ha cambiato');
       assert.equal(app.chatVisible(), false);
       assert.equal(app.closeChatOver(), false);
       assert.deepEqual(states, [['chatOver', true], ['chatOver', false]]);

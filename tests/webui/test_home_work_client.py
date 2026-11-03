@@ -1,7 +1,7 @@
 """La bolla di lavoro, nella casa vera.
 
 Quando qualcuno lavora e tu aspetti in questa chat, in fondo al filo c'e' una
-bolla: il giardiniere, Dream, gli aiutanti, e per ultima Jenny che scrive. Il
+bolla: il giardiniere, Dream, gli aiutanti, e per ultima ARKHIVA che scrive. Il
 05/10/2026 una passata del giardiniere ha lavorato sei minuti dietro un
 «Gardening etf-finance...» immobile, e dalla casa sembrava ferma; prima ancora
 il chip degli agenti diceva che qualcuno lavorava, ma piccolo e sotto la chat.
@@ -84,10 +84,10 @@ frame(job());
 frame({ event: 'stream_end', chat_id: 'project:orto', turn_id: 'x', text: 'nel frattempo' });
 await tick(10);
 const kids = [...$('home-thread').children];
-// Sotto il posto vivo c'e' solo la fascia di Jenny (`home-band.js`).
+// Sotto il posto vivo c'e' solo la fascia di ARKHIVA (`home-band.js`).
 assert.ok(kids[kids.length - 1].classList.contains('home-band'), 'la fascia non e\\u2019 in fondo');
 assert.equal(kids[kids.length - 2], live(), 'il posto vivo non e\\u2019 subito sopra la fascia');
-assert.deepEqual(thread(), ['jenny: nel frattempo']);
+assert.deepEqual(thread(), ['arkhiva: nel frattempo']);
 """)
 
 
@@ -122,7 +122,7 @@ frame(job());
 frame({ event: 'message', chat_id: 'project:orto', text: 'Gardening orto...', work_id: 'gardener-1' });
 frame({ event: 'message', chat_id: 'project:orto', text: 'altro', work_id: 'gardener-zzz' });
 await tick(10);
-assert.deepEqual(thread(), ['jenny: altro'],
+assert.deepEqual(thread(), ['arkhiva: altro'],
   'il testo di un lavoro in bolla e\\u2019 stato disegnato, o uno sconosciuto e\\u2019 sparito');
 """)
 
@@ -249,7 +249,7 @@ frame({ event: 'subagent_status', chat_id: 'project:orto', running: [worker()], 
 frame({ event: 'subagent_status', chat_id: 'project:orto', running: [], recent: [worker({ state: 'done' })] });
 assert.equal(bubbles().length, 1);
 assert.equal(text(bubbles()[0]), W.helperDone.replace('{label}', 'plant cards'));
-assert.equal(settled().length, 0, '«ha finito» non resta nel filo: il resoconto lo fa Jenny');
+assert.equal(settled().length, 0, '«ha finito» non resta nel filo: il resoconto lo fa ARKHIVA');
 """)
 
 
@@ -301,7 +301,7 @@ assert.equal(settled().length, 0);
 
 
 def test_a_restart_from_elsewhere_closes_the_try_again() -> None:
-    # Sul Titan Jenny ha rilanciato la stessa linea mentre la bolla offriva
+    # Sul Titan ARKHIVA ha rilanciato la stessa linea mentre la bolla offriva
     # ancora «Riprova»: un tap li' avrebbe cancellato il suo tentativo.
     run_home(_HEAD + """
 const app = await boot();
@@ -351,7 +351,7 @@ frame({ event: 'subagent_status', chat_id: 'project:orto', running: [attempt(3)]
 frame({ event: 'subagent_status', chat_id: 'project:orto', running: [],
         recent: [failed(3), failed(2), failed(1)] });
 assert.equal(settled().length, 1);
-const said = document.querySelector('#home-thread > .home-msg-jenny');
+const said = document.querySelector('#home-thread > .home-msg-arkhiva');
 assert.ok(said.compareDocumentPosition(report) & Node.DOCUMENT_POSITION_FOLLOWING,
           'la notizia nuova sta in fondo al filo, dove guardi');
 button.click();
@@ -481,7 +481,7 @@ const stopped = budget();
 frame({ event: 'subagent_status', chat_id: 'project:orto', running: [], recent: [stopped] });
 const report = settled()[0];
 assert.ok(report.isConnected);
-// Jenny l'ha fatta continuare: stesso lineage, stesso attempt, task_id nuovo.
+// ARKHIVA l'ha fatta continuare: stesso lineage, stesso attempt, task_id nuovo.
 frame({ event: 'subagent_status', chat_id: 'project:orto',
         running: [worker({ task_id: 't2', lineage_id: 'L1', attempt: 1 })], recent: [stopped] });
 assert.ok(!report.isConnected, 'la bolla resta accanto all\u2019aiutante ripreso');
@@ -519,17 +519,17 @@ assert.equal(settled().length, 0);
 """)
 
 
-def test_a_plan_helper_jenny_already_handled_shows_no_card() -> None:
-    """Dentro un piano Jenny guida gli aiutanti da sola: dopo il suo turno sul
+def test_a_plan_helper_arkhiva_already_handled_shows_no_card() -> None:
+    """Dentro un piano ARKHIVA guida gli aiutanti da sola: dopo il suo turno sul
     resoconto (`handled_at`) la bolla non serve piu'."""
     run_home(_HEAD + _BUDGET + """
 agents['project:orto'] = { running: [], recent: [budget({ handled_at: now(), plan_id: 'p1' })] };
 const app = await boot();
 await app.showConversation('project:orto');
 await tick(20);
-assert.equal(settled().length, 0, 'Jenny se n\u2019e\u2019 gia\u2019 occupata');
+assert.equal(settled().length, 0, 'ARKHIVA se n\u2019e\u2019 gia\u2019 occupata');
 
-// Una bolla gia' a schermo esce quando Jenny chiude il turno su quel resoconto.
+// Una bolla gia' a schermo esce quando ARKHIVA chiude il turno su quel resoconto.
 frame({ event: 'subagent_status', chat_id: 'project:orto', running: [],
         recent: [budget({ task_id: 't3', lineage_id: 'L3', plan_id: 'p1' })] });
 const report = settled()[0];
@@ -542,7 +542,7 @@ assert.ok(!report.isConnected);
 
 @pytest.mark.parametrize("state", ["budget", "failed"])
 def test_outside_a_plan_handled_does_not_take_your_retry_away(state: str) -> None:
-    """Fuori da un piano Jenny legge ogni resoconto: se `handled_at` nascondesse la
+    """Fuori da un piano ARKHIVA legge ogni resoconto: se `handled_at` nascondesse la
     bolla, il «Riprova» non ci sarebbe mai."""
     run_home(_HEAD + _BUDGET + f"""
 agents['project:orto'] = {{ running: [], recent: [budget({{ state: '{state}', handled_at: now() }})] }};
@@ -670,15 +670,15 @@ assert.equal(bubbles().length, 0, 'una lettura vecchia ha riacceso la bolla');
 """)
 
 
-def test_jenny_writing_is_the_last_bubble_and_gives_way_to_the_answer() -> None:
+def test_arkhiva_writing_is_the_last_bubble_and_gives_way_to_the_answer() -> None:
     run_home(_HEAD + """
 const app = await boot();
 frame({ event: 'subagent_status', chat_id: 'default', running: [worker()], recent: [] });
 frame({ event: 'goal_status', chat_id: 'default', status: 'running', turn_id: 't9' });
 await tick(600);
 const typing = live().querySelector('.home-typing');
-assert.equal(typing.hidden, false, 'la bolla di Jenny non e\\u2019 comparsa');
-assert.equal(live().lastElementChild, typing, 'Jenny che scrive non e\\u2019 l\\u2019ultima');
+assert.equal(typing.hidden, false, 'la bolla di ARKHIVA non e\\u2019 comparsa');
+assert.equal(live().lastElementChild, typing, 'ARKHIVA che scrive non e\\u2019 l\\u2019ultima');
 frame({ event: 'delta', chat_id: 'default', turn_id: 't9', text: 'eccomi' });
 await tick(20);
 assert.equal(typing.hidden, true, 'la bolla e\\u2019 rimasta sopra la risposta che arriva');
@@ -699,5 +699,5 @@ threads['project:orto'] = { messages: [
 const app = await boot();
 await app.showConversation('project:orto');
 await tick(30);
-assert.deepEqual(thread(), ['you: /gardener', 'jenny: The gardener read 2 lines.', 'you: /gardener']);
+assert.deepEqual(thread(), ['you: /gardener', 'arkhiva: The gardener read 2 lines.', 'you: /gardener']);
 """)

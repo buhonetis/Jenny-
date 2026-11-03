@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # Host-only: recovery tool. Never imported by the Android runtime.
-"""Riapre la copia di Jenny su Google Drive **senza Jenny**, su un computer.
+"""Riapre la copia di ARKHIVA su Google Drive **senza ARKHIVA**, su un computer.
 
 Per il giorno in cui non c'è un telefono su cui reinstallarla, o si vuole solo
-rileggere un ricordo: scarichi la cartella «Jenny» dal tuo Drive (dal sito,
+rileggere un ricordo: scarichi la cartella «ARKHIVA» dal tuo Drive (dal sito,
 tasto destro → Scarica, poi estrai lo zip), e con la password della copia
 questo script ricostruisce il workspace in una cartella normale — memoria,
 quaderni, conversazioni, file — leggibile con qualunque editor.
@@ -11,22 +11,22 @@ quaderni, conversazioni, file — leggibile con qualunque editor.
 Uso::
 
     # quali copie ci sono (la password la chiede a schermo)
-    python3 scripts/restore_drive_copy.py ~/Downloads/Jenny --list
+    python3 scripts/restore_drive_copy.py ~/Downloads/ARKHIVA --list
 
-    # la più recente, in ./jenny-restored
-    python3 scripts/restore_drive_copy.py ~/Downloads/Jenny --out ./jenny-restored
+    # la più recente, in ./arkhiva-restored
+    python3 scripts/restore_drive_copy.py ~/Downloads/ARKHIVA --out ./arkhiva-restored
 
     # una precisa (l'id viene da --list)
-    python3 scripts/restore_drive_copy.py ~/Downloads/Jenny --snapshot 2e828e6f… \\
-        --out ./jenny-restored
+    python3 scripts/restore_drive_copy.py ~/Downloads/ARKHIVA --snapshot 2e828e6f… \\
+        --out ./arkhiva-restored
 
 La password si chiede a schermo, senza eco; per uno script la si passa da
-``JENNY_BACKUP_PASSWORD``. Mai sulla riga di comando, che finisce nella
+``ARKHIVA_BACKUP_PASSWORD``. Mai sulla riga di comando, che finisce nella
 cronologia della shell.
 
 Serve il pacchetto ``cryptography`` (``pip install cryptography``): sul
 telefono la cifratura passa da Android, qui no. Il formato è quello di
-``jenny_extensions/drive/cloud.py``; questo script è solo una sua porta d'uscita.
+``arkhiva_extensions/drive/cloud.py``; questo script è solo una sua porta d'uscita.
 """
 
 from __future__ import annotations
@@ -42,7 +42,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from jenny_extensions.drive.cloud import (  # noqa: E402
+from arkhiva_extensions.drive.cloud import (  # noqa: E402
     CloudBackupError,
     CloudRepository,
     NoSealedKeyError,
@@ -51,7 +51,7 @@ from jenny_extensions.drive.cloud import (  # noqa: E402
     WrongPasswordError,
     unseal_key,
 )
-from jenny_extensions.drive.cloud_sink import LocalDirSink  # noqa: E402
+from arkhiva_extensions.drive.cloud_sink import LocalDirSink  # noqa: E402
 
 
 def _when(ms: int) -> str:
@@ -60,14 +60,14 @@ def _when(ms: int) -> str:
 
 async def _main(args: argparse.Namespace) -> int:
     try:
-        from jenny.snapshot.crypto_backends.dev import DevAesGcmBackend
+        from arkhiva.snapshot.crypto_backends.dev import DevAesGcmBackend
     except ImportError:
         raise SystemExit("Serve il pacchetto «cryptography»: pip install cryptography") from None
 
     folder = Path(args.folder).expanduser()
     if not (folder / "repo.json").is_file():
-        raise SystemExit(f"{folder} non sembra la cartella «Jenny» di Drive (manca repo.json).")
-    password = os.environ.get("JENNY_BACKUP_PASSWORD") or getpass.getpass(
+        raise SystemExit(f"{folder} non sembra la cartella «ARKHIVA» di Drive (manca repo.json).")
+    password = os.environ.get("ARKHIVA_BACKUP_PASSWORD") or getpass.getpass(
         "Password della copia: "
     )
     sink = LocalDirSink(folder)
@@ -82,13 +82,13 @@ async def _main(args: argparse.Namespace) -> int:
             "da Backup, poi riscarica la cartella."
         ) from None
 
-    with tempfile.TemporaryDirectory(prefix="jenny-restore-") as state:
+    with tempfile.TemporaryDirectory(prefix="arkhiva-restore-") as state:
         try:
             repo = await CloudRepository.open(sink, key, Path(state), backend=backend)
         except WrongKeyError:
             raise SystemExit("Questa password non apre la copia.") from None
         except RepoNotFoundError:
-            raise SystemExit("Nella cartella non c'è una copia di Jenny.") from None
+            raise SystemExit("Nella cartella non c'è una copia di ARKHIVA.") from None
 
         snapshots = await repo.list_snapshots()
         if not snapshots:
@@ -124,12 +124,12 @@ async def _main(args: argparse.Namespace) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Ricostruisce il workspace di Jenny dalla sua copia su Google Drive."
+        description="Ricostruisce il workspace di ARKHIVA dalla sua copia su Google Drive."
     )
-    parser.add_argument("folder", help="la cartella «Jenny» scaricata da Drive ed estratta")
+    parser.add_argument("folder", help="la cartella «ARKHIVA» scaricata da Drive ed estratta")
     parser.add_argument("--list", action="store_true", help="elenca le copie e basta")
     parser.add_argument("--snapshot", help="l'id (o il suo inizio) della copia da ripristinare")
-    parser.add_argument("--out", default="jenny-restored", help="dove ricostruire il workspace")
+    parser.add_argument("--out", default="arkhiva-restored", help="dove ricostruire il workspace")
     return asyncio.run(_main(parser.parse_args()))
 
 

@@ -1,6 +1,6 @@
 """Un subagent caduto e rilanciato: in chat arriva solo l'esito del rilancio.
 
-Il 07/10/2026 sul Titan un costruttore di app e' caduto, Jenny l'ha rilanciato e
+Il 07/10/2026 sul Titan un costruttore di app e' caduto, ARKHIVA l'ha rilanciato e
 ha scritto «piccolo intoppo, l'ho rilanciato»; poi e' arrivato il risultato vero.
 L'utente ha chiesto che resti solo il secondo.
 """
@@ -12,10 +12,10 @@ from typing import Any
 
 import pytest
 
-from jenny.agent.tools.base import Tool
-from jenny.agent.turn_types import TurnDisposition
-from jenny.bus.events import InboundMessage
-from jenny.providers.base import LLMResponse, ToolCallRequest
+from arkhiva.agent.tools.base import Tool
+from arkhiva.agent.turn_types import TurnDisposition
+from arkhiva.bus.events import InboundMessage
+from arkhiva.providers.base import LLMResponse, ToolCallRequest
 from tests.agent.test_turn_identity import _loop, _script
 
 
@@ -62,7 +62,7 @@ async def test_a_relaunch_after_a_failure_says_nothing(tmp_path: Path) -> None:
     _script(loop, _relaunching())
     outcome = await loop._process_system_message(_announce("error"))
     assert outcome.disposition is TurnDisposition.SILENT
-    # Nella storia resta: Jenny sa di averlo rilanciato.
+    # Nella storia resta: ARKHIVA sa di averlo rilanciato.
     session = loop.sessions.get_or_create("websocket:default")
     assert any("rilanciato" in str(m.get("content")) for m in session.messages)
 

@@ -16,8 +16,8 @@ import threading
 
 import pytest
 
-from jenny.agent.tools.python_exec import PythonExecTool
-from jenny.security.network import configure_ssrf_whitelist
+from arkhiva.agent.tools.python_exec import PythonExecTool
+from arkhiva.security.network import configure_ssrf_whitelist
 
 
 @pytest.fixture
@@ -133,7 +133,7 @@ async def test_an_allowed_destination_still_connects(tmp_path, listener, no_whit
 
 def test_host_code_is_not_guarded(listener, no_whitelist):
     """Il gateway non vede la guardia: fuori da un exec è un passthrough."""
-    from jenny.agent.tools.python_exec import _patch_socket_egress
+    from arkhiva.agent.tools.python_exec import _patch_socket_egress
 
     _patch_socket_egress()
     port, hits = listener

@@ -25,9 +25,9 @@ from pathlib import Path
 from support.kotlin_source import read_source
 
 ROOT = Path(__file__).resolve().parents[2]
-ASSETS = ROOT / "jenny" / "templates" / "ui" / "assets"
+ASSETS = ROOT / "arkhiva" / "templates" / "ui" / "assets"
 APP_JS = ASSETS / "mobile-app.js"
-MAIN_ACTIVITY = ROOT / "android" / "app" / "src" / "main" / "java" / "com" / "flagdizero" / "jenny" / "MainActivity.kt"
+MAIN_ACTIVITY = ROOT / "android" / "app" / "src" / "main" / "java" / "com" / "flagdizero" / "arkhiva" / "MainActivity.kt"
 
 
 def _app() -> str:
@@ -75,14 +75,14 @@ def test_the_layer_list_is_ordered_by_real_stacking() -> None:
 
     **Questo test congelava l'ordine sbagliato.** Fino a ieri asseriva mini-app
     *prima* della minichat, cioè l'ordine che il codice aveva, non quello che gli
-    z-index impongono: ``.app-frame-overlay`` 110 < ``.jenny-scrim`` 119 <
-    ``.jenny-duo`` 120 < ``.jenny-mc`` 121 (e ``.app`` non crea stacking
+    z-index impongono: ``.app-frame-overlay`` 110 < ``.arkhiva-scrim`` 119 <
+    ``.arkhiva-duo`` 120 < ``.arkhiva-mc`` 121 (e ``.app`` non crea stacking
     context). Con la minichat aperta sopra una mini-app, il back chiudeva l'app
     *sotto* e a schermo non cambiava niente. L'ordine asserito qui è ora quello
     misurato sul CSS.
 
     **Lightbox e minichat sono l'unica coppia fuori ordine, e non per sbaglio.**
-    Con D3 (25/09/2026, «Jenny sempre sopra», anche alle immagini) la lightbox è
+    Con D3 (25/09/2026, «ARKHIVA sempre sopra», anche alle immagini) la lightbox è
     scesa da 1000 a 115, sotto di lei. Dal 05/10/2026 la chat aperta sopra una
     mini-app (111) sta fra l'app e la lightbox, che si apre *dalla* chat.
     """
@@ -105,14 +105,14 @@ def test_the_layer_list_is_ordered_by_real_stacking() -> None:
     css = (ASSETS / "mobile-style.css").read_text(encoding="utf-8")
     z = {
         name: int(re.search(rf"\n{re.escape(name)} \{{[^}}]*?z-index: (\d+);", css).group(1))
-        for name in (".image-lightbox", ".jenny-duo")
+        for name in (".image-lightbox", ".arkhiva-duo")
     }
     frame = re.search(r"\.app-frame-overlay \{[^}]*?z-index: (\d+);", css)
     assert frame, "livello della mini-app non trovato"
     over_app = int(re.search(r":root\.chat-over-app #view-chat \{ z-index: (\d+);", css).group(1))
     # La chat sopra una mini-app sta fra l'app e la lightbox, e lei sopra tutto.
-    assert int(frame.group(1)) < over_app < z[".image-lightbox"] < z[".jenny-duo"], z
-    assert ":root:has(.image-lightbox) .jenny-duo { pointer-events: none; }" in css, (
+    assert int(frame.group(1)) < over_app < z[".image-lightbox"] < z[".arkhiva-duo"], z
+    assert ":root:has(.image-lightbox) .arkhiva-duo { pointer-events: none; }" in css, (
         "sopra una lightbox un tocco su di lei aprirebbe o chiuderebbe la chat sotto l'immagine"
     )
 
@@ -148,7 +148,7 @@ def test_the_back_chain_walks_the_single_layer_list() -> None:
     assert "layer.dismiss() !== false" in body
     # Una copia locale di un test di presenza è la ricomparsa della quarta
     # sorgente di verità: i livelli si aggiungono solo in _overlayLayers().
-    for marker in ("dialog[open]", ".image-lightbox", ".jenny-mc", ".app-frame-overlay"):
+    for marker in ("dialog[open]", ".image-lightbox", ".arkhiva-mc", ".app-frame-overlay"):
         assert marker not in body, f"il back riscrive un livello invece di percorrerlo: {marker}"
 
 
@@ -237,7 +237,7 @@ def test_the_two_dangerous_collaborators_of_the_chain_still_exist() -> None:
     """Gli anelli che il piano ha deciso di **non** ammutolire.
 
     ``_overlayLayers`` chiama ``this._appsActions?.handleBack()`` e
-    ``this.jenny?.handleBack()``: l'optional chaining copre l'*oggetto* assente
+    ``this.arkhiva?.handleBack()``: l'optional chaining copre l'*oggetto* assente
     (controller non ancora istanziato, mascotte spenta), non il *metodo*. Se un
     domani uno dei due metodi sparisce o viene rinominato, la catena solleva un
     TypeError — che finisce in ``window.onerror`` → toast → ``/api/client-log``,
@@ -337,7 +337,7 @@ def test_the_type_ahead_guard_consumes_the_layer_list() -> None:
 
 
 def test_back_at_the_root_does_nothing_and_never_trusts_history_length() -> None:
-    """Jenny è il launcher: sotto la radice non c'è nessuna app a cui tornare.
+    """ARKHIVA è il launcher: sotto la radice non c'è nessuna app a cui tornare.
 
     ``history.length`` non sa rispondere: conta l'intera sessione del WebView
     (iframe delle mini-app, reload) e non cala mai.
@@ -349,7 +349,7 @@ def test_back_at_the_root_does_nothing_and_never_trusts_history_length() -> None
 
 """Esenzioni dell'imbuto della history, per *path* e non per basename.
 
-``jenny-sdk.js`` gira dentro l'iframe della mini-app (history sua, v.
+``arkhiva-sdk.js`` gira dentro l'iframe della mini-app (history sua, v.
 ``test_mini_app_navigation_contract``) e ``shared/api-client.js`` riscrive la
 entry corrente nel reload (v. il test dedicato qui sotto). Prima erano elencati
 per nome del file: un futuro ``assets/qualcosa/api-client.js`` sarebbe stato

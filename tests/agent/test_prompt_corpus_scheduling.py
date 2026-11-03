@@ -8,10 +8,10 @@ verificati, ed entrambi la stessa forma del difetto che doveva chiudere.
 
 **(a) Non vedeva le stringhe Python.** Setacciava ``_SYSTEM_PROMPT_TEMPLATES``,
 ma il prompt di sistema non è fatto solo di template: ``_UPDATE_PREAMBLE`` sta
-in ``jenny/runtime/cron_dispatch.py``, il blocco del seguito di un monitor
-delegato in ``jenny/cron/monitor_followup.py``, e ogni
+in ``arkhiva/runtime/cron_dispatch.py``, il blocco del seguito di un monitor
+delegato in ``arkhiva/cron/monitor_followup.py``, e ogni
 ``Tool.description`` con le description del proprio schema di parametri sta nei
-moduli di ``jenny/agent/tools/`` — dove ``cron.py`` da solo tiene quattro copie
+moduli di ``arkhiva/agent/tools/`` — dove ``cron.py`` da solo tiene quattro copie
 della regola sui modi. Tutto questo raggiunge il modello, e la guardia non
 poteva vederlo: il prompt di sistema non è fatto solo di template.
 
@@ -24,9 +24,9 @@ pulita. La guardia riconosceva il testo che era stato cancellato, non la regola.
 Qui il corpus è l'unione di tutto, e i pattern sono regex indifferenti alle
 virgolette. Le due case legittime restano due:
 
-* ``jenny/templates/agent/scheduling.md`` — nel prompt, ma **solo** nei turni in
+* ``arkhiva/templates/agent/scheduling.md`` — nel prompt, ma **solo** nei turni in
   cui il tool ``cron`` esiste davvero (v. ``TestSchedulingBlock``);
-* ``jenny/skills/cron/SKILL.md`` — il manuale, che si legge su richiesta.
+* ``arkhiva/skills/cron/SKILL.md`` — il manuale, che si legge su richiesta.
 
 Più una terza voce che non è una copia ma lo schema stesso del tool: v.
 ``_ALLOWED``, che si spiega da sé.
@@ -41,12 +41,12 @@ from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock
 
-from jenny.agent.tools.loader import ToolLoader
-from jenny.agent.tools.registry import ToolRegistry
-from jenny.utils.android_assets import _SKILLS_MANIFEST, _SYSTEM_PROMPT_TEMPLATES
-from jenny.utils.helpers import load_bundled_template
+from arkhiva.agent.tools.loader import ToolLoader
+from arkhiva.agent.tools.registry import ToolRegistry
+from arkhiva.utils.android_assets import _SKILLS_MANIFEST, _SYSTEM_PROMPT_TEMPLATES
+from arkhiva.utils.helpers import load_bundled_template
 
-_JENNY = Path(__file__).resolve().parents[2] / "jenny"
+_JENNY = Path(__file__).resolve().parents[2] / "arkhiva"
 
 # Le due case della regola. Non stanno in ``_ALLOWED`` perché non sono
 # eccezioni: sono il posto dove la regola deve stare, e un test che non le
@@ -250,8 +250,8 @@ def test_the_routing_rule_lives_nowhere_else() -> None:
         "Questo testo insegna dove va un lavoro ricorrente, e non è uno dei due posti "
         "in cui quella regola può stare:\n"
         + "\n".join(f"  {src}\n    [{label}] …{ctx}…" for src, label, ctx in violations)
-        + "\n\nLe case sono `jenny/templates/agent/scheduling.md` — l'unica resa solo quando il "
-        "tool `cron` esiste nel turno — e `jenny/skills/cron/SKILL.md`, che si legge su "
+        + "\n\nLe case sono `arkhiva/templates/agent/scheduling.md` — l'unica resa solo quando il "
+        "tool `cron` esiste nel turno — e `arkhiva/skills/cron/SKILL.md`, che si legge su "
         "richiesta invece che a ogni turno. Una terza copia non resta allineata: è già "
         "successo con `agent/tool_contract.md`. Se il match è un uso innocuo di `cron` o "
         "`monitor` come parole comuni, la strada giusta è restringere il pattern; "
@@ -293,8 +293,8 @@ def test_the_sweep_reaches_every_kind_of_source() -> None:
     assert counts["tool "] >= 40, counts
     assert counts["py "] >= 30, counts
     # Le stringhe Python che il roadmap nomina una per una devono essere dentro.
-    assert any(source.startswith("py jenny/runtime/cron_dispatch.py") for source in sources)
-    assert any(source.startswith("py jenny/cron/monitor_followup.py") for source in sources)
+    assert any(source.startswith("py arkhiva/runtime/cron_dispatch.py") for source in sources)
+    assert any(source.startswith("py arkhiva/cron/monitor_followup.py") for source in sources)
 
 
 # ---------------------------------------------------------------------------
@@ -304,7 +304,7 @@ def test_the_sweep_reaches_every_kind_of_source() -> None:
 
 def test_the_monitor_prompt_uses_the_real_marker_values() -> None:
     """``cron_monitor.md`` scrive i marcatori a mano, il parser li legge dalle
-    costanti di ``jenny/cron/could_not_check.py``. Cambiare il valore di una
+    costanti di ``arkhiva/cron/could_not_check.py``. Cambiare il valore di una
     costante lascerebbe il prompt a chiedere al modello una riga che il parser
     non riconosce più.
 
@@ -312,7 +312,7 @@ def test_the_monitor_prompt_uses_the_real_marker_values() -> None:
     lo dice ``nothing_to_report(checked=false)``, e la riga la scrive il tool
     (``declared_marker_lines``) con la costante stessa.
     """
-    from jenny.cron.could_not_check import (
+    from arkhiva.cron.could_not_check import (
         COULD_NOT_CHECK_MARKER,
         DELEGATED_MARKER,
         WARNED_MARKER,
@@ -324,6 +324,6 @@ def test_the_monitor_prompt_uses_the_real_marker_values() -> None:
     for marker in (DELEGATED_MARKER, WARNED_MARKER):
         assert marker in text, (
             f"il prompt del monitor non chiede più una riga `{marker}`: il valore della "
-            "costante in `jenny/cron/could_not_check.py` è cambiato e la copia scritta a "
+            "costante in `arkhiva/cron/could_not_check.py` è cambiato e la copia scritta a "
             "mano è rimasta indietro."
         )

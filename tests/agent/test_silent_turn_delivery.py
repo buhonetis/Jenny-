@@ -23,16 +23,16 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from support.aio import drain_nowait
 
-from jenny.agent.loop import AgentLoop
-from jenny.agent.turn_types import TurnDisposition
-from jenny.bus.events import InboundMessage, OutboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.cron.session_turns import monitor_session_key
-from jenny.providers.base import LLMResponse
-from jenny.runtime.user_text import say
-from jenny.session.keys import UNIFIED_SESSION_KEY
-from jenny.session.turn_visibility import silent_turn_metadata
-from jenny.webui.metadata import WEBUI_TURN_METADATA_KEY
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.agent.turn_types import TurnDisposition
+from arkhiva.bus.events import InboundMessage, OutboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.cron.session_turns import monitor_session_key
+from arkhiva.providers.base import LLMResponse
+from arkhiva.runtime.user_text import say
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.session.turn_visibility import silent_turn_metadata
+from arkhiva.webui.metadata import WEBUI_TURN_METADATA_KEY
 
 # Un turno silenzioso di lavoro interno: la sessione di un monitor del cron.
 MONITOR_SESSION_KEY = monitor_session_key("rain-check")
@@ -201,7 +201,7 @@ class TestSilentTurnsDoNotStream:
 
         async def capture(msg, *, on_stream=None, on_stream_end=None, **_kwargs):
             seen["on_stream"] = on_stream
-            from jenny.agent.turn_types import TurnOutcome
+            from arkhiva.agent.turn_types import TurnOutcome
 
             return TurnOutcome.silent()
 
@@ -235,7 +235,7 @@ class TestTheOnlyWayOutIsTheMessageTool:
     ) -> None:
         """Il segnale che il cron runner legge per distinguere "ho avvisato" da
         "non c'era niente da dire"."""
-        from jenny.agent.tools.message import MessageTool
+        from arkhiva.agent.tools.message import MessageTool
 
         loop = _make_loop(tmp_path)
         tool = loop.tools.get("message")
@@ -285,9 +285,9 @@ class TestTheOnlyWayOutIsTheMessageTool:
         interno e consegna alla WebUI). Nel secondo il tool non eredita i
         metadata del turno d'origine, e la visibilità deve arrivare comunque.
         """
-        from jenny.agent.tools.context import RequestContext
-        from jenny.agent.tools.message import MessageTool
-        from jenny.runtime.delivery import ChannelDeliverer
+        from arkhiva.agent.tools.context import RequestContext
+        from arkhiva.agent.tools.message import MessageTool
+        from arkhiva.runtime.delivery import ChannelDeliverer
 
         bus = MessageBus()
         deliverer = ChannelDeliverer(bus=bus, session_manager=MagicMock())
@@ -327,7 +327,7 @@ class TestTheAnnouncePromptFollowsTheVisibility:
     """
 
     def _rendered(self, *, silent: bool) -> str:
-        from jenny.utils.prompt_templates import render_template
+        from arkhiva.utils.prompt_templates import render_template
 
         return render_template(
             "agent/subagent_announce.md",
@@ -523,8 +523,8 @@ class TestAnAnnounceThatSpokeClosesItsTurnInTheOriginChat:
     async def test_turn_end_reaches_the_origin_chat(
         self, tmp_path: Path, session_key: str, chat_id: str, expected: tuple[str, str],
     ) -> None:
-        from jenny.bus.runtime_events import TurnCompleted
-        from jenny.session.webui_turns import webui_view_target
+        from arkhiva.bus.runtime_events import TurnCompleted
+        from arkhiva.session.webui_turns import webui_view_target
 
         loop = _make_loop(tmp_path)
         TestAVisibleAnnounceDoesNotRepeatItsMessage()._spoke_and_said(
@@ -568,8 +568,8 @@ class TestAVisibleAnnounceHasATurnId:
         loop._run_agent_loop = run  # type: ignore[method-assign]
 
     async def _turn_ids(self, loop: AgentLoop, msg: InboundMessage) -> tuple[list, list]:
-        from jenny.bus.runtime_events import TurnCompleted
-        from jenny.webui.metadata import WEBUI_TURN_METADATA_KEY
+        from arkhiva.bus.runtime_events import TurnCompleted
+        from arkhiva.webui.metadata import WEBUI_TURN_METADATA_KEY
 
         completed: list[TurnCompleted] = []
 
@@ -617,7 +617,7 @@ class TestAVisibleAnnounceHasATurnId:
         assert first[0] != again[0]
 
     async def test_a_silent_announce_gets_none(self, tmp_path: Path) -> None:
-        from jenny.webui.metadata import WEBUI_TURN_METADATA_KEY
+        from arkhiva.webui.metadata import WEBUI_TURN_METADATA_KEY
 
         loop = _make_loop(tmp_path)
         _stub_run(loop)

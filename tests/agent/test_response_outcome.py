@@ -8,13 +8,13 @@ a vuoto per minuti, come nel caso del troncamento dentro il thinking.
 
 import pytest
 
-from jenny.agent.response_outcome import (
+from arkhiva.agent.response_outcome import (
     ResponseOutcome,
     classify_response,
     output_budget_exhausted,
     reported_completion_tokens,
 )
-from jenny.providers.base import LLMResponse, ToolCallRequest
+from arkhiva.providers.base import LLMResponse, ToolCallRequest
 
 
 def _response(**kwargs) -> LLMResponse:

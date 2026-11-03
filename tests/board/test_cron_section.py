@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from jenny.board.sections import section_resolver
-from jenny.board.store import mutate_board
-from jenny.board.view import build_board_view, build_card_view
-from jenny.webui.commands import CommandError, dispatch_command
+from arkhiva.board.sections import section_resolver
+from arkhiva.board.store import mutate_board
+from arkhiva.board.view import build_board_view, build_card_view
+from arkhiva.webui.commands import CommandError, dispatch_command
 
 
 async def test_a_micro_section_cannot_be_added_by_hand(ctx, notebook) -> None:
@@ -19,7 +19,7 @@ async def test_a_micro_section_cannot_be_added_by_hand(ctx, notebook) -> None:
 
 
 def _meteo(service, notebook, link):
-    from jenny.cron.types import CronSchedule
+    from arkhiva.cron.types import CronSchedule
 
     mutate_board(notebook, lambda b: b["cards"].append(
         {"id": "acero", "title": "Acero", "pages": [], "pos": {"x": 1, "y": 1}}))
@@ -35,8 +35,8 @@ async def test_a_card_cron_is_shown_from_its_job_and_goes_with_it(ctx, workspace
     """Il cassetto e il ⟳ vengono dal job, senza una sezione da tenere allineata."""
     import dataclasses
 
-    from jenny.board.cron_link import job_snapshot, make_link
-    from jenny.cron.service import CronService
+    from arkhiva.board.cron_link import job_snapshot, make_link
+    from arkhiva.cron.service import CronService
 
     service = CronService(tmp_path / "jobs.json")
     job = _meteo(service, notebook, make_link("piante", "acero"))
@@ -60,9 +60,9 @@ async def test_a_card_cron_is_shown_from_its_job_and_goes_with_it(ctx, workspace
 async def test_board_cron_remove_refuses_a_job_of_elsewhere(ctx, notebook, tmp_path) -> None:
     import dataclasses
 
-    from jenny.board.cron_link import make_link
-    from jenny.cron.service import CronService
-    from jenny.cron.types import CronSchedule
+    from arkhiva.board.cron_link import make_link
+    from arkhiva.cron.service import CronService
+    from arkhiva.cron.types import CronSchedule
 
     service = CronService(tmp_path / "jobs.json")
     other = _meteo(service, notebook, make_link("altrove", "acero"))
@@ -81,8 +81,8 @@ async def test_a_cron_section_from_before_still_shows_once_and_goes_with_it(
     """Un cron scritto prima del 20/10/2026 ha ancora la sua sezione: si vede una volta sola."""
     import dataclasses
 
-    from jenny.board.cron_link import job_snapshot
-    from jenny.cron.service import CronService
+    from arkhiva.board.cron_link import job_snapshot
+    from arkhiva.cron.service import CronService
 
     service = CronService(tmp_path / "jobs.json")
     job = _meteo(service, notebook, {"notebook": "piante", "card": "acero", "section": "s-cron"})
@@ -105,10 +105,10 @@ async def test_a_cron_section_from_before_still_shows_once_and_goes_with_it(
 
 def test_a_cards_recurring_crons_are_one_label_and_a_dated_one_is_not(notebook, tmp_path) -> None:
     """Un'etichetta per scheda coi suoi cron che si ripetono; un «una volta sola» è una data."""
-    from jenny.board.cron_link import job_snapshot, make_link
-    from jenny.cron.dates import date_schedule
-    from jenny.cron.service import CronService
-    from jenny.cron.types import CronSchedule
+    from arkhiva.board.cron_link import job_snapshot, make_link
+    from arkhiva.cron.dates import date_schedule
+    from arkhiva.cron.service import CronService
+    from arkhiva.cron.types import CronSchedule
 
     service = CronService(tmp_path / "jobs.json")
     first = _meteo(service, notebook, make_link("piante", "acero"))
@@ -124,7 +124,7 @@ def test_a_cards_recurring_crons_are_one_label_and_a_dated_one_is_not(notebook, 
     jobs = {j.id: job_snapshot(j) for j in (first, second, once, rinvaso)}
     view = build_board_view(notebook, cron_jobs=jobs)
     [label] = view["autoLabels"]
-    assert label["card"] == "acero" and label["pos"]["by"] == "jenny"
+    assert label["card"] == "acero" and label["pos"]["by"] == "arkhiva"
     assert {r["id"] for r in label["rows"]} == {first.id, second.id}
     assert label["rows"][0]["schedule"].get("shape") or label["rows"][1]["schedule"].get("shape")
     # L'etichetta arriva dopo: il post-it resta dov'era.
@@ -138,10 +138,10 @@ def test_a_cards_recurring_crons_are_one_label_and_a_dated_one_is_not(notebook, 
 
 
 def test_the_whole_notebook_label_is_free_even_without_cards(notebook, tmp_path) -> None:
-    from jenny.board import model
-    from jenny.board.cron_link import job_snapshot, make_link
-    from jenny.cron.service import CronService
-    from jenny.cron.types import CronSchedule
+    from arkhiva.board import model
+    from arkhiva.board.cron_link import job_snapshot, make_link
+    from arkhiva.cron.service import CronService
+    from arkhiva.cron.types import CronSchedule
 
     mutate_board(notebook, lambda b: b.__setitem__("cards", []))
     service = CronService(tmp_path / "jobs.json")
@@ -159,10 +159,10 @@ def test_the_whole_notebook_label_is_free_even_without_cards(notebook, tmp_path)
 
 def test_a_whole_notebook_once_cron_is_a_row_of_the_free_postit(notebook, tmp_path) -> None:
     """«Ricordami domani alle 9» detto nel quaderno: una data sul post-it libero, non un'etichetta."""
-    from jenny.board import model
-    from jenny.board.cron_link import job_snapshot, make_link
-    from jenny.cron.service import CronService
-    from jenny.cron.types import CronSchedule
+    from arkhiva.board import model
+    from arkhiva.board.cron_link import job_snapshot, make_link
+    from arkhiva.cron.service import CronService
+    from arkhiva.cron.types import CronSchedule
 
     mutate_board(notebook, lambda b: None)
     service = CronService(tmp_path / "jobs.json")
@@ -184,11 +184,11 @@ def test_a_label_that_does_not_fit_hangs_beside_its_card(notebook, tmp_path) -> 
     finiva in fondo al muro col filo che lo attraversava. Né più in alto della
     scheda: il filo arriva al chiodino in cima e le passerebbe sopra le righe.
     """
-    from jenny.board import model
-    from jenny.board.cron_link import job_snapshot, make_link
-    from jenny.cron.dates import date_schedule
-    from jenny.cron.service import CronService
-    from jenny.cron.types import CronSchedule
+    from arkhiva.board import model
+    from arkhiva.board.cron_link import job_snapshot, make_link
+    from arkhiva.cron.dates import date_schedule
+    from arkhiva.cron.service import CronService
+    from arkhiva.cron.types import CronSchedule
 
     mutate_board(notebook, lambda b: b.__setitem__("cards", [
         {"id": "salvia", "title": "Salvia", "pages": [], "pos": {"x": 10, "y": 20}},
@@ -221,7 +221,7 @@ def test_a_label_that_does_not_fit_hangs_beside_its_card(notebook, tmp_path) -> 
 
 
 def test_a_labels_box_grows_with_its_rows_up_to_the_shown_ones() -> None:
-    from jenny.board import model
+    from arkhiva.board import model
 
     one, two, three, many = (model.auto_box(n) for n in (1, 2, 3, 9))
     assert one[1] < two[1] < three[1] < many[1]

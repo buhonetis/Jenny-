@@ -1,7 +1,7 @@
 """Il telefono resta allineato con le chat fatte da un altro dispositivo.
 
 Misurato il 14/10/2026 su jenny_s22 + Mac via Tailscale: il transcript era gia'
-completo, ma dal vivo il telefono riceveva le risposte di Jenny senza le
+completo, ma dal vivo il telefono riceveva le risposte di ARKHIVA senza le
 domande scritte dal Mac, la casa non rileggeva tornando visibile, e ogni
 risposta faceva suonare il telefono. Qui le tre regole:
 
@@ -23,14 +23,14 @@ import pytest
 import websockets
 from port_alloc import free_port, wait_listening
 
-from jenny.bus.events import OutboundMessage
-from jenny.channels import ws_remote
-from jenny.channels.dispatcher import WebSocketDispatcher
-from jenny.channels.websocket import WebSocketChannel, WebSocketConfig
-from jenny.channels.ws_remote import RemoteListener
-from jenny.webui.gateway_services import build_gateway_services
-from jenny.webui.transcript_replay import replay_transcript_to_ui_messages
-from jenny.webui.transcript_store import (
+from arkhiva.bus.events import OutboundMessage
+from arkhiva.channels import ws_remote
+from arkhiva.channels.dispatcher import WebSocketDispatcher
+from arkhiva.channels.websocket import WebSocketChannel, WebSocketConfig
+from arkhiva.channels.ws_remote import RemoteListener
+from arkhiva.webui.gateway_services import build_gateway_services
+from arkhiva.webui.transcript_replay import replay_transcript_to_ui_messages
+from arkhiva.webui.transcript_store import (
     append_transcript_object,
     read_transcript_lines,
     transcript_revision,
@@ -46,7 +46,7 @@ def bus() -> MagicMock:
 
 @pytest.fixture()
 def data_dir(tmp_path, monkeypatch) -> Path:
-    monkeypatch.setattr("jenny.config.paths.get_data_dir", lambda: tmp_path)
+    monkeypatch.setattr("arkhiva.config.paths.get_data_dir", lambda: tmp_path)
     return tmp_path
 
 
@@ -166,7 +166,7 @@ def _spy(monkeypatch, target: str) -> list[str]:
 async def test_an_answer_to_a_turn_from_the_mac_does_not_ring_the_phone(
     bus, data_dir, monkeypatch,
 ) -> None:
-    seen = _spy(monkeypatch, "jenny.channels.ws_sender.notify_delivery")
+    seen = _spy(monkeypatch, "arkhiva.channels.ws_sender.notify_delivery")
     ch = _channel(bus, free_port())
     remote = {"origin_channel": "remote", "origin_device": "macbook"}
     await ch.send(OutboundMessage(channel="websocket", chat_id="default", content="al Mac",
@@ -177,7 +177,7 @@ async def test_an_answer_to_a_turn_from_the_mac_does_not_ring_the_phone(
 
 async def test_a_streamed_answer_to_a_turn_from_the_mac_does_not_ring_either(monkeypatch) -> None:
     """Lo streaming e' il caso normale, e ha il suo punto di notifica nel dispatcher."""
-    seen = _spy(monkeypatch, "jenny.channels.dispatcher.notify_delivery")
+    seen = _spy(monkeypatch, "arkhiva.channels.dispatcher.notify_delivery")
     for metadata in ({"_streamed": True, "origin_channel": "remote"}, {"_streamed": True}):
         msg = OutboundMessage(channel="websocket", chat_id="default", content="fatto",
                               metadata=metadata)

@@ -10,9 +10,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from jenny.agent.tools.base import Tool
-from jenny.agent.tools.registry import ToolRegistry
-from jenny.agent.tools.result import ToolResult
+from arkhiva.agent.tools.base import Tool
+from arkhiva.agent.tools.registry import ToolRegistry
+from arkhiva.agent.tools.result import ToolResult
 
 _HINT = "[Analyze the error above and try a different approach.]"
 

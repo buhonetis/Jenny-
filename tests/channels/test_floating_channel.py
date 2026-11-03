@@ -1,4 +1,4 @@
-"""Test per ``jenny/channels/floating.py`` (il fumetto della mascotte).
+"""Test per ``arkhiva/channels/floating.py`` (il fumetto della mascotte).
 
 Gemello di ``test_notification_channel.py``, e per la stessa ragione: il bridge
 Chaquopy non esiste fuori dal telefono, quindi qui si sostituisce ``show_reply``
@@ -17,9 +17,9 @@ from typing import Any
 
 import pytest
 
-from jenny.bus.events import FLOATING_CHANNEL, OutboundMessage
-from jenny.channels import floating as fc
-from jenny.channels.floating import FloatingChannel
+from arkhiva.bus.events import FLOATING_CHANNEL, OutboundMessage
+from arkhiva.channels import floating as fc
+from arkhiva.channels.floating import FloatingChannel
 
 
 class _Spy:

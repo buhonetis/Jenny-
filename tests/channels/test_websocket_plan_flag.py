@@ -12,8 +12,8 @@ from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
-from jenny.channels.websocket import WebSocketChannel, WebSocketConfig
-from jenny.webui.gateway_services import build_gateway_services
+from arkhiva.channels.websocket import WebSocketChannel, WebSocketConfig
+from arkhiva.webui.gateway_services import build_gateway_services
 
 
 def _channel() -> WebSocketChannel:

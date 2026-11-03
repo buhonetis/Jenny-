@@ -9,14 +9,14 @@ from pathlib import Path
 
 import pytest
 
-from jenny.plan.model import Plan, PlanFormatError, apply_transition, validate_proposal
-from jenny.plan.store import (
+from arkhiva.plan.model import Plan, PlanFormatError, apply_transition, validate_proposal
+from arkhiva.plan.store import (
     PlanConflictError,
     PlanNotFoundError,
     PlanStore,
     is_plan_id,
 )
-from jenny.snapshot.locations import plans_dir_for
+from arkhiva.snapshot.locations import plans_dir_for
 
 
 def _proposal(*titles: str):

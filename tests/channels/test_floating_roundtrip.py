@@ -20,14 +20,14 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from jenny.agent.loop import AgentLoop
-from jenny.bus.events import FLOATING_CHANNEL, InboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.channels import floating as fc
-from jenny.channels.floating import FloatingChannel
-from jenny.providers.base import LLMResponse
-from jenny.runtime.native_input import NATIVE_SOURCE_KEY, SOURCE_FLOATING
-from jenny.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.bus.events import FLOATING_CHANNEL, InboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.channels import floating as fc
+from arkhiva.channels.floating import FloatingChannel
+from arkhiva.providers.base import LLMResponse
+from arkhiva.runtime.native_input import NATIVE_SOURCE_KEY, SOURCE_FLOATING
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
 
 
 class _Bubbles:
@@ -84,7 +84,7 @@ def test_the_question_enters_the_personal_conversation(tmp_path) -> None:
     """La riga che l'utente ha scritto: «la chat è identica a come sarebbe
     dentro l'app». Il ``chat_id`` della superficie non apre una sessione sua —
     ``session_key_for_channel`` manda ogni canale utente su ``unified:default``,
-    ed è per questo che Jenny ricorda quello che le si è chiesto dal fumetto."""
+    ed è per questo che ARKHIVA ricorda quello che le si è chiesto dal fumetto."""
     loop = _loop(tmp_path)
     inbound = _from_the_mascot()
     outbound = loop._assemble_outbound(inbound, "ok", [], "stop", False, None)
@@ -113,8 +113,8 @@ def test_the_mascot_and_the_dropdown_do_not_swap_answers(tmp_path) -> None:
     condividessero il canale, chi ha scritto nel fumetto si vedrebbe la risposta
     squillare in tendina — e viceversa.
     """
-    from jenny.bus.events import NOTIFICATION_CHANNEL
-    from jenny.runtime.native_input import _CHANNEL_BY_SOURCE, SOURCE_NOTIFICATION
+    from arkhiva.bus.events import NOTIFICATION_CHANNEL
+    from arkhiva.runtime.native_input import _CHANNEL_BY_SOURCE, SOURCE_NOTIFICATION
 
     assert _CHANNEL_BY_SOURCE[SOURCE_FLOATING] == FLOATING_CHANNEL
     assert _CHANNEL_BY_SOURCE[SOURCE_NOTIFICATION] == NOTIFICATION_CHANNEL

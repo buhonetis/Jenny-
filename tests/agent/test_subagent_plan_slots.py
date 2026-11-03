@@ -7,7 +7,7 @@
   ``set_limit_provider``.
 * Un aiutante porta il piano e il passo del turno che l'ha lanciato: la casa li
   raggruppa per passo.
-* ``mark_handled`` dice alla casa che Jenny ha gia avuto il resoconto.
+* ``mark_handled`` dice alla casa che ARKHIVA ha gia avuto il resoconto.
 """
 
 from __future__ import annotations
@@ -18,17 +18,17 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from jenny.agent.runner import AgentRunResult
-from jenny.agent.subagent import (
+from arkhiva.agent.runner import AgentRunResult
+from arkhiva.agent.subagent import (
     PLAN_HELPER_SLOTS,
     SubagentConcurrencyLimitError,
     SubagentManager,
 )
-from jenny.agent.tools.context import RequestContext, bind_request_context, reset_request_context
-from jenny.bus.events import OUTBOUND_META_SUBAGENT_STATUS
-from jenny.bus.queue import MessageBus
-from jenny.plan.driver import PLAN_ID_META, PLAN_STEP_META
-from jenny.session.manager import SessionManager
+from arkhiva.agent.tools.context import RequestContext, bind_request_context, reset_request_context
+from arkhiva.bus.events import OUTBOUND_META_SUBAGENT_STATUS
+from arkhiva.bus.queue import MessageBus
+from arkhiva.plan.driver import PLAN_ID_META, PLAN_STEP_META
+from arkhiva.session.manager import SessionManager
 
 PLAN_KEY = "project:piante"
 
@@ -76,11 +76,11 @@ def test_the_plan_prompts_say_the_real_number_of_slots() -> None:
     non lo garantiva: cambiata la costante, i prompt avrebbero mentito."""
     from pathlib import Path
 
-    agent = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "agent"
+    agent = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "agent"
     step = (agent / "plan_step.md").read_text(encoding="utf-8")
     mode = (agent / "plan_mode.md").read_text(encoding="utf-8")
-    assert f"run up to {PLAN_HELPER_SLOTS} helpers at once" in step
-    assert f"run up to {PLAN_HELPER_SLOTS} helpers at once" in mode
+    assert f"lanzar hasta {PLAN_HELPER_SLOTS} ayudantes a la vez" in step.lower()
+    assert f"lanzar hasta {PLAN_HELPER_SLOTS} ayudantes a la vez" in mode.lower()
 
 
 async def test_a_running_plan_gets_five_normal_slots_and_one_quick(tmp_path) -> None:
@@ -172,7 +172,7 @@ async def test_a_helper_carries_the_plan_step_of_the_turn_that_started_it(tmp_pa
 async def test_the_history_cap_follows_the_plan_slots(tmp_path) -> None:
     """Un passo fa girare fino a 2N aiutanti prima di rimandare i primi: le loro
     storie devono esserci ancora (``2N + 2``), e fuori dal piano vale il fisso."""
-    from jenny.agent.subagent_history import MAX_HISTORY_PER_ORIGIN
+    from arkhiva.agent.subagent_history import MAX_HISTORY_PER_ORIGIN
 
     sm = _manager(tmp_path)
     sm.set_limit_provider(lambda key: PLAN_HELPER_SLOTS if key == PLAN_KEY else None)
@@ -255,7 +255,7 @@ async def test_a_spawn_without_the_step_while_the_plan_runs_is_logged(tmp_path, 
 
     from loguru import logger as loguru_logger
 
-    from jenny.session.plan_probe import set_plan_probe
+    from arkhiva.session.plan_probe import set_plan_probe
 
     class _Probe:
         def plan_running(self, session_key: str) -> bool:

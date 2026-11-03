@@ -8,13 +8,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from jenny.agent.tools.apply_patch import ApplyPatchTool
-from jenny.agent.tools.context import ToolContext
-from jenny.agent.tools.file_state import FileStates
-from jenny.agent.tools.filesystem import EditFileTool, WriteFileTool, WriteSizeGuard
-from jenny.agent.tools.loader import ToolLoader
-from jenny.agent.tools.registry import ToolRegistry
-from jenny.config.schema import ToolsConfig
+from arkhiva.agent.tools.apply_patch import ApplyPatchTool
+from arkhiva.agent.tools.context import ToolContext
+from arkhiva.agent.tools.file_state import FileStates
+from arkhiva.agent.tools.filesystem import EditFileTool, WriteFileTool, WriteSizeGuard
+from arkhiva.agent.tools.loader import ToolLoader
+from arkhiva.agent.tools.registry import ToolRegistry
+from arkhiva.config.schema import ToolsConfig
 
 
 def _refuse_over(limit: int, seen: list[tuple[Path, str]] | None = None) -> WriteSizeGuard:

@@ -1,8 +1,8 @@
 """Lo schiaccia e allunga del volo (``shared/mascot-squash.js``), in node.
 
 Le formule sono pure: si provano su una griglia di ingressi, senza DOM. Quello
-che conta e' che non possano sfondare i tetti approvati sul mockup «Jenny in
-movimento» (il primo li sfondava, e Jenny sembrava di gomma), che il volume
+che conta e' che non possano sfondare i tetti approvati sul mockup «ARKHIVA in
+movimento» (il primo li sfondava, e ARKHIVA sembrava di gomma), che il volume
 resti, e che ogni deformazione torni a 1 da se'.
 """
 
@@ -14,7 +14,7 @@ from pathlib import Path
 from support.js_harness import requires_node, run_js
 
 ROOT = Path(__file__).resolve().parents[2]
-SQUASH_JS = ROOT / "jenny" / "templates" / "ui" / "assets" / "shared" / "mascot-squash.js"
+SQUASH_JS = ROOT / "arkhiva" / "templates" / "ui" / "assets" / "shared" / "mascot-squash.js"
 
 pytestmark = requires_node
 

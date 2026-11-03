@@ -74,7 +74,7 @@ python3 scripts/restore_drive_copy.py ~/Downloads/Jenny --list
 python3 scripts/restore_drive_copy.py ~/Downloads/Jenny --out ./jenny-restored
 ```
 
-The format is documented at the top of `jenny_extensions/drive/cloud.py`.
+The format is documented at the top of `arkhiva_extensions/drive/cloud.py`.
 
 ### Limits worth knowing
 
@@ -99,7 +99,7 @@ The **Backup** row on the Settings page says when you last exported a file ("nev
 
 Format details, if you care: the container is AES-256-GCM with a key derived via PBKDF2-HMAC-SHA256 at 600,000 iterations by default (configurable between 100,000 and 10,000,000 via `snapshots.pbkdf2_iterations`). Inside the encrypted envelope is a plain, readable zip archive (a file tree plus the snapshot store) — so in a real emergency you can decrypt the container and open the zip even without Jenny installed. This is a deliberate design choice: your backup isn't locked to this app.
 
-The payload is encrypted in 1 MiB segments rather than in one piece (format version 2), so a workspace full of chat photos doesn't have to fit in the phone's memory to be exported. Photos, audio and video go into the zip as they are, without recompression. Backups in the older single-piece format (version 1) still import. The layout is documented at the top of `jenny/snapshot/crypto.py`. A segmented file is standard AES-GCM, just applied once per segment, so a dozen lines of Python with the `cryptography` package decrypt it:
+The payload is encrypted in 1 MiB segments rather than in one piece (format version 2), so a workspace full of chat photos doesn't have to fit in the phone's memory to be exported. Photos, audio and video go into the zip as they are, without recompression. Backups in the older single-piece format (version 1) still import. The layout is documented at the top of `arkhiva/snapshot/crypto.py`. A segmented file is standard AES-GCM, just applied once per segment, so a dozen lines of Python with the `cryptography` package decrypt it:
 
 ```python
 import hashlib, struct, sys
@@ -157,7 +157,7 @@ Since 0.6.6 the **SSH** group in the workshop's **Hands** drawer says so instead
 
 The fix is manual and per host: open **Hands → SSH** in the workshop, tap each host and then **Generate key**, copy the new public line into that server's `~/.ssh/authorized_keys`, and then **Verify fingerprint** again to re-pin the host key. Password hosts are the exception — the password is stored in `config.json`, so it comes back with the workspace and only the fingerprint needs re-accepting.
 
-The remote job registry is also left behind on purpose: `.jenny/ssh_jobs/**` is excluded from snapshots and backups (see below), so pending `ssh_job` entries do not survive a restore.
+The remote job registry is also left behind on purpose: `.arkhiva/ssh_jobs/**` is excluded from snapshots and backups (see below), so pending `ssh_job` entries do not survive a restore.
 
 ## Local snapshots
 
@@ -189,7 +189,7 @@ If nothing changed since the last snapshot, no new one is created — you get a 
 
 Snapshots never capture the UI bundle, log files, temporary files, `__pycache__`, or the snapshot store itself. Symlinks are always skipped, unconditionally — if a path in your workspace is a symlink, it simply isn't included in any snapshot or backup.
 
-`.jenny/ssh_jobs/**`, the registry of remote jobs started with `ssh_job`, is excluded too, for two separate reasons. It is throwaway operational state — ids, byte cursors and process ids belonging to a machine that isn't this phone, meaningless after a restore. And it holds the full text of every command sent to a server plus the server-side log paths, which would otherwise be the one SSH trace that leaves the device inside an exported `.jbk`, while the private key (outside the workspace) does not.
+`.arkhiva/ssh_jobs/**`, the registry of remote jobs started with `ssh_job`, is excluded too, for two separate reasons. It is throwaway operational state — ids, byte cursors and process ids belonging to a machine that isn't this phone, meaningless after a restore. And it holds the full text of every command sent to a server plus the server-side log paths, which would otherwise be the one SSH trace that leaves the device inside an exported `.jbk`, while the private key (outside the workspace) does not.
 
 And, as covered above, the SSH key directory is outside the workspace entirely, so it is not "excluded" so much as never in scope.
 

@@ -2,7 +2,7 @@
 
 ``UiQueryResponder._collect`` cercava ``getElementById('view-' + view)``: per
 ``brain``, ``hands`` e ``memory`` quell'id non esiste (sono tutti e tre
-``view-settings``), quindi Jenny riceveva un HTML vuoto proprio dove l'utente le
+``view-settings``), quindi ARKHIVA riceveva un HTML vuoto proprio dove l'utente le
 chiede «cosa vedi?». E la mini-app aperta si cercava in ``controllers.apps`` con
 ``view === 'apps'``: la scheda «App» che non esiste piu', quindi l'app non le
 arrivava mai.
@@ -89,7 +89,7 @@ assert.equal((await r._collect()).app, undefined);
 
 
 def test_with_the_chat_over_the_view_the_view_beneath_is_described() -> None:
-    """Dal 05/10/2026 la chat sale sopra Cervello, Mani, Memoria: Jenny deve
+    """Dal 05/10/2026 la chat sale sopra Cervello, Mani, Memoria: ARKHIVA deve
     vedere il cassetto che l'utente ha davanti, senza l'`inert` che lo coprirebbe
     come disabilitato, e sapere che la chat gli sta sopra."""
     out = run_js(

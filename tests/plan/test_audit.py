@@ -1,4 +1,4 @@
-"""Il controllo a macchina di fine piano (``jenny/plan/audit.py``).
+"""Il controllo a macchina di fine piano (``arkhiva/plan/audit.py``).
 
 Le righe dei buchi sono prese dalla forma che le pagine vere avevano nella
 riprova del 25/10/2026 (con piante e testi inventati): la macchina deve vedere
@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from jenny.plan.audit import (
+from arkhiva.plan.audit import (
     EMPTY_BODY_CHARS,
     audit_notebook,
     baseline_keys,

@@ -24,7 +24,7 @@ from pathlib import Path
 from support.kotlin_source import read_source
 
 ROOT = Path(__file__).resolve().parents[2]
-CONTROLLER = ROOT / "android/app/src/main/java/com/flagdizero/jenny/FloatingOverlayController.kt"
+CONTROLLER = ROOT / "android/app/src/main/java/org/buhonet/agente/arkhiva/FloatingOverlayController.kt"
 STRINGS_EN = ROOT / "android/app/src/main/res/values/strings.xml"
 STRINGS_IT = ROOT / "android/app/src/main/res/values-it/strings.xml"
 
@@ -141,7 +141,7 @@ class TestTheTwoSides:
     def test_the_sides_are_the_ones_of_the_app_chat(self):
         """Il tuo a destra, il suo a sinistra, come nella chat dell'app. Erano al
         contrario (dal 24/09/2026), per stare vicino a lei che è sempre a destra,
-        e le due chat di Jenny si leggevano in due modi opposti."""
+        e le due chat di ARKHIVA si leggevano in due modi opposti."""
         source = _read()
         body = _fun(source, "private fun renderHistory()")
         assert "if (line.mine) Gravity.END else Gravity.START" in body

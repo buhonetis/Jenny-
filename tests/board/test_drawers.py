@@ -6,10 +6,10 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.board_pass import BoardPass
-from jenny.board import model
-from jenny.board.drawers import DrawerError, write_drawer
-from jenny.board.store import mutate_board, read_board, write_card_summary
+from arkhiva.agent.board_pass import BoardPass
+from arkhiva.board import model
+from arkhiva.board.drawers import DrawerError, write_drawer
+from arkhiva.board.store import mutate_board, read_board, write_card_summary
 
 
 def _card(notebook: Path, pages: list[str]) -> dict:
@@ -76,7 +76,7 @@ def test_a_link_in_a_drawer_becomes_the_page_title(notebook: Path) -> None:
         sections=[{"title": "Vaso", "text": "Vedi [[concepts/Coltivazione-Ginkgo.md|la scheda]] "
                    "e [[sparita]].", "sources": ["concepts/Coltivazione-Ginkgo.md"]}])
     assert out[0]["text"] == "Vedi la scheda e sparita."
-    from jenny.board.store import read_card_summary
+    from arkhiva.board.store import read_card_summary
 
     assert read_card_summary(notebook, "ginkgo")["brief"] == "Affidato a Coltivazione del ginkgo."
 
@@ -84,7 +84,7 @@ def test_a_link_in_a_drawer_becomes_the_page_title(notebook: Path) -> None:
 def test_a_drawer_written_before_the_rule_reads_without_links(notebook: Path) -> None:
     """I cassetti gia' scritti si riscrivono solo quando cambiano le loro pagine:
     fino ad allora la pulizia la fa la lettura, senza titoli (il nome basta)."""
-    from jenny.board.store import read_card_summary
+    from arkhiva.board.store import read_card_summary
 
     write_card_summary(notebook, "ginkgo", {
         "generated": "2026-10-09T19:32:29+02:00",
@@ -110,7 +110,7 @@ def test_plain_wikilinks(raw, plain) -> None:
 
 def test_a_long_section_is_cut_at_a_word_with_an_ellipsis(notebook: Path) -> None:
     """Il cassetto tagliava al carattere: «la divisione in du»."""
-    from jenny.board.drawers import MAX_SECTION_CHARS
+    from arkhiva.board.drawers import MAX_SECTION_CHARS
 
     card = _card(notebook, ["ginkgo.md", "ginkgo-vaso.md"])
     text = ("Comprato a inizio ottobre e arrivato con il fico, quasi spoglio; " * 8).strip()
@@ -127,9 +127,9 @@ def test_a_long_section_is_cut_at_a_word_with_an_ellipsis(notebook: Path) -> Non
 
 def test_the_drawer_writers_are_told_not_to_repeat_reminder_dates() -> None:
     """Il cassetto mostra le attese nel suo calendario: il riassunto non le ripete."""
-    from jenny.agent.board_tools import BoardWriteSummaryTool
+    from arkhiva.agent.board_tools import BoardWriteSummaryTool
 
-    templates = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "agent"
+    templates = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "agent"
     assert "Never restate a scheduled\nreminder" in (templates / "board_pass.md").read_text()
     assert "care calendar" in (templates / "types" / "notebook-editor.md").read_text()
     assert "care calendar" in BoardWriteSummaryTool.description.fget(None)

@@ -22,12 +22,12 @@ import pytest
 from port_alloc import free_port
 from support.aio import wait_until
 
-from jenny.bus.events import OutboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.channels.dispatcher import WebSocketDispatcher
-from jenny.channels.websocket import WebSocketChannel, WebSocketConfig
-from jenny.config.schema import Config
-from jenny.webui.gateway_services import build_gateway_services
+from arkhiva.bus.events import OutboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.channels.dispatcher import WebSocketDispatcher
+from arkhiva.channels.websocket import WebSocketChannel, WebSocketConfig
+from arkhiva.config.schema import Config
+from arkhiva.webui.gateway_services import build_gateway_services
 
 WORDS = [f"parola{i} " for i in range(40)]
 FULL = "".join(WORDS)
@@ -35,7 +35,7 @@ FULL = "".join(WORDS)
 
 @pytest.fixture(autouse=True)
 def isolate_webui_workspace_state(tmp_path, monkeypatch) -> None:
-    monkeypatch.setattr("jenny.config.paths.get_data_dir", lambda: tmp_path)
+    monkeypatch.setattr("arkhiva.config.paths.get_data_dir", lambda: tmp_path)
 
 
 def _delta(text: str) -> OutboundMessage:

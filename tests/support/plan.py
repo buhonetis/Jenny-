@@ -67,7 +67,7 @@ class FakeHost:
         self.notes.append((session_key, text))
 
     def notebook_drafts(self, notebook: str) -> list[dict[str, Any]]:
-        from jenny.agent.staged_writes import list_staged
+        from arkhiva.agent.staged_writes import list_staged
 
         prefix = f"wikis/{notebook}/"
         return [
@@ -77,7 +77,7 @@ class FakeHost:
         ]
 
     def discard_draft(self, draft_id: str) -> bool:
-        from jenny.agent.staged_writes import discard
+        from arkhiva.agent.staged_writes import discard
 
         return discard(self.workspace, draft_id)
 

@@ -1,11 +1,11 @@
 from types import SimpleNamespace
 
-from jenny.agent.tools.context import ToolContext
-from jenny.agent.tools.file_state import FileStates
-from jenny.agent.tools.filesystem import FileToolsConfig, ReadFileTool
-from jenny.agent.tools.loader import ToolLoader
-from jenny.agent.tools.registry import ToolRegistry
-from jenny.config.schema import Config, ToolsConfig
+from arkhiva.agent.tools.context import ToolContext
+from arkhiva.agent.tools.file_state import FileStates
+from arkhiva.agent.tools.filesystem import FileToolsConfig, ReadFileTool
+from arkhiva.agent.tools.loader import ToolLoader
+from arkhiva.agent.tools.registry import ToolRegistry
+from arkhiva.config.schema import Config, ToolsConfig
 
 FILE_TOOL_NAMES = {
     "apply_patch",

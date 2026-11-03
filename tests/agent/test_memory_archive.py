@@ -11,9 +11,9 @@ from __future__ import annotations
 from datetime import date
 from pathlib import Path
 
-from jenny.agent import memory as memory_module
-from jenny.agent.memory import MemoryStore
-from jenny.agent.memory_archive import (
+from arkhiva.agent import memory as memory_module
+from arkhiva.agent.memory import MemoryStore
+from arkhiva.agent.memory_archive import (
     ArchivedEntry,
     archive_dir,
     archive_entry,
@@ -22,12 +22,12 @@ from jenny.agent.memory_archive import (
     list_archived,
     render_archived,
 )
-from jenny.agent.tools.memory_entries import (
+from arkhiva.agent.tools.memory_entries import (
     entry_id,
     make_entry_archiver,
     parse_entries,
 )
-from jenny.agent.tools.memory_recall import MemoryRecallTool
+from arkhiva.agent.tools.memory_recall import MemoryRecallTool
 
 _ENTRY = ArchivedEntry(
     id="a1b2c3d4",
@@ -182,7 +182,7 @@ class TestLineage:
     def test_the_fields_round_trip(self, tmp_path: Path):
         from dataclasses import replace
 
-        from jenny.agent.memory_archive import read_archived
+        from arkhiva.agent.memory_archive import read_archived
 
         path = archive_entry(
             tmp_path, replace(_ENTRY, superseded_by="deadbeef", retracted=True),
@@ -194,7 +194,7 @@ class TestLineage:
         assert back.retracted
 
     def test_an_old_file_reads_as_unlinked(self, tmp_path: Path):
-        from jenny.agent.memory_archive import read_archived
+        from arkhiva.agent.memory_archive import read_archived
 
         path = archive_entry(tmp_path, _ENTRY, when=date(2026, 8, 18))
         back = read_archived(path)
@@ -241,7 +241,7 @@ class TestLineage:
     def test_a_headerless_file_gets_a_header_with_the_link(self, tmp_path: Path):
         from dataclasses import replace
 
-        from jenny.agent.memory_archive import read_archived
+        from arkhiva.agent.memory_archive import read_archived
 
         directory = archive_dir(tmp_path)
         directory.mkdir(parents=True)
@@ -398,7 +398,7 @@ class TestTheFileBoundaryArchiver:
         salvare si conosce con certezza."""
         archiver, hot = self._archiver(tmp_path)
         monkeypatch.setattr(
-            "jenny.agent.tools.memory_entries.archive_entry",
+            "arkhiva.agent.tools.memory_entries.archive_entry",
             lambda *a, **k: (_ for _ in ()).throw(OSError("disco pieno")),
         )
 
@@ -418,7 +418,7 @@ Odia le riunioni del venerdì.
 ## History
 
 1. Ha cominciato con un Titan 2
-2. Poi ci ha messo Jenny
+2. Poi ci ha messo ARKHIVA
 """
 
 
@@ -452,9 +452,9 @@ class TestItProtectsProseAndNotOnlyBullets:
     def test_a_numbered_item_is_saved_too(self, tmp_path: Path):
         archiver, hot = self._archiver(tmp_path)
 
-        archiver(hot, _PROSE.replace("2. Poi ci ha messo Jenny\n", ""))
+        archiver(hot, _PROSE.replace("2. Poi ci ha messo ARKHIVA\n", ""))
 
-        assert any("Poi ci ha messo Jenny" in b for b in self._bodies(tmp_path))
+        assert any("Poi ci ha messo ARKHIVA" in b for b in self._bodies(tmp_path))
 
     def test_a_heading_is_structure_and_is_not_archived(self, tmp_path: Path):
         """Riorganizzare le sezioni è il mestiere del review pass. Un

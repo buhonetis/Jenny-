@@ -1,6 +1,6 @@
 """Il velo sotto la chat aperta sopra una pagina: leggibile in ogni tema.
 
-Dal 05/10/2026 Jenny e' la porta della chat: toccata dove la chat non c'e', la
+Dal 05/10/2026 ARKHIVA e' la porta della chat: toccata dove la chat non c'e', la
 chat vera sale a tutto schermo sopra la pagina (`#home-over` in casa,
 `:root.chat-over` nell'officina), e la pagina resta visibile sotto un velo
 (`--chat-veil`) ed e' sfocata (`--chat-veil-blur`). Il velo deve lasciar
@@ -8,7 +8,7 @@ leggere la chat sopra **anche** dove sotto passa il testo della pagina.
 
 Dal 06/10/2026 il campo dove scrivi e' di vetro (`--glass-*`), ovunque: sopra
 il velo e sulla pagina chat. Il vetro e' un altro strato traslucido, e il conto
-lo compone sopra il velo. Le risposte di Jenny no: stanno sul velo, e le conta
+lo compone sopra il velo. Le risposte di ARKHIVA no: stanno sul velo, e le conta
 il primo banco.
 
 Il caso peggiore contato qui: sotto il testo della chat c'e' un glifo della
@@ -24,7 +24,7 @@ from pathlib import Path
 
 from support import theme_tokens
 
-ASSETS = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets"
+ASSETS = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets"
 MOBILE_CSS = ASSETS / "mobile-style.css"
 HOME_CSS = ASSETS / "home-style.css"
 
@@ -68,7 +68,7 @@ def test_jennys_replies_have_no_card() -> None:
     css = re.sub(r"/\*.*?\*/", "", HOME_CSS.read_text(encoding="utf-8")
                  + MOBILE_CSS.read_text(encoding="utf-8"), flags=re.S)
     for selectors, body in re.findall(r"([^{}]+)\{([^{}]*)\}", css):
-        if re.search(r"\.chat-msg-ai \.chat-content|\.home-msg-jenny( \.home-block)?\s*$", selectors.strip()):
+        if re.search(r"\.chat-msg-ai \.chat-content|\.home-msg-arkhiva( \.home-block)?\s*$", selectors.strip()):
             assert not re.search(r"\b(background|border|box-shadow)\s*:", body), selectors.strip()
 
 

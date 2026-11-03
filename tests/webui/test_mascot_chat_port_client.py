@@ -1,4 +1,4 @@
-"""Jenny e' la porta della chat: cosa fanno il tocco e lo swipe, posto per posto.
+"""ARKHIVA e' la porta della chat: cosa fanno il tocco e lo swipe, posto per posto.
 
 Dal 05/10/2026 il tocco su di lei apre la chat vera dove la chat non e' a
 schermo, la chiude dove e' aperta sopra una pagina, e dove la chat c'e' gia'
@@ -8,7 +8,7 @@ fermo la fisica, ``test_mascot_side_contract.py``), e la chat aperta non la
 chiude. Senza adattatore resta il gesto di prima, e la minichat — che non lo
 passa — continua a funzionare.
 
-In node, col modulo vero (``shared/jenny-mascot.js``) e i vicini finti: si
+In node, col modulo vero (``shared/arkhiva-mascot.js``) e i vicini finti: si
 chiamano ``_onTap`` e ``_onGestureOut``, le stesse funzioni che la fisica
 (``mascot-drag.js``) chiama a fine gesto.
 """
@@ -23,7 +23,7 @@ from pathlib import Path
 from support.js_harness import requires_node, run_module
 
 ROOT = Path(__file__).resolve().parents[2]
-ASSETS = ROOT / "jenny" / "templates" / "ui" / "assets"
+ASSETS = ROOT / "arkhiva" / "templates" / "ui" / "assets"
 
 pytestmark = requires_node
 
@@ -47,7 +47,7 @@ _PRELUDE = """
 import assert from 'node:assert/strict';
 globalThis.window = { matchMedia: () => ({ matches: false }) };
 globalThis.performance = globalThis.performance || { now: () => Date.now() };
-const { JennyMascot } = await import('./shared/jenny-mascot.js');
+const { ArkhivaMascot } = await import('./shared/arkhiva-mascot.js');
 const { MotionChannels } = await import('./shared/mascot-motion.js');
 
 function classes(...initial) {
@@ -67,9 +67,9 @@ function img() {
   };
 }
 
-/* Jenny senza il suo DOM vero: classi, attributi, corpo e faccia finti. */
-function jenny({ out = true, chat = null } = {}) {
-  const j = Object.create(JennyMascot.prototype);
+/* ARKHIVA senza il suo DOM vero: classi, attributi, corpo e faccia finti. */
+function arkhiva({ out = true, chat = null } = {}) {
+  const j = Object.create(ArkhivaMascot.prototype);
   const attrs = {};
   Object.assign(j, {
     mode: 'chat', _chat: chat, _agentState: 'idle', _turnActive: false, _pendingTurn: false,
@@ -116,7 +116,7 @@ def _run(body: str) -> None:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         (root / "shared").mkdir()
-        shutil.copy(ASSETS / "shared" / "jenny-mascot.js", root / "shared" / "jenny-mascot.js")
+        shutil.copy(ASSETS / "shared" / "arkhiva-mascot.js", root / "shared" / "arkhiva-mascot.js")
         shutil.copy(ASSETS / "shared" / "bot-name.js", root / "shared" / "bot-name.js")
         shutil.copy(ASSETS / "shared" / "mascot-motion.js", root / "shared" / "mascot-motion.js")
         for name, text in _NEIGHBORS.items():
@@ -129,7 +129,7 @@ def _run(body: str) -> None:
 def test_a_tap_where_the_chat_is_not_opens_it() -> None:
     _run("""
         const d = door();
-        const j = jenny({ out: false, chat: d });
+        const j = arkhiva({ out: false, chat: d });
         j._onTap();
         assert.deepEqual(d.calls, [['open', 'tap']]);
     """)
@@ -138,7 +138,7 @@ def test_a_tap_where_the_chat_is_not_opens_it() -> None:
 def test_a_tap_on_the_open_chat_closes_it() -> None:
     _run("""
         const d = door({ isOpen: true });
-        const j = jenny({ chat: d });
+        const j = arkhiva({ chat: d });
         j._onTap();
         assert.deepEqual(d.calls, [['close']]);
     """)
@@ -149,11 +149,11 @@ def test_a_tap_where_the_chat_is_on_screen_says_hello() -> None:
     accende il CSS nel suo livello: corpo e faccia di riposo non cambiano."""
     _run("""
         const d = door({ onScreen: true });
-        const j = jenny({ chat: d });
+        const j = arkhiva({ chat: d });
         j._onTap();
         assert.deepEqual(d.calls, []);
         assert.equal(squash(j), 'greet');
-        assert.equal(j.el.getAttribute('--jenny-squash-ms'), '1500ms', 'la durata la scrive il JS');
+        assert.equal(j.el.getAttribute('--arkhiva-squash-ms'), '1500ms', 'la durata la scrive il JS');
         j._syncArt();
         assert.match(j.face.src, /face-front-normal/);
         assert.match(j.img.src, /body-front-idle/);
@@ -165,7 +165,7 @@ def test_a_tap_brings_her_out_from_the_edge_before_the_hello() -> None:
     ancora mezza dietro il bordo non si vedrebbe."""
     _run("""
         const d = door({ onScreen: true });
-        const j = jenny({ out: false, chat: d });
+        const j = arkhiva({ out: false, chat: d });
         j._onTap();
         assert.ok(out(j), 'al bordo non si vedrebbe');
         assert.equal(squash(j), null, 'ha salutato mentre usciva');
@@ -179,7 +179,7 @@ def test_the_hello_does_not_beat_thinking() -> None:
     turno, resta il saltello."""
     _run("""
         const d = door({ onScreen: true });
-        const j = jenny({ chat: d });
+        const j = arkhiva({ chat: d });
         j._agentState = 'thinking';
         j._onTap();
         j._syncArt();
@@ -194,7 +194,7 @@ def test_at_the_edge_the_hello_is_a_hop() -> None:
     di lato un braccio alzato non c'e', il saltello si'."""
     _run("""
         const d = door({ canOpen: false });
-        const j = jenny({ out: false, chat: d });
+        const j = arkhiva({ out: false, chat: d });
         j._onGestureOut(true);
         assert.equal(out(j), false);
         assert.equal(squash(j), 'hop');
@@ -204,7 +204,7 @@ def test_at_the_edge_the_hello_is_a_hop() -> None:
 def test_the_hello_ends() -> None:
     _run("""
         const d = door({ onScreen: true });
-        const j = jenny({ chat: d });
+        const j = arkhiva({ chat: d });
         j._onTap();
         await sleep(1560);
         assert.equal(squash(j), null, 'tolto a tempo, anche senza animationend');
@@ -216,7 +216,7 @@ def test_a_turn_that_starts_stops_the_hello() -> None:
     il pensa."""
     _run("""
         const d = door({ onScreen: true });
-        const j = jenny({ chat: d });
+        const j = arkhiva({ chat: d });
         j._onTap();
         j._setAgentState('thinking');
         assert.equal(squash(j), null);
@@ -226,7 +226,7 @@ def test_a_turn_that_starts_stops_the_hello() -> None:
 def test_going_back_to_the_edge_stops_the_hello() -> None:
     _run("""
         const d = door({ onScreen: true });
-        const j = jenny({ chat: d });
+        const j = arkhiva({ chat: d });
         j._onTap();
         j._onGestureOut(false);
         assert.equal(squash(j), null);
@@ -235,7 +235,7 @@ def test_going_back_to_the_edge_stops_the_hello() -> None:
 
 def test_a_new_gesture_replaces_the_one_on_its_channel() -> None:
     _run("""
-        const j = jenny();
+        const j = arkhiva();
         j.hello();
         j.nudge();
         assert.equal(squash(j), 'nudge');
@@ -247,7 +247,7 @@ def test_a_new_gesture_replaces_the_one_on_its_channel() -> None:
 def test_where_the_chat_cannot_open_she_only_says_hello() -> None:
     _run("""
         const d = door({ canOpen: false });
-        const j = jenny({ chat: d });
+        const j = arkhiva({ chat: d });
         j._onTap();
         assert.deepEqual(d.calls, []);
         assert.equal(squash(j), 'greet');
@@ -257,7 +257,7 @@ def test_where_the_chat_cannot_open_she_only_says_hello() -> None:
 def test_an_inward_swipe_opens_the_chat_like_a_tap() -> None:
     _run("""
         const d = door();
-        const j = jenny({ out: false, chat: d });
+        const j = arkhiva({ out: false, chat: d });
         j._onGestureOut(true);
         assert.deepEqual(d.calls, [['open', 'swipe']]);
     """)
@@ -267,7 +267,7 @@ def test_a_gesture_never_closes_the_open_chat() -> None:
     """Tirarla per gioco con la chat aperta la perdeva: la chiude solo il tocco."""
     _run("""
         const d = door({ isOpen: true });
-        const j = jenny({ chat: d });
+        const j = arkhiva({ chat: d });
         j._onGestureOut(false);
         j._onGestureOut(true);
         assert.deepEqual(d.calls, []);
@@ -278,7 +278,7 @@ def test_a_gesture_never_closes_the_open_chat() -> None:
 def test_on_the_chat_page_the_swipes_only_move_her() -> None:
     _run("""
         const d = door({ onScreen: true });
-        const j = jenny({ chat: d });
+        const j = arkhiva({ chat: d });
         j._onGestureOut(false);
         assert.equal(out(j), false, 'messa via');
         j._onGestureOut(true);
@@ -290,7 +290,7 @@ def test_on_the_chat_page_the_swipes_only_move_her() -> None:
 def test_without_a_door_the_tap_still_tucks_her_away() -> None:
     """Il gesto di prima, quello della minichat: il tocco gira `out`."""
     _run("""
-        const j = jenny();
+        const j = arkhiva();
         j._onTap();
         assert.equal(out(j), false);
         j._onTap();
@@ -302,7 +302,7 @@ def test_without_a_door_the_tap_still_tucks_her_away() -> None:
 
 def test_the_badge_shows_and_is_said() -> None:
     _run("""
-        const j = jenny();
+        const j = arkhiva();
         j.setBadge(true, 'risposta nuova');
         assert.ok(j.el.classList.has('has-dot'));
         assert.match(j.el.getAttribute('aria-label'), / · risposta nuova$/);
@@ -314,7 +314,7 @@ def test_the_badge_shows_and_is_said() -> None:
 
 def test_the_nudge_comes_and_goes() -> None:
     _run("""
-        const j = jenny();
+        const j = arkhiva();
         j.nudge();
         assert.equal(squash(j), 'nudge');
         await sleep(560);
@@ -325,7 +325,7 @@ def test_the_nudge_comes_and_goes() -> None:
 def test_away_from_the_chat_she_ignores_sends_but_not_frames() -> None:
     """`setChatOnScreen(false)`: niente pensa per gli invii, ma la risposta la fa parlare."""
     _run("""
-        const j = jenny({ out: false });
+        const j = arkhiva({ out: false });
         j._noteTalkActivity = () => {};
         j.setChatOnScreen(false);
         j._handleChatSent({ chat_id: 'default' });
@@ -341,7 +341,7 @@ def test_she_leans_into_the_slide_but_not_after_a_flight() -> None:
     """Uscendo dal bordo si sporge verso l'interno, tornando verso il bordo. A
     fine volo e' gia' dove deve stare: niente inclinazione."""
     _run("""
-        const j = jenny({ out: false });
+        const j = arkhiva({ out: false });
         j.setOut(true);
         assert.equal(j.motion('lean'), 'go-in');
         j.setOut(false);
@@ -357,7 +357,7 @@ def test_she_leans_into_the_slide_but_not_after_a_flight() -> None:
 
 def test_a_mood_arrives_with_its_reaction() -> None:
     _run("""
-        const j = jenny();
+        const j = arkhiva();
         j._applyMood('angry');
         assert.equal(squash(j), 'angry');
         j._applyMood('nope');
@@ -367,7 +367,7 @@ def test_a_mood_arrives_with_its_reaction() -> None:
 
 def test_the_badge_makes_her_notice_once() -> None:
     _run("""
-        const j = jenny();
+        const j = arkhiva();
         j.setBadge(true, 'x');
         assert.equal(squash(j), 'perk');
         j._stopMotion('squash');
@@ -378,7 +378,7 @@ def test_the_badge_makes_her_notice_once() -> None:
 
 def test_talking_stretches_on_each_syllable_and_snaps_the_gesture() -> None:
     _run("""
-        const j = jenny();
+        const j = arkhiva();
         const now = performance.now();
         Object.assign(j._talk, { timer: 1, lastTextAt: now, switchAt: now + 10_000, open: false });
         j._talkTick();

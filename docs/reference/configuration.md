@@ -365,7 +365,7 @@ Local versioning of the workspace, plus the key derivation used by encrypted bac
 | `snapshots.pbkdf2Iterations` | int 100000–10000000 | `600000` | PBKDF2 iterations for the exported `.jbk` backup key. The ceiling mirrors the container format's own limit. |
 | `snapshots.excludeGlobs` | string[] | see below | Paths never captured. |
 
-Default excludes: `ui/**`, `logs/**`, `.jenny/logs/**`, `.jenny/snapshots/**`, `.jenny/backup_staging/**`, `**/__pycache__/**`, `*.tmp`, `*.tmp.*`. See [Backup and restore](../using/backup.md).
+Default excludes: `ui/**`, `logs/**`, `.arkhiva/logs/**`, `.arkhiva/snapshots/**`, `.arkhiva/backup_staging/**`, `**/__pycache__/**`, `*.tmp`, `*.tmp.*`. See [Backup and restore](../using/backup.md).
 
 ## extensions
 

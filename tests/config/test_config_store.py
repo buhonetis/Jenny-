@@ -12,9 +12,9 @@ import json
 import pytest
 from loguru import logger as loguru_logger
 
-from jenny.config import store
-from jenny.config.loader import _backup_path, load_config, save_config
-from jenny.config.schema import Config, ProviderConfig
+from arkhiva.config import store
+from arkhiva.config.loader import _backup_path, load_config, save_config
+from arkhiva.config.schema import Config, ProviderConfig
 
 
 def _names(path) -> list[str]:

@@ -1,26 +1,26 @@
 <resources>
-    <string name="gateway_notification_title">Jenny è attiva</string>
+    <string name="gateway_notification_title">ARKHIVA è attiva</string>
     <string name="gateway_notification_text">Pronta a rispondere e a eseguire le attività programmate</string>
     <string name="gateway_channel_name">Servizio in background</string>
-    <string name="gateway_channel_description">Mostrata mentre Jenny è attiva in background. Android la richiede e resta finché Jenny non viene fermata. Toccala per aprire Jenny.</string>
+    <string name="gateway_channel_description">Mostrata mentre ARKHIVA è attiva in background. Android la richiede e resta finché ARKHIVA non viene fermata. Toccala per aprire ARKHIVA.</string>
 
     <string name="restart_channel_name">Riavvio necessario</string>
-    <string name="restart_channel_description">Compare quando Android ha fermato Jenny in background e non le permette di ripartire da sola. Toccala per riavviarla.</string>
-    <string name="restart_notice_title">Jenny è ferma</string>
+    <string name="restart_channel_description">Compare quando Android ha fermato ARKHIVA in background e non le permette di ripartire da sola. Toccala per riavviarla.</string>
+    <string name="restart_notice_title">ARKHIVA è ferma</string>
     <string name="restart_notice_text">Tocca per riavviarla</string>
 
     <string name="alerts_channel_name">Avvisi</string>
-    <string name="alerts_channel_description">Promemoria e messaggi che Jenny manda di sua iniziativa</string>
+    <string name="alerts_channel_description">Promemoria e messaggi che ARKHIVA manda di sua iniziativa</string>
 
     <string name="reply_action_label">Rispondi</string>
-    <string name="reply_input_hint">Scrivi a Jenny…</string>
-    <string name="reply_failed_title">Jenny non ha ricevuto il messaggio</string>
+    <string name="reply_input_hint">Scrivi a ARKHIVA…</string>
+    <string name="reply_failed_title">ARKHIVA non ha ricevuto il messaggio</string>
     <string name="reply_failed_text">Non era attiva. Tocca per rimandarlo.</string>
     <string name="reply_retry_label">Rimanda</string>
     <string name="reply_user_name">Tu</string>
 
-    <string name="floating_input_hint">Chiedi a Jenny…</string>
-    <string name="floating_not_running">Jenny non è attiva in questo momento.</string>
+    <string name="floating_input_hint">Chiedi a ARKHIVA…</string>
+    <string name="floating_not_running">ARKHIVA non è attiva in questo momento.</string>
     <string name="floating_no_reply">Nessuna risposta. Apri la chat per vedere com\'è andata.</string>
     <string name="floating_send">Invia</string>
     <string name="floating_open_app">Apri l’app</string>
@@ -29,9 +29,25 @@
     <string name="update_channel_name">Aggiornamenti dell\'app</string>
     <string name="update_channel_description">Mostrata quando un aggiornamento già scaricato aspetta la tua conferma per installarsi</string>
     <string name="update_notification_title">Aggiornamento pronto da installare</string>
-    <string name="update_notification_text">Tocca per confermare — poi Jenny riparte da sola</string>
+    <string name="update_notification_text">Tocca per confermare — poi ARKHIVA riparte da sola</string>
 
-    <string name="screen_service_label">Jenny — lettura dello schermo</string>
-    <string name="screen_service_summary">Jenny legge lo schermo solo quando tocchi la mascotte flottante</string>
-    <string name="screen_service_description">Quando tocchi la mascotte flottante, Jenny legge una volta l\'app che sta sotto — il testo, l\'indirizzo della pagina e uno screenshot di quella sola app — così puoi chiederle qualcosa o fargliela salvare. Non legge mai da sola, non tocca e non scrive niente, e salta le app che vietano gli screenshot, come quelle bancarie e le schede in incognito. La lettura resta sul telefono, in memoria, finché non la usa o non passano dieci minuti.</string>
+    <string name="screen_service_label">ARKHIVA — lettura dello schermo</string>
+    <string name="screen_service_summary">ARKHIVA legge lo schermo solo quando tocchi la mascotte flottante</string>
+    <string name="screen_service_description">Quando tocchi la mascotte flottante, ARKHIVA legge una volta l\'app che sta sotto — il testo, l\'indirizzo della pagina e uno screenshot di quella sola app — così puoi chiederle qualcosa o fargliela salvare. Non legge mai da sola, non tocca e non scrive niente, e salta le app che vietano gli screenshot, come quelle bancarie e le schede in incognito. La lettura resta sul telefono, in memoria, finché non la usa o non passano dieci minuti.</string>
+
+    <!-- Aggiunte con il rebranding ARKHIVA: viste native di avvio ed errore,
+         stato dell'agente e superfici del pianificatore. -->
+    <string name="app_name">ARKHIVA Mobile</string>
+    <string name="loading_text">Avvio del nucleo locale…</string>
+    <string name="error_title">Connessione non riuscita</string>
+    <string name="error_text">Impossibile connettersi al\nserver locale.</string>
+    <string name="retry_button">Riprova</string>
+    <string name="agent_status_idle">In riposo</string>
+    <string name="agent_status_thinking">Sintesi della conoscenza…</string>
+    <string name="agent_status_executing">Esecuzione di uno strumento locale…</string>
+    <string name="btn_clear_cache">Svuota il contesto volatile</string>
+    <string name="btn_force_sync">Consolida la memoria Markdown</string>
+    <string name="label_memory_path">Percorso della bóveda locale:</string>
+    <string name="notif_cron_running_title">ARKHIVA Ω in esecuzione</string>
+    <string name="notif_cron_running_desc">Supervisione delle attività autonome programmate</string>
 </resources>

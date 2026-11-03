@@ -15,21 +15,21 @@ from types import SimpleNamespace
 
 import pytest
 
-from jenny.config.schema import SnapshotConfig
-from jenny.snapshot.engine import SnapshotEngine
-from jenny.snapshot.service import SnapshotService
-from jenny_extensions.drive.cloud import CloudRepository, generate_master_key, unseal_key
-from jenny_extensions.drive.cloud_drive import DriveConsentError
-from jenny_extensions.drive.cloud_service import (
+from arkhiva.config.schema import SnapshotConfig
+from arkhiva.snapshot.engine import SnapshotEngine
+from arkhiva.snapshot.service import SnapshotService
+from arkhiva_extensions.drive.cloud import CloudRepository, generate_master_key, unseal_key
+from arkhiva_extensions.drive.cloud_drive import DriveConsentError
+from arkhiva_extensions.drive.cloud_service import (
     PROVIDER_DRIVE,
     CloudBackupService,
     CloudUnavailableError,
 )
-from jenny_extensions.drive.cloud_sink import MemorySink
+from arkhiva_extensions.drive.cloud_sink import MemorySink
 
 pytest.importorskip("cryptography")
 
-from jenny.snapshot.crypto_backends.dev import DevAesGcmBackend  # noqa: E402
+from arkhiva.snapshot.crypto_backends.dev import DevAesGcmBackend  # noqa: E402
 
 _BACKEND = DevAesGcmBackend()
 # La password dell'utente nei test, e pochi giri di PBKDF2: la lentezza vera
@@ -343,7 +343,7 @@ async def _old_phone_backup(tmp_path: Path) -> tuple[MemorySink, bytes, str]:
 
 
 async def test_new_phone_opens_the_copy_with_the_password_and_restores(tmp_path: Path) -> None:
-    from jenny.snapshot.locations import MARKER_FILE_NAME, STAGED_WORKSPACE_DIR_NAME
+    from arkhiva.snapshot.locations import MARKER_FILE_NAME, STAGED_WORKSPACE_DIR_NAME
 
     sink, key, snapshot_id = await _old_phone_backup(tmp_path)
     new = _env(tmp_path / "new", sink=sink)
@@ -446,7 +446,7 @@ async def test_the_password_never_reaches_disk(tmp_path: Path) -> None:
 
 
 async def test_restoring_an_unknown_copy_writes_nothing(tmp_path: Path) -> None:
-    from jenny.snapshot.locations import MARKER_FILE_NAME
+    from arkhiva.snapshot.locations import MARKER_FILE_NAME
 
     sink, _key, _ = await _old_phone_backup(tmp_path)
     new = _env(tmp_path / "new", sink=sink)
@@ -513,7 +513,7 @@ async def test_a_damaged_copy_is_found_said_and_redone(tmp_path: Path) -> None:
     controllo lo trova (non lo scambia per «rete giù»), lo stato lo dice, e la
     copia dopo ricarica tutto — anche se nel workspace non è cambiato niente,
     che è proprio il caso in cui una copia normale non manderebbe nulla."""
-    from jenny_extensions.drive.cloud import PACKS_DIR
+    from arkhiva_extensions.drive.cloud import PACKS_DIR
 
     env = _env(tmp_path)
     await env.service.enable(PW)

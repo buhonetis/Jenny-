@@ -2,8 +2,8 @@ import asyncio
 
 import pytest
 
-from jenny.bus.events import InboundMessage
-from jenny.bus.runtime_events import (
+from arkhiva.bus.events import InboundMessage
+from arkhiva.bus.runtime_events import (
     RuntimeEventBus,
     RuntimeEventContext,
     RuntimeEventPublisher,

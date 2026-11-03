@@ -5,22 +5,22 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from jenny.agent.context import ContextBuilder
-from jenny.agent.loop import AgentLoop
-from jenny.agent.turn_persistence import FollowupState
-from jenny.bus.events import InboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.cron.session_turns import CRON_HISTORY_META, CRON_TRIGGER_META
-from jenny.providers.base import LLMResponse
-from jenny.runtime.user_text import say
-from jenny.session.history_meta import (
+from arkhiva.agent.context import ContextBuilder
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.agent.turn_persistence import FollowupState
+from arkhiva.bus.events import InboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.cron.session_turns import CRON_HISTORY_META, CRON_TRIGGER_META
+from arkhiva.providers.base import LLMResponse
+from arkhiva.runtime.user_text import say
+from arkhiva.session.history_meta import (
     INJECTED_EVENT_META,
     SUBAGENT_RESULT_EVENT,
     is_synthetic_history_row,
 )
-from jenny.session.keys import UNIFIED_SESSION_KEY
-from jenny.session.manager import Session
-from jenny.session.webui_turns import WebuiTurnCoordinator
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.session.manager import Session
+from arkhiva.session.webui_turns import WebuiTurnCoordinator
 
 # La chiave esplicita del turno, diversa da quella della chat: serve a un solo
 # test, che controlla che i metadati di una chat non finiscano nel contesto di
@@ -34,7 +34,7 @@ _OTHER_KEY = "websocket:system"
 
 def _mk_loop() -> AgentLoop:
     loop = AgentLoop.__new__(AgentLoop)
-    from jenny.config.schema import AgentDefaults
+    from arkhiva.config.schema import AgentDefaults
 
     loop.max_tool_result_chars = AgentDefaults().max_tool_result_chars
     return loop
@@ -115,7 +115,7 @@ async def test_injected_subagent_result_is_marked_in_history(tmp_path: Path) -> 
     deve vedere — e il turno si persiste con quella forma. Senza riportare la
     metadata, il rientro di un subagent finiva in storia indistinguibile da una
     frase digitata: bolla in chat, titolo della conversazione
-    (v. ``jenny.session.history_meta``).
+    (v. ``arkhiva.session.history_meta``).
     """
     loop = _make_full_loop(tmp_path)
     loop.consolidator.maybe_consolidate_by_tokens = AsyncMock(return_value=False)  # type: ignore[method-assign]
@@ -685,7 +685,7 @@ async def test_process_direct_appends_notice_when_images_stripped(tmp_path: Path
         return_value=LLMResponse(content="Ecco la risposta", images_stripped=True)
     )
 
-    # Chiave nel vocabolario di ``jenny.session.keys``: con un prefisso non
+    # Chiave nel vocabolario di ``arkhiva.session.keys``: con un prefisso non
     # registrato (era ``api:``, un canale che non esiste) da T4.10 il turno cade
     # su ``internal`` e ``resolve_turn_visibility`` lo rende SILENT su un canale
     # utente, cioe' ``process_direct`` non torna niente. Qui il soggetto e'
@@ -792,8 +792,8 @@ async def test_stop_preserves_runtime_checkpoint_for_next_turn(tmp_path: Path) -
     """/stop materializza SUBITO il checkpoint del turno interrotto nella
     history (restore sincrono in cmd_stop, deterministico anche con task
     abbandonati); il turno successivo riparte dal contesto già ripristinato."""
-    from jenny.command.builtin import cmd_stop
-    from jenny.command.router import CommandContext
+    from arkhiva.command.builtin import cmd_stop
+    from arkhiva.command.router import CommandContext
 
     loop = _make_full_loop(tmp_path)
     loop.consolidator.maybe_consolidate_by_tokens = AsyncMock(return_value=False)  # type: ignore[method-assign]

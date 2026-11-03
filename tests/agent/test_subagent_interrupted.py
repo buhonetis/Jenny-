@@ -23,23 +23,23 @@ from unittest.mock import MagicMock
 
 from support.gateway_http import AUTH_SECRET, make_handler, make_request
 
-from jenny.agent.runner import AgentRunner, AgentRunResult, AgentRunSpec
-from jenny.agent.subagent import SubagentManager, _await_thread
-from jenny.agent.subagent_history import (
+from arkhiva.agent.runner import AgentRunner, AgentRunResult, AgentRunSpec
+from arkhiva.agent.subagent import SubagentManager, _await_thread
+from arkhiva.agent.subagent_history import (
     KIND_BUDGET,
     KIND_DONE,
     KIND_INTERRUPTED,
     SubagentHistoryStore,
 )
-from jenny.agent.subagent_records import (
+from arkhiva.agent.subagent_records import (
     CANCEL_REASON_SHUTDOWN,
     SubagentRecordStore,
     SubagentSpec,
 )
-from jenny.bus.queue import MessageBus
-from jenny.providers.base import LLMProvider
-from jenny.session.manager import SessionManager
-from jenny.webui.subagent_routes import CONTINUE_AFTER_BUDGET_TEXT
+from arkhiva.bus.queue import MessageBus
+from arkhiva.providers.base import LLMProvider
+from arkhiva.session.manager import SessionManager
+from arkhiva.webui.subagent_routes import CONTINUE_AFTER_BUDGET_TEXT
 
 SESSION = "unified:default"
 BRIEF = "Write the care page of the maple in a pot."

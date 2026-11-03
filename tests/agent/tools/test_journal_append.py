@@ -19,8 +19,8 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.tools.journal import JournalAppendTool
-from jenny.security.workspace_access import (
+from arkhiva.agent.tools.journal import JournalAppendTool
+from arkhiva.security.workspace_access import (
     WorkspaceScope,
     bind_workspace_scope,
     reset_workspace_scope,
@@ -346,19 +346,19 @@ def test_it_is_registered_in_the_loader() -> None:
     """La registrazione è esplicita (``TOOLS`` + la lista in ``loader.py``): un
     tool che esiste e non è in lista è un tool che nessuno chiamerà mai, e non
     fallisce — semplicemente non c'è."""
-    from jenny.agent.tools import loader
+    from arkhiva.agent.tools import loader
 
     src = Path(loader.__file__).read_text(encoding="utf-8")
     assert '"journal",' in src
 
-    from jenny.agent.tools.journal import TOOLS, SuggestNotebookTool
+    from arkhiva.agent.tools.journal import TOOLS, SuggestNotebookTool
 
     assert TOOLS == [JournalAppendTool, SuggestNotebookTool]
 
 
 # ── L'attribuzione: di chi è il fatto che la riga registra ───────────────────
 #
-# Il difetto (D1): il 24/08 Jenny ha chiesto «il telescopio te lo porti, *o quello
+# Il difetto (D1): il 24/08 ARKHIVA ha chiesto «il telescopio te lo porti, *o quello
 # resta a casa*?», l'utente ha risposto «il telescopio che cenrtra?» — una domanda,
 # nessuna scelta — e la cattura ha registrato «resta a casa» come decisione
 # dell'utente. Poi il giardiniere l'ha promossa a `state: decided`.
@@ -470,8 +470,8 @@ def _history(store_root: Path) -> list[dict]:
 
 async def test_a_line_leaves_its_short_copy_in_the_diary(tmp_path) -> None:
     """Il fatto, chi l'ha detto, di quale quaderno parla e dove sta l'originale."""
-    from jenny.agent.memory import MemoryStore
-    from jenny.agent.tools.context import (
+    from arkhiva.agent.memory import MemoryStore
+    from arkhiva.agent.tools.context import (
         RequestContext,
         bind_request_context,
         reset_request_context,
@@ -497,8 +497,8 @@ async def test_a_line_leaves_its_short_copy_in_the_diary(tmp_path) -> None:
 
 
 async def test_a_line_from_a_tainted_turn_is_marked_untrusted(tmp_path) -> None:
-    from jenny.agent.memory import MemoryStore
-    from jenny.security.subagent_policy import TurnTaint, enter_turn_taint
+    from arkhiva.agent.memory import MemoryStore
+    from arkhiva.security.subagent_policy import TurnTaint, enter_turn_taint
 
     project = _wiki(tmp_path)
     tool = JournalAppendTool(today=lambda: _DAY, memory_store=MemoryStore(tmp_path))
@@ -514,7 +514,7 @@ async def test_a_line_from_a_tainted_turn_is_marked_untrusted(tmp_path) -> None:
 
 
 async def test_a_recovered_line_is_not_mirrored(tmp_path) -> None:
-    from jenny.agent.memory import MemoryStore
+    from arkhiva.agent.memory import MemoryStore
 
     project = _wiki(tmp_path)
     tool = JournalAppendTool(today=lambda: _DAY, root=project, origin_marker="[recovered]",
@@ -546,15 +546,15 @@ async def test_a_failing_diary_does_not_lose_the_journal_line(tmp_path) -> None:
 
 
 def _personal_request():
-    from jenny.agent.tools.context import RequestContext, bind_request_context
+    from arkhiva.agent.tools.context import RequestContext, bind_request_context
 
     return bind_request_context(RequestContext(
         channel="websocket", chat_id="default", session_key="unified:default"))
 
 
 async def test_from_the_personal_chat_a_fact_goes_into_its_notebook(tmp_path) -> None:
-    from jenny.agent.memory import MemoryStore
-    from jenny.agent.tools.context import reset_request_context
+    from arkhiva.agent.memory import MemoryStore
+    from arkhiva.agent.tools.context import reset_request_context
 
     project = _wiki(tmp_path, "giardino")
     tool = JournalAppendTool(today=lambda: _DAY, memory_store=MemoryStore(tmp_path))
@@ -571,8 +571,8 @@ async def test_from_the_personal_chat_a_fact_goes_into_its_notebook(tmp_path) ->
 
 
 async def test_from_the_personal_chat_without_a_notebook_it_is_a_diary_line(tmp_path) -> None:
-    from jenny.agent.memory import MemoryStore
-    from jenny.agent.tools.context import reset_request_context
+    from arkhiva.agent.memory import MemoryStore
+    from arkhiva.agent.tools.context import reset_request_context
 
     tool = JournalAppendTool(today=lambda: _DAY, memory_store=MemoryStore(tmp_path))
     request = _personal_request()
@@ -587,7 +587,7 @@ async def test_from_the_personal_chat_without_a_notebook_it_is_a_diary_line(tmp_
 
 
 async def test_a_notebook_that_does_not_exist_is_not_created(tmp_path) -> None:
-    from jenny.agent.memory import MemoryStore
+    from arkhiva.agent.memory import MemoryStore
 
     _wiki(tmp_path, "giardino")
     tool = JournalAppendTool(today=lambda: _DAY, memory_store=MemoryStore(tmp_path))
@@ -598,7 +598,7 @@ async def test_a_notebook_that_does_not_exist_is_not_created(tmp_path) -> None:
 
 
 async def test_from_a_notebook_only_its_own_journal(tmp_path) -> None:
-    from jenny.agent.memory import MemoryStore
+    from arkhiva.agent.memory import MemoryStore
 
     project = _wiki(tmp_path, "film")
     _wiki(tmp_path, "giardino")
@@ -614,8 +614,8 @@ async def test_from_a_notebook_only_its_own_journal(tmp_path) -> None:
 
 
 async def test_a_subagent_does_not_fill_the_drawers(tmp_path) -> None:
-    from jenny.agent.memory import MemoryStore
-    from jenny.security.subagent_policy import SubagentRunPolicy, enter_subagent_policy
+    from arkhiva.agent.memory import MemoryStore
+    from arkhiva.security.subagent_policy import SubagentRunPolicy, enter_subagent_policy
 
     project = _wiki(tmp_path, "giardino")
     tool = JournalAppendTool(today=lambda: _DAY, memory_store=MemoryStore(tmp_path))
@@ -631,9 +631,9 @@ async def test_a_subagent_does_not_fill_the_drawers(tmp_path) -> None:
 
 async def test_suggesting_a_notebook_leaves_the_handoff_line(tmp_path) -> None:
     """Il quaderno trova nel suo diario da dove venite."""
-    from jenny.agent.memory import MemoryStore
-    from jenny.agent.tools.context import reset_request_context
-    from jenny.agent.tools.journal import SuggestNotebookTool
+    from arkhiva.agent.memory import MemoryStore
+    from arkhiva.agent.tools.context import reset_request_context
+    from arkhiva.agent.tools.journal import SuggestNotebookTool
 
     _wiki(tmp_path, "camper")
     tool = SuggestNotebookTool(memory_store=MemoryStore(tmp_path))
@@ -650,13 +650,13 @@ async def test_suggesting_a_notebook_leaves_the_handoff_line(tmp_path) -> None:
 
 
 async def test_no_offer_from_a_notebook_from_telegram_or_for_a_missing_one(tmp_path) -> None:
-    from jenny.agent.memory import MemoryStore
-    from jenny.agent.tools.context import (
+    from arkhiva.agent.memory import MemoryStore
+    from arkhiva.agent.tools.context import (
         RequestContext,
         bind_request_context,
         reset_request_context,
     )
-    from jenny.agent.tools.journal import SuggestNotebookTool
+    from arkhiva.agent.tools.journal import SuggestNotebookTool
 
     project = _wiki(tmp_path, "camper")
     tool = SuggestNotebookTool(memory_store=MemoryStore(tmp_path))

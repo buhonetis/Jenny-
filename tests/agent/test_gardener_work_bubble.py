@@ -12,19 +12,19 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.gardener import (
+from arkhiva.agent.gardener import (
     GardenerOutcome,
     _yield_to_user_guard,
     report_gardener_outcome,
     run_gardener,
 )
-from jenny.bus.events import OUTBOUND_META_WORK_STATUS
-from jenny.runtime import work_status
-from jenny.runtime.work_status import WorkReporter
-from jenny.session.turn_visibility import silent_progress
+from arkhiva.bus.events import OUTBOUND_META_WORK_STATUS
+from arkhiva.runtime import work_status
+from arkhiva.runtime.work_status import WorkReporter
+from arkhiva.session.turn_visibility import silent_progress
 from tests.agent.test_gardener import _FakeAgent, _project, _store
 
-pytestmark = pytest.mark.usefixtures("_configure_jenny_workspace")
+pytestmark = pytest.mark.usefixtures("_configure_arkhiva_workspace")
 
 
 class _Bus:

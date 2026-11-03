@@ -14,10 +14,10 @@ from typing import Any
 
 import pytest
 
-from jenny.plan.driver import PLAN_FOLLOWUP_META, PLAN_MODE_META, PLAN_REVISE_META, PlanDriver
-from jenny.plan.store import PlanStore
-from jenny.security.workspace_access import WORKSPACE_READONLY_METADATA_KEY
-from jenny.webui.commands import CommandContext, dispatch_command
+from arkhiva.plan.driver import PLAN_FOLLOWUP_META, PLAN_MODE_META, PLAN_REVISE_META, PlanDriver
+from arkhiva.plan.store import PlanStore
+from arkhiva.security.workspace_access import WORKSPACE_READONLY_METADATA_KEY
+from arkhiva.webui.commands import CommandContext, dispatch_command
 from tests.support.plan import (
     COVERAGE,
     KEY,
@@ -226,7 +226,7 @@ async def test_cancel_drafting_over_rpc(workspace: Path, driver: PlanDriver, bus
     assert await dispatch_command(ctx, "plan.cancel_drafting", {"notebook": "piante"}) == {
         "ok": True, "cancelled": False,
     }
-    from jenny.webui.commands import CommandError
+    from arkhiva.webui.commands import CommandError
 
     with pytest.raises(CommandError) as info:
         await dispatch_command(ctx, "plan.cancel_drafting", {})
@@ -263,7 +263,7 @@ async def test_plan_full_and_the_view_carry_coverage_assumptions_done_when(
 def test_plan_propose_offers_covers_on_steps() -> None:
     """Il modello vede ``covers`` nello schema: senza, la validazione gli chiederebbe un
     campo che non sa di avere."""
-    from jenny.agent.tools.plan import PlanProposeTool
+    from arkhiva.agent.tools.plan import PlanProposeTool
 
     params = PlanProposeTool().parameters
     step = params["properties"]["steps"]["items"]["properties"]
@@ -384,7 +384,7 @@ async def test_cancel_without_a_turn_in_flight_cancels_no_turn(workspace: Path) 
 
 async def test_a_propose_after_a_cancel_is_told_to_stop(driver: PlanDriver) -> None:
     """Se il turno sopravvive all'annullamento, ``plan_propose`` non gli dice più
-    «nessuno pianifica» (che Jenny leggeva come «fallo e basta»): gli dice di fermarsi."""
+    «nessuno pianifica» (che ARKHIVA leggeva come «fallo e basta»): gli dice di fermarsi."""
     await start_drafting(driver)
     await driver.cancel_drafting("piante")
     text = await driver.propose(KEY, "Rifare la wiki", STEPS, coverage=COVERAGE)

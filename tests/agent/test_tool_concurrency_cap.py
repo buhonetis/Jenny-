@@ -14,13 +14,13 @@ from unittest.mock import MagicMock
 
 from support.runner import make_spec
 
-from jenny.agent.runner import AgentRunner, AgentRunResult, AgentRunSpec
-from jenny.agent.subagent import SubagentManager
-from jenny.agent.tool_execution import MAX_CONCURRENT_TOOLS
-from jenny.agent.tools.base import Tool
-from jenny.agent.tools.registry import ToolRegistry
-from jenny.bus.queue import MessageBus
-from jenny.providers.base import ToolCallRequest
+from arkhiva.agent.runner import AgentRunner, AgentRunResult, AgentRunSpec
+from arkhiva.agent.subagent import SubagentManager
+from arkhiva.agent.tool_execution import MAX_CONCURRENT_TOOLS
+from arkhiva.agent.tools.base import Tool
+from arkhiva.agent.tools.registry import ToolRegistry
+from arkhiva.bus.queue import MessageBus
+from arkhiva.providers.base import ToolCallRequest
 
 
 class _CountingTool(Tool):
@@ -141,7 +141,7 @@ class _MaybeMissingTool(_CountingTool):
 async def test_a_batch_with_misses_spends_one_error_unit() -> None:
     """Trenta letture, sette mancate, budget 3: prima ognuna scalava per conto suo
     e il run moriva alla quarta, secondo l'ordine di arrivo."""
-    from jenny.agent.tool_execution import ToolErrorBudget
+    from arkhiva.agent.tool_execution import ToolErrorBudget
 
     tools = ToolRegistry()
     tools.register(_MaybeMissingTool({"now": 0, "peak": 0}, {2, 5, 9, 13, 17, 21, 28}))
@@ -161,7 +161,7 @@ async def test_a_batch_with_misses_spends_one_error_unit() -> None:
 
 
 async def test_batches_with_misses_still_end_a_flailing_run() -> None:
-    from jenny.agent.tool_execution import ToolErrorBudget
+    from arkhiva.agent.tool_execution import ToolErrorBudget
 
     tools = ToolRegistry()
     tools.register(_MaybeMissingTool({"now": 0, "peak": 0}, {0, 1}))
@@ -180,7 +180,7 @@ async def test_batches_with_misses_still_end_a_flailing_run() -> None:
 
 
 async def test_a_clean_batch_resets_the_consecutive_count() -> None:
-    from jenny.agent.tool_execution import ToolErrorBudget
+    from arkhiva.agent.tool_execution import ToolErrorBudget
 
     tools = ToolRegistry()
     tools.register(_MaybeMissingTool({"now": 0, "peak": 0}, set()))

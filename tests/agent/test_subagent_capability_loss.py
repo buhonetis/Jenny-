@@ -19,18 +19,18 @@ from unittest.mock import MagicMock
 import pytest
 from support.subagent_provider_fakes import script_provider
 
-from jenny.agent.agent_types import AGENT_TYPES
-from jenny.agent.subagent import (
+from arkhiva.agent.agent_types import AGENT_TYPES
+from arkhiva.agent.subagent import (
     SubagentCapabilityError,
     SubagentManager,
     unavailable_by_scope,
     unavailable_tools,
 )
-from jenny.agent.tools.loader import ToolLoader
-from jenny.bus.queue import MessageBus
-from jenny.config.schema import ToolsConfig
-from jenny.config.tool_schemas import SshConfig, SshHostConfig
-from jenny.providers.base import LLMProvider, LLMResponse
+from arkhiva.agent.tools.loader import ToolLoader
+from arkhiva.bus.queue import MessageBus
+from arkhiva.config.schema import ToolsConfig
+from arkhiva.config.tool_schemas import SshConfig, SshHostConfig
+from arkhiva.providers.base import LLMProvider, LLMResponse
 
 SSH_TOOLS = {"ssh_hosts", "ssh_exec", "ssh_job", "ssh_transfer"}
 
@@ -173,7 +173,7 @@ def test_requires_is_always_a_subset_of_tools(name):
 
 async def test_the_spawn_tool_turns_the_refusal_into_an_actionable_sentence(tmp_path):
     """Il modello non deve vedere un traceback, ne ripiegare su un altro tipo."""
-    from jenny.agent.tools.spawn import SpawnTool
+    from arkhiva.agent.tools.spawn import SpawnTool
 
     sm = _manager(tmp_path, SshConfig(enable=True, hosts=[]))
     tool = SpawnTool(sm)

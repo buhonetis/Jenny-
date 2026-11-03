@@ -14,9 +14,9 @@ from __future__ import annotations
 import asyncio
 import time
 
-from jenny.agent.tools.exec_session import ExecSessionManager, WriteStdinTool
-from jenny.agent.tools.python_exec import PythonExecTool
-from jenny.config.schema import PythonExecConfig
+from arkhiva.agent.tools.exec_session import ExecSessionManager, WriteStdinTool
+from arkhiva.agent.tools.python_exec import PythonExecTool
+from arkhiva.config.schema import PythonExecConfig
 
 _LONG_CODE = "import time\nfor _ in range(200):\n    time.sleep(0.05)\n"
 

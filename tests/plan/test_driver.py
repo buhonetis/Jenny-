@@ -14,7 +14,7 @@ from typing import Any
 
 import pytest
 
-from jenny.plan.driver import (
+from arkhiva.plan.driver import (
     PLAN_ANSWER_META,
     PLAN_ID_META,
     PLAN_STEP_META,
@@ -22,9 +22,9 @@ from jenny.plan.driver import (
     PlanDriver,
     plan_view,
 )
-from jenny.plan.store import PlanStore
-from jenny.security.workspace_access import WORKSPACE_READONLY_METADATA_KEY
-from jenny.session.history_meta import (
+from arkhiva.plan.store import PlanStore
+from arkhiva.security.workspace_access import WORKSPACE_READONLY_METADATA_KEY
+from arkhiva.session.history_meta import (
     INJECTED_EVENT_META,
     PLAN_REMINDER_EVENT,
     PLAN_STEP_EVENT,
@@ -81,7 +81,7 @@ async def _approve(driver: PlanDriver) -> Any:
     return driver.store.load(plan.id)
 
 
-_AGENT_TEMPLATES = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "agent"
+_AGENT_TEMPLATES = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "agent"
 
 
 def _step_messages(bus: FakeBus, event: str = PLAN_STEP_EVENT) -> list[Any]:
@@ -262,7 +262,7 @@ async def test_a_refused_step_blocks_at_once_without_the_reminder(
     driver: PlanDriver, bus: FakeBus
 ) -> None:
     """Il provider ha rifiutato di rispondere: il promemoria prenderebbe lo stesso no."""
-    from jenny.runtime.user_text import say
+    from arkhiva.runtime.user_text import say
 
     plan = await _approve(driver)
     await driver.on_turn_end(
@@ -379,7 +379,7 @@ async def test_a_long_question_is_stored_whole(driver: PlanDriver) -> None:
 
 
 async def test_a_question_over_the_cap_is_refused_not_cut(driver: PlanDriver) -> None:
-    """Oltre il tetto il piano non si ferma: Jenny riceve l'errore e accorcia."""
+    """Oltre il tetto il piano non si ferma: ARKHIVA riceve l'errore e accorcia."""
     plan = await _approve(driver)
     text = await driver.blocked(KEY, "y" * 4001)
     assert text.startswith("Error:") and "4001" in text and "reply" in text
@@ -566,7 +566,7 @@ async def _finished(driver: PlanDriver, workspace: Path) -> Any:
     return plan
 
 
-async def test_rollback_refuses_while_jenny_works_or_on_a_stale_summary(
+async def test_rollback_refuses_while_arkhiva_works_or_on_a_stale_summary(
     driver: PlanDriver, workspace: Path, host: FakeHost
 ) -> None:
     plan = await _finished(driver, workspace)
@@ -640,7 +640,7 @@ async def test_a_running_plan_lifts_the_wall_timeout(driver: PlanDriver) -> None
     Solo un piano che gira: proposto non basta, e il quaderno accanto non c'entra.
     È ciò che un turno (``loop``) e i suoi aiutanti (``subagent``) leggono.
     """
-    from jenny.session.plan_probe import plan_wall_llm_timeout_s, set_plan_probe
+    from arkhiva.session.plan_probe import plan_wall_llm_timeout_s, set_plan_probe
 
     set_plan_probe(driver)
     try:
@@ -711,7 +711,7 @@ async def test_a_reminder_still_queued_keeps_waiting(driver: PlanDriver) -> None
 async def test_a_disk_error_mid_rollback_leaves_no_journal_and_says_so(
     driver: PlanDriver, workspace: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    from jenny.plan.photos import PlanPhotos
+    from arkhiva.plan.photos import PlanPhotos
 
     plan = await _finished(driver, workspace)
     nb = workspace / "wikis" / "piante"
@@ -775,7 +775,7 @@ async def test_the_reviewed_repro_a_folder_the_user_filled_does_not_break_the_ro
 async def test_death_between_the_files_and_plan_json_is_finished_at_boot(
     workspace: Path, host: FakeHost, bus: FakeBus, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    from jenny.plan import driver as driver_mod
+    from arkhiva.plan import driver as driver_mod
 
     first = PlanDriver(PlanStore.for_workspace(workspace), bus, host)
     plan = await _finished(first, workspace)
@@ -818,7 +818,7 @@ async def test_death_between_the_files_and_plan_json_is_finished_at_boot(
 async def test_death_after_plan_json_does_not_roll_back_twice(
     driver: PlanDriver, workspace: Path, host: FakeHost, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    from jenny.plan import driver as driver_mod
+    from arkhiva.plan import driver as driver_mod
 
     plan = await _finished(driver, workspace)
     journal = driver.store.journal_path(plan.id)
@@ -849,7 +849,7 @@ async def test_death_after_plan_json_does_not_roll_back_twice(
 async def test_death_mid_undo_is_finished_at_boot(
     driver: PlanDriver, workspace: Path, host: FakeHost, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    from jenny.plan import driver as driver_mod
+    from arkhiva.plan import driver as driver_mod
 
     plan = await _finished(driver, workspace)
     nb = workspace / "wikis" / "piante"
@@ -961,8 +961,8 @@ async def test_rollback_and_undo_each_append_a_line_to_todays_journal(
 ) -> None:
     """Il diario non torna indietro (append-only): dopo un ritorno, e dopo il suo
     annullamento, il codice ci aggiunge una riga in coda che dice cos'è successo."""
-    from jenny.plan.driver import _journal_now
-    from jenny.utils.wiki_paths import journal_page_name
+    from arkhiva.plan.driver import _journal_now
+    from arkhiva.utils.wiki_paths import journal_page_name
 
     plan = await _finished(driver, workspace)
     nb = workspace / "wikis" / "piante"
@@ -1057,7 +1057,7 @@ async def test_the_step_turn_says_how_many_helpers_and_how_to_continue_one(
 def test_the_prompts_number_of_plan_helpers_matches_the_manager() -> None:
     """«up to 5 helpers at once» è testo fisso nei prompt del piano: deve restare
     il limite vero che il manager applica a una sessione con un piano in corso."""
-    from jenny.agent.subagent import PLAN_HELPER_SLOTS
+    from arkhiva.agent.subagent import PLAN_HELPER_SLOTS
 
     for name in ("plan_step.md", "plan_mode.md"):
         text = (_AGENT_TEMPLATES / name).read_text(encoding="utf-8")
@@ -1090,8 +1090,8 @@ def test_helper_reports_go_in_the_answer_not_in_free_files(name: str) -> None:
     assert "A report inside a notebook goes in its `audit/` folder" not in text
     # La guida del formato per percorso, come nel notebook-editor: «la skill» da
     # sola non dice quale file aprire.
-    from jenny.agent.agent_types import get_agent_type
-    from jenny.agent.subagent import SubagentManager
+    from arkhiva.agent.agent_types import get_agent_type
+    from arkhiva.agent.subagent import SubagentManager
 
     role = SubagentManager._render_role_section(
         get_agent_type(name.removesuffix(".md")), install_path=Path("/inst")
@@ -1126,10 +1126,10 @@ async def test_the_journal_line_uses_the_configured_timezone(
     from datetime import datetime
     from zoneinfo import ZoneInfo
 
-    from jenny.config.loader import save_config
-    from jenny.config.schema import Config
-    from jenny.runtime.context import get_runtime_context
-    from jenny.utils.wiki_paths import journal_page_name
+    from arkhiva.config.loader import save_config
+    from arkhiva.config.schema import Config
+    from arkhiva.runtime.context import get_runtime_context
+    from arkhiva.utils.wiki_paths import journal_page_name
 
     config = Config()
     config.agents.defaults.timezone = "Pacific/Kiritimati"

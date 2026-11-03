@@ -17,6 +17,7 @@ c'è un emulatore in CI, e queste sono proprietà del codice, non del runtime.
 from __future__ import annotations
 
 import re
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import pytest
@@ -24,12 +25,12 @@ from support.kotlin_source import read_source
 
 ROOT = Path(__file__).resolve().parents[2]
 ANDROID = ROOT / "android" / "app" / "src" / "main"
-JAVA = ANDROID / "java" / "com" / "flagdizero" / "jenny"
+JAVA = ANDROID / "java" / "org" / "buhonet" / "agente" / "arkhiva"
 MANIFEST = ANDROID / "AndroidManifest.xml"
 MAIN_ACTIVITY = JAVA / "MainActivity.kt"
 NOTIFIER = JAVA / "NotifierBridge.kt"
 LAYOUT = ANDROID / "res" / "layout" / "activity_main.xml"
-UI_ASSETS = ROOT / "jenny" / "templates" / "ui" / "assets"
+UI_ASSETS = ROOT / "arkhiva" / "templates" / "ui" / "assets"
 
 
 def _main_activity() -> str:
@@ -153,7 +154,7 @@ def test_absorbing_color_mode_and_touchscreen_is_safe_because_no_resource_follow
 
 def test_absorbing_uimode_is_safe_because_nothing_native_follows_it() -> None:
     """Assorbire ``uiMode`` senza ricreare è sicuro solo se nessuna risorsa
-    dipende dalla modalità notte. Se un domani ``Theme.Jenny`` diventasse
+    dipende dalla modalità notte. Se un domani ``Theme.Arkhiva`` diventasse
     ``DayNight``, o il CSS della WebUI iniziasse a usare ``prefers-color-scheme``,
     l'app resterebbe coi colori vecchi fino al riavvio — e nessuno collegherebbe
     la cosa a questa riga di manifest.
@@ -169,13 +170,26 @@ def test_absorbing_uimode_is_safe_because_nothing_native_follows_it() -> None:
     assert non_vendor_css == [], f"prefers-color-scheme in {non_vendor_css}"
 
 
-def test_absorbing_locale_is_safe_because_the_layout_has_no_string_resources() -> None:
-    """Stessa condizione per ``locale``: il layout nativo scrive le sue sei
-    stringhe in chiaro e non referenzia nessun ``@string``, quindi non c'è niente
-    da ri-risolvere al cambio lingua. La WebUI ha la sua i18n, con selettore
-    dedicato in Impostazioni.
+def test_absorbing_locale_is_safe_because_every_layout_string_exists_in_every_locale() -> None:
+    """Il layout nativo prende le sue stringhe da ``@string``, quindi il cambio
+    lingua è sicuro solo se **ogni** lingua spedita le definisce tutte: una
+    chiave presente solo in ``values/`` lascerebbe la schermata di avvio in
+    inglese su un telefono spagnolo, e una assente del tutto mostrerebbe il nome
+    grezzo della risorsa. La WebUI ha la sua i18n, con selettore dedicato in
+    Impostazioni.
     """
-    assert "@string/" not in LAYOUT.read_text(encoding="utf-8")
+    layout = LAYOUT.read_text(encoding="utf-8")
+    used = set(re.findall(r"@string/(\w+)", layout))
+    assert used, "il layout non referenzia più nessuna stringa: la ricerca è cambiata"
+
+    res = ANDROID / "res"
+    locales = sorted(p.parent.name for p in res.glob("values*/strings.xml"))
+    assert "values" in locales, locales
+    for folder in locales:
+        tree = ET.parse(res / folder / "strings.xml")
+        defined = {n.get("name") for n in tree.getroot().iter("string")}
+        missing = sorted(used - defined)
+        assert not missing, f"{folder}/strings.xml non ha: {missing}"
 
 
 # ── N12 · dimensione carattere ────────────────────────────────────────────────
@@ -383,7 +397,7 @@ def test_tapping_the_alert_brings_the_chat_without_taking_the_place() -> None:
 
 
 def test_home_from_another_app_brings_the_house_back_where_it_was() -> None:
-    """Jenny è il launcher: ogni Home, anche quello che ti riporta qui da
+    """ARKHIVA è il launcher: ogni Home, anche quello che ti riporta qui da
     un'altra app, arriva come intent ``CATEGORY_HOME`` a ``onNewIntent``.
     Solo quello premuto con la casa già davanti la riporta alla chat
     (``goHome``); quello del rientro no — altrimenti ogni giro in un'altra app
@@ -451,7 +465,7 @@ def test_the_resume_branch_asks_what_is_on_screen_before_clearing() -> None:
 
 
 def test_an_alert_is_silenced_only_while_the_chat_is_on_screen() -> None:
-    """Jenny è il launcher: «in primo piano» vuol dire anche la pagina App o
+    """ARKHIVA è il launcher: «in primo piano» vuol dire anche la pagina App o
     una bacheca, e lì il promemoria arrivava muto (giro UX del 10/10/2026).
     Si sopprime solo se la chat personale è a schermo, che la SPA dice a ogni
     cambio (``chatOpened``/``chatClosed``) e che si spegne quando l'activity va
@@ -535,16 +549,16 @@ def test_entering_the_chat_view_notifies_the_native_shell() -> None:
     vedere da sé: un cambio vista dentro la WebView non produce callback
     d'activity. La chiamata sta in ``ChatController.activate``, che è il punto in
     cui la sezione diventa attiva, ed è difesa perché fuori dal guscio
-    ``JennyNative`` non esiste."""
+    ``ArkhivaNative`` non esiste."""
     chat_js = (UI_ASSETS / "mobile-chat.js").read_text(encoding="utf-8")
     activate = re.search(r"\n  activate\(\)\s*\{(.*?)\n  \}", chat_js, re.S)
     assert activate, "activate() non trovato in mobile-chat.js"
     body = activate.group(1)
-    assert "JennyNative?.chatOpened?.()" in body
+    assert "ArkhivaNative?.chatOpened?.()" in body
     assert "try {" in body
     # Sta sulla porta dei comandi, che solo il frame principale della SPA
     # raggiunge (v. tests/security/test_native_bridge_origin.py): dall'iframe
-    # di una Jenny App non si cancellano gli avvisi dell'utente.
+    # di una ARKHIVA App non si cancellano gli avvisi dell'utente.
     # Senza argomento (l'officina) e' la personale: `isNull(0)` vale anche fuori
     # dall'array.
     assert '"chatOpened" -> chatOpened(if (a.isNull(0)) null else a.optString(0))' in _main_activity()
@@ -572,7 +586,7 @@ def test_every_event_the_shell_dispatches_has_a_listener() -> None:
 
     **Un evento senza ascoltatore non fallisce.** Non c'e' un errore, non c'e'
     una riga nel log: cade nel vuoto, e quel che doveva succedere semplicemente
-    non succede. E' andata cosi' per `jenny-subframe-error`, che il guscio manda
+    non succede. E' andata cosi' per `arkhiva-subframe-error`, che il guscio manda
     quando l'iframe di una mini-app non carica: l'ascolto stava nel costruttore
     della scheda «App», e quando quella schermata e' stata cancellata se n'e'
     andato con lei. Da allora una mini-app che non parte e' un riquadro bianco —
@@ -614,7 +628,7 @@ def test_a_dead_renderer_rebuilds_the_activity_instead_of_killing_the_app() -> N
 def test_the_notebook_tag_separator_is_the_same_on_both_sides() -> None:
     """Python scrive il quaderno nel tag (``project:<nome>|<tag>``), Kotlin lo
     rilegge da li': un separatore diverso e ogni avviso torna personale."""
-    from jenny.runtime.notifier import CONVERSATION_TAG_SEPARATOR
+    from arkhiva.runtime.notifier import CONVERSATION_TAG_SEPARATOR
 
     helper = read_source(JAVA / "AlertConversation.kt")
     assert f'const val SEPARATOR = "{CONVERSATION_TAG_SEPARATOR}"' in helper

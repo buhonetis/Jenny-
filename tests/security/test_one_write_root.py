@@ -43,14 +43,14 @@ from typing import Any, Awaitable, Callable
 import httpx
 import pytest
 
-from jenny.agent.tools import download as download_mod
-from jenny.agent.tools.download import DownloadFileTool
-from jenny.agent.tools.filesystem import WriteFileTool
-from jenny.agent.tools.journal import JournalAppendTool
-from jenny.agent.tools.python_exec import PythonExecTool
-from jenny.agent.tools.python_exec_builtins import _register_builtin_functions
-from jenny.config.tool_schemas import PythonExecConfig
-from jenny.security.workspace_access import (
+from arkhiva.agent.tools import download as download_mod
+from arkhiva.agent.tools.download import DownloadFileTool
+from arkhiva.agent.tools.filesystem import WriteFileTool
+from arkhiva.agent.tools.journal import JournalAppendTool
+from arkhiva.agent.tools.python_exec import PythonExecTool
+from arkhiva.agent.tools.python_exec_builtins import _register_builtin_functions
+from arkhiva.config.tool_schemas import PythonExecConfig
+from arkhiva.security.workspace_access import (
     bind_workspace_scope,
     reset_workspace_scope,
     validate_workspace_scope_payload,
@@ -243,8 +243,8 @@ async def _root_ssh_transfer(env: Env) -> Path:
     """``ssh_transfer`` in discesa: scrive sul telefono il file del remoto."""
     from types import SimpleNamespace
 
-    from jenny.agent.tools import ssh as ssh_mod
-    from jenny.agent.tools.ssh import SshTransferTool
+    from arkhiva.agent.tools import ssh as ssh_mod
+    from arkhiva.agent.tools.ssh import SshTransferTool
 
     class _Backend:
         async def get(self, target, remote, local, max_bytes):
@@ -272,14 +272,14 @@ async def _root_ssh_transfer(env: Env) -> Path:
 
 
 def _bind_project_chat(env: Env) -> Any:
-    from jenny.agent.tools.context import RequestContext, bind_request_context
+    from arkhiva.agent.tools.context import RequestContext, bind_request_context
 
     return bind_request_context(RequestContext(
         channel="websocket", chat_id="project:palestra", session_key="project:palestra"))
 
 
 def _seed_board(env: Env) -> None:
-    from jenny.board.store import mutate_board
+    from arkhiva.board.store import mutate_board
 
     for d in (env.project, env.other):
         mutate_board(d, lambda b: b["cards"].append(
@@ -292,14 +292,14 @@ async def _root_app_tool(env: Env) -> Path:
     import json
     from unittest.mock import patch
 
-    from jenny.agent.tools.app_tool import AppTool
-    from jenny.agent.tools.context import reset_request_context
-    from jenny.board.placements import placements
+    from arkhiva.agent.tools.app_tool import AppTool
+    from arkhiva.agent.tools.context import reset_request_context
+    from arkhiva.board.placements import placements
 
     _seed_board(env)
     token = _bind_project_chat(env)
     try:
-        with patch("jenny.config.paths.get_workspace_path", lambda: env.ws):
+        with patch("arkhiva.config.paths.get_workspace_path", lambda: env.ws):
             await AppTool().execute(action="draft", slug="conta", files={
                 "app.json": json.dumps({"name": "Conta", "description": "x"})})
             out = await AppTool().execute(action="place", slug="conta", card="schede")
@@ -321,9 +321,9 @@ async def _root_cron(env: Env) -> Path:
     """
     from types import SimpleNamespace
 
-    from jenny.agent.tools.context import RequestContext
-    from jenny.agent.tools.cron import CronTool
-    from jenny.board.store import mutate_board
+    from arkhiva.agent.tools.context import RequestContext
+    from arkhiva.agent.tools.cron import CronTool
+    from arkhiva.board.store import mutate_board
 
     mutate_board(env.project, lambda b: b["cards"].append(
         {"id": "schede", "title": "Schede", "pages": [], "pos": {"x": 1, "y": 1}}))
@@ -353,9 +353,9 @@ async def _root_cron(env: Env) -> Path:
 
 async def _root_board_tool(env: Env) -> Path:
     """L'editore dei quaderni: la radice è quella la cui bacheca riceve la scheda."""
-    from jenny.agent.tools.board import BoardTool
-    from jenny.agent.tools.context import reset_request_context
-    from jenny.board.store import read_board
+    from arkhiva.agent.tools.board import BoardTool
+    from arkhiva.agent.tools.context import reset_request_context
+    from arkhiva.board.store import read_board
 
     _seed_board(env)
     token = _bind_project_chat(env)
@@ -372,8 +372,8 @@ async def _root_board_tool(env: Env) -> Path:
 
 async def _root_notebook_tool(env: Env) -> Path:
     """``notebook remove_pages``: la radice è quella da cui sparisce la pagina."""
-    from jenny.agent.tools.context import reset_request_context
-    from jenny.agent.tools.notebook import NotebookEditTool
+    from arkhiva.agent.tools.context import reset_request_context
+    from arkhiva.agent.tools.notebook import NotebookEditTool
 
     for d in (env.project, env.other):
         (d / "wiki" / "sonda.md").write_text("---\nstate: open\n---\n# Sonda\n",
@@ -436,7 +436,7 @@ async def test_all_write_surfaces_agree_on_one_root(env: Env) -> None:
 
 # ── 2. la metà strutturale: nessuna settima implementazione ────────────────
 
-_JENNY = Path(__file__).resolve().parents[2] / "jenny"
+_JENNY = Path(__file__).resolve().parents[2] / "arkhiva"
 _TOOLS_DIR = _JENNY / "agent" / "tools"
 
 # I moduli sotto ``agent/tools/`` che hanno una sonda qui sopra.

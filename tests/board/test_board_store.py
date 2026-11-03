@@ -7,8 +7,8 @@ import threading
 
 import pytest
 
-from jenny.board import model
-from jenny.board.store import (
+from arkhiva.board import model
+from arkhiva.board.store import (
     BoardOwnershipError,
     board_path,
     mutate_board,
@@ -19,7 +19,7 @@ from jenny.board.store import (
 
 
 def _card(card_id: str, **extra):
-    base = {"id": card_id, "title": card_id.title(), "pos": {"x": 10, "y": 10, "by": "jenny"}}
+    base = {"id": card_id, "title": card_id.title(), "pos": {"x": 10, "y": 10, "by": "arkhiva"}}
     base.update(extra)
     return base
 
@@ -68,7 +68,7 @@ def test_a_ui_write_during_a_gardener_write_is_not_lost(tmp_path):
         card = model.card_by_id(board, "acero")
         card["pos"] = {"x": 60, "y": 40, "by": "user"}
 
-    gardener = threading.Thread(target=lambda: mutate_board(tmp_path, slow_gardener, actor="jenny"))
+    gardener = threading.Thread(target=lambda: mutate_board(tmp_path, slow_gardener, actor="arkhiva"))
     gardener.start()
     assert inside.wait(5)
     user = threading.Thread(target=lambda: mutate_board(tmp_path, user_drag))
@@ -108,7 +108,7 @@ def test_a_corrupt_board_recovers_from_the_backup(tmp_path):
     assert list(path.parent.glob("board.corrupt-*.json"))
 
 
-def test_jenny_cannot_move_add_or_remove_cards(tmp_path):
+def test_arkhiva_cannot_move_add_or_remove_cards(tmp_path):
     mutate_board(tmp_path, lambda b: b["cards"].append(_card("acero")))
 
     def move(board):
@@ -122,13 +122,13 @@ def test_jenny_cannot_move_add_or_remove_cards(tmp_path):
 
     for apply in (move, add, remove):
         with pytest.raises(BoardOwnershipError):
-            mutate_board(tmp_path, apply, actor="jenny")
+            mutate_board(tmp_path, apply, actor="arkhiva")
     # Lo stesso gesto, fatto dall'utente, passa.
     mutate_board(tmp_path, move)
     assert read_board(tmp_path)["cards"][0]["pos"]["x"] == 90
 
 
-def test_jenny_never_touches_what_the_user_owns(tmp_path):
+def test_arkhiva_never_touches_what_the_user_owns(tmp_path):
     def seed(board):
         board["skeleton"] = ["Acqua", "Storia"]
         board["cards"].append(_card(
@@ -150,16 +150,16 @@ def test_jenny_never_touches_what_the_user_owns(tmp_path):
     ]
     for apply in forbidden:
         with pytest.raises(BoardOwnershipError):
-            mutate_board(tmp_path, apply, actor="jenny")
+            mutate_board(tmp_path, apply, actor="arkhiva")
 
-    # Quel che e' di Jenny, invece, lo cambia: il titolo suo, una pagina in piu',
+    # Quel che e' di ARKHIVA, invece, lo cambia: il titolo suo, una pagina in piu',
     # una proposta nella busta.
     def allowed(board):
         board["cards"][1]["title"] = "Fico d'India"
         board["cards"][1]["pages"].append("fico-talea")
         board["suggestions"].append({"id": "sg-1", "kind": "add_card", "subject": "ginkgo"})
 
-    mutate_board(tmp_path, allowed, actor="jenny")
+    mutate_board(tmp_path, allowed, actor="arkhiva")
     board = read_board(tmp_path)
     assert board["cards"][1]["title"] == "Fico d'India"
     assert board["cards"][1]["pages"] == ["fico", "fico-talea"]
@@ -178,7 +178,7 @@ def test_a_page_belongs_to_one_card_at_most(tmp_path):
 
 def test_reminders_json_is_gone(tmp_path):
     """Un promemoria è un job dello scheduler: la bacheca non ha più un file suo."""
-    import jenny.board.store as store
+    import arkhiva.board.store as store
 
     mutate_board(tmp_path, lambda b: b["cards"].append(_card("acero")))
     assert not (tmp_path / "board" / "reminders.json").exists()
@@ -233,7 +233,7 @@ def test_notes_sort_by_day_then_time_and_conditions_last():
 
 def test_free_slot_avoids_what_is_already_there():
     """La disposizione della bacheca di prova (sei schede e due post-it): la
-    scheda nuova non deve coprire niente, ne' la busta ne' Jenny."""
+    scheda nuova non deve coprire niente, ne' la busta ne' ARKHIVA."""
     board = model.empty_board()
     spots = [(5, 6), (47, 4), (76, 9), (35, 59), (64, 56)]
     board["cards"] = [model._normalize_card(_card(f"c{i}", pos={"x": x, "y": y}))

@@ -11,10 +11,10 @@ from typing import Any
 
 import pytest
 
-from jenny.plan.driver import PlanDriver
-from jenny.plan.facts import MAX_LOST, extract_facts, lost_facts
-from jenny.plan.store import PlanStore
-from jenny.session.history_meta import INJECTED_EVENT_META, PLAN_STEP_EVENT
+from arkhiva.plan.driver import PlanDriver
+from arkhiva.plan.facts import MAX_LOST, extract_facts, lost_facts
+from arkhiva.plan.store import PlanStore
+from arkhiva.session.history_meta import INJECTED_EVENT_META, PLAN_STEP_EVENT
 from tests.support.plan import KEY, STEPS, FakeBus, FakeHost, propose, write_file
 
 # ── estrazione ──────────────────────────────────────────────────────────────

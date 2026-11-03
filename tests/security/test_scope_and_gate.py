@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import pytest
 
-from jenny.security.workspace_access import (
+from arkhiva.security.workspace_access import (
     current_workspace_scope,
     enter_workspace_scope,
 )
-from jenny.webui.workspace_files import validate_path
+from arkhiva.webui.workspace_files import validate_path
 
 
 class _Scope:

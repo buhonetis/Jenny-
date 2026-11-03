@@ -13,20 +13,20 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.tools.board import BoardTool
-from jenny.agent.tools.context import (
+from arkhiva.agent.tools.board import BoardTool
+from arkhiva.agent.tools.context import (
     RequestContext,
     ToolContext,
     bind_request_context,
     reset_request_context,
 )
-from jenny.agent.tools.file_state import FileStates
-from jenny.agent.tools.loader import ToolLoader
-from jenny.agent.tools.registry import ToolRegistry
-from jenny.board import model, notify
-from jenny.board.store import mutate_board, read_board, read_card_summary
-from jenny.config.schema import ToolsConfig
-from jenny.security.workspace_access import (
+from arkhiva.agent.tools.file_state import FileStates
+from arkhiva.agent.tools.loader import ToolLoader
+from arkhiva.agent.tools.registry import ToolRegistry
+from arkhiva.board import model, notify
+from arkhiva.board.store import mutate_board, read_board, read_card_summary
+from arkhiva.config.schema import ToolsConfig
+from arkhiva.security.workspace_access import (
     bind_workspace_scope,
     build_workspace_scope,
     reset_workspace_scope,
@@ -46,7 +46,7 @@ def root(tmp_path: Path) -> Path:
         board["cards"].append({
             "id": "nuove", "title": "Nuove piante del balcone",
             "pages": ["entities/Ginkgo.md", "entities/Fico.md", "entities/Prunus.md"],
-            "pos": {"x": 5, "y": 6, "by": "jenny"},
+            "pos": {"x": 5, "y": 6, "by": "arkhiva"},
         })
 
     mutate_board(root, apply)
@@ -68,7 +68,7 @@ def notebook_chat(root: Path):
 @pytest.fixture
 async def cron(root: Path, monkeypatch):
     """Lo scheduler del workspace del quaderno: un promemoria è un suo job."""
-    from jenny.runtime.context import get_runtime_context
+    from arkhiva.runtime.context import get_runtime_context
     from tests.support.cron import running_cron
 
     workspace = root.parents[1]
@@ -78,7 +78,7 @@ async def cron(root: Path, monkeypatch):
 
 
 def _notes(cron) -> list[dict]:
-    from jenny.board.cron_link import notebook_jobs, notes_from_jobs
+    from arkhiva.board.cron_link import notebook_jobs, notes_from_jobs
 
     return notes_from_jobs(notebook_jobs(cron, "piante"), "Europe/Rome")
 
@@ -256,7 +256,7 @@ async def test_the_editor_is_told_what_a_removal_paused(notebook_chat: Path) -> 
 def test_the_editor_built_by_the_manager_has_the_cron_and_the_time_zone(tmp_path: Path) -> None:
     """Il ctx dei subagent non portava il servizio cron: sull'emulatore l'editore
     toglieva Prunus e il suo promemoria restava armato (09/10/2026)."""
-    from jenny.agent.agent_types import get_agent_type
+    from arkhiva.agent.agent_types import get_agent_type
     from tests.agent.test_subagent_send import _manager
 
     cron = object()
@@ -297,7 +297,7 @@ async def test_show_lists_the_automations_of_cards_and_of_the_notebook(notebook_
          "payload": {"board": {"notebook": notebook_chat.name, "card": "@notebook",
                                "section": "@auto"}}},
     ]}), encoding="utf-8")
-    monkeypatch.setattr("jenny.config.paths.get_workspace_path", lambda: tmp_path)
+    monkeypatch.setattr("arkhiva.config.paths.get_workspace_path", lambda: tmp_path)
     out = await BoardTool().execute(action="show")
     assert "- `ab12cd34` on `nuove`: Meteo" in out
     assert "- `ef56ab78` on the whole notebook: Gelo (paused)" in out
@@ -305,7 +305,7 @@ async def test_show_lists_the_automations_of_cards_and_of_the_notebook(notebook_
 
 async def test_the_editor_can_add_a_reminder_for_the_whole_notebook(notebook_chat: Path,
                                                                      announced, cron) -> None:
-    from jenny.board.cron_link import scope_of
+    from arkhiva.board.cron_link import scope_of
 
     out = await BoardTool(cron=cron).execute(action="add_reminder", text="Porta dentro le piante",
                                              date="2099-12-01")
@@ -380,7 +380,7 @@ async def test_a_card_with_no_pages_no_drawer_and_no_reminders_goes(notebook_cha
 
     def apply(board):
         board["cards"].append({"id": "vuota", "title": "Vuota", "pages": [],
-                               "pos": {"x": 300, "y": 6, "by": "jenny"}})
+                               "pos": {"x": 300, "y": 6, "by": "arkhiva"}})
 
     mutate_board(root, apply)
     assert read_card_summary(root, "vuota") is None
@@ -400,7 +400,7 @@ async def test_a_drawer_with_no_card_is_shown_and_removed(notebook_chat: Path,
     """L'orfano «su disco» della prova 1: ``board/cards/<id>.json`` senza la sua
     scheda. ``remove_card`` rispondeva «card not found» e i tool file non
     scrivono in ``board/``: non lo toglieva nessuno."""
-    from jenny.board.store import write_card_summary
+    from arkhiva.board.store import write_card_summary
 
     root = notebook_chat
     write_card_summary(root, "acqua-e-ciclo", {"card": "acqua-e-ciclo", "brief": "Acqua."})
@@ -424,7 +424,7 @@ async def test_drawers_that_are_not_orphans_stay(notebook_chat: Path) -> None:
     """Non orfani: il cassetto di una scheda nel cestino (serve all'Annulla) e
     quelli di una prima bacheca ancora nella busta (la passata li scrive prima
     della risposta)."""
-    from jenny.board.store import write_card_summary
+    from arkhiva.board.store import write_card_summary
 
     root = notebook_chat
     write_card_summary(root, "nuove", {"card": "nuove", "brief": "Tre piante."})
@@ -453,8 +453,8 @@ async def test_drawers_that_are_not_orphans_stay(notebook_chat: Path) -> None:
 
 def _orphan_reminder(cron, card: str = "sparita") -> str:
     """Un promemoria la cui scheda non c'è più: il caso del 25/10/2026 sul telefono."""
-    from jenny.board.cron_link import add_notebook_job
-    from jenny.cron.dates import date_schedule
+    from arkhiva.board.cron_link import add_notebook_job
+    from arkhiva.cron.dates import date_schedule
 
     return add_notebook_job(cron, "piante", card, name="Rinvaso", message="Rinvaso",
                             schedule=date_schedule("2099-03-01", "Europe/Rome")).id
@@ -519,6 +519,6 @@ def test_the_tool_and_the_editor_know_attach_reminder() -> None:
     assert "attach_reminder" in params["action"]["enum"]
     assert "attach_reminder (card?, id)" in params["action"]["description"]
     assert "attach_reminder" in params["id"]["description"]
-    template = (Path(__file__).parents[3] / "jenny" / "templates" / "agent" / "types"
+    template = (Path(__file__).parents[3] / "arkhiva" / "templates" / "agent" / "types"
                 / "notebook-editor.md").read_text()
     assert "`attach_reminder` (card, id)" in template

@@ -5,8 +5,8 @@ Titan un compito da 10 k caratteri tornava tale e quale nell'annuncio, e ogni
 delega entrava due volte nel contesto.
 """
 
-from jenny.agent.subagent import _ANNOUNCE_TASK_CHARS, _task_head
-from jenny.utils.prompt_templates import render_template
+from arkhiva.agent.subagent import _ANNOUNCE_TASK_CHARS, _task_head
+from arkhiva.utils.prompt_templates import render_template
 
 
 def test_a_long_brief_comes_back_as_its_first_line() -> None:

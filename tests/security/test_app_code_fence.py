@@ -1,7 +1,7 @@
 """Il codice di un'app si scrive solo dal tool ``app``, che lo controlla.
 
 Il tool valida l'app e gira il lettore prima di salvarla
-(``jenny/apps/drafts.py``): un ``app.json`` o un ``run.py`` riscritti con gli
+(``arkhiva/apps/drafts.py``): un ``app.json`` o un ``run.py`` riscritti con gli
 strumenti generici salterebbero quei controlli, e un'app rotta o senza
 riassunto finirebbe in produzione. Quindi il recinto: ogni superficie di
 scrittura rifiuta il codice, e lascia aperti dati e note.
@@ -13,8 +13,8 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.tools.filesystem import WriteFileTool
-from jenny.security.workspace_policy import is_app_code_path
+from arkhiva.agent.tools.filesystem import WriteFileTool
+from arkhiva.security.workspace_policy import is_app_code_path
 from tests.security.test_board_write_fence import _exec_tool
 
 

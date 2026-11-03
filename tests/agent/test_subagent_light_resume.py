@@ -14,17 +14,17 @@ from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock
 
-from jenny.agent.runner import AgentRunResult, AgentRunSpec
-from jenny.agent.subagent import SubagentManager, SubagentSpec
-from jenny.agent.subagent_history import (
+from arkhiva.agent.runner import AgentRunResult, AgentRunSpec
+from arkhiva.agent.subagent import SubagentManager, SubagentSpec
+from arkhiva.agent.subagent_history import (
     KIND_BUDGET,
     history_chars,
     light_resume_messages,
 )
-from jenny.bus.queue import MessageBus
-from jenny.providers.base import LLMProvider
-from jenny.session.manager import SessionManager
-from jenny.utils.runtime import build_budget_notice_message
+from arkhiva.bus.queue import MessageBus
+from arkhiva.providers.base import LLMProvider
+from arkhiva.session.manager import SessionManager
+from arkhiva.utils.runtime import build_budget_notice_message
 
 BRIEF = "Update the seven plant pages from the research files."
 REPORT = "Done: seven pages written, sources cited."
@@ -226,7 +226,7 @@ async def test_a_budget_stop_with_a_long_history_resumes_whole(tmp_path: Path) -
 async def test_a_budget_stop_over_the_cap_is_still_refused(tmp_path: Path) -> None:
     import pytest
 
-    from jenny.agent.subagent import SubagentSendError
+    from arkhiva.agent.subagent import SubagentSendError
 
     sm = _manager(tmp_path)
     _completing_runner(sm)

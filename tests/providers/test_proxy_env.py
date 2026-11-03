@@ -2,7 +2,7 @@
 
 import httpx
 
-from jenny.providers.openai_compat_provider import OpenAICompatProvider
+from arkhiva.providers.openai_compat_provider import OpenAICompatProvider
 
 
 class TestLocalEndpointProxyDisabled:

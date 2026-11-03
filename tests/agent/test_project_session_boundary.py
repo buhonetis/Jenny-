@@ -26,9 +26,9 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from loguru import logger
 
-from jenny.agent.context import ContextBuilder
-from jenny.agent.memory import Consolidator, MemoryStore
-from jenny.session.keys import (
+from arkhiva.agent.context import ContextBuilder
+from arkhiva.agent.memory import Consolidator, MemoryStore
+from arkhiva.session.keys import (
     is_internal_session_key,
     is_personal_session_key,
     is_project_session_key,
@@ -36,7 +36,7 @@ from jenny.session.keys import (
     project_session_key,
     session_kind,
 )
-from jenny.session.manager import Session
+from arkhiva.session.manager import Session
 
 PERSONAL = "unified:default"
 PROJECT = "project:palestra"
@@ -138,7 +138,7 @@ class TestTheClassificationIsTernary:
         versioni precedenti e modificabili a mano, e un'eccezione la' farebbe
         cadere Dream e l'autocompaction su una riga vecchia. Resta il log.
         """
-        from jenny.session import keys as keys_mod
+        from arkhiva.session import keys as keys_mod
 
         keys_mod._UNCLASSIFIED_WARNED.discard("zzsconosciuto")
         messages: list[str] = []
@@ -398,7 +398,7 @@ class TestDreamDoesNotSeeAProject:
 
 
 class TestTheProjectPrompt:
-    pytestmark = pytest.mark.usefixtures("_configure_jenny_workspace")
+    pytestmark = pytest.mark.usefixtures("_configure_arkhiva_workspace")
 
     def test_has_no_recent_history_block(self, tmp_path):
         """Non un blocco filtrato: nessun blocco.
@@ -593,7 +593,7 @@ class TestTheReplayWindow:
     cursore che avanza una volta sola, quella meta' persa e' persa per sempre.
     """
 
-    pytestmark = pytest.mark.usefixtures("_configure_jenny_workspace")
+    pytestmark = pytest.mark.usefixtures("_configure_arkhiva_workspace")
 
     def test_already_consumed_entries_return_to_the_prompt(self, store):
         first = store.append_history("prima cosa di progetto", session_key=PROJECT)

@@ -3,10 +3,10 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from jenny.agent.loop import AgentLoop
-from jenny.agent.tools.context import RequestContext
-from jenny.bus.queue import MessageBus
-from jenny.providers.base import LLMResponse, ToolCallRequest
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.agent.tools.context import RequestContext
+from arkhiva.bus.queue import MessageBus
+from arkhiva.providers.base import LLMResponse, ToolCallRequest
 
 
 class _ContextRecordingTool:

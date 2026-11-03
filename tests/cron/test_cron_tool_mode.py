@@ -11,10 +11,10 @@ from typing import Any
 
 import pytest
 
-from jenny.agent.tools.context import RequestContext
-from jenny.agent.tools.cron import CronTool
-from jenny.agent.tools.registry import ToolRegistry
-from jenny.cron.types import CronJob, CronPayload, CronSchedule
+from arkhiva.agent.tools.context import RequestContext
+from arkhiva.agent.tools.cron import CronTool
+from arkhiva.agent.tools.registry import ToolRegistry
+from arkhiva.cron.types import CronJob, CronPayload, CronSchedule
 
 
 class _RecordingCronService:
@@ -256,7 +256,7 @@ class TestTheJobName:
 
 
 def test_job_user_label_and_display_name() -> None:
-    from jenny.cron.types import job_display_name, job_user_label
+    from arkhiva.cron.types import job_display_name, job_user_label
 
     def job(name: str, message: str = "Remind the user to water the plants") -> CronJob:
         return CronJob(id="j", name=name, payload=CronPayload(message=message))

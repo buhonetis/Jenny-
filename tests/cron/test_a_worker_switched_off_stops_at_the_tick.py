@@ -27,10 +27,10 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from jenny.agent import dream_cycle
-from jenny.config.loader import get_config_path, save_config
-from jenny.config.schema import Config
-from jenny.runtime.cron_dispatch import CronDispatcher
+from arkhiva.agent import dream_cycle
+from arkhiva.config.loader import get_config_path, save_config
+from arkhiva.config.schema import Config
+from arkhiva.runtime.cron_dispatch import CronDispatcher
 
 _DREAM_JOB = SimpleNamespace(
     name="dream", id="dream", payload=SimpleNamespace(kind="system_event")
@@ -46,8 +46,8 @@ def _workspace(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     suite — cioè passerebbe o fallirebbe a seconda di come quella persona ha
     lasciato le proprie impostazioni.
     """
-    from jenny.config import paths
-    from jenny.runtime.context import get_runtime_context
+    from arkhiva.config import paths
+    from arkhiva.runtime.context import get_runtime_context
 
     previous = paths.get_workspace_path()
     paths.set_workspace_dir(str(tmp_path))

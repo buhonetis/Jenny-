@@ -2,7 +2,7 @@
 
 A [notebook](./projects.md) opens on its **board**: a few cards pinned to one screen, one card per subject the notebook keeps coming back to. Each card opens a **drawer**, a short summary of that subject written from the notebook's wiki pages, with links to the pages themselves. The wiki stays the source of truth; the board is the face of it, and the way in.
 
-The board replaced the notebook's page list and its graph map. Both are gone from the home, and so is the file that remembered where you had dragged the map's nodes (`workspace/.jenny/map-layout.json`, removed at the next start). Every page is still there and still reachable, from a drawer or from search.
+The board replaced the notebook's page list and its graph map. Both are gone from the home, and so is the file that remembered where you had dragged the map's nodes (`workspace/.arkhiva/map-layout.json`, removed at the next start). Every page is still there and still reachable, from a drawer or from search.
 
 ## Getting there
 

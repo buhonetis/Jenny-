@@ -19,14 +19,14 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from jenny.agent.loop import AgentLoop
-from jenny.bus.events import NOTIFICATION_CHANNEL, InboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.channels import notification as nc
-from jenny.channels.notification import REPLY_THREAD_TAG, NotificationChannel
-from jenny.providers.base import LLMResponse
-from jenny.runtime.native_input import NATIVE_SOURCE_KEY, NATIVE_THREAD_KEY
-from jenny.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.bus.events import NOTIFICATION_CHANNEL, InboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.channels import notification as nc
+from arkhiva.channels.notification import REPLY_THREAD_TAG, NotificationChannel
+from arkhiva.providers.base import LLMResponse
+from arkhiva.runtime.native_input import NATIVE_SOURCE_KEY, NATIVE_THREAD_KEY
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
 
 
 class _Alerts:

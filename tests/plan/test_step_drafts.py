@@ -16,11 +16,11 @@ from typing import Any
 
 import pytest
 
-from jenny.agent import staged_writes
-from jenny.plan.driver import PlanCommandError, PlanDriver
-from jenny.plan.store import PlanStore
-from jenny.security.workspace_access import WORKSPACE_READONLY_METADATA_KEY
-from jenny.session.history_meta import INJECTED_EVENT_META, PLAN_STEP_EVENT
+from arkhiva.agent import staged_writes
+from arkhiva.plan.driver import PlanCommandError, PlanDriver
+from arkhiva.plan.store import PlanStore
+from arkhiva.security.workspace_access import WORKSPACE_READONLY_METADATA_KEY
+from arkhiva.session.history_meta import INJECTED_EVENT_META, PLAN_STEP_EVENT
 from tests.support.aio import wait_until
 from tests.support.plan import KEY, STEPS, FakeBus, FakeHost, propose, write_file
 
@@ -143,7 +143,7 @@ async def test_drafts_from_before_the_plan_and_outside_the_notebook_do_not_hold_
 ) -> None:
     before = _stage(workspace)  # di prima dell'Approva
     # Retrodatata: nello stesso millisecondo dell'Approva il confronto sarebbe un pari.
-    meta_path = workspace / ".jenny" / "staged" / before / "meta.json"
+    meta_path = workspace / ".arkhiva" / "staged" / before / "meta.json"
     meta = json.loads(meta_path.read_text(encoding="utf-8"))
     meta["created_ms"] -= 5_000
     meta_path.write_text(json.dumps(meta), encoding="utf-8")
@@ -305,7 +305,7 @@ async def test_an_install_from_a_worker_thread_settles_on_the_loop(
 async def test_a_lost_notice_is_caught_by_plan_get_and_by_the_next_user_turn(
     driver: PlanDriver, workspace: Path, bus: FakeBus
 ) -> None:
-    from jenny.webui.commands import CommandContext, dispatch_command
+    from arkhiva.webui.commands import CommandContext, dispatch_command
 
     plan = await _running(driver)
     draft = _stage(workspace)
@@ -363,8 +363,8 @@ async def test_a_question_over_the_cap_is_refused_even_behind_drafts(
 async def test_a_stalled_step_with_drafts_waits_on_them_first(
     driver: PlanDriver, workspace: Path
 ) -> None:
-    from jenny.plan.driver import PLAN_STEP_META
-    from jenny.session.history_meta import PLAN_REMINDER_EVENT
+    from arkhiva.plan.driver import PLAN_STEP_META
+    from arkhiva.session.history_meta import PLAN_REMINDER_EVENT
 
     plan = await _running(driver)
     _stage(workspace)
@@ -432,8 +432,8 @@ async def test_after_a_restart_mid_step_the_step_is_told_its_drafts_already_wait
 async def test_the_real_host_finds_the_notebooks_drafts(workspace: Path) -> None:
     from types import SimpleNamespace
 
-    from jenny.agent.plan_host import LoopPlanHost
-    from jenny.security.workspace_access import WorkspaceScopeResolver
+    from arkhiva.agent.plan_host import LoopPlanHost
+    from arkhiva.security.workspace_access import WorkspaceScopeResolver
 
     loop = SimpleNamespace(
         workspace=workspace,

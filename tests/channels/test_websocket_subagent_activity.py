@@ -32,15 +32,15 @@ from support.aio import wait_until
 from websockets.exceptions import ConnectionClosed
 from websockets.frames import Close
 
-from jenny.agent.subagent_activity import RING_CAPACITY, SubagentActivityLog
-from jenny.bus.events import OUTBOUND_META_SUBAGENT_ACTIVITY, OutboundMessage
-from jenny.channels import ws_sender
-from jenny.channels.subagent_activity_wire import (
+from arkhiva.agent.subagent_activity import RING_CAPACITY, SubagentActivityLog
+from arkhiva.bus.events import OUTBOUND_META_SUBAGENT_ACTIVITY, OutboundMessage
+from arkhiva.channels import ws_sender
+from arkhiva.channels.subagent_activity_wire import (
     MAX_FRAME_EVENTS,
     MAX_WATCHES_PER_CONNECTION,
 )
-from jenny.channels.websocket import WebSocketChannel, WebSocketConfig
-from jenny.webui.gateway_services import build_gateway_services
+from arkhiva.channels.websocket import WebSocketChannel, WebSocketConfig
+from arkhiva.webui.gateway_services import build_gateway_services
 
 _TASK = "d2ee4342"
 
@@ -683,6 +683,6 @@ class TestBusCarriedActivity:
 
     async def test_the_flag_is_a_coordination_flag(self) -> None:
         """Telegram e il dispatcher devono ignorarlo: non è un messaggio finale."""
-        from jenny.bus.events import COORDINATION_FLAGS
+        from arkhiva.bus.events import COORDINATION_FLAGS
 
         assert OUTBOUND_META_SUBAGENT_ACTIVITY in COORDINATION_FLAGS

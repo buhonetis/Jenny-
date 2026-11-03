@@ -13,9 +13,9 @@ from typing import Any
 
 import pytest
 
-from jenny.agent.tools.context import RequestContext
-from jenny.agent.tools.cron import CronTool
-from jenny.cron.types import CronJob, CronSchedule
+from arkhiva.agent.tools.context import RequestContext
+from arkhiva.agent.tools.cron import CronTool
+from arkhiva.cron.types import CronJob, CronSchedule
 
 
 class _RecordingCronService:

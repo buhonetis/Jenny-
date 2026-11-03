@@ -12,7 +12,7 @@ There is no fixed tool count. What Jenny actually has available in a given conve
 
 - **The agent's scope** — the main agent loads either the `orchestrator` scope (default, see `agents.defaults.orchestratorMode`) or the historical `core` scope; a subagent loads the `subagent` scope, narrowed further by its agent type. The four SSH tools sit in a scope of their own, `remote`, which **no** agent loads by default — only the `sysadmin` subagent type asks for it. The same install therefore exposes different tools to the orchestrator, to a `sysadmin` subagent, and to every other subagent.
 
-A conversation agent can draw on **49** named built-in tools: 48 registered through the standard loader (51 classes: a few names have one class per scope — `app` has three, see [The `app` tool and who writes apps](#the-app-tool-and-who-writes-apps), and [`notebook`](#notebook) two) (`jenny/agent/tools/loader.py`, which imports 27 modules — `self.py` among them, with an empty `TOOLS` list) plus `my`, which is registered by hand in `jenny/agent/loop.py` because it needs a live reference to the running agent loop. Two more tool classes are built outside the loader too, so the loader's module list is not a complete inventory of the tool surface: `memory` (`MemoryEntryTool` in `memory_entries.py`), which needs the memory store and is given only to Dream's own runs (see [The internal registry: Dream](#the-internal-registry-dream)), and `AppActionTool` (`app_actions.py`), instantiated once per declared app action and re-synced every turn. No single agent sees all 49 at once — see the scope note above. Add to that N dynamic app tools. If you ask Jenny to list its tools, expect the number to vary between installs.
+A conversation agent can draw on **49** named built-in tools: 48 registered through the standard loader (51 classes: a few names have one class per scope — `app` has three, see [The `app` tool and who writes apps](#the-app-tool-and-who-writes-apps), and [`notebook`](#notebook) two) (`arkhiva/agent/tools/loader.py`, which imports 27 modules — `self.py` among them, with an empty `TOOLS` list) plus `my`, which is registered by hand in `arkhiva/agent/loop.py` because it needs a live reference to the running agent loop. Two more tool classes are built outside the loader too, so the loader's module list is not a complete inventory of the tool surface: `memory` (`MemoryEntryTool` in `memory_entries.py`), which needs the memory store and is given only to Dream's own runs (see [The internal registry: Dream](#the-internal-registry-dream)), and `AppActionTool` (`app_actions.py`), instantiated once per declared app action and re-synced every turn. No single agent sees all 49 at once — see the scope note above. Add to that N dynamic app tools. If you ask Jenny to list its tools, expect the number to vary between installs.
 
 Below, tools are grouped into ten categories. Each entry gives the exact tool name the model calls, what it does for you in practice, the parameters worth knowing, hard numeric limits, the config toggle that controls it, and any gotcha worth knowing before you rely on it.
 
@@ -334,7 +334,7 @@ Statuses are four, and the fourth matters: `running`, `finished` (with an exit c
 |---|---|
 | Bytes returned per poll | `maxOutputChars` (default 10,000) |
 | Jobs kept in the registry | 100, pruning finished ones only — running jobs are never pruned |
-| Registry location | `<workspace>/.jenny/ssh_jobs/jobs.json` |
+| Registry location | `<workspace>/.arkhiva/ssh_jobs/jobs.json` |
 
 Config: `tools.ssh.commandTimeoutS` (applies to the short launch/poll/stop commands, not to the job itself — the job has no timeout), `tools.ssh.maxOutputChars`, per-host `jobLogDir`.
 
@@ -534,7 +534,7 @@ Every action declared in an installed Jenny App's `<workspace>/apps/<slug>/app.j
 - A broken app (invalid manifest) contributes zero tools — it doesn't crash tool loading, it's just silently absent (with a warning in the logs).
 - If an app declares an action name that collides with a built-in tool name, that action is skipped with a warning rather than overriding the built-in.
 - Jenny can act on an app's data through these tools even while the app's own screen is closed — the app UI and the tool layer are independent.
-- In a notebook's chat, the actions that **write** to an app not placed on that notebook's board are not offered at all (reads are): they would be refused anyway (`jenny/apps/permissions.py`).
+- In a notebook's chat, the actions that **write** to an app not placed on that notebook's board are not offered at all (reads are): they would be refused anyway (`arkhiva/apps/permissions.py`).
 
 ### The `app` tool and who writes apps
 
@@ -609,7 +609,7 @@ Changes a notebook's board as you asked: cards (add, rename, move next to anothe
 Reads and checks a notebook in bulk, from its chat, so that verifying fifty pages is one call instead of fifty.
 
 - `check` lists the notebook's defects, counted, each with `path:line`: dead `[[links]]`, `sources:`/`source:` that point at no file, pages without frontmatter or a valid `state:`, pages over the injection ceiling (and, with `min_chars`, under a threshold), the map over its ceiling, cards listing pages that do not exist, drawer sections citing missing pages, and open reminders whose `why` page is gone. `expect` (`{"folders": "wiki/concepts/*", "files": ["index", "soil"]}`) also lists the files missing or extra in each folder. In a research notebook it also lists concept/entity pages without `sources:` and raw sources without a summary. It writes nothing, and on the checks they share it finds what the wiki skill's `lint_wiki.py` finds (a test keeps the two together); it is not the full lint, and each answer ends naming the checks it leaves out (orphans, pages missing from the map, duplicates, log/ and audit/ shape, the journal…).
-- `map` takes `subjects` (`{name, aliases}`) and `topics` (`{name, keywords}`) and answers with a table — how many files mention each subject together with each topic — and, per cell, up to three `file:line` with a snippet. It searches `wiki/` and `raw/` unless given `paths`, ignoring accents and case, and never reads `.jenny/`.
+- `map` takes `subjects` (`{name, aliases}`) and `topics` (`{name, keywords}`) and answers with a table — how many files mention each subject together with each topic — and, per cell, up to three `file:line` with a snippet. It searches `wiki/` and `raw/` unless given `paths`, ignoring accents and case, and never reads `.arkhiva/`.
 - `read_many` reads up to 30 files in one call (`mode`: `frontmatter`, `head` with `lines`, or `full`), splits the answer's budget among them, and says which were cut and where to resume. The files count as read, so editing them right after does not warn.
 - `remove_pages` (only the `notebook-editor`, never in a read-only turn) deletes pages under `wiki/` — never `wiki/index.md` — after the same checks a file write passes. It first appends each page's path, first lines and the `reason` to `raw/removed/<date>.md`, then deletes the files, takes them off the board, clears the `why` of the reminders that pointed at them, and answers with the cards touched, the drawers to rewrite, the reminders cleared and the links left pointing nowhere.
 - Two faces with one name: the agent you talk to (scopes `core` and `orchestrator`) has the three reads; the `notebook-editor` (scope `notebook`) has the reads and `remove_pages`. An answer stays under 12,000 characters for the first and 14,000 for the second, below the size at which a tool result is moved to a file.
@@ -655,7 +655,7 @@ Config, under `tools.androidWeb.browser`: `timeout`, `maxSnapshotChars`, `maxRea
 
 Dream does not use the tool loader or any scope above. It builds its own small registry by hand, with the write side narrowed to an explicit list of files, so that a run cannot touch anything it wasn't meant to. (The [gardener](../using/gardener.md) does the same inside one project — see its page.) Nothing here is reachable from a chat turn, and none of it appears in a tool list the model shows you.
 
-**Dream** (`jenny/agent/memory.py::build_dream_tools`) gets five tools on a batch from the personal chat:
+**Dream** (`arkhiva/agent/memory.py::build_dream_tools`) gets five tools on a batch from the personal chat:
 
 | Tool | What it can touch |
 |---|---|

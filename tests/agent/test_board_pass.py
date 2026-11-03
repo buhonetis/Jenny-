@@ -14,11 +14,11 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
-from jenny.agent.board_pass import BoardPass, board_needs_pass, run_board_pass
-from jenny.agent.board_tools import BoardPassState, build_board_tools
-from jenny.board import model
-from jenny.board.corrections import create_correction, open_corrections
-from jenny.board.store import (
+from arkhiva.agent.board_pass import BoardPass, board_needs_pass, run_board_pass
+from arkhiva.agent.board_tools import BoardPassState, build_board_tools
+from arkhiva.board import model
+from arkhiva.board.corrections import create_correction, open_corrections
+from arkhiva.board.store import (
     mutate_board,
     read_board,
     read_card_summary,
@@ -55,7 +55,7 @@ def _seed_board(root: Path) -> None:
             {"id": "acero", "title": "Acero", "pages": ["travaso-acero.md", "irrigazione-acero.md"],
              "pos": {"x": 5, "y": 6, "by": "user"}},
             {"id": "monstera", "title": "Monstera", "pages": ["monstera.md"],
-             "pos": {"x": 47, "y": 4, "by": "jenny"}},
+             "pos": {"x": 47, "y": 4, "by": "arkhiva"}},
         ]
     mutate_board(root, apply)
 
@@ -71,7 +71,7 @@ def _tools(state: BoardPassState, cron: Any = None) -> dict[str, Any]:
 
 def _cron(ws: Path, monkeypatch):
     """Lo scheduler del workspace: un promemoria del giardiniere è un suo job."""
-    from jenny.runtime.context import get_runtime_context
+    from arkhiva.runtime.context import get_runtime_context
     from tests.support.cron import running_cron
 
     monkeypatch.setattr(get_runtime_context(), "workspace_dir", ws)
@@ -120,7 +120,7 @@ def test_a_drawer_with_unchanged_pages_is_not_rewritten(tmp_path) -> None:
 def test_the_brake_holds_a_reason_that_stays_true(tmp_path) -> None:
     ws, root = _notebook(tmp_path)
     _seed_board(root)
-    mutate_board(root, lambda b: b.__setitem__("lastPassAt", model.now_iso()), actor="jenny")
+    mutate_board(root, lambda b: b.__setitem__("lastPassAt", model.now_iso()), actor="arkhiva")
     assert BoardPass(root, ws).reason() is None, "cassetti da scrivere, ma la passata e' appena girata"
     # Le righe di diario nuove passano comunque: le porta la passata della wiki.
     assert BoardPass(root, ws).reason(journal_lines=3) == "journal"
@@ -183,7 +183,7 @@ async def test_an_unchanged_section_keeps_its_moment(tmp_path) -> None:
 
 
 async def test_reminders_are_not_added_twice(tmp_path, monkeypatch) -> None:
-    from jenny.board.cron_link import notebook_jobs, scope_of
+    from arkhiva.board.cron_link import notebook_jobs, scope_of
 
     ws, root = _notebook(tmp_path)
     _seed_board(root)
@@ -213,7 +213,7 @@ async def test_reminders_are_not_added_twice(tmp_path, monkeypatch) -> None:
 
 async def test_the_gardener_can_give_a_reminder_to_the_whole_notebook(tmp_path,
                                                                      monkeypatch) -> None:
-    from jenny.board.cron_link import notebook_jobs
+    from arkhiva.board.cron_link import notebook_jobs
 
     ws, root = _notebook(tmp_path)
     _seed_board(root)
@@ -369,13 +369,13 @@ class _Store:
         self.name = root.name
 
     def build_tools(self, *, write_guard=None):
-        from jenny.agent.tools.registry import ToolRegistry
+        from arkhiva.agent.tools.registry import ToolRegistry
 
         return ToolRegistry()
 
 
 async def test_the_first_board_is_proposed_with_its_drawers_written(tmp_path, monkeypatch) -> None:
-    from jenny.board.cron_link import notebook_jobs
+    from arkhiva.board.cron_link import notebook_jobs
 
     ws, root = _notebook(tmp_path)
     async with _cron(ws, monkeypatch) as cron:
@@ -418,7 +418,7 @@ async def _first_board(ws: Path, root: Path, cron: Any) -> None:
     assert not BoardPass(root, ws).is_migrating()
 
     # Accettata, la bacheca nasce coi cassetti gia' scritti.
-    from jenny.board.edit import accept_suggestion
+    from arkhiva.board.edit import accept_suggestion
 
     def accept(b):
         accept_suggestion(b, b["suggestions"][0], [])
@@ -432,7 +432,7 @@ async def _first_board(ws: Path, root: Path, cron: Any) -> None:
     assert [c["id"] for c in BoardPass(root, ws).stale_cards()] == ["ginkgo"], (
         "il cassetto scritto alla proposta vale anche dopo l'accettazione"
     )
-    assert acero["pos"]["by"] == "jenny"
+    assert acero["pos"]["by"] == "arkhiva"
 
 
 async def test_a_pass_never_moves_what_the_user_placed(tmp_path) -> None:
@@ -470,7 +470,7 @@ async def test_a_failing_model_still_stamps_the_pass(tmp_path) -> None:
 def test_glyphs_are_known_icon_names() -> None:
     """Il glifo di una scheda lo sceglie il modello da un elenco chiuso: ogni
     nome dell'elenco deve esistere nel set di icone che la casa porta con se'."""
-    css = (Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets" / "vendor"
+    css = (Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets" / "vendor"
            / "@tabler" / "icons-webfont@3.19.0" / "dist" / "tabler-icons.min.css").read_text()
     for name in model.GLYPHS:
         assert f".ti-{name}:before" in css, name

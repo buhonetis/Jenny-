@@ -8,10 +8,10 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from support.agent import make_loop
 
-from jenny.config.schema import AgentDefaults
-from jenny.providers.base import LLMResponse, ToolCallRequest
-from jenny.runtime.user_text import say
-from jenny.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.config.schema import AgentDefaults
+from arkhiva.providers.base import LLMResponse, ToolCallRequest
+from arkhiva.runtime.user_text import say
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
 
 _MAX_TOOL_RESULT_CHARS = AgentDefaults().max_tool_result_chars
 
@@ -58,8 +58,8 @@ class _Probe:
 @pytest.mark.parametrize("running, expected", [({"project:piante"}, 0.0), (set(), None)])
 async def test_a_running_plan_lifts_the_turn_wall_timeout(tmp_path, running, expected):
     """Il passo di un piano non ha tetto sulla chiamata al modello; un turno qualsiasi sì."""
-    from jenny.agent.runner import AgentRunResult
-    from jenny.session.plan_probe import set_plan_probe
+    from arkhiva.agent.runner import AgentRunResult
+    from arkhiva.session.plan_probe import set_plan_probe
 
     loop = _make_loop(tmp_path)
     loop.runner.run = AsyncMock(
@@ -170,9 +170,9 @@ async def test_loop_retries_think_only_final_response(tmp_path):
 async def test_streamed_flag_not_set_on_llm_error(tmp_path):
     """When LLM errors during a streaming-capable channel interaction,
     _streamed must NOT be set so the outbound dispatcher delivers the error."""
-    from jenny.agent.loop import AgentLoop
-    from jenny.bus.events import InboundMessage
-    from jenny.bus.queue import MessageBus
+    from arkhiva.agent.loop import AgentLoop
+    from arkhiva.bus.events import InboundMessage
+    from arkhiva.bus.queue import MessageBus
 
     bus = MessageBus()
     provider = MagicMock()
@@ -207,9 +207,9 @@ async def test_streamed_flag_not_set_on_llm_error(tmp_path):
 
 @pytest.mark.asyncio
 async def test_ssrf_soft_block_can_finalize_after_streamed_tool_call(tmp_path):
-    from jenny.agent.loop import AgentLoop
-    from jenny.bus.events import InboundMessage
-    from jenny.bus.queue import MessageBus
+    from arkhiva.agent.loop import AgentLoop
+    from arkhiva.bus.events import InboundMessage
+    from arkhiva.bus.queue import MessageBus
 
     bus = MessageBus()
     provider = MagicMock()
@@ -252,10 +252,10 @@ async def test_ssrf_soft_block_can_finalize_after_streamed_tool_call(tmp_path):
 
 @pytest.mark.asyncio
 async def test_next_turn_after_llm_error_keeps_turn_boundary(tmp_path):
-    from jenny.agent.loop import AgentLoop
-    from jenny.agent.runner import _PERSISTED_MODEL_ERROR_PLACEHOLDER
-    from jenny.bus.events import InboundMessage
-    from jenny.bus.queue import MessageBus
+    from arkhiva.agent.loop import AgentLoop
+    from arkhiva.agent.runner import _PERSISTED_MODEL_ERROR_PLACEHOLDER
+    from arkhiva.bus.events import InboundMessage
+    from arkhiva.bus.queue import MessageBus
 
     provider = MagicMock()
     provider.get_default_model.return_value = "test-model"
@@ -302,8 +302,8 @@ async def test_next_turn_after_llm_error_keeps_turn_boundary(tmp_path):
 
 @pytest.mark.asyncio
 async def test_subagent_max_iterations_announces_the_budget_stop(tmp_path, monkeypatch):
-    from jenny.agent.subagent import SubagentManager, SubagentSpec, SubagentStatus
-    from jenny.bus.queue import MessageBus
+    from arkhiva.agent.subagent import SubagentManager, SubagentSpec, SubagentStatus
+    from arkhiva.bus.queue import MessageBus
 
     bus = MessageBus()
     provider = MagicMock()
@@ -326,7 +326,7 @@ async def test_subagent_max_iterations_announces_the_budget_stop(tmp_path, monke
     async def fake_execute(self, **kwargs):
         return "tool result"
 
-    monkeypatch.setattr("jenny.agent.tools.filesystem.ListDirTool.execute", fake_execute)
+    monkeypatch.setattr("arkhiva.agent.tools.filesystem.ListDirTool.execute", fake_execute)
 
     status = SubagentStatus(task_id="sub-1", label="label", task_description="do task", started_at=time.monotonic())
     await mgr._run_subagent(

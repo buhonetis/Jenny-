@@ -4,8 +4,8 @@ import os
 
 import pytest
 
-from jenny.agent.tools import file_state
-from jenny.agent.tools.filesystem import ReadFileTool, WriteFileTool
+from arkhiva.agent.tools import file_state
+from arkhiva.agent.tools.filesystem import ReadFileTool, WriteFileTool
 
 # ---------------------------------------------------------------------------
 # Description fix

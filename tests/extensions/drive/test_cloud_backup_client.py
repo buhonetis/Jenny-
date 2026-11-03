@@ -403,7 +403,7 @@ def test_the_password_rules_are_said_before_sending() -> None:
 
 
 def test_the_minimum_is_the_same_on_both_sides() -> None:
-    from jenny_extensions.drive.cloud import PASSWORD_MIN_LEN
+    from arkhiva_extensions.drive.cloud import PASSWORD_MIN_LEN
 
     js = int(re.search(r"export const CLOUD_PASSWORD_MIN = (\d+);", CLOUD_JS).group(1))
     assert js == PASSWORD_MIN_LEN

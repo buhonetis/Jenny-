@@ -25,9 +25,9 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from jenny.agent.memory import Consolidator, MemoryStore
-from jenny.session.keys import UNIFIED_SESSION_KEY
-from jenny.session.manager import SessionManager
+from arkhiva.agent.memory import Consolidator, MemoryStore
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.session.manager import SessionManager
 
 PROJECT_NAME = "palestra"
 PROJECT_KEY = f"project:{PROJECT_NAME}"

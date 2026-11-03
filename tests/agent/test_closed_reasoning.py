@@ -10,8 +10,8 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
-from jenny.agent.context_governor import blank_closed_reasoning, closed_reasoning_can_be_blank
-from jenny.providers.openai_compat_provider import OpenAICompatProvider
+from arkhiva.agent.context_governor import blank_closed_reasoning, closed_reasoning_can_be_blank
+from arkhiva.providers.openai_compat_provider import OpenAICompatProvider
 
 
 def _call(cid: str) -> dict:
@@ -60,7 +60,7 @@ def test_only_deepseek_is_blanked() -> None:
 
 
 def test_the_runner_sends_the_blanked_history() -> None:
-    from jenny.agent.runner import AgentRunner
+    from arkhiva.agent.runner import AgentRunner
 
     provider = OpenAICompatProvider(api_key="k", api_base="https://api.deepseek.com",
                                     default_model="deepseek-v4.1-flash")
@@ -76,7 +76,7 @@ def test_the_runner_sends_the_blanked_history() -> None:
 def test_flagged_only_blanks_what_the_history_marked() -> None:
     """Nel loop principale il confine non si sposta da solo: si svuota solo cio'
     che ``settle_closed_reasoning`` ha marcato, e il turno dopo rimanda uguale."""
-    from jenny.session.history_meta import REASONING_DROPPED_META
+    from arkhiva.session.history_meta import REASONING_DROPPED_META
 
     marked = [dict(m) for m in HISTORY]
     marked[1][REASONING_DROPPED_META] = True

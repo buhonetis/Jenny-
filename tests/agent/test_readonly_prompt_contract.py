@@ -5,7 +5,7 @@ Passo **4.4** del piano dei progetti.
 Al passo 3 abbiamo deciso di **non** mettere niente nel prompt per il rifiuto dei
 promemoria, e il criterio era: una riga nel blocco se la guadagna la regola che
 sbatteresti addosso di continuo e che ti costringe a ripianificare. Un promemoria
-è raro e sta in piedi da solo; **scrivere è quel che Jenny fa a ogni turno**, e
+è raro e sta in piedi da solo; **scrivere è quel che ARKHIVA fa a ogni turno**, e
 scoprire a metà lavoro che non può le fa buttare la chiamata *e* rifare il piano.
 
 Applicato a due casi, lo stesso criterio decide al contrario. È la prova che non
@@ -26,9 +26,9 @@ from pathlib import Path
 
 import pytest
 
-from jenny.utils.prompt_templates import render_template
+from arkhiva.utils.prompt_templates import render_template
 
-SRC = Path(__file__).resolve().parents[2] / "jenny"
+SRC = Path(__file__).resolve().parents[2] / "arkhiva"
 TEMPLATES = SRC / "templates" / "agent"
 
 
@@ -36,10 +36,10 @@ TEMPLATES = SRC / "templates" / "agent"
 def _templates(monkeypatch):
     """Rende i template leggibili senza un workspace configurato."""
     monkeypatch.setattr(
-        "jenny.utils.prompt_templates._get_templates_root",
+        "arkhiva.utils.prompt_templates._get_templates_root",
         lambda: TEMPLATES.parent,
     )
-    from jenny.utils import prompt_templates
+    from arkhiva.utils import prompt_templates
 
     prompt_templates._environment.cache_clear()
     yield
@@ -81,12 +81,12 @@ _READONLY_RULES: tuple[tuple[str, str, str], ...] = (
         "descrivi invece di scrivere",
         "la descrizione della modifica *è* il prodotto del turno, non il preambolo di un "
         "tentativo: senza, il modello risponde «non posso» e l'utente resta a mani vuote",
-        "describe the change",
+        "describe el cambio en lugar de hacerlo",
     ),
     (
         "e dillo al posto del tentativo",
         "l'altra metà della stessa frase: «descrivi» da solo si legge come «descrivi, poi prova»",
-        "instead of making it",
+        "no un preámbulo de un intento",
     ),
     (
         "nessun altro percorso vale la pena",
@@ -95,31 +95,31 @@ _READONLY_RULES: tuple[tuple[str, str, str], ...] = (
         "tenuto la sottostringa cambiando quel che afferma — da «non esiste un giro» a "
         "«prendi il rifiuto come definitivo». La sottostringa è il cardine di quel lavoro: "
         "va riscritta sapendolo, non per far tornare un test",
-        "no other path or other tool",
+        "ninguna otra ruta ni otra herramienta",
     ),
     (
         "delegare non solleva il vincolo",
         "la seconda strada, e la sola misurata: il 22/08 sul telefono l'agente ha delegato "
         "a un subagent, che ha pianificato e scritto sei file, tutti rifiutati. Il confine "
         "ha tenuto, il lavoro è stato buttato",
-        "delegating does not lift it",
+        "delegar tampoco lo levanta",
     ),
     (
         "chi può riaccenderla",
         "la terza strada è chiedere di nuovo: senza dire di chi è l'interruttore, il "
         "modello lo chiede due volte",
-        "switch above the composer",
+        "interruptor sobre el compositor",
     ),
     (
         "leggere resta intatto",
         "senza questo «sola lettura» si legge come «muta», e il turno non fa nemmeno "
         "quello che potrebbe fare",
-        "reading is untouched",
+        "la lectura no está restringida",
     ),
     (
         "parlare resta intatto",
         "l'altra metà: un blocco che vieta tutto vieta anche di rispondere",
-        "messaging the user",
+        "responder y enviar mensajes al usuario",
     ),
 )
 
@@ -161,7 +161,7 @@ def test_the_block_stays_small() -> None:
 
 def test_it_is_a_system_template_so_a_correction_arrives() -> None:
     """``agent/**`` si riscrive a ogni avvio; un file dell'utente una volta sola."""
-    from jenny.utils.android_assets import _SYSTEM_PROMPT_TEMPLATES
+    from arkhiva.utils.android_assets import _SYSTEM_PROMPT_TEMPLATES
 
     assert "agent/readonly.md" in _SYSTEM_PROMPT_TEMPLATES
 
@@ -188,7 +188,7 @@ def test_a_turn_with_no_bound_scope_is_writable() -> None:
     contrario: un default chiuso avrebbe messo il blocco nel prompt di cron
     e Dream.
     """
-    from jenny.agent.context import _turn_is_writable
+    from arkhiva.agent.context import _turn_is_writable
 
     assert _turn_is_writable() is True
 
@@ -208,8 +208,8 @@ def test_read_only_removes_the_capture_rule(tmp_path) -> None:
     ``AGENTS.md`` di progetto che dica di scrivere): quello che cambia è che in
     sola lettura non c'è più niente da far vincere.
     """
-    from jenny.agent.context import ContextBuilder
-    from jenny.security.workspace_access import (
+    from arkhiva.agent.context import ContextBuilder
+    from arkhiva.security.workspace_access import (
         WorkspaceScope,
         bind_workspace_scope,
         reset_workspace_scope,
@@ -235,14 +235,14 @@ def test_read_only_removes_the_capture_rule(tmp_path) -> None:
     finally:
         reset_workspace_scope(token)
 
-    assert "# Project Folder" in prompt and "# Read-Only Turn" in prompt
+    assert "# Carpeta del proyecto" in prompt and "# Turno de solo lectura" in prompt
     # **La regola di cattura non c'è affatto**, ed è la correzione del collaudo
     # del 22/08: con la regola presente e il divieto più in basso — cioè
     # nell'ordine che vince — l'agente ha provato due volte a catturare, e al
     # secondo tentativo ha istruito il subagent a cercare una scappatoia
     # (`apply_patch`). L'ordine risolve la contraddizione per il modello; non
     # gli toglie la voglia di provarci. Meglio non dare l'ordine.
-    assert "before you answer" not in prompt
+    assert "Una llamada a `journal_append` por hecho" not in prompt
     assert "Do not ask permission" not in prompt
     # La pianta però resta: in sola lettura si legge e si descrive, e per farlo
     # bisogna sapere com'è fatta la cartella.
@@ -254,8 +254,8 @@ def test_a_writable_turn_has_the_capture_rule_and_no_read_only_block(tmp_path) -
     cattura c'è e il blocco di sola lettura no. Insieme i due provano che il
     prompt principale segue la scrivibilità del turno (``_turn_is_writable``),
     cosa che prima si fissava leggendo il sorgente di ``context.py``."""
-    from jenny.agent.context import ContextBuilder
-    from jenny.security.workspace_access import (
+    from arkhiva.agent.context import ContextBuilder
+    from arkhiva.security.workspace_access import (
         WorkspaceScope,
         bind_workspace_scope,
         reset_workspace_scope,
@@ -281,9 +281,9 @@ def test_a_writable_turn_has_the_capture_rule_and_no_read_only_block(tmp_path) -
     finally:
         reset_workspace_scope(token)
 
-    assert "# Project Folder" in prompt
-    assert "# Read-Only Turn" not in prompt
-    assert "before you answer" in prompt
+    assert "# Carpeta del proyecto" in prompt
+    assert "# Turno de solo lectura" not in prompt
+    assert "Una llamada a `journal_append` por hecho" in prompt
 
 
 # ── La simmetria col passo 3 ─────────────────────────────────────────────

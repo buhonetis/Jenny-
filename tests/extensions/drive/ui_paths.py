@@ -7,8 +7,8 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-CORE_ASSETS = ROOT / "jenny" / "templates" / "ui" / "assets"
-EXT_UI = ROOT / "jenny_extensions" / "drive" / "ui"
+CORE_ASSETS = ROOT / "arkhiva" / "templates" / "ui" / "assets"
+EXT_UI = ROOT / "arkhiva_extensions" / "drive" / "ui"
 
 
 def _merge(base: dict, extra: dict) -> dict:

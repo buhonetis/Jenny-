@@ -12,9 +12,9 @@ from types import SimpleNamespace
 
 import pytest
 
-from jenny.agent.usage_accounting import calibrate
-from jenny.utils import token_calibration
-from jenny.utils.helpers import (
+from arkhiva.agent.usage_accounting import calibrate
+from arkhiva.utils import token_calibration
+from arkhiva.utils.helpers import (
     IMAGE_PROMPT_TOKENS,
     estimate_prompt_tokens,
     estimate_prompt_tokens_chain,
@@ -71,7 +71,7 @@ def test_a_wild_measure_is_clamped_and_a_tiny_one_ignored() -> None:
 
 
 def _reasoning_session(turns: int):
-    from jenny.session.manager import Session
+    from arkhiva.session.manager import Session
 
     session = Session(key="project:etf")
     for i in range(turns):
@@ -85,7 +85,7 @@ def _reasoning_session(turns: int):
 def _consolidator(tmp_path, session):
     from unittest.mock import AsyncMock, MagicMock
 
-    from jenny.agent.memory import Consolidator, MemoryStore
+    from arkhiva.agent.memory import Consolidator, MemoryStore
 
     provider = MagicMock(spec=["chat_with_retry"])
     provider.chat_with_retry = AsyncMock(return_value=MagicMock(content="- [durable] un fatto"))
@@ -123,7 +123,7 @@ def test_notebook_summaries_add_up_and_the_oldest_drop() -> None:
     sovrascriveva, e il modello vedeva solo l'ultimo."""
     from datetime import datetime
 
-    from jenny.agent.consolidator import SUMMARY_MAX_CHARS, accumulate_summary
+    from arkhiva.agent.consolidator import SUMMARY_MAX_CHARS, accumulate_summary
 
     old = {"text": "- [durable] vecchio formato", "last_active": "2026-10-06T10:00:00"}
     one = accumulate_summary(old, ["- [durable] primo"], datetime(2026, 10, 7, 9, 0))
@@ -142,7 +142,7 @@ def test_notebook_summaries_add_up_and_the_oldest_drop() -> None:
 def test_the_ephemeral_lines_of_old_pieces_go_before_whole_pieces() -> None:
     from datetime import datetime
 
-    from jenny.agent.consolidator import SUMMARY_MAX_CHARS, accumulate_summary
+    from arkhiva.agent.consolidator import SUMMARY_MAX_CHARS, accumulate_summary
 
     first = "- [durable] app meteo-milano live\n" + "- [ephemeral] " + "t" * 2500
     summary = accumulate_summary(None, [first], datetime(2026, 10, 7, 21, 0))
@@ -161,7 +161,7 @@ def test_the_skip_lines_go_before_the_ephemeral_ones() -> None:
     resta."""
     from datetime import datetime
 
-    from jenny.agent.consolidator import SUMMARY_MAX_CHARS, accumulate_summary
+    from arkhiva.agent.consolidator import SUMMARY_MAX_CHARS, accumulate_summary
 
     first = ("- [durable] app meteo-milano live\n- [ephemeral] vasi da ricontrollare: A12\n"
              + "- [skip] " + "s" * 2500)
@@ -178,7 +178,7 @@ def test_the_skip_lines_go_before_the_ephemeral_ones() -> None:
 def test_under_the_cap_the_skip_lines_stay() -> None:
     from datetime import datetime
 
-    from jenny.agent.consolidator import accumulate_summary
+    from arkhiva.agent.consolidator import accumulate_summary
 
     one = accumulate_summary(None, ["- [skip] basilico fatto, vaso da 14 cm"],
                              datetime(2026, 10, 7, 21, 0))
@@ -187,7 +187,7 @@ def test_under_the_cap_the_skip_lines_stay() -> None:
 
 
 async def test_a_notebook_turn_sees_the_summary_written_before_it(tmp_path) -> None:
-    from jenny.agent.autocompact import AutoCompact
+    from arkhiva.agent.autocompact import AutoCompact
 
     session = _reasoning_session(8)
     consolidator, _provider = _consolidator(tmp_path, session)

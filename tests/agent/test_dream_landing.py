@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import pytest
 
-from jenny.agent.dream_cycle import (
+from arkhiva.agent.dream_cycle import (
     NOTHING_NEW_IS_NOTABLE,
     STUCK_IS_ALARMING,
     batch_carries_retained_facts,
@@ -25,9 +25,9 @@ from jenny.agent.dream_cycle import (
     consolidation_landed,
     finish_dream_cycle,
 )
-from jenny.agent.memory import MemoryStore
-from jenny.agent.memory_budget import budget_report
-from jenny.runtime.user_text import say
+from arkhiva.agent.memory import MemoryStore
+from arkhiva.agent.memory_budget import budget_report
+from arkhiva.runtime.user_text import say
 
 
 @pytest.fixture
@@ -327,7 +327,7 @@ class TestTheEvidenceIsNowCounted:
 
     def test_the_threshold_is_gone(self):
         """Nessun numero tarato a occhio è sopravvissuto a questo passaggio."""
-        import jenny.agent.dream_cycle as dc
+        import arkhiva.agent.dream_cycle as dc
 
         assert not hasattr(dc, "_PRESSURE_PCT")
         assert not hasattr(dc, "under_write_pressure")
@@ -338,7 +338,7 @@ class TestARunWithoutTheEntryTool:
     e nemmeno un run vecchio in corso durante un aggiornamento."""
 
     def test_the_default_reads_as_zero_of_everything(self):
-        from jenny.agent.dream_cycle import NO_ENTRIES
+        from arkhiva.agent.dream_cycle import NO_ENTRIES
 
         assert NO_ENTRIES.entries_added == 0
         assert NO_ENTRIES.entries_replaced == 0

@@ -17,7 +17,7 @@ from __future__ import annotations
 from pathlib import Path
 from unittest.mock import MagicMock
 
-from jenny.runtime.container import GatewayContainer
+from arkhiva.runtime.container import GatewayContainer
 
 
 def _container(tmp_path: Path) -> GatewayContainer:
@@ -30,7 +30,7 @@ def _container(tmp_path: Path) -> GatewayContainer:
 def test_the_boot_completes_a_pending_rename(tmp_path, monkeypatch):
     seen: list[Path] = []
     monkeypatch.setattr(
-        "jenny.session.project_rename.repair_pending_project_renames",
+        "arkhiva.session.project_rename.repair_pending_project_renames",
         lambda workspace: (seen.append(workspace) or [("project:vecchio", "project:nuovo")]),
     )
 
@@ -47,7 +47,7 @@ def test_a_broken_repair_does_not_stop_the_gateway(tmp_path, monkeypatch):
         raise OSError("disco pieno")
 
     monkeypatch.setattr(
-        "jenny.session.project_rename.repair_pending_project_renames", explode
+        "arkhiva.session.project_rename.repair_pending_project_renames", explode
     )
 
     _container(tmp_path)._repair_pending_renames()  # non solleva

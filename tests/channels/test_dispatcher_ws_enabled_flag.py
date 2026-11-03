@@ -7,9 +7,9 @@ documented ``enabled`` flag (see docs/websocket.md, docs/configuration.md).
 
 from __future__ import annotations
 
-from jenny.bus.queue import MessageBus
-from jenny.channels.dispatcher import WebSocketDispatcher
-from jenny.config.schema import Config
+from arkhiva.bus.queue import MessageBus
+from arkhiva.channels.dispatcher import WebSocketDispatcher
+from arkhiva.config.schema import Config
 
 
 def test_websocket_enabled_false_skips_channel_construction():

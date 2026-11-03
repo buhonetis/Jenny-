@@ -5,9 +5,9 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from jenny.agent.runner import AgentRunResult
-from jenny.agent.subagent import SubagentManager, SubagentSpec, SubagentStatus
-from jenny.bus.queue import MessageBus
+from arkhiva.agent.runner import AgentRunResult
+from arkhiva.agent.subagent import SubagentManager, SubagentSpec, SubagentStatus
+from arkhiva.bus.queue import MessageBus
 
 
 @pytest.mark.asyncio

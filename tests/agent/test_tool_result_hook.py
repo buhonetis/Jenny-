@@ -15,13 +15,13 @@ from typing import Any
 
 import pytest
 
-from jenny.agent.hook import AgentHook, ToolResultHookContext
-from jenny.agent.runner import AgentRunner, AgentRunSpec
-from jenny.agent.tools.base import Tool, tool_parameters
-from jenny.agent.tools.registry import ToolRegistry
-from jenny.agent.tools.schema import tool_parameters_schema
-from jenny.providers.base import ToolCallRequest
-from jenny.utils.runtime import external_lookup_signature
+from arkhiva.agent.hook import AgentHook, ToolResultHookContext
+from arkhiva.agent.runner import AgentRunner, AgentRunSpec
+from arkhiva.agent.tools.base import Tool, tool_parameters
+from arkhiva.agent.tools.registry import ToolRegistry
+from arkhiva.agent.tools.schema import tool_parameters_schema
+from arkhiva.providers.base import ToolCallRequest
+from arkhiva.utils.runtime import external_lookup_signature
 
 
 @tool_parameters(tool_parameters_schema())
@@ -120,7 +120,7 @@ class TestEveryBranchEmits:
 
     async def test_timeout(self, monkeypatch):
         monkeypatch.setattr(
-            "jenny.agent.tool_execution.tool_timeout_s", lambda: 0.01
+            "arkhiva.agent.tool_execution.tool_timeout_s", lambda: 0.01
         )
         hook = _RecordingHook()
         spec = _spec(hook, _ScriptedTool("slow", "__sleep__"))

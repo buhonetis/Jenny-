@@ -16,9 +16,9 @@ import httpx
 import pytest
 from port_alloc import free_port, wait_listening
 
-import jenny.channels.websocket as websocket_module
-from jenny.channels.websocket import WebSocketChannel, WebSocketConfig
-from jenny.webui.gateway_services import build_gateway_services
+import arkhiva.channels.websocket as websocket_module
+from arkhiva.channels.websocket import WebSocketChannel, WebSocketConfig
+from arkhiva.webui.gateway_services import build_gateway_services
 
 
 def _channel(port: int) -> WebSocketChannel:

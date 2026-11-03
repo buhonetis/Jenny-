@@ -18,14 +18,14 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from jenny.agent import staged_writes
-from jenny.agent.tools.apply_patch import ApplyPatchTool
-from jenny.agent.tools.filesystem import EditFileTool, WriteFileTool
-from jenny.security import taint_ledger
-from jenny.security.subagent_policy import SubagentRunPolicy, enter_subagent_policy
-from jenny.utils.wiki_paths import wiki_id
-from jenny.webui.staged_commands import staged_install, staged_list
-from jenny.webui.workspace_files import write_file as webui_write_file
+from arkhiva.agent import staged_writes
+from arkhiva.agent.tools.apply_patch import ApplyPatchTool
+from arkhiva.agent.tools.filesystem import EditFileTool, WriteFileTool
+from arkhiva.security import taint_ledger
+from arkhiva.security.subagent_policy import SubagentRunPolicy, enter_subagent_policy
+from arkhiva.utils.wiki_paths import wiki_id
+from arkhiva.webui.staged_commands import staged_install, staged_list
+from arkhiva.webui.workspace_files import write_file as webui_write_file
 
 ID = "097d8ba49406"
 AGENTS = f"---\nid: {ID}\nscope: piante di casa\n---\n\n# Piante\n\nLayout research.\n"
@@ -122,7 +122,7 @@ async def test_a_notebook_without_an_id_has_nothing_to_guard(ws: Path) -> None:
 
 
 async def test_an_agents_md_outside_a_notebook_is_not_fenced(ws: Path) -> None:
-    out = await _tool(WriteFileTool, ws).execute(path=str(ws / "AGENTS.md"), content="# Jenny\n")
+    out = await _tool(WriteFileTool, ws).execute(path=str(ws / "AGENTS.md"), content="# ARKHIVA\n")
     assert out.startswith("Successfully wrote"), out
 
 

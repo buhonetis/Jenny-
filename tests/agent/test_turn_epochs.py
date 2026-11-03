@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from jenny.agent.turn_epochs import TurnEpochs, TurnToken
+from arkhiva.agent.turn_epochs import TurnEpochs, TurnToken
 
 
 class TestTurnEpochs:

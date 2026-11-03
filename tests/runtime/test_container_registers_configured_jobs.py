@@ -25,11 +25,11 @@ from pathlib import Path
 
 import pytest
 
-from jenny import extensions
-from jenny.config import paths as paths_mod
-from jenny.config.schema import Config
-from jenny.cron.types import CronJob
-from jenny.runtime.container import GatewayContainer
+from arkhiva import extensions
+from arkhiva.config import paths as paths_mod
+from arkhiva.config.schema import Config
+from arkhiva.cron.types import CronJob
+from arkhiva.runtime.container import GatewayContainer
 
 _MINUTE_MS = 60_000
 _HOUR_MS = 3_600_000
@@ -178,8 +178,8 @@ def test_an_orphan_system_job_is_retired(workspace: Path, no_extensions) -> None
     """Un job di sistema che nessuno sa eseguire — arrivato col cron dentro un
     backup fatto da una build con un'estensione — va via all'avvio. I job del
     core spenti invece restano: il loro cancello è nel dispatcher."""
-    from jenny.cron.service import CronService
-    from jenny.cron.types import CronPayload, CronSchedule
+    from arkhiva.cron.service import CronService
+    from arkhiva.cron.types import CronPayload, CronSchedule
 
     config = Config()
     config.updates.enabled = False
@@ -202,8 +202,8 @@ def test_an_orphan_system_job_is_retired(workspace: Path, no_extensions) -> None
 def test_the_retired_heartbeat_job_leaves_the_store(workspace: Path) -> None:
     """L'heartbeat non c'è più (31/10/2026): il suo job, scritto da una build
     precedente, va via all'avvio invece di scattare nel vuoto ogni mezz'ora."""
-    from jenny.cron.service import CronService
-    from jenny.cron.types import CronPayload, CronSchedule
+    from arkhiva.cron.service import CronService
+    from arkhiva.cron.types import CronPayload, CronSchedule
 
     seed = GatewayContainer(Config())
     seed.build()

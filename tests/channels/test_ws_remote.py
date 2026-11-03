@@ -20,9 +20,9 @@ import websockets
 from port_alloc import free_port
 from support.aio import wait_until
 
-from jenny.channels import ws_remote
-from jenny.channels.websocket import WebSocketChannel, WebSocketConfig
-from jenny.channels.ws_remote import (
+from arkhiva.channels import ws_remote
+from arkhiva.channels.websocket import WebSocketChannel, WebSocketConfig
+from arkhiva.channels.ws_remote import (
     RemoteListener,
     auth_secret,
     detect_tailscale,
@@ -31,9 +31,9 @@ from jenny.channels.ws_remote import (
     peer_allowed,
     write_remote_access,
 )
-from jenny.config.loader import load_config
-from jenny.runtime.context import get_runtime_context
-from jenny.webui.gateway_services import build_gateway_services
+from arkhiva.config.loader import load_config
+from arkhiva.runtime.context import get_runtime_context
+from arkhiva.webui.gateway_services import build_gateway_services
 
 TS4 = "100.94.12.7"
 TS6 = "fd7a:115c:a1e0::1234"
@@ -333,7 +333,7 @@ async def _start(ch: WebSocketChannel, remote_port: int) -> asyncio.Task[None]:
 async def _bootstrap(port: int, secret: str) -> int:
     async with httpx.AsyncClient() as client:
         r = await client.get(
-            f"http://127.0.0.1:{port}/webui/bootstrap", headers={"X-Jenny-Auth": secret},
+            f"http://127.0.0.1:{port}/webui/bootstrap", headers={"X-ARKHIVA-Auth": secret},
         )
         return r.status_code
 
@@ -480,7 +480,7 @@ async def test_the_webview_listener_rebinds_when_its_sockets_stop_listening(
 ) -> None:
     """Il server della WebView si guarda da sé: socket che non ascoltano più →
     lo si chiude e lo si rifà sulla stessa porta, e il telefono rientra."""
-    from jenny.channels import websocket as ws_module
+    from arkhiva.channels import websocket as ws_module
 
     monkeypatch.setattr(ws_module, "_LISTENER_CHECK_S", 0.05)
     real = ws_module.server_listening

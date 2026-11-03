@@ -13,21 +13,21 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.tools.app_actions import AppToolsSyncer
-from jenny.agent.tools.app_tool import AppTool
-from jenny.agent.tools.context import RequestContext, bind_request_context, reset_request_context
-from jenny.agent.tools.registry import ToolRegistry
-from jenny.apps.executor import execute_action
-from jenny.apps.manifest import find_app
-from jenny.apps.summary_view import summary_view
-from jenny.board.placements import placements
-from jenny.board.store import mutate_board, read_board
-from jenny.security.workspace_access import (
+from arkhiva.agent.tools.app_actions import AppToolsSyncer
+from arkhiva.agent.tools.app_tool import AppTool
+from arkhiva.agent.tools.context import RequestContext, bind_request_context, reset_request_context
+from arkhiva.agent.tools.registry import ToolRegistry
+from arkhiva.apps.executor import execute_action
+from arkhiva.apps.manifest import find_app
+from arkhiva.apps.summary_view import summary_view
+from arkhiva.board.placements import placements
+from arkhiva.board.store import mutate_board, read_board
+from arkhiva.security.workspace_access import (
     bind_workspace_scope,
     build_workspace_scope,
     reset_workspace_scope,
 )
-from jenny.webui.commands import CommandContext
+from arkhiva.webui.commands import CommandContext
 
 SPESA = {
     "name": "Spesa", "description": "Shopping list",
@@ -58,7 +58,7 @@ def ws(tmp_path: Path, monkeypatch) -> Path:
     (root / "wiki").mkdir(parents=True)
     mutate_board(root, lambda b: b["cards"].append(
         {"id": "acero", "title": "Acerello", "pages": [], "pos": {"x": 1, "y": 1}}))
-    monkeypatch.setattr("jenny.config.paths.get_workspace_path", lambda: workspace)
+    monkeypatch.setattr("arkhiva.config.paths.get_workspace_path", lambda: workspace)
     return workspace
 
 
@@ -159,7 +159,7 @@ async def test_an_update_never_copies_file_attributes(personal: Path, monkeypatc
 async def test_a_failed_promotion_does_not_blame_the_users_files(personal: Path,
                                                                  monkeypatch) -> None:
     # Il 06/10/2026 l'errore grezzo («[Errno 13] Permission denied» su due
-    # cartelle) ha fatto chiedere a Jenny un chmod, e poi di cancellare l'app.
+    # cartelle) ha fatto chiedere a ARKHIVA un chmod, e poi di cancellare l'app.
     ws = personal
     tool = AppTool()
     await tool.execute(action="draft", slug="spesa", files={"app.json": json.dumps(SPESA)})
@@ -167,10 +167,10 @@ async def test_a_failed_promotion_does_not_blame_the_users_files(personal: Path,
     def denied(*_a, **_k):
         raise PermissionError(13, "Permission denied")
 
-    monkeypatch.setattr("jenny.apps.drafts.promote_draft", denied)
+    monkeypatch.setattr("arkhiva.apps.drafts.promote_draft", denied)
     out = await tool.execute(action="draft", slug="spesa",
                              files={"app/index.html": "<p>la spesa</p>"})
-    assert "fault in Jenny" in out and "do not ask them to change permissions" in out, out
+    assert "fault in ARKHIVA" in out and "do not ask them to change permissions" in out, out
     assert "publishing it again" in out, out
     assert (ws / "apps" / ".drafts" / "spesa").is_dir()
 
@@ -199,7 +199,7 @@ async def test_a_credential_in_the_code_is_refused(personal: Path) -> None:
     assert "credential" in out
 
 
-async def test_from_a_notebook_jenny_places_but_does_not_delete(notebook_chat) -> None:
+async def test_from_a_notebook_arkhiva_places_but_does_not_delete(notebook_chat) -> None:
     ws, root = notebook_chat
     tool = AppTool()
     await tool.execute(action="draft", slug="waterbot", files={
@@ -214,7 +214,7 @@ async def test_from_a_notebook_jenny_places_but_does_not_delete(notebook_chat) -
     assert [(p["app"], p["section"]) for p in places] == [("waterbot", None)]
     board = read_board(root)
     card = next(c for c in board["cards"] if c.get("app"))
-    assert card["pos"]["by"] == "user" and card["appBy"] == "jenny-on-request"
+    assert card["pos"]["by"] == "user" and card["appBy"] == "arkhiva-on-request"
     acerello = next(c for c in board["cards"] if c["title"] == "Acerello")
     assert [{c["a"], c["b"]} for c in board["connections"]] == [{card["id"], acerello["id"]}]
     out = await tool.execute(action="trash", slug="waterbot")
@@ -278,7 +278,7 @@ async def test_a_first_real_reading_that_fails_is_said(personal: Path, monkeypat
     tool = AppTool()
     await tool.execute(action="draft", slug="portafoglio",
                        files={"app.json": json.dumps(PORTAFOGLIO), "run.py": SUM})
-    import jenny.apps.reader as reader
+    import arkhiva.apps.reader as reader
 
     real = reader.run_reader
 
@@ -323,7 +323,7 @@ async def test_a_draft_says_what_is_wrong_instead_of_dropping_it(personal: Path)
 
 
 async def test_editing_a_stuck_reader_lets_it_run_again(personal: Path) -> None:
-    from jenny.board import micro as mc
+    from arkhiva.board import micro as mc
 
     tool = AppTool()
     await tool.execute(action="draft", slug="portafoglio",
@@ -343,7 +343,7 @@ async def test_editing_a_stuck_reader_lets_it_run_again(personal: Path) -> None:
 
 
 def _builder(origin: str | None = "project:piante"):
-    from jenny.agent.tools.app_tool import AppBuildTool
+    from arkhiva.agent.tools.app_tool import AppBuildTool
 
     return AppBuildTool(origin_session_key=origin)
 
@@ -359,7 +359,7 @@ async def test_a_builder_tests_a_version_but_does_not_publish_it(ws: Path) -> No
 
 
 async def test_the_main_agent_publishes_what_the_builder_tested(personal: Path) -> None:
-    from jenny.agent.tools.app_tool import AppPublishTool
+    from arkhiva.agent.tools.app_tool import AppPublishTool
 
     ws = personal
     publisher = AppPublishTool()
@@ -377,7 +377,7 @@ async def test_the_main_agent_publishes_what_the_builder_tested(personal: Path) 
 
 
 async def test_a_version_that_failed_its_test_is_not_published(personal: Path) -> None:
-    from jenny.agent.tools.app_tool import AppPublishTool
+    from arkhiva.agent.tools.app_tool import AppPublishTool
 
     broken = "def run(ctx):\n    raise RuntimeError('HTTP 429')\n"
     out = await _builder("unified:default").execute(
@@ -454,7 +454,7 @@ async def test_a_new_app_starts_with_its_manifest(ws: Path) -> None:
 
 async def test_show_shows_the_version_being_built(personal: Path) -> None:
     """Chi ha appena cambiato una bozza la rivede con ``show``, con l'esito della prova."""
-    from jenny.agent.tools.app_tool import AppPublishTool
+    from arkhiva.agent.tools.app_tool import AppPublishTool
 
     await AppTool().execute(action="draft", slug="portafoglio",
                             files={"app.json": json.dumps(PORTAFOGLIO), "run.py": SUM})
@@ -485,7 +485,7 @@ async def test_only_failed_tries_count_and_the_refusal_says_when(ws: Path) -> No
 
 
 async def test_a_published_app_brings_its_tools_into_the_same_turn(personal: Path) -> None:
-    from jenny.agent.tools.app_tool import AppPublishTool
+    from arkhiva.agent.tools.app_tool import AppPublishTool
 
     ws = personal
     registry = ToolRegistry()
@@ -505,7 +505,7 @@ async def test_a_published_app_brings_its_tools_into_the_same_turn(personal: Pat
 
 
 def test_startup_publishes_only_migrated_drafts(ws: Path) -> None:
-    from jenny.apps import drafts
+    from arkhiva.apps import drafts
 
     for slug in ("costruttore", "migrata"):
         d = drafts.draft_dir(ws, slug)
@@ -519,8 +519,8 @@ def test_startup_publishes_only_migrated_drafts(ws: Path) -> None:
 def test_each_registry_gets_its_face_of_the_tool(ws: Path) -> None:
     from types import SimpleNamespace
 
-    from jenny.agent.tools.app_tool import AppBuildTool, AppPublishTool
-    from jenny.agent.tools.loader import ToolLoader
+    from arkhiva.agent.tools.app_tool import AppBuildTool, AppPublishTool
+    from arkhiva.agent.tools.loader import ToolLoader
 
     loader = ToolLoader()
     faces = {}
@@ -558,7 +558,7 @@ async def test_show_reads_one_file_of_the_version_in_progress(personal: Path) ->
 
 
 async def test_publish_says_when_the_screen_changed(personal: Path) -> None:
-    from jenny.agent.tools.app_tool import AppPublishTool
+    from arkhiva.agent.tools.app_tool import AppPublishTool
 
     await AppTool().execute(action="draft", slug="portafoglio", files={
         "app.json": json.dumps(PORTAFOGLIO), "run.py": SUM, "app/index.html": "<p>uno</p>"})
@@ -574,12 +574,12 @@ async def test_publish_says_when_the_screen_changed(personal: Path) -> None:
 
 
 async def test_undoing_the_builder_puts_the_published_app_back(personal: Path) -> None:
-    """La bozza è dell'app-builder, la pubblica Jenny: annullare l'aiutante rimette
+    """La bozza è dell'app-builder, la pubblica ARKHIVA: annullare l'aiutante rimette
     anche l'app viva (``agent.subagent_journal``). Prima l'annulla diceva «rimesso»
     — la bozza non c'era più — e l'app restava cambiata."""
-    from jenny.agent.subagent_journal import journal_for
-    from jenny.agent.tools.app_tool import AppBuildTool, AppPublishTool
-    from jenny.security.subagent_policy import (
+    from arkhiva.agent.subagent_journal import journal_for
+    from arkhiva.agent.tools.app_tool import AppBuildTool, AppPublishTool
+    from arkhiva.security.subagent_policy import (
         SubagentRunPolicy,
         enter_subagent_policy,
         settle_writes,
@@ -607,7 +607,7 @@ async def test_undoing_the_builder_puts_the_published_app_back(personal: Path) -
     assert "`portafoglio` is updated" in out, out
     assert json.loads((live / "app.json").read_text())["reader"]["every"] == 1440
 
-    report = policy.journal.undo(by="jenny")
+    report = policy.journal.undo(by="arkhiva")
     assert report.kept == [], report.kept
     after = {p.relative_to(live).as_posix(): p.read_bytes()
              for p in live.rglob("*") if p.is_file()}

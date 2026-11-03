@@ -172,7 +172,7 @@ assert.equal(text(card.querySelector('.home-work-note')),
              W.undone.keptOthersOne.replace('{files}', 'b.md'));
 frame({ event: 'subagent_status', chat_id: 'project:orto', running: [], recent: [stopped({
   changes: 0, undo: { restored: 1, kept: [{ path: 'x/c.md', reason: 'missing' }],
-                      kept_count: 1, by: 'jenny', at: 6 } })] });
+                      kept_count: 1, by: 'arkhiva', at: 6 } })] });
 assert.ok(text(card).includes(W.undone.jennyOne), text(card));
 assert.equal(text(card.querySelector('.home-work-note')),
              W.undone.keptOtherOne.replace('{files}', 'c.md'));
@@ -193,7 +193,7 @@ assert.equal(card.querySelector('.home-work-action2').textContent, W.undoActionO
 """)
 
 
-def test_an_undo_done_by_jenny_repaints_the_card() -> None:
+def test_an_undo_done_by_arkhiva_repaints_the_card() -> None:
     run_home(_HEAD + """
 const app = await boot();
 await app.showConversation('project:orto');
@@ -206,8 +206,8 @@ assert.equal(card.querySelector('.home-work-action').textContent, W.helperContin
 frame({ event: 'subagent_status', chat_id: 'project:orto', running: [], recent: [stopped({
   state: 'budget', stop_reason: 'max_iterations', cancel_reason: null, stopped_by: null,
   resumable: false, changes: 0,
-  undo: { restored: 2, kept: [], kept_count: 0, by: 'jenny', at: 5 } })] });
-assert.match(text(card), new RegExp(W.undone.jenny.split(':')[0]));
+  undo: { restored: 2, kept: [], kept_count: 0, by: 'arkhiva', at: 5 } })] });
+assert.match(text(card), new RegExp(W.undone.arkhiva.split(':')[0]));
 assert.equal(card.querySelector('.home-work-action').hidden, true,
              'annullata: niente da far continuare');
 assert.equal(card.querySelector('.home-work-action2').hidden, true);

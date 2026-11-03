@@ -19,19 +19,19 @@ from typing import Any
 
 import pytest
 
-from jenny.cron.could_not_check import ESCALATE_AFTER_FAILURES
-from jenny.cron.service import CronService
-from jenny.cron.silence_watchdog import (
+from arkhiva.cron.could_not_check import ESCALATE_AFTER_FAILURES
+from arkhiva.cron.service import CronService
+from arkhiva.cron.silence_watchdog import (
     WATCHDOG_AFTER_FAILURES,
     alert_silently_broken_checks,
     silently_broken_checks,
 )
-from jenny.cron.types import (
+from arkhiva.cron.types import (
     CronJobState,
     CronMonitorCouldNotCheckError,
     CronSchedule,
 )
-from jenny.webui.metadata import WEBUI_MESSAGE_SOURCE_METADATA_KEY
+from arkhiva.webui.metadata import WEBUI_MESSAGE_SOURCE_METADATA_KEY
 
 _NOW = 1_760_000_000_000
 
@@ -39,7 +39,7 @@ _NOW = 1_760_000_000_000
 def _spy(monkeypatch: pytest.MonkeyPatch) -> list[tuple[str, Any]]:
     sent: list[tuple[str, Any]] = []
     monkeypatch.setattr(
-        "jenny.runtime.notifier.notify_delivery",
+        "arkhiva.runtime.notifier.notify_delivery",
         lambda content, metadata: sent.append((content, metadata)),
     )
     return sent
@@ -77,7 +77,7 @@ class TestTheAlertItself:
         Quello lo scrive il modello e sta in ``last_error``, e una seconda copia
         qui potrebbe divergere da quella. L'allarme dice quale controllo e da
         quanto — le due cose che decidono se valga la pena alzarsi — e dove
-        trovare il resto: in chat, chiedendo a Jenny, e non con un comando da
+        trovare il resto: in chat, chiedendo a ARKHIVA, e non con un comando da
         digitare (dalla tendina delle notifiche non si digita niente).
         """
         sent = _spy(monkeypatch)
@@ -209,7 +209,7 @@ class TestAWarnedMonitorIsLeftAlone:
     sentinella aspetta 24 ore come per ogni altro avviso datato."""
 
     def test_a_dated_warning_keeps_the_watchdog_quiet_for_a_day(self) -> None:
-        from jenny.cron.silence_watchdog import WATCHDOG_QUIET_MS
+        from arkhiva.cron.silence_watchdog import WATCHDOG_QUIET_MS
 
         state = CronJobState(
             consecutive_could_not_check=WATCHDOG_AFTER_FAILURES,

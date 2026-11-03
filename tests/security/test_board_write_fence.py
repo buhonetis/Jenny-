@@ -1,7 +1,7 @@
 """La bacheca di un quaderno si scrive solo dai suoi imbuti.
 
 ``board/board.json`` porta le cose dell'utente (schede, posizioni, sezioni) e
-``jenny.board.store`` le protegge: lucchetto, ``.bak``, normalizzazione e il
+``arkhiva.board.store`` le protegge: lucchetto, ``.bak``, normalizzazione e il
 controllo di proprieta'. Una scrittura con gli strumenti generici saltava tutto
 — e, con le micro app, un ``run.py`` riscritto a mano girerebbe senza
 approvazione. Ogni superficie di scrittura deve quindi rifiutare ``board/``,
@@ -14,16 +14,16 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.tools.filesystem import ReadFileTool, WriteFileTool
-from jenny.agent.tools.python_exec import PythonExecTool
-from jenny.agent.tools.python_exec_builtins import _register_builtin_functions
-from jenny.config.tool_schemas import PythonExecConfig
-from jenny.security.workspace_access import (
+from arkhiva.agent.tools.filesystem import ReadFileTool, WriteFileTool
+from arkhiva.agent.tools.python_exec import PythonExecTool
+from arkhiva.agent.tools.python_exec_builtins import _register_builtin_functions
+from arkhiva.config.tool_schemas import PythonExecConfig
+from arkhiva.security.workspace_access import (
     bind_workspace_scope,
     reset_workspace_scope,
     validate_workspace_scope_payload,
 )
-from jenny.security.workspace_policy import is_board_path
+from arkhiva.security.workspace_policy import is_board_path
 
 
 @pytest.fixture

@@ -13,10 +13,10 @@ from typing import Any
 
 import pytest
 
-from jenny.plan.driver import PlanDriver
-from jenny.plan.model import PlanValidationError, validate_proposal
-from jenny.plan.store import PlanStore
-from jenny.session.history_meta import INJECTED_EVENT_META, PLAN_STEP_EVENT
+from arkhiva.plan.driver import PlanDriver
+from arkhiva.plan.model import PlanValidationError, validate_proposal
+from arkhiva.plan.store import PlanStore
+from arkhiva.session.history_meta import INJECTED_EVENT_META, PLAN_STEP_EVENT
 from tests.support.plan import KEY, STEPS, FakeBus, FakeHost, propose, write_file
 
 _TEXT = "Testo vero della pagina, con abbastanza parole per non sembrare vuota. " * 5

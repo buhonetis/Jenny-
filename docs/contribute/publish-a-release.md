@@ -45,7 +45,7 @@ a mismatch until it is already on someone's phone:
 | Where | What |
 |---|---|
 | `pyproject.toml` | `version = "0.7.0"` — the Python package version |
-| `jenny/__init__.py` | the hardcoded fallback the app reports on Android, where package metadata does not exist |
+| `arkhiva/__init__.py` | the hardcoded fallback the app reports on Android, where package metadata does not exist |
 | `android/app/build.gradle.kts` | `versionName` (what the user sees) **and** `versionCode` (the integer Android compares) |
 | `latest.json` | the update manifest, which has to describe the APK you actually built |
 
@@ -129,7 +129,7 @@ python3 scripts/release.py 0.7.0 --manifest-only \
 
 `--manifest-only` skips the bump (already done in step 1) and reuses the `versionCode` that is
 in the tree. Before anything else the script opens the APK and refuses it unless it is the
-`foss` build — no `jenny_extensions` in its Python, no Drive or Google classes in its dex
+`foss` build — no `arkhiva_extensions` in its Python, no Drive or Google classes in its dex
 (`scripts/check_foss_apk.py`, which you can also run on its own). Attaching the `play` APK to a
 GitHub release would send it to everyone who updates from inside the app. The script then hashes the APK, writes `dist/release/latest.json`, and stages a copy of
 the APK named `jenny-0.7.0.apk`, because GitHub names an asset after the file you upload and the

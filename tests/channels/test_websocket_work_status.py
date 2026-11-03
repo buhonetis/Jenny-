@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 from unittest.mock import AsyncMock, MagicMock
 
-from jenny.bus.events import (
+from arkhiva.bus.events import (
     OUTBOUND_META_WORK_ID,
     OUTBOUND_META_WORK_START,
     OUTBOUND_META_WORK_STATUS,

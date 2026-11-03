@@ -11,9 +11,9 @@ from __future__ import annotations
 
 from loguru import logger as loguru_logger
 
-from jenny.bus.queue import MessageBus
-from jenny.channels.dispatcher import WebSocketDispatcher
-from jenny.config.schema import Config
+from arkhiva.bus.queue import MessageBus
+from arkhiva.channels.dispatcher import WebSocketDispatcher
+from arkhiva.config.schema import Config
 
 TOKEN = "123456789:AAtestTOKENtestTOKENtestTOKEN"
 

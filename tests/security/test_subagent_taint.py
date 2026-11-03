@@ -3,8 +3,8 @@
 Un lavoro diventa *untrusted* leggendo contenuto che non viene dall'utente
 (web, browser, download, ``http_get``) e *private* leggendo i dati personali.
 Le due bandierine non bloccano niente da sole (lo fa l'incrocio, più avanti):
-qui si fissa che si alzano nei punti giusti, che restano basse per Jenny
-principale, e che un risultato non fidato torna a Jenny incorniciato come dato.
+qui si fissa che si alzano nei punti giusti, che restano basse per ARKHIVA
+principale, e che un risultato non fidato torna a ARKHIVA incorniciato come dato.
 """
 
 from __future__ import annotations
@@ -17,17 +17,17 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from jenny.agent.runner import AgentRunResult
-from jenny.agent.subagent import SubagentManager, SubagentSpec, SubagentStatus
-from jenny.agent.subagent_history import SubagentHistoryStore
-from jenny.agent.tools.filesystem import ReadFileTool
-from jenny.agent.tools.python_exec import PythonExecTool
-from jenny.agent.tools.python_exec_builtins import _register_builtin_functions
-from jenny.bus.queue import MessageBus
-from jenny.config.tool_schemas import PythonExecConfig
-from jenny.providers.base import LLMProvider
-from jenny.security.network import configure_ssrf_whitelist
-from jenny.security.subagent_policy import (
+from arkhiva.agent.runner import AgentRunResult
+from arkhiva.agent.subagent import SubagentManager, SubagentSpec, SubagentStatus
+from arkhiva.agent.subagent_history import SubagentHistoryStore
+from arkhiva.agent.tools.filesystem import ReadFileTool
+from arkhiva.agent.tools.python_exec import PythonExecTool
+from arkhiva.agent.tools.python_exec_builtins import _register_builtin_functions
+from arkhiva.bus.queue import MessageBus
+from arkhiva.config.tool_schemas import PythonExecConfig
+from arkhiva.providers.base import LLMProvider
+from arkhiva.security.network import configure_ssrf_whitelist
+from arkhiva.security.subagent_policy import (
     SubagentRunPolicy,
     check_read,
     current_subagent_policy,
@@ -57,7 +57,7 @@ def _policy(ws: Path, **kw) -> SubagentRunPolicy:
     ("memory/MEMORY.md", False, True),
     ("downloads/pagina.html", True, False),
     ("wikis/piante/downloads/x.pdf", True, False),
-    (".jenny/tool-results/abc.txt", True, False),
+    (".arkhiva/tool-results/abc.txt", True, False),
     ("subagents/activity/t9.json", True, True),
     ("out/nota.md", False, False),
 ])
@@ -92,7 +92,7 @@ async def test_read_file_marks_the_run_through_the_tool(ws: Path) -> None:
 
 
 async def test_the_main_agent_has_no_policy(ws: Path) -> None:
-    """Fuori da ``_run_subagent`` non c'è un lavoro da marcare (il turno di Jenny
+    """Fuori da ``_run_subagent`` non c'è un lavoro da marcare (il turno di ARKHIVA
     si marca a parte: ``test_turn_taint.py``)."""
     assert current_subagent_policy() is None
     check_read(ws / "downloads" / "pagina.html")
@@ -141,7 +141,7 @@ async def test_http_get_inside_python_exec_marks_the_run(ws: Path, page_server: 
     assert policy.taint_sources() == ("http_get:127.0.0.1",)
 
 
-# -- il risultato torna a Jenny ------------------------------------------------
+# -- il risultato torna a ARKHIVA ------------------------------------------------
 
 
 def _manager(ws: Path) -> SubagentManager:
@@ -219,7 +219,7 @@ def test_the_seed_round_trips_through_the_record() -> None:
 
 
 def test_the_saved_history_remembers_its_taint(ws: Path) -> None:
-    from jenny.session.manager import SessionManager
+    from arkhiva.session.manager import SessionManager
 
     store = SubagentHistoryStore(SessionManager(ws))
     msgs = [{"role": "system", "content": "s"}, {"role": "user", "content": "u"},
@@ -233,7 +233,7 @@ def test_the_saved_history_remembers_its_taint(ws: Path) -> None:
 
 async def test_resuming_a_tainted_conversation_starts_untrusted(ws: Path) -> None:
     """Una ripresa rimette in contesto le pagine lette: nasce contaminata."""
-    from jenny.session.manager import SessionManager
+    from arkhiva.session.manager import SessionManager
 
     sm = _manager(ws)
     sm._history = SubagentHistoryStore(SessionManager(ws))
@@ -258,10 +258,10 @@ async def test_resuming_a_tainted_conversation_starts_untrusted(ws: Path) -> Non
 
 def test_a_late_announce_keeps_its_taint_in_the_history_row() -> None:
     """Il segno resta nella riga JSONL (mai verso il provider: whitelist di chiavi)."""
-    from jenny.agent.turn_persistence import TurnPersistenceMixin
-    from jenny.bus.events import InboundMessage
-    from jenny.session.history_meta import SUBAGENT_TAINT_META
-    from jenny.session.manager import Session
+    from arkhiva.agent.turn_persistence import TurnPersistenceMixin
+    from arkhiva.bus.events import InboundMessage
+    from arkhiva.session.history_meta import SUBAGENT_TAINT_META
+    from arkhiva.session.manager import Session
 
     session = Session(key="unified:default")
     msg = InboundMessage(
@@ -281,7 +281,7 @@ async def test_http_get_from_jennys_own_python_exec_taints_her_turn(
     ws: Path, page_server: int,
 ) -> None:
     """Fuori da un subagent la marcatura va al turno, e dal worker ci arriva."""
-    from jenny.security.subagent_policy import TurnTaint, current_turn_taint, enter_turn_taint
+    from arkhiva.security.subagent_policy import TurnTaint, current_turn_taint, enter_turn_taint
 
     cfg = PythonExecConfig()
     tool = PythonExecTool(

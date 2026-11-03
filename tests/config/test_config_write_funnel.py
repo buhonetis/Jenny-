@@ -23,7 +23,7 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
-JENNY = Path(__file__).resolve().parents[2] / "jenny"
+JENNY = Path(__file__).resolve().parents[2] / "arkhiva"
 
 # L'unico chiamante legittimo, più il modulo che la definisce.
 _FUNNEL_CALLERS = {"config/store.py", "config/loader.py"}
@@ -98,7 +98,7 @@ def test_the_documented_exceptions_still_explain_themselves() -> None:
     """
     bootstrap = (JENNY / "config" / "bootstrap.py").read_text("utf-8")
     # Si cerca il *funnel per nome*, non la parola "mutate": il commento cita
-    # ``jenny.config.store``, che è il modulo, ed è il riferimento giusto.
+    # ``arkhiva.config.store``, che è il modulo, ed è il riferimento giusto.
     assert "config.store" in bootstrap and "funnel" in bootstrap, (
         "config/bootstrap.py non nomina più il funnel da cui è esente: "
         "il commento che spiega la deroga è stato perso."

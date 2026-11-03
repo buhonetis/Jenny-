@@ -10,10 +10,10 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
-from jenny.agent.context_governor import MID_TURN_LABEL, label_mid_turn_messages
-from jenny.agent.tools.filesystem import ReadFileTool
-from jenny.session.history_meta import MID_TURN_META
-from jenny.utils.prompt_templates import render_template
+from arkhiva.agent.context_governor import MID_TURN_LABEL, label_mid_turn_messages
+from arkhiva.agent.tools.filesystem import ReadFileTool
+from arkhiva.session.history_meta import MID_TURN_META
+from arkhiva.utils.prompt_templates import render_template
 
 
 def test_a_mid_turn_message_is_labelled_in_the_request_only() -> None:
@@ -48,14 +48,14 @@ async def test_the_orchestrator_reads_a_bounded_slice(tmp_path) -> None:
 def test_the_contract_asks_to_say_checked_or_guessed() -> None:
     text = render_template("agent/tool_contract.md", orchestrator=True, has=lambda _n: True,
                            output_path="/x", project=True)
-    assert "**checked** it or are **guessing**" in text
-    assert "never ask them to\n  change permissions" in text
-    assert "**values** are the ones expected" in text
+    assert "lo has **comprobado** o lo estás **suponiendo**" in text
+    assert "nunca le pidas que cambie permisos" in text
+    assert "sus **valores** son los esperados" in text
 
 
 def test_the_orchestrator_hands_apps_to_a_builder() -> None:
     text = render_template("agent/orchestrator.md")
-    assert "One write is yours: `journal_append`" in text and "still a spawn" in text
+    assert "Una escritura es tuya: `journal_append`" in text and "sigue siendo un spawn" in text
     assert "`app-builder`" in text and "app action=publish" in text
     assert len(text) < 3_200
 
@@ -65,7 +65,7 @@ def test_the_message_rule_has_no_wrong_example() -> None:
                            install_path="/w", platform_policy="", channel="", orchestrator=True,
                            installation_files=True, has=lambda _n: True)
     assert 'chat_id="default"' not in text
-    assert "Do not use the 'message' tool for normal replies in the current chat" in text
+    assert "No uses la herramienta 'message' para respuestas normales en el chat actual" in text
 
 
 async def test_a_notebook_system_prompt_stays_small(tmp_path) -> None:
@@ -75,10 +75,10 @@ async def test_a_notebook_system_prompt_stays_small(tmp_path) -> None:
     lavoro sul prompt il codice ne mette 20,4 k. Il tetto e' quello piu' circa il
     15%: tre paragrafi nuovi lo sfondano, ed e' quel che deve succedere — una
     regola nuova si scrive corta, o va in una skill."""
-    from jenny.bus.events import InboundMessage
-    from jenny.config import paths as paths_mod
-    from jenny.runtime.context import get_runtime_context
-    from jenny.utils.helpers import sync_workspace_templates
+    from arkhiva.bus.events import InboundMessage
+    from arkhiva.config import paths as paths_mod
+    from arkhiva.runtime.context import get_runtime_context
+    from arkhiva.utils.helpers import sync_workspace_templates
     from tests.agent.test_prompt_matches_offered_tools import _loop_with_capture, _system_prompt
 
     previous = get_runtime_context().workspace_dir

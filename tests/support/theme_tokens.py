@@ -23,7 +23,7 @@ import re
 from pathlib import Path
 
 THEMES_CSS = (
-    Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets" / "mobile-style.css"
+    Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets" / "mobile-style.css"
 )
 
 

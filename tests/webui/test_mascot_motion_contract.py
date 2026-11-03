@@ -1,7 +1,7 @@
 """I gesti della mascotte: mai in diagonale, una durata sola.
 
-Dal 05/10/2026 ogni animazione di Jenny e' squash and stretch (dai mockup «Il
-saluto di Jenny» e «Jenny in movimento»). Due difetti li ha gia' fatti il primo
+Dal 05/10/2026 ogni animazione di ARKHIVA e' squash and stretch (dai mockup «Il
+saluto di ARKHIVA» e «ARKHIVA in movimento»). Due difetti li ha gia' fatti il primo
 mockup, e qui non devono poter tornare:
 
 - **la diagonale**: una scala fuori dagli assi del disegno — uno `skew`, o un
@@ -11,7 +11,7 @@ mockup, e qui non devono poter tornare:
   interpola per matrice, e la matrice puo' introdurre il taglio;
 - **due durate**: il timer che toglie il gesto e l'animazione che lo disegna
   scritti in due posti divergono. La durata sta in `MOTIONS`
-  (``shared/mascot-motion.js``) e il CSS la legge da `--jenny-<canale>-ms`.
+  (``shared/mascot-motion.js``) e il CSS la legge da `--arkhiva-<canale>-ms`.
 """
 
 from __future__ import annotations
@@ -20,7 +20,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-ASSETS = ROOT / "jenny" / "templates" / "ui" / "assets"
+ASSETS = ROOT / "arkhiva" / "templates" / "ui" / "assets"
 CSS = ASSETS / "mobile-style.css"
 MOTION = ASSETS / "shared" / "mascot-motion.js"
 DRAG = ASSETS / "shared" / "mascot-drag.js"
@@ -29,9 +29,9 @@ CHANNEL_LIST = ["translate", "rotate", "scale"]
 
 
 def _keyframes(css: str) -> dict[str, str]:
-    """`@keyframes jenny-*` -> corpo, con le graffe annidate."""
+    """`@keyframes arkhiva-*` -> corpo, con le graffe annidate."""
     out: dict[str, str] = {}
-    for m in re.finditer(r"@keyframes (jenny-[\w-]+)\s*\{", css):
+    for m in re.finditer(r"@keyframes (arkhiva-[\w-]+)\s*\{", css):
         depth, i = 1, m.end()
         while depth:
             depth += {"{": 1, "}": -1}.get(css[i], 0)
@@ -70,7 +70,7 @@ def _gesture_rules(css: str) -> list[tuple[str, str, str, str]]:
 
 def test_no_mascot_keyframe_shears_her() -> None:
     frames = _keyframes(CSS.read_text(encoding="utf-8"))
-    assert "jenny-greet" in frames, "il saluto non ha piu' il suo keyframe"
+    assert "arkhiva-greet" in frames, "il saluto non ha piu' il suo keyframe"
     for name, body in frames.items():
         assert "skew" not in body, f"{name}: uno skew storce il disegno"
         lists = _transforms(body)
@@ -88,7 +88,7 @@ def test_every_gesture_moves_on_the_three_axes_in_order() -> None:
     used = {
         anim
         for _sel, _ch, _name, decls in _gesture_rules(css)
-        for anim in re.findall(r"animation:\s*(jenny-[\w-]+)", decls)
+        for anim in re.findall(r"animation:\s*(arkhiva-[\w-]+)", decls)
     }
     for name in used:
         for lst in _transforms(frames[name]):
@@ -104,7 +104,7 @@ def test_a_gesture_lasts_what_motions_says() -> None:
         for anim in re.findall(r"animation:\s*([^;]+)", decls):
             if anim.strip() == "none":
                 continue
-            assert f"var(--jenny-{channel}-ms)" in anim, f"{sel}: durata scritta a mano ({anim})"
+            assert f"var(--arkhiva-{channel}-ms)" in anim, f"{sel}: durata scritta a mano ({anim})"
             assert not re.search(r"\b\d+(\.\d+)?m?s\b", anim), f"{sel}: durata scritta a mano ({anim})"
 
 

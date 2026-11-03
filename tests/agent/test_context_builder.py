@@ -5,11 +5,11 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.context import ContextBuilder
-from jenny.utils.android_assets import _RETIRED_TEMPLATE_DIGESTS, _USER_OWNED_TEMPLATES
-from jenny.utils.helpers import load_bundled_template, merge_message_content
+from arkhiva.agent.context import ContextBuilder
+from arkhiva.utils.android_assets import _RETIRED_TEMPLATE_DIGESTS, _USER_OWNED_TEMPLATES
+from arkhiva.utils.helpers import load_bundled_template, merge_message_content
 
-pytestmark = pytest.mark.usefixtures("_configure_jenny_workspace")
+pytestmark = pytest.mark.usefixtures("_configure_arkhiva_workspace")
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -56,7 +56,7 @@ class TestBuildRuntimeContext:
 
 
 # ---------------------------------------------------------------------------
-# merge_message_content (helper condiviso in jenny.utils.helpers)
+# merge_message_content (helper condiviso in arkhiva.utils.helpers)
 # ---------------------------------------------------------------------------
 
 
@@ -221,7 +221,7 @@ class TestLoadBootstrapFiles:
 def _bundled(name: str) -> str:
     from importlib.resources import files as pkg_files
 
-    tpl = pkg_files("jenny") / "templates" / name
+    tpl = pkg_files("arkhiva") / "templates" / name
     if not tpl.is_file():
         pytest.skip(f"{name} template not bundled")
     return tpl.read_text(encoding="utf-8")
@@ -234,13 +234,13 @@ def _fixture(name: str) -> str:
     finiscono con uno spazio, trascritte in un sorgente Python le toglierebbe
     ``ruff`` (W291), il digest non combacerebbe più e il test proverebbe
     qualcosa di diverso da quello che c'è sui telefoni. I file sono estratti con
-    ``git show <sha>:jenny/templates/<nome>``, non ricopiati a mano.
+    ``git show <sha>:arkhiva/templates/<nome>``, non ricopiati a mano.
     """
     return (Path(__file__).parent / "fixtures" / name).read_text(encoding="utf-8")
 
 
 def _retired_user_template() -> str:
-    """``jenny/templates/USER.md`` come spediva da 0.3.0 (8833b94) a 0.7.1."""
+    """``arkhiva/templates/USER.md`` come spediva da 0.3.0 (8833b94) a 0.7.1."""
     return _fixture("user_md_retired_0.3.0.md")
 
 
@@ -366,7 +366,7 @@ class TestRetiredTemplates:
         accorgerebbe solo un'installazione vergine aggiornata mesi dopo. Se questo
         test fallisce, aggiungi il digest qui atteso a
         ``_RETIRED_TEMPLATE_DIGESTS["USER.md"]`` (in
-        ``jenny/utils/android_assets.py``) con l'etichetta della sua finestra di
+        ``arkhiva/utils/android_assets.py``) con l'etichetta della sua finestra di
         release, e sostituiscilo con quello nuovo.
 
         **Il template oggi è vuoto**, quindi il digest atteso è ``sha256("")``.
@@ -422,7 +422,7 @@ class TestRetiredTemplates:
         installazione vergine, per giunta senza etichetta. Se questo test
         fallisce, sposta il digest qui atteso dentro
         ``_RETIRED_TEMPLATE_DIGESTS["AGENTS.md"]`` (in
-        ``jenny/utils/android_assets.py``) e mettine qui quello nuovo.
+        ``arkhiva/utils/android_assets.py``) e mettine qui quello nuovo.
 
         Vale parola per parola l'avvertenza del gemello sul template vuoto:
         ``sha256("")`` non si registra mai come ritirato, e la prosa uscente
@@ -519,7 +519,7 @@ class TestEmptiedBootstrapFile:
         emettendo un avviso con sotto niente. Entrambe le letture devono
         restare innocue, quindi la guardia va prima del confronto col template.
         """
-        monkeypatch.setattr("jenny.agent.context.load_bundled_template", lambda _p: "")
+        monkeypatch.setattr("arkhiva.agent.context.load_bundled_template", lambda _p: "")
         assert ContextBuilder._is_template_content("", "SOUL.md") is True
         (tmp_path / "SOUL.md").write_text("", encoding="utf-8")
         builder = _builder(tmp_path)
@@ -579,8 +579,8 @@ class TestSchedulingBlock:
         L'import sta qui e non in ``context.py`` perché lì tirerebbe dentro
         tutto il package cron in un modulo che importa mezzo repo.
         """
-        from jenny.agent.context import _CRON_TOOL_NAME
-        from jenny.agent.tools.cron import CronTool
+        from arkhiva.agent.context import _CRON_TOOL_NAME
+        from arkhiva.agent.tools.cron import CronTool
 
         # ``name`` è una property e non serve un servizio cron per leggerla:
         # ``None`` basta, il tool non viene usato.
@@ -593,7 +593,7 @@ class TestSchedulingBlock:
         quelli in cui l'utente chiede che ore sono. È l'unico meccanismo che
         tiene fermo il confine fra i quattro posti in cui questa regola vive.
         """
-        from jenny.utils.prompt_templates import render_template
+        from arkhiva.utils.prompt_templates import render_template
 
         # 1450 e non 1600: il testo reso ne occupa ~1310, e un tetto che lascia il
         # 40% di margine non dice mai di no — cioè non fa il suo mestiere. Chi ha
@@ -628,13 +628,13 @@ class TestSchedulingBlock:
         cinque frasi sono i letterali che erano stati cancellati da lì, cercati
         con l'apice singolo, e su un solo tipo di sorgente. La guardia vera —
         template *più* skill, description dei tool, e i letterali Python di
-        ``jenny/cron`` e ``jenny/runtime`` letti con ``ast``, tutti con regex
+        ``arkhiva/cron`` e ``arkhiva/runtime`` letti con ``ast``, tutti con regex
         indifferenti alle virgolette — sta in
         ``tests/agent/test_prompt_corpus_scheduling.py``, che documenta anche
         perché questa qui da sola non bastava.
         """
-        from jenny.utils.android_assets import _SYSTEM_PROMPT_TEMPLATES
-        from jenny.utils.helpers import load_bundled_template
+        from arkhiva.utils.android_assets import _SYSTEM_PROMPT_TEMPLATES
+        from arkhiva.utils.helpers import load_bundled_template
 
         # Frasi che *insegnano a schedulare*: si cercano le istruzioni, non i
         # nomi dei file.
@@ -670,7 +670,7 @@ class TestUserOwnedTemplatesCarryNoSystemGuidance:
         """``USER_ID``/``CHANNEL`` e ``web:default`` non esistono.
 
         Il tool ``cron`` non ha né ``user_id`` né ``channel``
-        (``_CRON_PARAMETERS``) e ``jenny/session/keys.py`` conia
+        (``_CRON_PARAMETERS``) e ``arkhiva/session/keys.py`` conia
         ``unified:default``/``websocket:default``: quella riga diceva al modello
         di procurarsi valori per parametri che non ci sono.
 
@@ -701,7 +701,7 @@ class TestUserOwnedTemplatesCarryNoSystemGuidance:
             assert token not in text, (
                 f"{name} documenta `{token}`: è guida di sistema in un file che si "
                 "crea al primo avvio e non si aggiorna mai più. Va sotto "
-                "`jenny/templates/agent/` o in una skill."
+                "`arkhiva/templates/agent/` o in una skill."
             )
 
 
@@ -716,7 +716,7 @@ class TestIsTemplateContent:
 
     def test_content_matching_template(self):
         from importlib.resources import files as pkg_files
-        tpl = pkg_files("jenny") / "templates" / "memory" / "MEMORY.md"
+        tpl = pkg_files("arkhiva") / "templates" / "memory" / "MEMORY.md"
         if not tpl.is_file():
             pytest.skip("MEMORY.md template not bundled")
         original = tpl.read_text(encoding="utf-8")
@@ -762,7 +762,7 @@ class TestIsTemplateContent:
 
     def test_modified_content_returns_false(self):
         from importlib.resources import files as pkg_files
-        tpl = pkg_files("jenny") / "templates" / "memory" / "MEMORY.md"
+        tpl = pkg_files("arkhiva") / "templates" / "memory" / "MEMORY.md"
         if not tpl.is_file():
             pytest.skip("MEMORY.md template not bundled")
         assert ContextBuilder._is_template_content("totally different", "memory/MEMORY.md") is False
@@ -777,7 +777,7 @@ class TestBundledToolContract:
     def test_tool_contract_balances_general_and_coding_workflows(self):
         from importlib.resources import files as pkg_files
 
-        tpl = pkg_files("jenny") / "templates" / "agent" / "tool_contract.md"
+        tpl = pkg_files("arkhiva") / "templates" / "agent" / "tool_contract.md"
         content = tpl.read_text(encoding="utf-8")
 
         assert "## General Tool Contract" in content
@@ -1008,7 +1008,7 @@ class TestBuildMessages:
 
 
 # ---------------------------------------------------------------------------
-# Jenny Apps summary in the system prompt
+# ARKHIVA Apps summary in the system prompt
 # ---------------------------------------------------------------------------
 
 
@@ -1029,13 +1029,13 @@ class TestAppsSummarySection:
         (app_dir / "AGENT.md").write_text("# Note\ncontesto", encoding="utf-8")
 
         prompt = _builder(tmp_path).build_system_prompt()
-        assert "# Jenny Apps" in prompt
+        assert "# ARKHIVA Apps" in prompt
         assert "`note_add_note`" in prompt
         assert "apps/note/AGENT.md" in prompt
 
     def test_apps_section_absent_without_apps(self, tmp_path):
         prompt = _builder(tmp_path).build_system_prompt()
-        assert "# Jenny Apps" not in prompt
+        assert "# ARKHIVA Apps" not in prompt
 
     def test_broken_app_listed_with_error(self, tmp_path):
         app_dir = tmp_path / "apps" / "rotta"
@@ -1066,7 +1066,7 @@ class TestTheToolContractIsGatedByTool:
     DREAM_TOOLS = ["read_file", "write_file", "edit_file", "apply_patch"]
 
     def _contract(self, tmp_path, tools):
-        from jenny.utils.prompt_templates import render_template
+        from arkhiva.utils.prompt_templates import render_template
 
         return render_template(
             "agent/tool_contract.md",
@@ -1117,7 +1117,7 @@ class TestTheToolContractIsGatedByTool:
         """
         import jinja2
 
-        from jenny.utils.prompt_templates import render_template
+        from arkhiva.utils.prompt_templates import render_template
 
         with pytest.raises(jinja2.UndefinedError):
             render_template("agent/tool_contract.md", orchestrator=False, output_path="/x")
@@ -1134,7 +1134,7 @@ class TestWhichFileAFactBelongsIn:
     """
 
     def _contract(self, tools=None):
-        from jenny.utils.prompt_templates import render_template
+        from arkhiva.utils.prompt_templates import render_template
 
         return render_template(
             "agent/tool_contract.md",
@@ -1174,26 +1174,26 @@ class TestWhichFileAFactBelongsIn:
 
 class TestTheBotNameReachesTheModel:
     """``agents.defaults.bot_name`` si scriveva da Impostazioni e nessuno lo leggeva:
-    l'agente rinominato continuava a presentarsi come Jenny (SOUL.md lo dice)."""
+    l'agente rinominato continuava a presentarsi come ARKHIVA (SOUL.md lo dice)."""
 
     _TOOLS = ["read_file", "write_file", "message", "cron"]
 
     def _write_name(self, path: Path, name: str) -> None:
-        from jenny.config.loader import save_config
-        from jenny.config.schema import Config
+        from arkhiva.config.loader import save_config
+        from arkhiva.config.schema import Config
 
         config = Config()
         config.agents.defaults.bot_name = name
         save_config(config, path)
 
     def test_a_renamed_agent_is_told_its_name_live(self, tmp_path, monkeypatch):
-        from jenny.runtime.context import get_runtime_context
+        from arkhiva.runtime.context import get_runtime_context
 
         path = tmp_path / "config.json"
         monkeypatch.setattr(get_runtime_context(), "config_path", path)
         builder = _builder(tmp_path / "ws")
 
-        self._write_name(path, "Jenny")
+        self._write_name(path, "ARKHIVA")
         default_prompt = builder.build_system_prompt(available_tools=self._TOOLS)
         assert "## Name" not in default_prompt
 

@@ -19,14 +19,14 @@ from typing import Any
 
 import pytest
 
-from jenny.bus.queue import MessageBus
-from jenny.bus.runtime_events import (
+from arkhiva.bus.queue import MessageBus
+from arkhiva.bus.runtime_events import (
     RuntimeEventBus,
     RuntimeEventContext,
     TurnRunStatusChanged,
 )
-from jenny.channels.telegram import TelegramChannel, _TypingHeartbeat
-from jenny.config.schema import TelegramConfig
+from arkhiva.channels.telegram import TelegramChannel, _TypingHeartbeat
+from arkhiva.config.schema import TelegramConfig
 
 
 class FakeAPI:

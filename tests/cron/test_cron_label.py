@@ -16,16 +16,16 @@ from zoneinfo import ZoneInfo
 import pytest
 from support.sessions import FakeSessions
 
-from jenny.agent.tools.context import RequestContext
-from jenny.agent.tools.cron import CronTool
-from jenny.agent.tools.registry import ToolRegistry
-from jenny.agent.turn_types import TurnOutcome
-from jenny.bus.events import InboundMessage
-from jenny.cron.bound_runner import run_bound_cron_job
-from jenny.cron.condition import ConditionReading
-from jenny.cron.dates import date_schedule, schedule_date
-from jenny.cron.service import CronService
-from jenny.cron.types import CronSchedule
+from arkhiva.agent.tools.context import RequestContext
+from arkhiva.agent.tools.cron import CronTool
+from arkhiva.agent.tools.registry import ToolRegistry
+from arkhiva.agent.turn_types import TurnOutcome
+from arkhiva.bus.events import InboundMessage
+from arkhiva.cron.bound_runner import run_bound_cron_job
+from arkhiva.cron.condition import ConditionReading
+from arkhiva.cron.dates import date_schedule, schedule_date
+from arkhiva.cron.service import CronService
+from arkhiva.cron.types import CronSchedule
 
 _TZ = "Europe/Rome"
 _COND = {"app": "serra", "params": {}, "field": "umidita", "op": "<", "value": 15}
@@ -91,7 +91,7 @@ async def test_a_condition_costs_nothing_while_false_and_speaks_once_when_true(
         assert condition == _COND
         return next(readings)
 
-    monkeypatch.setattr("jenny.cron.bound_runner.read_condition", fake_read)
+    monkeypatch.setattr("arkhiva.cron.bound_runner.read_condition", fake_read)
     agent = _Agent()
     service = _service(tmp_path, agent)
     job = _add(service, CronSchedule(kind="every", every_ms=6 * 3_600_000), condition=_COND)
@@ -111,7 +111,7 @@ async def test_an_unreadable_app_skips_the_run_without_a_turn(tmp_path, monkeypa
     async def fake_read(condition, **_kw):
         return ConditionReading(False, error="no fresh value from the app serra")
 
-    monkeypatch.setattr("jenny.cron.bound_runner.read_condition", fake_read)
+    monkeypatch.setattr("arkhiva.cron.bound_runner.read_condition", fake_read)
     agent = _Agent()
     service = _service(tmp_path, agent)
     job = _add(service, CronSchedule(kind="every", every_ms=3_600_000), condition=_COND)
@@ -178,7 +178,7 @@ def casa(tmp_path: Path, monkeypatch) -> Path:
     """Un quaderno senza bacheca: un job sul quaderno intero si accetta lo stesso."""
     root = tmp_path / "workspace" / "wikis" / "casa"
     (root / "wiki").mkdir(parents=True)
-    monkeypatch.setattr("jenny.board.cron_link.notebook_root",
+    monkeypatch.setattr("arkhiva.board.cron_link.notebook_root",
                         lambda name: root if name == "casa" else None)
     return root
 

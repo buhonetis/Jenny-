@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from jenny.utils.plain_text import plain_text
+from arkhiva.utils.plain_text import plain_text
 
 
 @pytest.mark.parametrize(

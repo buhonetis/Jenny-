@@ -29,7 +29,7 @@ from pathlib import Path
 from support.js_harness import member, requires_node, run_js, run_module
 
 ROOT = Path(__file__).resolve().parents[2]
-UI = ROOT / "jenny" / "templates" / "ui"
+UI = ROOT / "arkhiva" / "templates" / "ui"
 ASSETS = UI / "assets"
 
 pytestmark = requires_node
@@ -153,7 +153,7 @@ const settingsPanel = fixed('settings');
    finestra di chi ascolta, `screen` allo schermo. Qui sono sfalsati di una
    costante apposta — se qualcuno tornasse a misurare col primo, o peggio
    mescolasse i due, lo scarto salterebbe fuori invece di nascondersi. Il
-   modulo condiviso legge **screen**, perche' dentro una Jenny App la finestra
+   modulo condiviso legge **screen**, perche' dentro una ARKHIVA App la finestra
    e' la cornice che la pista sta trascinando (v. la sua testata). */
 const OFFSET_X = 1000;
 const OFFSET_Y = 500;
@@ -168,7 +168,7 @@ globalThis.document = {
   body: createEl('body'),
 };
 /* La finestra ascolta davvero: da qui passano i gesti raccontati da dentro
-   una Jenny App, che la pista non la tocca mai. */
+   una ARKHIVA App, che la pista non la tocca mai. */
 globalThis.window = {
   innerWidth: 400,
   listeners: {},
@@ -194,11 +194,11 @@ function scroll(direction, { short = false } = {}) {
   fire(track, 'touchend', { changedTouches: [finger(x0 + dx, 100)] });
 }
 /* Il gesto **raccontato da dentro una app**: quel che il kit
-   (`apps/jenny-sdk.js`) manda al guscio dalla sua feritoia. Qui non c'e'
+   (`apps/arkhiva-sdk.js`) manda al guscio dalla sua feritoia. Qui non c'e'
    nessun dito, ed e' tutto il punto: la pagina di una app e' tutta l'app, e
    il dito che la tocca al guscio non ci arriva mai. */
 function fromApp(detail, { source } = {}) {
-  const e = { data: { type: 'jenny:swipe', slug: 'orto', ...detail }, source: source };
+  const e = { data: { type: 'arkhiva:swipe', slug: 'orto', ...detail }, source: source };
   for (const fn of window.listeners.message || []) fn(e);
 }
 /* La sorgente buona: la finestra della cornice che si sta guardando. */
@@ -219,7 +219,7 @@ function scrollFromApp(direction, { short = false, source } = {}) {
   }, fromIndex);
 }
 /* Un dito i cui due righelli **non vanno d'accordo**. E' quel che succede
-   davvero dentro una Jenny App: la cornice si sposta insieme al dito, quindi
+   davvero dentro una ARKHIVA App: la cornice si sposta insieme al dito, quindi
    `client` racconta meno strada di quella fatta — o nessuna. */
 function offsetFinger(xc, xs, y) {
   return { clientX: xc, clientY: y, screenX: xs, screenY: y + OFFSET_Y };
@@ -254,7 +254,7 @@ def _script(body: str, pages: list[dict], view: str = "chat") -> str:
               /* La fonte risponde **dopo un giro**, come la rete vera: al
                  momento della domanda `jennyApps` e' ancora vuota. Un finto
                  che risponde subito avrebbe lasciato passare il difetto visto
-                 sul telefono il 22 settembre 2026 — «non hai Jenny App» a chi
+                 sul telefono il 22 settembre 2026 — «non hai ARKHIVA App» a chi
                  ne aveva quattro. */
               appsSource: () => ({
                 ensureLoaded() {},
@@ -266,7 +266,7 @@ def _script(body: str, pages: list[dict], view: str = "chat") -> str:
                   (globalThis.APP_DATA ||= []).push(fn);
                   return () => {};
                 },
-                awaitJennyApps() {
+                awaitARKHIVAApps() {
                   return new Promise((r) => setTimeout(() => {
                     this.jennyApps = [
                       { slug: 'orto', name: 'Orto' },
@@ -333,7 +333,7 @@ def _run(
         shutil.copy(ASSETS / "shared" / "spines.js", root / "shared" / "spines.js")
         # Il client API finto: risponde quel che il caso vuole, e ricorda le
         # scritture. Non si tocca la rete e non si tocca `config.json`.
-        # La cornice di una Jenny App: qui basta sapere **che** viene
+        # La cornice di una ARKHIVA App: qui basta sapere **che** viene
         # costruita e con quale slug — il vero `frameForApp` mette il token
         # e i colori nell'indirizzo, e quello si prova dove vive.
         (root / "shared" / "apps-actions.js").write_text(
@@ -349,7 +349,7 @@ def _run(
             "  f.dataset.secret = api.getSecret();\n"
             # La feritoia: il guscio riconosce chi parla confrontando
             # **questa**, e senza il banco non vedrebbe la guardia.
-            # Ricorda anche cosa le si manda: `jenny:data-changed`.
+            # Ricorda anche cosa le si manda: `arkhiva:data-changed`.
             "  f.contentWindow = { app: slug, mailbox: [], postMessage(m) { this.mailbox.push(m); } };\n"
             "  return f;\n"
             "}\n",
@@ -444,7 +444,7 @@ DUE_APP = ONE + [{"id": "p2", "kind": "app", "ref": "lampo"}]
 
 
 def test_a_fresh_home_is_the_four_fixed_pages_opened_on_jenny() -> None:
-    """App · Jenny · Quaderni · Impostazioni, e si parte da Jenny."""
+    """App · ARKHIVA · Quaderni · Impostazioni, e si parte da ARKHIVA."""
     _run(
         "assert.equal(homePages.howMany, 4);\n"
         "assert.deepEqual(homePages.order, ['app', 'chat', 'notebooks', 'settings']);\n"
@@ -674,8 +674,8 @@ def test_the_panel_is_positioned_so_the_empty_state_stays_put() -> None:
 
 
 def test_the_track_adds_no_z_index() -> None:
-    """Il foglio della casa non dichiara livelli — nemmeno quello di Jenny, che
-    sta in `.jenny-duo` di mobile-style.css (D3): lei sta sopra la chat e sopra
+    """Il foglio della casa non dichiara livelli — nemmeno quello di ARKHIVA, che
+    sta in `.arkhiva-duo` di mobile-style.css (D3): lei sta sopra la chat e sopra
     un'app, e i pannelli si sovrappongono con l'ordine del DOM."""
     css = (ASSETS / "home-style.css").read_text(encoding="utf-8")
     assert not [r for r in css.splitlines() if r.strip().startswith("z-index:")]
@@ -778,9 +778,9 @@ def test_an_app_page_mounts_that_app_frame() -> None:
 
 
 def test_the_app_page_you_look_at_hears_that_its_data_changed() -> None:
-    """Jenny gira un'azione dell'app in chat: la pagina di quell'app si rilegge.
+    """ARKHIVA gira un'azione dell'app in chat: la pagina di quell'app si rilegge.
 
-    `jenny:data-changed` e' cio' che `jenny-sdk.js` ascolta. Arriva solo alla
+    `arkhiva:data-changed` e' cio' che `arkhiva-sdk.js` ascolta. Arriva solo alla
     pagina corrente — l'unica viva — e solo se e' l'app di cui si parla.
     """
     _run(
@@ -791,7 +791,7 @@ def test_the_app_page_you_look_at_hears_that_its_data_changed() -> None:
         "assert.deepEqual(liveWindow().mailbox, [], 'avvisata per un\\'altra app');\n"
         "globalThis.APP_DATA[0]('orto');\n"
         "assert.deepEqual(liveWindow().mailbox,\n"
-        "  [{ type: 'jenny:data-changed', slug: 'orto' }]);\n"
+        "  [{ type: 'arkhiva:data-changed', slug: 'orto' }]);\n"
         # Una seconda pagina app non iscrive una seconda volta: lo stesso
         # frame arriverebbe due volte alla stessa cornice.
         "homePages.goToId('p2');\n"
@@ -846,8 +846,8 @@ def test_the_shell_says_which_page_is_on_from_the_first_frame() -> None:
         "    this.shell = { attrs: {}, setAttribute(k, v) { this.attrs[k] = v; } };\n"
         "  }\n"
         "  _hasComposer() { return false; }\n"
-        "  _placeJenny() {}\n"
-        "  _syncJennyPlace() {}\n"
+        "  _placeARKHIVA() {}\n"
+        "  _syncARKHIVAPlace() {}\n"
         "  _applyHead() {}\n"
         "  _reportChatOnScreen() {}\n"
         "  _savePlace() {}\n  "
@@ -939,7 +939,7 @@ def test_the_clipping_and_the_moving_are_two_different_elements() -> None:
     composizione proprio (`translateZ(0)`) sulla cornice o sul pannello non
     cambia niente, e nemmeno montarla a scivolata finita invece che durante.
 
-    Il ritaglio non puo' nemmeno salire al guscio: Jenny e' `position:absolute`
+    Il ritaglio non puo' nemmeno salire al guscio: ARKHIVA e' `position:absolute`
     con un `right` negativo — sporge apposta dal bordo — e li' verrebbe
     tagliata. Quindi ci vuole un elemento in mezzo: uno ritaglia, l'altro si
     muove.
@@ -958,7 +958,7 @@ def test_the_clipping_and_the_moving_are_two_different_elements() -> None:
     )
     shell = css.split(".home-shell {", 1)[1].split("}", 1)[0]
     assert "overflow: hidden" not in shell, (
-        "il ritaglio e' salito al guscio: taglia Jenny, che sporge apposta"
+        "il ritaglio e' salito al guscio: taglia ARKHIVA, che sporge apposta"
     )
     html = (UI / "index.html").read_text(encoding="utf-8")
     i = html.index('class="home-showcase"')
@@ -967,10 +967,10 @@ def test_the_clipping_and_the_moving_are_two_different_elements() -> None:
 
 
 def test_the_window_has_no_room_to_scroll_sideways() -> None:
-    """Il difetto del 27/09/2026 sul Titan 2: App, poi Jenny, e la casa intera
+    """Il difetto del 27/09/2026 sul Titan 2: App, poi ARKHIVA, e la casa intera
     resta spostata a sinistra di ~52 px CSS — fila, chat, composer.
 
-    Jenny sporge dal guscio a destra (`right` negativo), e quel che sporge era
+    ARKHIVA sporge dal guscio a destra (`right` negativo), e quel che sporge era
     spazio scorrevole della finestra: `overflow: hidden` sul `body` la ferma
     al dito, non a un `focus()` o a uno scorrimento verso un campo che entra
     da destra a meta' scivolata. Il guscio ritaglia in orizzontale, e con
@@ -981,7 +981,7 @@ def test_the_window_has_no_room_to_scroll_sideways() -> None:
     shell = css.split("\n.home-shell {", 1)[1].split("}", 1)[0]
     rules = re.findall(r"^\s*(overflow(?:-x)?)\s*:\s*([^;]+);", shell, re.M)
     assert ("overflow-x", "clip") in rules, (
-        f"il guscio non ritaglia piu' in orizzontale ({rules}): quel che Jenny "
+        f"il guscio non ritaglia piu' in orizzontale ({rules}): quel che ARKHIVA "
         "sporge torna a essere spazio in cui la finestra scorre di lato"
     )
     assert all(v.strip() == "clip" for _, v in rules), (
@@ -991,7 +991,7 @@ def test_the_window_has_no_room_to_scroll_sideways() -> None:
 
 # ── Il gesto che arriva da dentro una app ───────────────────────────────────
 #
-# La pagina di una Jenny App e' **tutta** l'app, intestazione compresa: il dito
+# La pagina di una ARKHIVA App e' **tutta** l'app, intestazione compresa: il dito
 # che la tocca al guscio non ci arriva mai, e lo scorrimento fra pagine — che
 # ovunque altro nella casa funziona — li' dentro non esisteva. Misurato sul
 # telefono il 22/09/2026: in nessuna delle due direzioni, non solo in una.
@@ -1129,7 +1129,7 @@ def test_a_cancelled_forwarded_gesture_snaps_back() -> None:
 def test_the_finger_is_measured_against_the_screen() -> None:
     """La cornice si sposta insieme al dito, quindi il suo righello mente.
 
-    Dentro una Jenny App la finestra di chi ascolta **e'** la cornice che la
+    Dentro una ARKHIVA App la finestra di chi ascolta **e'** la cornice che la
     pista sta trascinando: al limite il dito si muove di 200 e `client` dice
     zero. L'utente lo ha visto come una vibrazione — avanti, indietro, avanti —
     e la misura su Chrome del telefono l'ha confermato riga per riga

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.flagdizero.jenny.NoAutofillWebView
+    <org.buhonet.agente.arkhiva.NoAutofillWebView
         android:id="@+id/webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,7 +15,7 @@
         android:id="@+id/loading_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#111013"
+        android:background="@color/arkhiva_dark"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,7 +34,7 @@
                 style="@android:style/Widget.DeviceDefault.ProgressBar.Large"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:indeterminateTint="#f92aad" />
+                android:indeterminateTint="@color/arkhiva_accent" />
 
             <TextView
                 android:id="@+id/loading_title"
@@ -42,8 +42,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="Jenny"
-                android:textColor="#f2ecff"
+                android:text="ARKHIVA"
+                android:textColor="@color/arkhiva_text_primary"
                 android:textSize="20sp" />
 
             <TextView
@@ -51,8 +51,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Loading..."
-                android:textColor="#8af2ecff"
+                android:text="@string/loading_text"
+                android:textColor="@color/arkhiva_text_secondary"
                 android:textSize="14sp" />
 
         </LinearLayout>
@@ -63,7 +63,7 @@
         android:id="@+id/error_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#111013"
+        android:background="@color/arkhiva_dark"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -82,7 +82,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="⚠"
-                android:textColor="#f2ecff"
+                android:textColor="@color/arkhiva_text_primary"
                 android:textSize="40sp" />
 
             <TextView
@@ -91,8 +91,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="Connection failed"
-                android:textColor="#f2ecff"
+                android:text="@string/error_title"
+                android:textColor="@color/arkhiva_text_primary"
                 android:textSize="18sp" />
 
             <TextView
@@ -101,8 +101,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:gravity="center"
-                android:text="Could not connect to the\ngateway server."
-                android:textColor="#8af2ecff"
+                android:text="@string/error_text"
+                android:textColor="@color/arkhiva_text_secondary"
                 android:textSize="14sp" />
 
             <Button
@@ -110,11 +110,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_marginTop="28dp"
-                android:backgroundTint="#f92aad"
+                android:backgroundTint="@color/arkhiva_primary"
                 android:paddingHorizontal="32dp"
-                android:text="Retry"
+                android:text="@string/retry_button"
                 android:textAllCaps="false"
-                android:textColor="#0a090b"
+                android:textColor="@color/arkhiva_dark"
                 android:textSize="15sp" />
 
         </LinearLayout>

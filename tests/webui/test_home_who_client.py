@@ -18,7 +18,7 @@ Dal 05/10/2026 le righe sono copertine su mensole («la vetrina»), con la
 ricerca, l'ordine, l'archivio e la tastiera. Le promesse di prima valgono per
 le copertine una per una; quelle nuove hanno i loro banchi in fondo. Lo stesso
 giorno la conversazione personale e' uscita dalla pagina: e' gia' la voce
-«Jenny» della fila, e qui era un doppione.
+«ARKHIVA» della fila, e qui era un doppione.
 
 `home-who.js` si importa **vero** da una cartella temporanea, con accanto i
 suoi vicini: veri quelli puri (`conversation-list.js`, `spines.js`,
@@ -38,7 +38,7 @@ from pathlib import Path
 from support.js_harness import locale, member, requires_node, run_module
 
 ROOT = Path(__file__).resolve().parents[2]
-ASSETS = ROOT / "jenny" / "templates" / "ui" / "assets"
+ASSETS = ROOT / "arkhiva" / "templates" / "ui" / "assets"
 WHO_JS = ASSETS / "home-who.js"
 I18N_JS = ASSETS / "shared" / "i18n.js"
 
@@ -245,14 +245,14 @@ def _run(body: str) -> None:
 
 
 def test_the_page_is_only_notebooks() -> None:
-    """La conversazione personale non e' una copertina: e' la voce «Jenny»
+    """La conversazione personale non e' una copertina: e' la voce «ARKHIVA»
     della fila in alto, a un tocco da qualunque pagina, e qui sarebbe un
     doppione. Un tocco su una copertina apre sempre un quaderno."""
     _run("""
       const panel = await open(LIST);
       assert.equal(readout(panel)[0], 'mensola: In uso 3');
       assert.equal(covers(panel).length, 3, 'la pagina disegna qualcosa che non e\\' un quaderno');
-      assert.ok(!covers(panel).some((c) => nameOf(c) === 'Jenny' || hasClass(c, 'is-personal')));
+      assert.ok(!covers(panel).some((c) => nameOf(c) === 'ARKHIVA' || hasClass(c, 'is-personal')));
       for (const cover of covers(panel)) tap(cover);
       assert.ok(history.every((h) => h !== 'scelto:null'), 'un tocco ha portato alla chat personale');
     """)
@@ -452,13 +452,13 @@ def test_the_page_draws_no_check_and_tells_talkback_where_you_are() -> None:
     """La spunta sul quaderno in cui sei e' stata tolta il 06/10/2026: sulla
     pagina dei quaderni non diceva niente che servisse. Resta `aria-current`,
     su una tessera sola e su quella giusta, per chi legge con TalkBack; su
-    nessuna quando sei con Jenny o in un quaderno che l'elenco non porta piu'."""
+    nessuna quando sei con ARKHIVA o in un quaderno che l'elenco non porta piu'."""
     _run("""
       const checks = (p) => all(p._body).filter((n) => String(n.className).includes('check'));
       const marked = (p) => covers(p).filter((c) => c.attrs['aria-current'] === 'true');
 
       let panel = await open(LIST);
-      assert.equal(marked(panel).length, 0, 'segnato un quaderno mentre sei con Jenny');
+      assert.equal(marked(panel).length, 0, 'segnato un quaderno mentre sei con ARKHIVA');
 
       current = 'etna';
       panel.render();

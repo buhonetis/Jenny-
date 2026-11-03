@@ -8,14 +8,14 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from jenny.agent.runner import AgentRunResult
-from jenny.agent.subagent import (
+from arkhiva.agent.runner import AgentRunResult
+from arkhiva.agent.subagent import (
     MAX_AUTO_ATTEMPTS,
     SubagentManager,
     SubagentRestartError,
 )
-from jenny.bus.queue import MessageBus
-from jenny.providers.base import LLMProvider
+from arkhiva.bus.queue import MessageBus
+from arkhiva.providers.base import LLMProvider
 
 # ---------------------------------------------------------------------------
 # Helpers

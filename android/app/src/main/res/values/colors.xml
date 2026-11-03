@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Paleta soberana (obsidiana / cian). Es la fuente única de color para
+         las vistas nativas (arranque, error, barras del sistema); la WebUI
+         mantiene su propio catálogo de temas en CSS. -->
+    <color name="arkhiva_dark">#0F1115</color>
+    <color name="arkhiva_surface">#161920</color>
+    <color name="arkhiva_primary">#4A90E2</color>
+    <color name="arkhiva_accent">#00FFC2</color>
+    <color name="arkhiva_text_primary">#ECEFF4</color>
+    <color name="arkhiva_text_secondary">#9AA0A6</color>
+    <color name="arkhiva_error">#FF5252</color>
+</resources>

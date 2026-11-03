@@ -13,11 +13,11 @@ from pathlib import Path
 
 import pytest
 
-from jenny.config.loader import load_config, save_config
-from jenny.config.schema import Config
-from jenny.runtime.context import get_runtime_context
-from jenny.webui import settings_api
-from jenny.webui.settings_api import (
+from arkhiva.config.loader import load_config, save_config
+from arkhiva.config.schema import Config
+from arkhiva.runtime.context import get_runtime_context
+from arkhiva.webui import settings_api
+from arkhiva.webui.settings_api import (
     WebUISettingsError,
     settings_payload,
     update_floating_settings,
@@ -46,7 +46,7 @@ def applied(monkeypatch) -> list[bool]:
         calls.append(True)
         return True
 
-    monkeypatch.setattr("jenny.runtime.floating.apply_floating_config", fake_apply)
+    monkeypatch.setattr("arkhiva.runtime.floating.apply_floating_config", fake_apply)
     return calls
 
 
@@ -131,7 +131,7 @@ async def test_the_response_reports_what_android_actually_granted(
     async def refused() -> bool:
         return False
 
-    monkeypatch.setattr("jenny.runtime.floating.apply_floating_config", refused)
+    monkeypatch.setattr("arkhiva.runtime.floating.apply_floating_config", refused)
 
     payload = await update_floating_settings({"enabled": ["true"]})
 
@@ -144,11 +144,11 @@ async def test_the_settings_page_reports_the_live_permission_state(monkeypatch) 
     """La riga sul permesso deve comparire a **ogni** apertura del pannello.
 
     Il permesso si concede e si revoca da una schermata di sistema, fuori da
-    Jenny: se ``active`` arrivasse solo nella risposta all'interruttore, la riga
+    ARKHIVA: se ``active`` arrivasse solo nella risposta all'interruttore, la riga
     che spiega perché la mascotte non si vede sparirebbe al primo ricaricamento
     — proprio mentre è ancora vera.
     """
-    from jenny.webui import settings_routes as sr
+    from arkhiva.webui import settings_routes as sr
 
     payload = {"floating": {"enabled": True, "available": True}}
     monkeypatch.setattr(sr, "settings_payload", lambda: payload)
@@ -156,7 +156,7 @@ async def test_the_settings_page_reports_the_live_permission_state(monkeypatch) 
     async def refused() -> bool:
         return False
 
-    monkeypatch.setattr("jenny.runtime.floating.floating_active", refused)
+    monkeypatch.setattr("arkhiva.runtime.floating.floating_active", refused)
 
     enriched = dict(payload)
     await sr._enrich_floating(enriched)
@@ -170,8 +170,8 @@ async def test_the_settings_page_reports_the_live_permission_state(monkeypatch) 
 
 async def test_the_settings_page_reports_the_screen_reading_state(monkeypatch) -> None:
     """Il servizio di accessibilità si accende e si spegne da Android, fuori da
-    Jenny: come il permesso della finestra, lo stato si chiede a ogni apertura."""
-    from jenny.webui import settings_routes as sr
+    ARKHIVA: come il permesso della finestra, lo stato si chiede a ogni apertura."""
+    from arkhiva.webui import settings_routes as sr
 
     async def active() -> bool:
         return True
@@ -179,8 +179,8 @@ async def test_the_settings_page_reports_the_screen_reading_state(monkeypatch) -
     async def state() -> str:
         return "off"
 
-    monkeypatch.setattr("jenny.runtime.floating.floating_active", active)
-    monkeypatch.setattr("jenny.runtime.screen.screen_state", state)
+    monkeypatch.setattr("arkhiva.runtime.floating.floating_active", active)
+    monkeypatch.setattr("arkhiva.runtime.screen.screen_state", state)
     payload = {"floating": {"enabled": True, "available": True}}
     await sr._enrich_floating(payload)
     assert payload["floating"]["screen"] == "off"
@@ -232,7 +232,7 @@ async def test_a_rejected_value_leaves_the_config_untouched(config_path, applied
 
 
 async def test_the_write_goes_through_store_mutate(config_path, applied, monkeypatch) -> None:
-    from jenny.config import store
+    from arkhiva.config import store
 
     calls: list[str] = []
     real_mutate = store.mutate
@@ -267,7 +267,7 @@ async def test_turning_the_mascot_on_also_says_whether_the_screen_is_read(
     async def state() -> str:
         return "off"
 
-    monkeypatch.setattr("jenny.runtime.screen.screen_state", state)
+    monkeypatch.setattr("arkhiva.runtime.screen.screen_state", state)
     monkeypatch.setattr(settings_api, "settings_payload", lambda: {
         "floating": {"enabled": True, "available": True}})
     payload = await update_floating_settings({"enabled": ["true"]})

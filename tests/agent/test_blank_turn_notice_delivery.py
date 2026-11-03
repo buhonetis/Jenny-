@@ -14,8 +14,8 @@ from unittest.mock import AsyncMock
 
 from support.agent import make_loop
 
-from jenny.bus.events import InboundMessage
-from jenny.providers.base import LLMResponse, ToolCallRequest
+from arkhiva.bus.events import InboundMessage
+from arkhiva.providers.base import LLMResponse, ToolCallRequest
 
 
 async def _turn(

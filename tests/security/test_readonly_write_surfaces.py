@@ -71,22 +71,22 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from jenny.agent.tools.app_update import InstallUpdateTool
-from jenny.agent.tools.context import RequestContext
-from jenny.agent.tools.cron import CronTool
-from jenny.agent.tools.download import DownloadFileTool
-from jenny.agent.tools.journal import JournalAppendTool
-from jenny.agent.tools.python_exec import PythonNamespace
-from jenny.apps.manifest import STORAGE_OPS, AppAction
-from jenny.apps.storage import _MUTATING_OPS, execute_storage_action
-from jenny.security.workspace_access import (
+from arkhiva.agent.tools.app_update import InstallUpdateTool
+from arkhiva.agent.tools.context import RequestContext
+from arkhiva.agent.tools.cron import CronTool
+from arkhiva.agent.tools.download import DownloadFileTool
+from arkhiva.agent.tools.journal import JournalAppendTool
+from arkhiva.agent.tools.python_exec import PythonNamespace
+from arkhiva.apps.manifest import STORAGE_OPS, AppAction
+from arkhiva.apps.storage import _MUTATING_OPS, execute_storage_action
+from arkhiva.security.workspace_access import (
     READONLY_TOOL_REFUSAL,
     build_workspace_scope,
     enter_workspace_scope,
 )
-from jenny.security.workspace_policy import ReadOnlyTurnError
+from arkhiva.security.workspace_policy import ReadOnlyTurnError
 
-ROOT = Path(__file__).resolve().parents[2] / "jenny"
+ROOT = Path(__file__).resolve().parents[2] / "arkhiva"
 TOOLS_DIR = ROOT / "agent" / "tools"
 
 # Oltre ai tool, i moduli che scrivono e che vale la pena **dichiarare** fuori
@@ -277,7 +277,7 @@ def _strip_prose(src: str) -> str:
 
 
 def _sources() -> dict[str, str]:
-    """Nome relativo a ``jenny/`` → sorgente ripulito dalla prosa.
+    """Nome relativo a ``arkhiva/`` → sorgente ripulito dalla prosa.
 
     Le chiavi sono path e non basename: da T4.7 l'inventario guarda anche fuori
     da ``agent/tools/``, e lì un ``store.py`` o un ``manager.py`` da soli non
@@ -493,13 +493,13 @@ async def _probe_app_tool(root: Path, readonly: bool) -> str:
     import json
     from unittest.mock import patch
 
-    from jenny.agent.tools.app_tool import AppTool
-    from jenny.agent.tools.context import bind_request_context, reset_request_context
+    from arkhiva.agent.tools.app_tool import AppTool
+    from arkhiva.agent.tools.context import bind_request_context, reset_request_context
 
     token = bind_request_context(RequestContext(
         channel="websocket", chat_id="unified:default", session_key="unified:default"))
     try:
-        with _turn(root, readonly), patch("jenny.config.paths.get_workspace_path",
+        with _turn(root, readonly), patch("arkhiva.config.paths.get_workspace_path",
                                           lambda: root):
             out = await AppTool().execute(action="draft", slug="conta", files={
                 "app.json": json.dumps({"name": "Conta", "description": "x"})})
@@ -510,9 +510,9 @@ async def _probe_app_tool(root: Path, readonly: bool) -> str:
     return out
 
 async def _probe_board(root: Path, readonly: bool) -> str:
-    from jenny.agent.tools.board import BoardTool
-    from jenny.agent.tools.context import bind_request_context, reset_request_context
-    from jenny.board.store import mutate_board, read_board
+    from arkhiva.agent.tools.board import BoardTool
+    from arkhiva.agent.tools.context import bind_request_context, reset_request_context
+    from arkhiva.board.store import mutate_board, read_board
 
     project = root / "wikis" / "orto"
     (project / "wiki").mkdir(parents=True)
@@ -531,8 +531,8 @@ async def _probe_board(root: Path, readonly: bool) -> str:
 
 
 async def _probe_notebook(root: Path, readonly: bool) -> str:
-    from jenny.agent.tools.context import bind_request_context, reset_request_context
-    from jenny.agent.tools.notebook import NotebookEditTool
+    from arkhiva.agent.tools.context import bind_request_context, reset_request_context
+    from arkhiva.agent.tools.notebook import NotebookEditTool
 
     project = root / "wikis" / "orto"
     (project / "wiki").mkdir(parents=True)
@@ -563,8 +563,8 @@ class _NoNetworkTransfer:
 
     @staticmethod
     def build(root: Path) -> Any:
-        from jenny.agent.tools.ssh import SshTransferTool
-        from jenny.agent.tools.ssh_backends.base import SshError
+        from arkhiva.agent.tools.ssh import SshTransferTool
+        from arkhiva.agent.tools.ssh_backends.base import SshError
 
         class _Tool(SshTransferTool):
             def _resolve(self, alias: str) -> Any:

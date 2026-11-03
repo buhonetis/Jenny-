@@ -1,6 +1,6 @@
 """Il posto nella casa sopravvive a un riavvio della WebView.
 
-Android puo' chiudere il processo o il renderer di Jenny mentre usi un'altra
+Android puo' chiudere il processo o il renderer di ARKHIVA mentre usi un'altra
 app pesante, e la WebView riparte da capo: fino al 10/10/2026 la casa ripartiva
 sempre dalla chat. Ora ricorda la pagina in alto e, dentro un quaderno, la
 stanza — e la riprende all'avvio, se e' recente e se l'avvio non chiede la chat

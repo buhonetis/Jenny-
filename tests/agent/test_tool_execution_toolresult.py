@@ -11,12 +11,12 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from jenny.agent.runner import AgentRunner, AgentRunSpec
-from jenny.agent.tools.base import Tool, tool_parameters
-from jenny.agent.tools.registry import ToolRegistry
-from jenny.agent.tools.result import ToolResult
-from jenny.agent.tools.schema import tool_parameters_schema
-from jenny.providers.base import ToolCallRequest
+from arkhiva.agent.runner import AgentRunner, AgentRunSpec
+from arkhiva.agent.tools.base import Tool, tool_parameters
+from arkhiva.agent.tools.registry import ToolRegistry
+from arkhiva.agent.tools.result import ToolResult
+from arkhiva.agent.tools.schema import tool_parameters_schema
+from arkhiva.providers.base import ToolCallRequest
 
 
 @tool_parameters(tool_parameters_schema())

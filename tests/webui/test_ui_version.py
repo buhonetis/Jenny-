@@ -1,5 +1,5 @@
 """L'impronta della WebUI servita: quel che la pagina confronta alla
-riconnessione per accorgersi di un aggiornamento (``jenny/webui/ui_version.py``).
+riconnessione per accorgersi di un aggiornamento (``arkhiva/webui/ui_version.py``).
 
 Il 21/10/2026 due APK diverse avevano lo stesso ``versionCode``: l'impronta
 viene dal contenuto dei file, non dal numero.
@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import pytest
 
-from jenny.webui import ui_version
+from arkhiva.webui import ui_version
 
 
 class _Package:
@@ -33,9 +33,9 @@ class _Package:
 @pytest.fixture
 def package(monkeypatch: pytest.MonkeyPatch) -> _Package:
     pkg = _Package()
-    monkeypatch.setattr("jenny.utils.android_assets.ui_sources",
-                        lambda: {rel: ("jenny.templates.ui", rel) for rel in pkg.files})
-    monkeypatch.setattr("jenny.utils.android_assets.read_asset", pkg.read_asset)
+    monkeypatch.setattr("arkhiva.utils.android_assets.ui_sources",
+                        lambda: {rel: ("arkhiva.templates.ui", rel) for rel in pkg.files})
+    monkeypatch.setattr("arkhiva.utils.android_assets.read_asset", pkg.read_asset)
     return pkg
 
 

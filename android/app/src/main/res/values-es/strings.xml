@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Español (values-es). El archivo por defecto es ``values/strings.xml`` en
+     inglés; aquí va la traducción completa para dispositivos en español. Toda
+     cadena nueva debe entrar en los tres archivos (values, values-es,
+     values-it) con la misma clave: la que falte cae al inglés. -->
+<resources>
+    <string name="app_name">ARKHIVA Mobile</string>
+
+    <!-- Servicio en primer plano: la notificación permanente que Android exige
+         mientras el gateway está vivo. El texto responde a la única pregunta
+         que esa notificación plantea: «¿qué es esto y por qué no puedo
+         descartarlo?». -->
+    <string name="gateway_notification_title">ARKHIVA en ejecución</string>
+    <string name="gateway_notification_text">Lista para responder y ejecutar tareas programadas</string>
+    <string name="gateway_channel_name">Servicio en segundo plano</string>
+    <string name="gateway_channel_description">Se muestra mientras ARKHIVA se ejecuta en segundo plano. Android lo exige y permanece hasta que detengas ARKHIVA. Tócala para abrirla.</string>
+
+    <!-- El gateway no puede rearrancar desde segundo plano (RestartNotice):
+         Android rechaza el arranque y ninguna alarma exacta lo reintentará. El
+         toque sobre la notificación es lo que lo concede, así que el texto pide
+         justo ese gesto. -->
+    <string name="restart_channel_name">Reinicio necesario</string>
+    <string name="restart_channel_description">Aparece cuando Android ha detenido ARKHIVA en segundo plano y no le permite rearrancar por su cuenta. Tócala para reiniciarla.</string>
+    <string name="restart_notice_title">ARKHIVA se ha detenido</string>
+    <string name="restart_notice_text">Toca para reiniciarla</string>
+
+    <!-- Alertas proactivas del agente (el mensaje lo compone Python; aquí solo
+         se describe el canal). -->
+    <string name="alerts_channel_name">Alertas</string>
+    <string name="alerts_channel_description">Recordatorios y mensajes que ARKHIVA envía por iniciativa propia</string>
+
+    <!-- Respuesta rápida desde la cortina (RemoteInput): etiqueta de la acción,
+         marcador de la caja y los dos desenlaces de la entrega. -->
+    <string name="reply_action_label">Responder</string>
+    <string name="reply_input_hint">Escribe a ARKHIVA…</string>
+    <string name="reply_failed_title">ARKHIVA no recibió tu mensaje</string>
+    <string name="reply_failed_text">No estaba en ejecución. Toca para reenviarlo.</string>
+    <string name="reply_retry_label">Reenviar</string>
+    <string name="reply_bot_name">ARKHIVA</string>
+    <string name="reply_user_name">Tú</string>
+
+    <!-- Mascota flotante: el campo que se abre al toque y los dos modos en que
+         una respuesta puede no llegar. Son las únicas cadenas de esa ventana:
+         todo lo demás que se ve es el sprite. -->
+    <string name="floating_input_hint">Pregunta a ARKHIVA…</string>
+    <string name="floating_not_running">ARKHIVA no se está ejecutando ahora mismo.</string>
+    <string name="floating_no_reply">Sin respuesta. Abre el chat para ver qué ocurrió.</string>
+    <string name="floating_send">Enviar</string>
+    <string name="floating_open_app">Abrir la aplicación</string>
+    <string name="floating_continue_app">Continuar en la aplicación</string>
+
+    <!-- Actualización esperando confirmación en el instalador del sistema
+         (UpdateBridge). Canal propio, no el del agente: silenciar las alertas de
+         ARKHIVA no debe ocultar una actualización atascada esperando un toque. -->
+    <string name="update_channel_name">Actualizaciones de la aplicación</string>
+    <string name="update_channel_description">Se muestra cuando una actualización descargada espera tu confirmación para instalarse</string>
+    <string name="update_notification_title">Actualización lista para instalar</string>
+    <string name="update_notification_text">Toca para confirmar — ARKHIVA se reinicia sola después</string>
+
+    <!-- Lectura de pantalla (ScreenService). -->
+    <string name="screen_service_label">ARKHIVA — lectura de pantalla</string>
+    <string name="screen_service_summary">ARKHIVA lee la pantalla solo cuando tocas su mascota flotante</string>
+    <string name="screen_service_description">Cuando tocas la mascota flotante, ARKHIVA lee una vez la aplicación que está debajo —su texto, la dirección de la página y una captura de esa sola aplicación— para que puedas preguntarle por ella o pedirle que la guarde. Nunca lee por su cuenta, no toca ni escribe nada, y omite las aplicaciones que bloquean capturas, como las bancarias y las pestañas de incógnito. La lectura permanece en el teléfono, en memoria, hasta que la usa o hasta que pasan diez minutos.</string>
+
+    <!-- Vistas nativas de arranque y error (activity_main.xml). Se resuelven
+         una vez al crear la Activity; un cambio de locale en caliente no las
+         reinfla (MainActivity absorbe `locale` en configChanges). -->
+    <string name="loading_text">Iniciando el núcleo local…</string>
+    <string name="error_title">Conexión fallida</string>
+    <string name="error_text">No se pudo conectar con el\nservidor local.</string>
+    <string name="retry_button">Reintentar</string>
+
+    <!-- Estados del agente y controles de memoria. Los usa la capa nativa
+         (notificaciones y superficies del planificador); la WebUI tiene su
+         propia tabla i18n en `assets/i18n/*.json`. -->
+    <string name="agent_status_idle">En reposo</string>
+    <string name="agent_status_thinking">Sintetizando conocimiento…</string>
+    <string name="agent_status_executing">Ejecutando herramienta local…</string>
+    <string name="btn_clear_cache">Purgar contexto volátil</string>
+    <string name="btn_force_sync">Consolidar memoria Markdown</string>
+    <string name="label_memory_path">Ruta de bóveda local:</string>
+    <string name="notif_cron_running_title">ARKHIVA Ω en ejecución</string>
+    <string name="notif_cron_running_desc">Supervisando tareas autónomas programadas</string>
+</resources>

@@ -5,9 +5,9 @@ e non toccabile, ma **visibile**: ogni tocco del telefono la attraversava, e
 Android lo segnalava all'app sotto come «schermata coperta»
 (``FLAG_WINDOW_IS_OBSCURED``). Le schermate che si difendono dal tapjacking
 (``filterTouchesWhenObscured``: «Accedi con Google», le conferme) scartavano ogni
-tocco finche' Jenny era a schermo; le app normali no — Claude rispondeva, Accedi
+tocco finche' ARKHIVA era a schermo; le app normali no — Claude rispondeva, Accedi
 con Google no (15/10/2026). Su jenny_s22 ``dumpsys window`` dava il palco
-``fillxfill`` e ``isVisible=true`` con Jenny parcheggiata.
+``fillxfill`` e ``isVisible=true`` con ARKHIVA parcheggiata.
 
 Ora da ferma la vista radice del palco e' ``GONE`` (la finestra diventa
 invisibile e smette di coprire), e torna visibile solo in volo e in chat. Il
@@ -42,7 +42,7 @@ def test_the_stage_is_born_hidden() -> None:
 
 def test_the_flight_handoff_waits_for_the_stage_to_draw() -> None:
     """Il palco riparte da nascosto: spegnere lei «al giro dopo» poteva cadere
-    prima del suo primo fotogramma, e per un attimo non c'era nessuna Jenny."""
+    prima del suo primo fotogramma, e per un attimo non c'era nessuna ARKHIVA."""
     body = function_body(_code(), "startFlight")
     assert "afterStageDrawn { if (flight != null) mascot.visibility = View.INVISIBLE }" in body
     assert "main.post { if (flight != null) mascot.visibility = View.INVISIBLE }" not in body

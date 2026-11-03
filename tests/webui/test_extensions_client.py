@@ -12,7 +12,7 @@ from pathlib import Path
 
 from support.js_harness import function, member, requires_node, run_js
 
-ASSETS = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets"
+ASSETS = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets"
 EXT_JS = (ASSETS / "shared" / "extensions.js").read_text(encoding="utf-8")
 I18N_JS = (ASSETS / "shared" / "i18n.js").read_text(encoding="utf-8")
 

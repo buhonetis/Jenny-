@@ -29,7 +29,7 @@ from support.js_harness import requires_node, run_js
 
 POLICY_JS = (
     Path(__file__).resolve().parents[2]
-    / "jenny" / "templates" / "ui" / "assets" / "shared" / "subagent-policy.js"
+    / "arkhiva" / "templates" / "ui" / "assets" / "shared" / "subagent-policy.js"
 )
 
 
@@ -260,7 +260,7 @@ def test_a_malformed_snapshot_never_throws() -> None:
 def test_the_workshop_passes_the_entry_and_styles_a_budget_stop() -> None:
     """La regola di `resumable` vale solo se l'officina passa la voce a `saActions`
     su card e modale; e una fermata al budget ha il suo colore, non quello neutro."""
-    assets = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets"
+    assets = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets"
     chat = (assets / "mobile-chat.js").read_bytes().decode("utf-8", "replace")
     assert "saActions(state, 'card', entry)" in chat
     assert "saActions(state, 'modal', entry)" in chat

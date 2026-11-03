@@ -6,7 +6,7 @@ license texts live next to the files they cover, at the paths given.
 
 ## Bundled WebUI assets
 
-Vendored under `jenny/templates/ui/assets/vendor/` and shipped inside the APK.
+Vendored under `arkhiva/templates/ui/assets/vendor/` and shipped inside the APK.
 Nothing is fetched from a CDN at runtime — the WebUI has no outbound asset
 loads, which is why these are vendored in the first place.
 
@@ -30,7 +30,7 @@ of APK that nothing could open.
 
 ## Bundled fonts
 
-Self-hosted under `jenny/templates/ui/assets/vendor/fonts/`. All are licensed
+Self-hosted under `arkhiva/templates/ui/assets/vendor/fonts/`. All are licensed
 under the [SIL Open Font License 1.1](https://openfontlicense.org); the full
 OFL text and the per-font copyright notices are in `vendor/fonts/LICENSE.txt`.
 
@@ -73,7 +73,7 @@ Both licenses are permissive and compatible with this project's AGPL-3.0 grant.
 ## Mascot artwork
 
 The Jenny mascot artwork (`android/image_source/`, and the WebP poses derived
-from it under `jenny/templates/ui/assets/`) is original work, copyright © 2026
+from it under `arkhiva/templates/ui/assets/`) is original work, copyright © 2026
 Ludovico Ragno, and is **not** covered by the AGPL grant — see
 [TRADEMARK.md](./TRADEMARK.md).
 

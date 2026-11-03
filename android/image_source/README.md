@@ -135,7 +135,7 @@ script **non scala, non ritaglia e non normalizza nulla**: ogni webp è il
 quadrato intero ridotto a 768×768 (`SIZE`) con lo stesso fattore per tutti,
 qualità 80. La scala relativa fra le pose non viene mai toccata a valle.
 
-A runtime (`jenny/templates/ui/assets/shared/mascot-drag.js`) il layer di volo
+A runtime (`arkhiva/templates/ui/assets/shared/mascot-drag.js`) il layer di volo
 `.jenny-fly` coincide esattamente col box della mascotte — tutte le img sono
 `width:100%` dello stesso quadrato condiviso, quindi nessuna scala o offset
 viene calcolata lì. L'unica costante calcolata a **build time** in
@@ -188,7 +188,7 @@ la mascotte viene trascinata:
 ### Output
 
 `FILES` mappa nome-posa → PNG sorgente e scrive **10 webp** cotti in
-`jenny/templates/ui/assets/`, uno per posa:
+`arkhiva/templates/ui/assets/`, uno per posa:
 `jenny-{side,side-talk,hang,fall,ground,walk1,walk2,hello1,hello2,idle}.webp`.
 `LAYERS` ne aggiunge **13 a due livelli**,
 `jenny-<stem coi trattini>.webp` (per esempio `body_front_idle.PNG` →
@@ -204,18 +204,18 @@ telefono" (con tabella nomi file e checklist) vedi
 ```bash
 # dalla cartella android/image_source/
 python3 gen_icons.py        # -> ../app/src/main/res/**
-python3 gen_pose_webp.py    # -> ../../jenny/templates/ui/assets/*.webp
+python3 gen_pose_webp.py    # -> ../../arkhiva/templates/ui/assets/*.webp
 ```
 
 **Regola del manifest**: ogni webp nuovo va aggiunto anche a `_UI_MANIFEST`
-in `jenny/utils/android_assets.py`. Su Android gli asset della WebUI vengono
+in `arkhiva/utils/android_assets.py`. Su Android gli asset della WebUI vengono
 estratti dall'APK seguendo quella lista statica: un file non elencato esiste
 nel bundle ma non arriva mai in `workspace/ui/` sul device (la `<img>` fa
 404 in silenzio).
 
 Dopo aver rigenerato le pose (o le icone), **serve una build/installazione
 dell'APK** per vederle sul dispositivo: Chaquopy ri-estrae il bundle
-`jenny/templates/ui` dentro l'APK a ogni installazione, quindi un semplice
+`arkhiva/templates/ui` dentro l'APK a ogni installazione, quindi un semplice
 riavvio dell'app non basta.
 
 ```bash

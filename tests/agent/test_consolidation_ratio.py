@@ -4,11 +4,11 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from jenny.agent.loop import AgentLoop
-from jenny.bus.queue import MessageBus
-from jenny.config.schema import AgentDefaults
-from jenny.providers.base import GenerationSettings, LLMResponse
-from jenny.pydantic_compat import ValidationError
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.bus.queue import MessageBus
+from arkhiva.config.schema import AgentDefaults
+from arkhiva.providers.base import GenerationSettings, LLMResponse
+from arkhiva.pydantic_compat import ValidationError
 
 
 def _make_loop(
@@ -81,7 +81,7 @@ async def test_consolidation_ratio_controls_target(
         return (remaining_estimates.pop(0), "test")
 
     loop.consolidator.estimate_session_prompt_tokens = mock_estimate  # type: ignore[method-assign]
-    monkeypatch.setattr("jenny.agent.consolidator.estimate_message_tokens", lambda _m: 100)
+    monkeypatch.setattr("arkhiva.agent.consolidator.estimate_message_tokens", lambda _m: 100)
 
     await loop.consolidator.maybe_consolidate_by_tokens(session)
 

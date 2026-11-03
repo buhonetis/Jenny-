@@ -1,6 +1,6 @@
 """Un solo risveglio per passo: i resoconti degli aiutanti arrivano insieme.
 
-Nella prova 2 ogni resoconto di aiutante apriva un turno intero di Jenny, con
+Nella prova 2 ogni resoconto di aiutante apriva un turno intero di ARKHIVA, con
 tutta la conversazione del quaderno dietro: un passo con N aiutanti faceva fino
 a N turni. Ora un resoconto riuscito, se un fratello dello stesso passo lavora
 ancora, si scrive in storia **senza turno** (``FollowupState.HELD``): nessuna
@@ -22,17 +22,17 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from jenny.agent.loop import AgentLoop
-from jenny.agent.plan_host import LoopPlanHost
-from jenny.agent.subagent import SubagentManager
-from jenny.agent.tools.context import RequestContext, bind_request_context, reset_request_context
-from jenny.bus.events import InboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.plan.driver import PLAN_WAKE_META, PlanDriver
-from jenny.plan.store import PlanStore
-from jenny.providers.base import LLMProvider, LLMResponse
-from jenny.session.history_meta import INJECTED_EVENT_META, PLAN_STEP_EVENT
-from jenny.session.plan_probe import set_plan_probe
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.agent.plan_host import LoopPlanHost
+from arkhiva.agent.subagent import SubagentManager
+from arkhiva.agent.tools.context import RequestContext, bind_request_context, reset_request_context
+from arkhiva.bus.events import InboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.plan.driver import PLAN_WAKE_META, PlanDriver
+from arkhiva.plan.store import PlanStore
+from arkhiva.providers.base import LLMProvider, LLMResponse
+from arkhiva.session.history_meta import INJECTED_EVENT_META, PLAN_STEP_EVENT
+from arkhiva.session.plan_probe import set_plan_probe
 from tests.support.aio import wait_until
 from tests.support.plan import STEPS, propose
 
@@ -161,7 +161,7 @@ def _assistant_bubbles(out: list[Any]) -> list[Any]:
 # ── due aiutanti nello stesso passo ──────────────────────────────────────────
 
 
-async def test_two_helpers_of_a_step_wake_jenny_once(workspace: Path) -> None:
+async def test_two_helpers_of_a_step_wake_arkhiva_once(workspace: Path) -> None:
     rig = Rig(workspace)
     await rig.start()
     rig.helper("h1")
@@ -241,7 +241,7 @@ async def test_a_stalled_sibling_does_not_hold_and_its_stall_wakes(workspace: Pa
     await asyncio.sleep(0.05)
     assert rig.loop.bus.inbound.empty()
 
-    # Anche h3 si ferma: nessun fratello lavora più, Jenny si sveglia.
+    # Anche h3 si ferma: nessun fratello lavora più, ARKHIVA si sveglia.
     rig.helper("h3", state="stalled")
     rig.loop.subagents._notify_stalls({KEY: ["h3"]})
     await wait_until(lambda: not rig.loop.bus.inbound.empty(), timeout=2)
@@ -382,7 +382,7 @@ def _manager(tmp_path: Path, **kw: Any) -> SubagentManager:
 async def test_the_watchdog_tells_the_listener_and_the_plan_step_is_known(
     tmp_path: Path,
 ) -> None:
-    from jenny.agent.runner import AgentRunResult
+    from arkhiva.agent.runner import AgentRunResult
 
     sm = _manager(tmp_path)
     block = asyncio.Event()
@@ -541,7 +541,7 @@ def _budget(task_id: str = "b1") -> InboundMessage:
 async def test_a_budget_announce_is_silent_only_after_a_real_send_to_it(
     workspace: Path,
 ) -> None:
-    from jenny.agent.turn_types import TurnDisposition
+    from arkhiva.agent.turn_types import TurnDisposition
 
     rig = Rig(workspace)
     resumed = "Resumed subagent [b1] from its saved conversation (new id: n1)."
@@ -562,7 +562,7 @@ async def test_a_budget_announce_is_silent_only_after_a_real_send_to_it(
 async def test_a_result_arriving_while_blocked_is_held_until_the_answer(workspace: Path) -> None:
     """Fino al 26/10 un resoconto arrivato a piano fermo apriva un turno senza i
     tool del passo: ora si tiene, senza timer, e la risposta lo sveglia."""
-    from jenny.agent.turn_types import TurnDisposition
+    from arkhiva.agent.turn_types import TurnDisposition
 
     rig = Rig(workspace, wake_after=0.1)
     await rig.start()
@@ -607,7 +607,7 @@ async def test_a_block_disarms_and_the_answer_rearms_the_timer(workspace: Path) 
 async def test_a_wake_up_does_not_fire_for_a_group_replaced_meanwhile(workspace: Path) -> None:
     """Durante la lettura del piano un turno prende i tenuti e un resoconto nuovo
     apre un altro gruppo: quel risveglio non è per lui."""
-    from jenny.plan.driver import _HeldResults
+    from arkhiva.plan.driver import _HeldResults
 
     rig = Rig(workspace)
     await rig.start()
@@ -639,7 +639,7 @@ async def test_after_slash_new_the_next_turn_does_not_mark_the_held(workspace: P
     await rig.dispatch(InboundMessage(
         channel="websocket", sender_id="u", chat_id=KEY, content="ricominciamo",
     ))
-    assert rig.marked == [], "Jenny never saw it"
+    assert rig.marked == [], "ARKHIVA never saw it"
     assert rig.driver.held_results(KEY) == ()
 
 

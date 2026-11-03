@@ -13,10 +13,10 @@ from pathlib import Path
 
 import pytest
 
-from jenny.snapshot.crypto import encrypt_container
-from jenny.snapshot.engine import SnapshotEngine
-from jenny.snapshot.types import FileEntry, SnapshotManifest
-from jenny_extensions.drive.cloud import (
+from arkhiva.snapshot.crypto import encrypt_container
+from arkhiva.snapshot.engine import SnapshotEngine
+from arkhiva.snapshot.types import FileEntry, SnapshotManifest
+from arkhiva_extensions.drive.cloud import (
     INDEX_DIR,
     PACKS_DIR,
     REPO_MARKER_KEY,
@@ -28,7 +28,7 @@ from jenny_extensions.drive.cloud import (
     parse_snapshot_name,
     snapshot_key,
 )
-from jenny_extensions.drive.cloud_sink import (
+from arkhiva_extensions.drive.cloud_sink import (
     LocalDirSink,
     MemorySink,
     RemoteNotFoundError,
@@ -37,7 +37,7 @@ from jenny_extensions.drive.cloud_sink import (
 
 pytest.importorskip("cryptography")
 
-from jenny.snapshot.crypto_backends.dev import DevAesGcmBackend  # noqa: E402
+from arkhiva.snapshot.crypto_backends.dev import DevAesGcmBackend  # noqa: E402
 
 _BACKEND = DevAesGcmBackend()
 
@@ -51,14 +51,14 @@ def _workspace(root: Path) -> SnapshotEngine:
     # Stesso contenuto in due posti: un blob solo, due file al ripristino.
     (root / "memory" / "copia.md").write_text("anima", encoding="utf-8")
     (root / "uploads" / "foto.jpg").write_bytes(os.urandom(40_000))
-    return SnapshotEngine(root, root / ".jenny" / "snapshots")
+    return SnapshotEngine(root, root / ".arkhiva" / "snapshots")
 
 
 def _tree(root: Path) -> dict[str, bytes]:
     return {
         p.relative_to(root).as_posix(): p.read_bytes()
         for p in sorted(root.rglob("*"))
-        if p.is_file() and ".jenny" not in p.parts
+        if p.is_file() and ".arkhiva" not in p.parts
     }
 
 
@@ -106,7 +106,7 @@ async def test_nothing_on_the_destination_is_readable_without_the_key(tmp_path: 
         assert b"segreto-riconoscibile" not in data, key
         assert b"USER.md" not in data, key
     marker = json.loads(sink.files[REPO_MARKER_KEY])
-    assert marker["format"] == "jenny-cloud-backup"
+    assert marker["format"] == "arkhiva-cloud-backup"
     assert set(marker) == {"format", "version", "repo_id"}
 
 

@@ -78,7 +78,7 @@ def _run(body: str) -> str:
 
 
 def test_a_live_answer_stays_below_the_history_when_you_enter_its_conversation() -> None:
-    """Entri nel quaderno mentre Jenny ci sta rispondendo."""
+    """Entri nel quaderno mentre ARKHIVA ci sta rispondendo."""
     _run("""
 const app = await boot();
 const reads = gatedThread();
@@ -91,7 +91,7 @@ reads[0].open();
 await opening;
 await until(() => {
   assert.deepEqual(thread(), [
-    'you: Q1', 'jenny: A1', 'you: Q2 in progress', 'jenny: Here is the answer to Q2',
+    'you: Q1', 'arkhiva: A1', 'you: Q2 in progress', 'arkhiva: Here is the answer to Q2',
   ]);
   return true;
 });
@@ -103,7 +103,7 @@ def test_a_live_answer_stays_below_the_history_across_a_resync() -> None:
     stanno sotto la storia riletta."""
     _run("""
 const app = await boot();
-assert.deepEqual(thread(), ['you: hello', 'jenny: hello to you']);
+assert.deepEqual(thread(), ['you: hello', 'arkhiva: hello to you']);
 threads['websocket:default'].messages.push({ role: 'user', text: 'and now?' });
 const reads = gatedThread();
 await reconnect();
@@ -112,7 +112,7 @@ frame({ event: 'delta', chat_id: 'default', turn_id: 'n', text: 'now this' });
 reads.forEach((r) => r.open());
 await until(() => {
   assert.deepEqual(thread(),
-    ['you: hello', 'jenny: hello to you', 'you: and now?', 'jenny: now this']);
+    ['you: hello', 'arkhiva: hello to you', 'you: and now?', 'arkhiva: now this']);
   return true;
 });
 """)
@@ -124,7 +124,7 @@ def test_two_reloads_of_the_same_conversation_draw_it_once() -> None:
 const app = await boot();
 slowThread(40);
 await Promise.all([app.chat.reload(), app.chat.reload()]);
-assert.deepEqual(thread(), ['you: hello', 'jenny: hello to you']);
+assert.deepEqual(thread(), ['you: hello', 'arkhiva: hello to you']);
 """)
 
 
@@ -141,7 +141,7 @@ await tick(20);
 await reconnect();
 await back;
 await tick(300);
-assert.deepEqual(thread(), ['you: hello', 'jenny: hello to you']);
+assert.deepEqual(thread(), ['you: hello', 'arkhiva: hello to you']);
 """)
 
 
@@ -155,7 +155,7 @@ app.chat.noteRefusal('too_many_images');
 assert.ok(thread().some((row) => row.startsWith('note: ')), 'la nota non e\\u2019 comparsa');
 await app.showConversation('websocket:default');
 await tick(20);
-assert.deepEqual(thread(), ['you: hello', 'jenny: hello to you']);
+assert.deepEqual(thread(), ['you: hello', 'arkhiva: hello to you']);
 """)
 
 
@@ -196,7 +196,7 @@ before = reads;
 app.openChat();
 await tick(80);
 assert.equal(reads, before + 1, 'aprire la chat non riprova');
-assert.deepEqual(thread(), ['you: hello', 'jenny: hello to you']);
+assert.deepEqual(thread(), ['you: hello', 'arkhiva: hello to you']);
 assert.equal($('home-empty').hidden, true);
 """)
 
@@ -212,13 +212,13 @@ hooks.fetch = async (u) => (down && u.pathname.endsWith('/webui-thread') ? faile
 await reconnect();
 await tick(80);
 const rows = thread();
-assert.deepEqual(rows.slice(0, 2), ['you: hello', 'jenny: hello to you'], 'il filo si e\\u2019 svuotato');
+assert.deepEqual(rows.slice(0, 2), ['you: hello', 'arkhiva: hello to you'], 'il filo si e\\u2019 svuotato');
 assert.equal(rows.length, 3);
 assert.ok(rows[2].startsWith('note: '), 'il fallimento non si vede');
 down = false;
 document.dispatchEvent(new window.Event('visibilitychange'));
 await tick(80);
-assert.deepEqual(thread(), ['you: hello', 'jenny: hello to you']);
+assert.deepEqual(thread(), ['you: hello', 'arkhiva: hello to you']);
 assert.deepEqual(unhandled, []);
 """)
 
@@ -283,7 +283,7 @@ def test_an_older_page_loaded_during_a_reload_does_not_end_up_below_the_history(
     finisce sopra, e il tocco dopo non la riaggiunge una seconda volta."""
     _run(_PAGED + """
 const app = await boot();
-assert.deepEqual(thread(), ['you: Q3', 'jenny: A3']);
+assert.deepEqual(thread(), ['you: Q3', 'arkhiva: A3']);
 const gates = gatedPaging();
 const reading = app.chat.reload();
 await until(() => gates.thread.asked, { msg: 'la rilettura non ha chiesto la storia' });
@@ -291,18 +291,18 @@ const paging = app.chat.pager.loadMore();
 await until(() => gates.page.asked, { msg: 'lo scorrimento non ha chiesto la pagina' });
 gates.page.open();
 await paging;
-assert.deepEqual(thread(), ['you: Q1', 'jenny: A1', 'you: Q3', 'jenny: A3']);
+assert.deepEqual(thread(), ['you: Q1', 'arkhiva: A1', 'you: Q3', 'arkhiva: A3']);
 gates.thread.open();
 await reading;
 await until(() => {
-  assert.deepEqual(thread(), ['you: Q3', 'jenny: A3'], 'la storia e\\u2019 entrata sopra la pagina');
+  assert.deepEqual(thread(), ['you: Q3', 'arkhiva: A3'], 'la storia e\\u2019 entrata sopra la pagina');
   return true;
 });
 assert.equal(app.chat.pager.cursor, 'c1');
 assert.equal(app.chat.pager.hasMore, true);
 await app.chat.pager.loadMore();
 await until(() => {
-  assert.deepEqual(thread(), ['you: Q1', 'jenny: A1', 'you: Q3', 'jenny: A3']);
+  assert.deepEqual(thread(), ['you: Q1', 'arkhiva: A1', 'you: Q3', 'arkhiva: A3']);
   return true;
 });
 """)
@@ -321,10 +321,10 @@ const reading = app.chat.reload();
 await paging;
 await reading;
 await tick(30);
-assert.deepEqual(thread(), ['you: Q3', 'jenny: A3']);
+assert.deepEqual(thread(), ['you: Q3', 'arkhiva: A3']);
 await app.chat.pager.loadMore();
 await tick(100);
-assert.deepEqual(thread(), ['you: Q1', 'jenny: A1', 'you: Q3', 'jenny: A3']);
+assert.deepEqual(thread(), ['you: Q1', 'arkhiva: A1', 'you: Q3', 'arkhiva: A3']);
 """)
 
 
@@ -338,7 +338,7 @@ const reads = gatedThread();
 const first = app.chat.reload();
 await until(() => reads.length === 1);
 frame({ event: 'delta', chat_id: 'default', turn_id: 'n', text: 'live' });
-await until(() => thread().includes('jenny: live'), { msg: 'la bolla viva non e\\u2019 nata' });
+await until(() => thread().includes('arkhiva: live'), { msg: 'la bolla viva non e\\u2019 nata' });
 const second = app.chat.reload();
 await until(() => reads.length === 2);
 reads[0].open();
@@ -347,8 +347,8 @@ reads[1].open();
 await second;
 await until(() => {
   const rows = thread();
-  assert.deepEqual(rows.slice(0, 2), ['you: hello', 'jenny: hello to you']);
-  assert.ok(rows.slice(2).includes('jenny: live'), `la bolla viva e\\u2019 sparita: ${JSON.stringify(rows)}`);
+  assert.deepEqual(rows.slice(0, 2), ['you: hello', 'arkhiva: hello to you']);
+  assert.ok(rows.slice(2).includes('arkhiva: live'), `la bolla viva e\\u2019 sparita: ${JSON.stringify(rows)}`);
   return true;
 });
 """)
@@ -372,7 +372,7 @@ const b = app._readThread();
 await Promise.all([a, b]);
 await tick(30);
 assert.equal(app._threadFailed, false, 'una lettura scavalcata segna il filo come fallito');
-assert.deepEqual(thread(), ['you: hello', 'jenny: hello to you']);
+assert.deepEqual(thread(), ['you: hello', 'arkhiva: hello to you']);
 """)
 
 
@@ -385,7 +385,7 @@ def test_a_helper_report_reads_back_as_one_bubble() -> None:
     """
     import json
 
-    from jenny.webui.transcript_replay import replay_transcript_to_ui_messages
+    from arkhiva.webui.transcript_replay import replay_transcript_to_ui_messages
 
     turn = {"turn_id": "system:r1"}
     messages = replay_transcript_to_ui_messages([
@@ -403,7 +403,7 @@ def test_a_helper_report_reads_back_as_one_bubble() -> None:
 threads['websocket:default'] = {{ messages: {json.dumps(messages)} }};
 await boot();
 await tick(80);
-assert.deepEqual(thread().slice(-2), ['jenny: Ci lavora un aiutante.', 'jenny: ecco la ricerca']);
+assert.deepEqual(thread().slice(-2), ['arkhiva: Ci lavora un aiutante.', 'arkhiva: ecco la ricerca']);
 const last = [...$('home-thread').querySelectorAll('.home-msg')].at(-1);
 assert.match(last.textContent, /r\\.md/);
 """)

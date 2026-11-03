@@ -20,7 +20,7 @@ from pathlib import Path
 from support.js_harness import requires_node, run_module
 
 ROOT = Path(__file__).resolve().parents[2]
-ASSETS = ROOT / "jenny" / "templates" / "ui" / "assets"
+ASSETS = ROOT / "arkhiva" / "templates" / "ui" / "assets"
 
 pytestmark = requires_node
 
@@ -137,7 +137,7 @@ def _run(body: str) -> None:
                 return this.refuses ? false : { pages: s, order: o };
               },
             };
-            let chatName = { name: 'Jenny', color: null };
+            let chatName = { name: 'ARKHIVA', color: null };
             const changes = [];
             const el = createEl('div');
             const strip = new HomeStrip(el, {
@@ -174,7 +174,7 @@ def test_every_page_has_its_name_in_order() -> None:
     le aggiunte col loro."""
     _run("""
       assert.deepEqual(names(), [
-        'home.strip.app', 'Jenny', 'todo', 'piante', 'home.strip.notebooks', 'home.strip.settings',
+        'home.strip.app', 'ARKHIVA', 'todo', 'piante', 'home.strip.notebooks', 'home.strip.settings',
       ]);
     """)
 
@@ -409,7 +409,7 @@ def test_the_lifted_page_sits_under_the_finger() -> None:
 
 
 def test_the_row_is_shipped() -> None:
-    manifest = (ROOT / "jenny" / "utils" / "android_assets.py").read_text(encoding="utf-8")
+    manifest = (ROOT / "arkhiva" / "utils" / "android_assets.py").read_text(encoding="utf-8")
     assert '"assets/home-strip.js"' in manifest
 
 

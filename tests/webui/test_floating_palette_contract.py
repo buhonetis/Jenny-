@@ -28,10 +28,10 @@ from support.js_harness import requires_node, run_js
 from support.kotlin_source import read_source
 
 ROOT = Path(__file__).resolve().parents[2]
-ASSETS = ROOT / "jenny" / "templates" / "ui" / "assets"
+ASSETS = ROOT / "arkhiva" / "templates" / "ui" / "assets"
 THEME_JS = ASSETS / "shared" / "theme.js"
 SPA_CSS = ASSETS / "mobile-style.css"
-ANDROID = ROOT / "android/app/src/main/java/com/flagdizero/jenny"
+ANDROID = ROOT / "android/app/src/main/java/org/buhonet/agente/arkhiva"
 
 
 # I sei token che vestono la finestra, nell'ordine in cui viaggiano sul ponte.
@@ -51,7 +51,7 @@ globalThis.document = {
 globalThis.sent = [];
 globalThis.window = {
   dispatchEvent: () => {},
-  JennyNative: { setFloatingPalette: (...args) => { globalThis.sent.push(args); } },
+  ArkhivaNative: { setFloatingPalette: (...args) => { globalThis.sent.push(args); } },
 };
 globalThis.getComputedStyle = () => ({
   getPropertyValue: (token) => (globalThis.tokens || {})[token] || '',

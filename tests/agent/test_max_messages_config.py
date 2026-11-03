@@ -8,11 +8,11 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from support.agent import make_loop
 
-from jenny.agent.loop import AgentLoop
-from jenny.bus.events import InboundMessage
-from jenny.providers.base import LLMResponse
-from jenny.session.keys import UNIFIED_SESSION_KEY
-from jenny.session.manager import Session
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.bus.events import InboundMessage
+from arkhiva.providers.base import LLMResponse
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.session.manager import Session
 
 DEFAULT_MAX_MESSAGES = 120
 
@@ -181,19 +181,19 @@ class TestSchemaConfig:
     """Verify the config schema accepts max_messages."""
 
     def test_schema_default(self) -> None:
-        from jenny.config.schema import AgentDefaults
+        from arkhiva.config.schema import AgentDefaults
 
         defaults = AgentDefaults()
         assert defaults.max_messages == DEFAULT_MAX_MESSAGES
 
     def test_schema_accepts_zero_as_builtin_limit(self) -> None:
-        from jenny.config.schema import AgentDefaults
+        from arkhiva.config.schema import AgentDefaults
 
         defaults = AgentDefaults(max_messages=0)
         assert defaults.max_messages == 0
 
     def test_schema_rejects_negative(self) -> None:
-        from jenny.config.schema import AgentDefaults
+        from arkhiva.config.schema import AgentDefaults
 
         with pytest.raises(Exception):  # Pydantic validation error
             AgentDefaults(max_messages=-1)

@@ -1,7 +1,7 @@
 """I prompt di sistema si aggiornano, i file dell'utente no.
 
 Il difetto osservato in produzione: `sync_workspace_templates` estraeva tutto
-`jenny/templates/` con `skip_existing=True`, per non calpestare `SOUL.md` e
+`arkhiva/templates/` con `skip_existing=True`, per non calpestare `SOUL.md` e
 `USER.md`. Effetto collaterale, invisibile perché sembra funzionare: anche i
 prompt di sistema erano congelati. Un telefono aggiornato per mesi girava con
 `identity.md` della versione in cui era stato installato — un file *nuovo*
@@ -25,7 +25,7 @@ from pathlib import Path
 
 import pytest
 
-from jenny.utils.android_assets import (
+from arkhiva.utils.android_assets import (
     _RETIRED_TEMPLATE_DIGESTS,
     _SYSTEM_PROMPT_TEMPLATES,
     _TEMPLATES_MANIFEST,
@@ -33,7 +33,7 @@ from jenny.utils.android_assets import (
     extract_package_dir,
     retire_withdrawn_templates,
 )
-from jenny.utils.helpers import load_bundled_template, sync_workspace_templates
+from arkhiva.utils.helpers import load_bundled_template, sync_workspace_templates
 
 MARKER = "MODIFICATO A MANO — non deve sopravvivere a un aggiornamento\n"
 
@@ -108,7 +108,7 @@ def test_extracting_a_file_outside_the_manifest_is_an_error(tmp_path: Path) -> N
     """
     with pytest.raises(ValueError, match="not in the manifest"):
         extract_package_dir(
-            "jenny.templates", tmp_path, only=["agent/does_not_exist.md"],
+            "arkhiva.templates", tmp_path, only=["agent/does_not_exist.md"],
         )
 
 
@@ -239,7 +239,7 @@ def test_the_rewrite_still_works_when_there_is_something_to_write(
     target = workspace / name
     target.write_text(_retired_fixture(fixture), encoding="utf-8")
     monkeypatch.setattr(
-        "jenny.utils.android_assets.read_asset", lambda *args, **kwargs: b"# Nuovo\n"
+        "arkhiva.utils.android_assets.read_asset", lambda *args, **kwargs: b"# Nuovo\n"
     )
 
     assert retire_withdrawn_templates(workspace) == [name]
@@ -304,7 +304,7 @@ def test_an_unreadable_bundle_leaves_the_file_alone(
     retired = _retired_fixture("agents_md_retired_v0.3.0.md")
     (workspace / "AGENTS.md").write_text(retired, encoding="utf-8")
     monkeypatch.setattr(
-        "jenny.utils.android_assets.read_asset", lambda *args, **kwargs: None
+        "arkhiva.utils.android_assets.read_asset", lambda *args, **kwargs: None
     )
 
     assert retire_withdrawn_templates(workspace) == []
@@ -331,7 +331,7 @@ def test_an_empty_bundle_is_written_because_empty_is_what_we_ship(
         _retired_fixture("agents_md_retired_v0.3.0.md"), encoding="utf-8"
     )
     monkeypatch.setattr(
-        "jenny.utils.android_assets.read_asset", lambda *args, **kwargs: b""
+        "arkhiva.utils.android_assets.read_asset", lambda *args, **kwargs: b""
     )
 
     assert retire_withdrawn_templates(workspace) == ["AGENTS.md"]
@@ -359,7 +359,7 @@ def test_the_retired_file_keeps_its_permissions(
     target.write_text(_retired_fixture("agents_md_retired_v0.3.0.md"), encoding="utf-8")
     target.chmod(0o600)
     monkeypatch.setattr(
-        "jenny.utils.android_assets.read_asset", lambda *args, **kwargs: b"# Nuovo\n"
+        "arkhiva.utils.android_assets.read_asset", lambda *args, **kwargs: b"# Nuovo\n"
     )
 
     assert retire_withdrawn_templates(workspace) == ["AGENTS.md"]
@@ -411,7 +411,7 @@ def test_a_failed_retire_does_not_stop_the_prompt_refresh(
     def _refuse(*args: object, **kwargs: object) -> None:
         raise PermissionError("workspace is read-only")
 
-    monkeypatch.setattr("jenny.utils.android_assets.atomic_write", _refuse)
+    monkeypatch.setattr("arkhiva.utils.android_assets.atomic_write", _refuse)
 
     sync_workspace_templates(workspace, silent=True)
 
@@ -439,8 +439,8 @@ def rendered_from(workspace: Path, monkeypatch: pytest.MonkeyPatch):
     processo (``lru_cache``), perciò va invalidato prima **e** dopo — la prima
     chiamata della suite fisserebbe altrimenti la root per tutti.
     """
-    from jenny.runtime.context import get_runtime_context
-    from jenny.utils import prompt_templates
+    from arkhiva.runtime.context import get_runtime_context
+    from arkhiva.utils import prompt_templates
 
     monkeypatch.setattr(get_runtime_context(), "workspace_dir", workspace)
     prompt_templates._environment.cache_clear()
@@ -512,7 +512,7 @@ def test_the_user_owned_templates_ship_no_prose() -> None:
         assert (load_bundled_template(name) or "") == "", (
             f"{name} è tornato a spedire del testo: quel testo non raggiunge mai "
             "un'installazione esistente, e su una nuova si paga in ogni turno. "
-            "Va sotto `jenny/templates/agent/`, in una skill, o nella WebUI."
+            "Va sotto `arkhiva/templates/agent/`, in una skill, o nella WebUI."
         )
 
 
@@ -525,9 +525,9 @@ def test_dream_is_told_not_to_write_runtime_facts_and_why() -> None:
     """
     text = load_bundled_template("agent/dream.md") or ""
 
-    assert "Do not add what the runtime already reports" in text
+    assert "Tampoco añadas lo que el runtime ya reporta" in text
     assert "`Device location`" in text
-    assert "stale" in text, "il divieto arriva senza il motivo che lo regge"
+    assert "obsoleta" in text, "il divieto arriva senza il motivo che lo regge"
 
 
 def test_the_retired_digest_registry_has_exactly_one_definition() -> None:
@@ -540,7 +540,7 @@ def test_the_retired_digest_registry_has_exactly_one_definition() -> None:
     ``agent/autocompact.py`` sono tre copie divergenti della regola sui prefissi
     interni: "a data-loss bug no test will catch". Questo è il test che la prende.
     """
-    sources = list((Path(__file__).resolve().parents[2] / "jenny").rglob("*.py"))
+    sources = list((Path(__file__).resolve().parents[2] / "arkhiva").rglob("*.py"))
     assert sources, "nessun sorgente trovato: il path del package è cambiato"
 
     for name, retired in _RETIRED_TEMPLATE_DIGESTS.items():
@@ -574,7 +574,7 @@ def test_a_second_identical_pass_writes_nothing(tmp_path: Path) -> None:
     funzione *dice*, l'``mtime`` è quel che ha *fatto*.
     """
     dest = tmp_path / "ws"
-    first = extract_package_dir("jenny.templates", dest, only=_SYSTEM_PROMPT_TEMPLATES)
+    first = extract_package_dir("arkhiva.templates", dest, only=_SYSTEM_PROMPT_TEMPLATES)
     assert first > 0, "la prima passata deve estrarre davvero"
 
     sample = dest / _SYSTEM_PROMPT_TEMPLATES[0]
@@ -584,7 +584,7 @@ def test_a_second_identical_pass_writes_nothing(tmp_path: Path) -> None:
     os.utime(sample, ns=(before - 1_000_000_000, before - 1_000_000_000))
     marked = sample.stat().st_mtime_ns
 
-    second = extract_package_dir("jenny.templates", dest, only=_SYSTEM_PROMPT_TEMPLATES)
+    second = extract_package_dir("arkhiva.templates", dest, only=_SYSTEM_PROMPT_TEMPLATES)
     assert second == 0, f"la seconda passata ha riscritto {second} file identici"
     assert sample.stat().st_mtime_ns == marked, "il file è stato riscritto uguale"
 
@@ -599,7 +599,7 @@ def test_a_changed_file_still_lands(tmp_path: Path) -> None:
     invariata resterebbe fermo per sempre, e nessuno se ne accorgerebbe.
     """
     dest = tmp_path / "ws"
-    extract_package_dir("jenny.templates", dest, only=_SYSTEM_PROMPT_TEMPLATES)
+    extract_package_dir("arkhiva.templates", dest, only=_SYSTEM_PROMPT_TEMPLATES)
     sample = dest / _SYSTEM_PROMPT_TEMPLATES[0]
     good = sample.read_bytes()
 
@@ -608,7 +608,7 @@ def test_a_changed_file_still_lands(tmp_path: Path) -> None:
     broken[0] = (broken[0] + 1) % 256
     sample.write_bytes(bytes(broken))
 
-    written = extract_package_dir("jenny.templates", dest, only=_SYSTEM_PROMPT_TEMPLATES)
+    written = extract_package_dir("arkhiva.templates", dest, only=_SYSTEM_PROMPT_TEMPLATES)
     assert written == 1, f"il file corrotto doveva essere riscritto, scritti={written}"
     assert sample.read_bytes() == good, "il contenuto del pacchetto deve aver vinto"
 
@@ -616,12 +616,12 @@ def test_a_changed_file_still_lands(tmp_path: Path) -> None:
 def test_a_truncated_file_is_rewritten(tmp_path: Path) -> None:
     """Il caso che la taglia prende da sola, e che deve restare preso."""
     dest = tmp_path / "ws"
-    extract_package_dir("jenny.templates", dest, only=_SYSTEM_PROMPT_TEMPLATES)
+    extract_package_dir("arkhiva.templates", dest, only=_SYSTEM_PROMPT_TEMPLATES)
     sample = dest / _SYSTEM_PROMPT_TEMPLATES[0]
     good = sample.read_bytes()
     sample.write_bytes(good[: len(good) // 2])
 
-    assert extract_package_dir("jenny.templates", dest, only=_SYSTEM_PROMPT_TEMPLATES) == 1
+    assert extract_package_dir("arkhiva.templates", dest, only=_SYSTEM_PROMPT_TEMPLATES) == 1
     assert sample.read_bytes() == good
 
 
@@ -633,13 +633,13 @@ def test_an_unreadable_file_is_rewritten_not_skipped(tmp_path: Path) -> None:
     esiste già per sopravvivere al file reso read-only, e questo lo esercita.
     """
     dest = tmp_path / "ws"
-    extract_package_dir("jenny.templates", dest, only=_SYSTEM_PROMPT_TEMPLATES)
+    extract_package_dir("arkhiva.templates", dest, only=_SYSTEM_PROMPT_TEMPLATES)
     sample = dest / _SYSTEM_PROMPT_TEMPLATES[0]
     good = sample.read_bytes()
     sample.write_bytes(b"rotto")
     sample.chmod(0o000)
     try:
-        written = extract_package_dir("jenny.templates", dest, only=_SYSTEM_PROMPT_TEMPLATES)
+        written = extract_package_dir("arkhiva.templates", dest, only=_SYSTEM_PROMPT_TEMPLATES)
     finally:
         with suppress(OSError):
             sample.chmod(0o644)
@@ -656,7 +656,7 @@ def test_both_startup_paths_name_the_workspace_the_same_way() -> None:
     invece che una ripetizione. È ciò che ha tenuto nascosto il doppio lavoro.
     """
     entry = (
-        Path(__file__).resolve().parents[2] / "jenny" / "android_entry.py"
+        Path(__file__).resolve().parents[2] / "arkhiva" / "android_entry.py"
     ).read_text(encoding="utf-8")
     assert "sync_workspace_templates(get_workspace_path())" in entry, (
         "android_entry deve passare il percorso canonico, non la sua variabile locale"

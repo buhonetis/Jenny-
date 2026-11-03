@@ -15,10 +15,10 @@ from typing import Any
 
 import pytest
 
-from jenny.agent.tools.registry import ToolRegistry, ToolRegistryView
-from jenny.bus.events import InboundMessage
-from jenny.cron.session_turns import monitor_session_key
-from jenny.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.agent.tools.registry import ToolRegistry, ToolRegistryView
+from arkhiva.bus.events import InboundMessage
+from arkhiva.cron.session_turns import monitor_session_key
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
 from tests.agent.test_prompt_matches_offered_tools import (  # noqa: F401
     _loop_with_capture,
     _NamedTool,
@@ -48,7 +48,7 @@ def _app(ws: Path, slug: str) -> None:
 
 @pytest.fixture
 def notebook(workspace: Path) -> Path:  # noqa: F811
-    from jenny.board.store import mutate_board
+    from arkhiva.board.store import mutate_board
 
     root = workspace / "wikis" / "soldi"
     (root / "wiki").mkdir(parents=True)
@@ -100,8 +100,8 @@ def test_the_view_is_live_and_counts_on_the_loop_registry() -> None:
 
 async def test_an_app_placed_mid_turn_is_usable_in_the_same_turn(notebook: Path) -> None:
     """``app action=place`` a meta' turno: le azioni che scrivono si vedono subito."""
-    from jenny.board.store import mutate_board
-    from jenny.session.manager import Session
+    from arkhiva.board.store import mutate_board
+    from arkhiva.session.manager import Session
 
     loop, _captured = _loop_with_capture(notebook)
     loop.orchestrator_mode = True

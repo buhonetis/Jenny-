@@ -16,13 +16,13 @@ from __future__ import annotations
 import time
 from datetime import datetime
 
-from jenny.webui.transcript import (
+from arkhiva.webui.transcript import (
     _build_synthetic_transcript,
     _inject_missing_user_events_from_session,
 )
-from jenny.webui.transcript_recorder import WebUITranscriptRecorder
-from jenny.webui.transcript_replay import replay_transcript_to_ui_messages
-from jenny.webui.transcript_store import read_transcript_lines
+from arkhiva.webui.transcript_recorder import WebUITranscriptRecorder
+from arkhiva.webui.transcript_replay import replay_transcript_to_ui_messages
+from arkhiva.webui.transcript_store import read_transcript_lines
 
 USER_AT = 1_791_200_000_000
 END_AT = USER_AT + 4_200
@@ -49,7 +49,7 @@ def _by_role(messages: list[dict]) -> dict[str, dict]:
 
 
 def test_the_recorder_stamps_every_line(tmp_path, monkeypatch) -> None:
-    monkeypatch.setattr("jenny.config.paths.get_data_dir", lambda: tmp_path)
+    monkeypatch.setattr("arkhiva.config.paths.get_data_dir", lambda: tmp_path)
     rec = WebUITranscriptRecorder()
     before = int(time.time() * 1000)
     rec.append_user_message("c", "ciao", metadata={})
@@ -61,7 +61,7 @@ def test_the_recorder_stamps_every_line(tmp_path, monkeypatch) -> None:
 
 
 def test_a_line_that_already_has_its_time_keeps_it(tmp_path, monkeypatch) -> None:
-    monkeypatch.setattr("jenny.config.paths.get_data_dir", lambda: tmp_path)
+    monkeypatch.setattr("arkhiva.config.paths.get_data_dir", lambda: tmp_path)
     WebUITranscriptRecorder().append("c", {"event": "turn_end", "chat_id": "c", "at": 5})
     assert read_transcript_lines("websocket:c")[0]["at"] == 5
 

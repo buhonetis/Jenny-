@@ -5,8 +5,8 @@ field: ``{"google": {"thought_signature": "..."}}``.  This MUST survive the
 parse → serialize round-trip so the model can continue reasoning.
 """
 
-from jenny.providers.base import ToolCallRequest
-from jenny.providers.openai_compat_provider import OpenAICompatProvider
+from arkhiva.providers.base import ToolCallRequest
+from arkhiva.providers.openai_compat_provider import OpenAICompatProvider
 
 GEMINI_EXTRA = {"google": {"thought_signature": "sig-abc-123"}}
 

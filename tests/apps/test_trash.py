@@ -8,9 +8,9 @@ from pathlib import Path
 
 import pytest
 
-from jenny.apps.manifest import find_app, scan_apps
-from jenny.apps.trash import list_trash, purge_app, restore_app, trash_app, trashed_entry
-from jenny.board.sections import app_section_view
+from arkhiva.apps.manifest import find_app, scan_apps
+from arkhiva.apps.trash import list_trash, purge_app, restore_app, trash_app, trashed_entry
+from arkhiva.board.sections import app_section_view
 
 
 def _app(workspace: Path, slug: str = "orto", records: int = 2) -> Path:
@@ -86,7 +86,7 @@ def test_a_drawer_section_of_a_trashed_app_offers_to_put_it_back(tmp_path: Path)
 
 
 async def test_the_trash_commands(tmp_path: Path) -> None:
-    from jenny.webui.commands import CommandContext, CommandError, dispatch_command
+    from arkhiva.webui.commands import CommandContext, CommandError, dispatch_command
 
     workspace = tmp_path
     ctx = CommandContext(get_workspace_root=lambda: workspace,

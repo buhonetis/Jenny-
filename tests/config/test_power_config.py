@@ -5,8 +5,8 @@ from __future__ import annotations
 
 import pytest
 
-from jenny.config.schema import Config, PowerConfig
-from jenny.pydantic_compat import ValidationError
+from arkhiva.config.schema import Config, PowerConfig
+from arkhiva.pydantic_compat import ValidationError
 
 
 def test_power_config_defaults() -> None:

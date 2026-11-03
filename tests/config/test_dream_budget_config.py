@@ -13,9 +13,9 @@ import json
 
 import pytest
 
-from jenny.config.loader import load_config
-from jenny.config.schema import DreamConfig
-from jenny.pydantic_compat import ValidationError
+from arkhiva.config.loader import load_config
+from arkhiva.config.schema import DreamConfig
+from arkhiva.pydantic_compat import ValidationError
 
 
 def test_memory_and_user_ship_enforced_at_three_thousand() -> None:

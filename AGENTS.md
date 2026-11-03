@@ -2,7 +2,7 @@ This file provides guidance to AI coding agents working with this repository.
 
 ## Project Overview
 
-Jenny is a lightweight AI agent framework written in Python with a built-in mobile-first WebUI served from `jenny/templates/ui/`. It centers around an async agent loop that receives messages over WebSocket, invokes an LLM provider, executes tools, and manages session memory.
+Jenny is a lightweight AI agent framework written in Python with a built-in mobile-first WebUI served from `arkhiva/templates/ui/`. It centers around an async agent loop that receives messages over WebSocket, invokes an LLM provider, executes tools, and manages session memory.
 
 **Android is the only runtime target.**
 
@@ -10,7 +10,7 @@ Jenny is a lightweight AI agent framework written in Python with a built-in mobi
 
 ```bash
 pytest tests/config/ -v
-ruff check jenny/ jenny_extensions/
+ruff check arkhiva/ arkhiva_extensions/
 ```
 
 The gateway is started by the Android runtime via `jenny.android_entry.run_gateway()`.
@@ -40,44 +40,44 @@ to try the build without the Drive. The two debug builds share the debug key, so
 other in place.
 
 Debug and release APKs are signed differently: switching between them on the emulator needs
-`adb uninstall com.flagdizero.jenny` first, which wipes the emulator's workspace — and brings
+`adb uninstall org.buhonet.agente.arkhiva` first, which wipes the emulator's workspace — and brings
 back the first-run onboarding, which is often exactly what a test wants.
 
 ## High-Level Architecture
 
 ### Core Data Flow
 
-Messages flow through an async `MessageBus` (`jenny/bus/queue.py`) that decouples the WebSocket channel from the agent core:
+Messages flow through an async `MessageBus` (`arkhiva/bus/queue.py`) that decouples the WebSocket channel from the agent core:
 
-1. **WebSocket Channel** (`jenny/channels/websocket.py`) receives messages from the mobile WebUI and publishes `InboundMessage` events to the bus.
-2. **`AgentLoop`** (`jenny/agent/loop.py`) consumes inbound messages, builds context, and coordinates the turn.
-3. **`AgentRunner`** (`jenny/agent/runner.py`) handles the actual LLM conversation loop: send messages to the provider, receive tool calls, execute tools, and stream responses.
+1. **WebSocket Channel** (`arkhiva/channels/websocket.py`) receives messages from the mobile WebUI and publishes `InboundMessage` events to the bus.
+2. **`AgentLoop`** (`arkhiva/agent/loop.py`) consumes inbound messages, builds context, and coordinates the turn.
+3. **`AgentRunner`** (`arkhiva/agent/runner.py`) handles the actual LLM conversation loop: send messages to the provider, receive tool calls, execute tools, and stream responses.
 4. Responses are published as `OutboundMessage` events back to the WebSocket channel.
 
 ### Key Subsystems
 
-- **Agent Loop** (`jenny/agent/loop.py`, `runner.py`): The core processing engine. `AgentLoop` manages session keys, hooks, and context building. `AgentRunner` executes the multi-turn LLM conversation with tool execution.
-- **LLM Providers** (`jenny/providers/`): Provider implementations (Anthropic, OpenAI-compatible, OpenAI Responses API converters) built on a common base (`base.py`). `factory.py` creates the provider from config; on an OpenCode Go base URL it wraps them in `opencode_router.py`, which learns per model which of Go's three endpoints answers.
-- **Channel** (`jenny/channels/`): four channel classes — WebSocket (`websocket.py`, the WebUI), Telegram (`telegram.py`, a paired personal-bot channel), Notification (`notification.py`, a reply typed into an Android notification, answered with a system alert) and Floating (`floating.py`, the floating mascot's bubble); the last two exist only on Android. `dispatcher.py` owns them and routes outbound bus messages to whichever are active (retry, delta coalescing, progress filtering). All four feed the same unified session. Other platform integrations were removed from this fork.
-- **Tools** (`jenny/agent/tools/`): Agent capabilities exposed to the LLM: filesystem (read/write/edit/list), `python_exec` for code execution, Android web search/fetch (`android_web.py`), cron, subagent spawning, the screen as it was when the user tapped the floating mascot (`screen.py`, offered only in that turn), the notebook board (`board.py`, scoped `notebook`: only the `notebook-editor` subagent has it), bulk notebook reads and checks (`notebook.py`: `check`/`map`/`read_many` for the main agent, plus `remove_pages` for the `notebook-editor`), the step-by-step plan (`plan.py`: `plan_propose` only in a planning turn, `plan_step_done`/`plan_step_skip`/`plan_blocked` only while a plan step is open), the device location and places (`location.py`: `get_location`, and `find_place` on Android's own Geocoder; both return a ready `chatLink` that the WebUI draws as a place card, `shared/place-card.js`), and self-modification. Tools are explicitly registered: `loader.py` imports a fixed module list of 27 (`_HARDCODED_TOOL_MODULES`) and each module declares `TOOLS = [...]`, yielding 52 tool classes (a few names have one class per scope: `app` comes in three faces, one per scope — `core`, the orchestrator's `publish`/`place`, and the `app-builder` subagent's `draft`/`edit`/`set` — and `notebook` in two, `core`/`orchestrator` and `notebook`; the scopes of one name's classes must stay disjoint, or a registry loading both collides). **Three more bypass the loader**, each because it needs a live reference the loader cannot provide: `my` (the running `AgentLoop`), `memory` (`MemoryEntryTool`, which needs the memory store) and the per-app action tool (synced per turn) — so this list is not a complete inventory of the tool surface, and `self.py`/`memory_entries.py` declaring no usable `TOOLS` is deliberate rather than an oversight. A name collision — like a module without `TOOLS`, or an `allow` entry that names no known tool — raises `ToolLoadError` and aborts startup; a failing `enabled()`/`create()` only disables that one tool, logged at ERROR and recorded in `ToolLoader.failures`.
-- **Step-by-step plans** (`jenny/plan/`): a big job in a notebook split into steps the **code** drives one at a time. `plan.json` (under `<runtime_root>/plans/`, outside the workspace) is the only source of a plan's state; `driver.py::PlanDriver` (built in the composition root) is the only thing that moves it — it opens each step with an injected turn, the model closes it with a tool, and the end-of-turn hook (`agent/loop_plan.py`) takes the photos and opens the next step. The user's decisions (approve, pause, stop, rollback) are the `plan.*` RPCs in `webui/plan_commands.py`, which no tool reaches. While a plan holds a notebook the user's writes to it answer `plan_running`. Before a plan there is a **planning** (`drafting`, one per notebook, in `plans/drafting.json`): the Plan button opens it, every turn of that chat stays a read-only planning turn until `plan_propose` (or a cancel, `/stop`, 12 h idle), and `plan_propose` refuses a planning that has not read the notebook. A step that leaves drafts (`agent/staged_writes.py`) does not close: the plan waits on them (`blocked.kind = "drafts"`) and goes on by itself once the user installs or discards them.
-- **Undoing a helper** (`jenny/agent/subagent_journal.py`): every file a subagent changes is noted per lineage (the content before its first write, then before/after hashes) under `subagents/journal/`, by the write fences it already passes (`subagent_policy.check_write`, `journal_touch` for the board, app drafts, downloads, the notebook journal and `ssh_transfer`) and by the runner after each tool. `SubagentManager.undo` puts back only the files still as that helper left them; the home's «Fermala» sheet, `/api/subagents/{id}/undo`, `.../cancel?undo=1` and `subagent_cancel undo=true` reach it. `tests/security/test_journal_write_surfaces.py` fails on a writer that is neither hooked nor declared out of it.
-- **Memory** (`jenny/agent/memory.py`): Session history persistence with Dream two-phase memory consolidation. Uses atomic writes with fsync for durability.
-- **Session Management** (`jenny/session/`): History persistence, context compaction and the plan probe (`plan_probe.py`: whether a notebook runs a plan, which lifts the turn's wall timeout); TTL-based auto-compaction lives in `jenny/agent/autocompact.py` (`AutoCompact`). The user conversation is a **single unified session** (`unified:default`, see `keys.py`), except that a project chat on the WebSocket channel gets its own `project:<name>` session (`session_key_for_channel`); internal work (cron, Dream, gardener) uses separate internal keys via `session_key_override`.
-- **Config** (`jenny/config/schema.py`, `loader.py`, `store.py`): Pydantic-*style* configuration (`jenny/pydantic_compat/`, stdlib-only — see [`FORK_BOUNDARY.md`](./FORK_BOUNDARY.md)) loaded from `workspace/config.json` inside the project root. Supports camelCase aliases for JSON compatibility. **Every write goes through `store.mutate()`** — see the rule under [Config & security](#config--security); calling `save_config()` directly reintroduces a silent data-loss bug that no test will catch for you.
-- **WebUI** (`jenny/templates/ui/`): Mobile-first HTML/JS served by the gateway, in two shells that share `assets/shared/`: the home (`index.html` + `home-*.js`, the default) and the workshop (`workshop.html` + `mobile-*.js`), reached from the home's Settings page; `onboarding.html` is a third, first-run document. Both shells talk to the gateway over the same WebSocket used for chat, plus HTTP routes under `/api/`.
-- **WebUI HTTP API** (`jenny/webui/`): The `/api/` route handlers backing the SPA (apps, settings, media, skills, transcript, token usage, workspaces, file preview, etc.), plus gateway service/token wiring.
-- **Jenny Apps** (`jenny/apps/`): Runtime for user-authored mini-apps — `manifest.py`, `executor.py`, `storage.py`, `summary.py`, `http.py`, `proxy.py`, `token.py`. See [Write a mini-app](docs/contribute/write-a-mini-app.md).
-- **Command Router** (`jenny/command/`): Slash command routing and built-in command handlers.
-- **Scheduler** (`jenny/cron/`): everything Jenny does later is a job in `cron/jobs.json`, one-time or recurring, each labelled with where, when, what and why; a periodic check is a recurring `monitor` job. The heartbeat (`HEARTBEAT.md`) was retired on 31/10/2026: `cron/retired_heartbeat.py` tells a user upgrading from 2.0.0, once, which of its checks stopped.
-- **Skills** (`jenny/skills/`): Built-in skill definitions loaded into agent context.
-- **Security** (`jenny/security/`): Workspace policy/access + network SSRF protections.
+- **Agent Loop** (`arkhiva/agent/loop.py`, `runner.py`): The core processing engine. `AgentLoop` manages session keys, hooks, and context building. `AgentRunner` executes the multi-turn LLM conversation with tool execution.
+- **LLM Providers** (`arkhiva/providers/`): Provider implementations (Anthropic, OpenAI-compatible, OpenAI Responses API converters) built on a common base (`base.py`). `factory.py` creates the provider from config; on an OpenCode Go base URL it wraps them in `opencode_router.py`, which learns per model which of Go's three endpoints answers.
+- **Channel** (`arkhiva/channels/`): four channel classes — WebSocket (`websocket.py`, the WebUI), Telegram (`telegram.py`, a paired personal-bot channel), Notification (`notification.py`, a reply typed into an Android notification, answered with a system alert) and Floating (`floating.py`, the floating mascot's bubble); the last two exist only on Android. `dispatcher.py` owns them and routes outbound bus messages to whichever are active (retry, delta coalescing, progress filtering). All four feed the same unified session. Other platform integrations were removed from this fork.
+- **Tools** (`arkhiva/agent/tools/`): Agent capabilities exposed to the LLM: filesystem (read/write/edit/list), `python_exec` for code execution, Android web search/fetch (`android_web.py`), cron, subagent spawning, the screen as it was when the user tapped the floating mascot (`screen.py`, offered only in that turn), the notebook board (`board.py`, scoped `notebook`: only the `notebook-editor` subagent has it), bulk notebook reads and checks (`notebook.py`: `check`/`map`/`read_many` for the main agent, plus `remove_pages` for the `notebook-editor`), the step-by-step plan (`plan.py`: `plan_propose` only in a planning turn, `plan_step_done`/`plan_step_skip`/`plan_blocked` only while a plan step is open), the device location and places (`location.py`: `get_location`, and `find_place` on Android's own Geocoder; both return a ready `chatLink` that the WebUI draws as a place card, `shared/place-card.js`), and self-modification. Tools are explicitly registered: `loader.py` imports a fixed module list of 27 (`_HARDCODED_TOOL_MODULES`) and each module declares `TOOLS = [...]`, yielding 52 tool classes (a few names have one class per scope: `app` comes in three faces, one per scope — `core`, the orchestrator's `publish`/`place`, and the `app-builder` subagent's `draft`/`edit`/`set` — and `notebook` in two, `core`/`orchestrator` and `notebook`; the scopes of one name's classes must stay disjoint, or a registry loading both collides). **Three more bypass the loader**, each because it needs a live reference the loader cannot provide: `my` (the running `AgentLoop`), `memory` (`MemoryEntryTool`, which needs the memory store) and the per-app action tool (synced per turn) — so this list is not a complete inventory of the tool surface, and `self.py`/`memory_entries.py` declaring no usable `TOOLS` is deliberate rather than an oversight. A name collision — like a module without `TOOLS`, or an `allow` entry that names no known tool — raises `ToolLoadError` and aborts startup; a failing `enabled()`/`create()` only disables that one tool, logged at ERROR and recorded in `ToolLoader.failures`.
+- **Step-by-step plans** (`arkhiva/plan/`): a big job in a notebook split into steps the **code** drives one at a time. `plan.json` (under `<runtime_root>/plans/`, outside the workspace) is the only source of a plan's state; `driver.py::PlanDriver` (built in the composition root) is the only thing that moves it — it opens each step with an injected turn, the model closes it with a tool, and the end-of-turn hook (`agent/loop_plan.py`) takes the photos and opens the next step. The user's decisions (approve, pause, stop, rollback) are the `plan.*` RPCs in `webui/plan_commands.py`, which no tool reaches. While a plan holds a notebook the user's writes to it answer `plan_running`. Before a plan there is a **planning** (`drafting`, one per notebook, in `plans/drafting.json`): the Plan button opens it, every turn of that chat stays a read-only planning turn until `plan_propose` (or a cancel, `/stop`, 12 h idle), and `plan_propose` refuses a planning that has not read the notebook. A step that leaves drafts (`agent/staged_writes.py`) does not close: the plan waits on them (`blocked.kind = "drafts"`) and goes on by itself once the user installs or discards them.
+- **Undoing a helper** (`arkhiva/agent/subagent_journal.py`): every file a subagent changes is noted per lineage (the content before its first write, then before/after hashes) under `subagents/journal/`, by the write fences it already passes (`subagent_policy.check_write`, `journal_touch` for the board, app drafts, downloads, the notebook journal and `ssh_transfer`) and by the runner after each tool. `SubagentManager.undo` puts back only the files still as that helper left them; the home's «Fermala» sheet, `/api/subagents/{id}/undo`, `.../cancel?undo=1` and `subagent_cancel undo=true` reach it. `tests/security/test_journal_write_surfaces.py` fails on a writer that is neither hooked nor declared out of it.
+- **Memory** (`arkhiva/agent/memory.py`): Session history persistence with Dream two-phase memory consolidation. Uses atomic writes with fsync for durability.
+- **Session Management** (`arkhiva/session/`): History persistence, context compaction and the plan probe (`plan_probe.py`: whether a notebook runs a plan, which lifts the turn's wall timeout); TTL-based auto-compaction lives in `arkhiva/agent/autocompact.py` (`AutoCompact`). The user conversation is a **single unified session** (`unified:default`, see `keys.py`), except that a project chat on the WebSocket channel gets its own `project:<name>` session (`session_key_for_channel`); internal work (cron, Dream, gardener) uses separate internal keys via `session_key_override`.
+- **Config** (`arkhiva/config/schema.py`, `loader.py`, `store.py`): Pydantic-*style* configuration (`arkhiva/pydantic_compat/`, stdlib-only — see [`FORK_BOUNDARY.md`](./FORK_BOUNDARY.md)) loaded from `workspace/config.json` inside the project root. Supports camelCase aliases for JSON compatibility. **Every write goes through `store.mutate()`** — see the rule under [Config & security](#config--security); calling `save_config()` directly reintroduces a silent data-loss bug that no test will catch for you.
+- **WebUI** (`arkhiva/templates/ui/`): Mobile-first HTML/JS served by the gateway, in two shells that share `assets/shared/`: the home (`index.html` + `home-*.js`, the default) and the workshop (`workshop.html` + `mobile-*.js`), reached from the home's Settings page; `onboarding.html` is a third, first-run document. Both shells talk to the gateway over the same WebSocket used for chat, plus HTTP routes under `/api/`.
+- **WebUI HTTP API** (`arkhiva/webui/`): The `/api/` route handlers backing the SPA (apps, settings, media, skills, transcript, token usage, workspaces, file preview, etc.), plus gateway service/token wiring.
+- **Jenny Apps** (`arkhiva/apps/`): Runtime for user-authored mini-apps — `manifest.py`, `executor.py`, `storage.py`, `summary.py`, `http.py`, `proxy.py`, `token.py`. See [Write a mini-app](docs/contribute/write-a-mini-app.md).
+- **Command Router** (`arkhiva/command/`): Slash command routing and built-in command handlers.
+- **Scheduler** (`arkhiva/cron/`): everything Jenny does later is a job in `cron/jobs.json`, one-time or recurring, each labelled with where, when, what and why; a periodic check is a recurring `monitor` job. The heartbeat (`HEARTBEAT.md`) was retired on 31/10/2026: `cron/retired_heartbeat.py` tells a user upgrading from 2.0.0, once, which of its checks stopped.
+- **Skills** (`arkhiva/skills/`): Built-in skill definitions loaded into agent context.
+- **Security** (`arkhiva/security/`): Workspace policy/access + network SSRF protections.
 
 ### Gateway Entry Point
 
-- **Gateway**: `jenny/android_entry.py::run_gateway()` → `gateway_runtime._run_gateway()` (thin, patchable) → **`jenny/runtime/container.py::GatewayContainer`**, the explicit composition root that builds the whole object graph and owns runtime state (onboarding-deferred agent creation, ordered shutdown drain).
-- **Runtime state**: `jenny/runtime/context.py::RuntimeContext` is the single source of truth for workspace dir / Android context / config-path override (accessors `get_workspace_path`, `get_android_context`, `get_config_path` delegate here — no scattered module globals).
-- **Cron/delivery**: `jenny/runtime/cron_dispatch.py::CronDispatcher`, `jenny/runtime/delivery.py::ChannelDeliverer`.
+- **Gateway**: `arkhiva/android_entry.py::run_gateway()` → `gateway_runtime._run_gateway()` (thin, patchable) → **`arkhiva/runtime/container.py::GatewayContainer`**, the explicit composition root that builds the whole object graph and owns runtime state (onboarding-deferred agent creation, ordered shutdown drain).
+- **Runtime state**: `arkhiva/runtime/context.py::RuntimeContext` is the single source of truth for workspace dir / Android context / config-path override (accessors `get_workspace_path`, `get_android_context`, `get_config_path` delegate here — no scattered module globals).
+- **Cron/delivery**: `arkhiva/runtime/cron_dispatch.py::CronDispatcher`, `arkhiva/runtime/delivery.py::ChannelDeliverer`.
 
 ### Decomposed subsystems (mixins/leaf modules)
 
@@ -121,15 +121,15 @@ The Play Store and GitHub builds come from the same commit as two Gradle flavors
 `foss`. The one thing only `play` has — the encrypted copy on Google Drive — lives where the
 `foss` build cannot pick it up, so that build contains **no Google library and none of its code**:
 
-- Python and its WebUI files in **`jenny_extensions/drive/`**, a package next to `jenny/` that
+- Python and its WebUI files in **`arkhiva_extensions/drive/`**, a package next to `arkhiva/` that
   Chaquopy packages only in `play` (`android/app/build.gradle.kts`);
 - Kotlin in **`android/app/src/play/`**, with `play-services-auth` as a `playImplementation`.
 
-The core reaches an extension only through generic hooks and never names it: `jenny/extensions.py`
+The core reaches an extension only through generic hooks and never names it: `arkhiva/extensions.py`
 (periodic jobs, `/api/` routers, WebUI files served under `assets/ext/<name>/`, a free-form
 `extensions` config section), `shared/extensions.js` (loaded from `/webui/bootstrap`, mounted with
 the shell's hooks) and `NativeExtension.kt` (one generic bridge command, `extensionCall`).
-`tests/test_extensions.py` fails if `jenny/` or `android/app/src/{main,foss}` names the Drive, and
+`tests/test_extensions.py` fails if `arkhiva/` or `android/app/src/{main,foss}` names the Drive, and
 `scripts/check_foss_apk.py` checks a built APK.
 
 ## Contribution Flow
@@ -142,7 +142,7 @@ See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for contribution flow and PR guidelin
 - Line length: 100.
 - Linting: `ruff` with rules E, F, I, N, W (E501 ignored).
 - pytest with `asyncio_mode = "auto"`.
-- Language convention: every Markdown file under `jenny/` (skills, their references, prompt templates) is English only — examples, frontmatter and `{# … #}` Jinja comments included — because the model reads them and imitates their language; `tests/skills/test_prompt_markdown_is_english.py` enforces it, and a bundled skill's localized `user_summary` lives in the i18n JSON (`skills.userSummary.<name>`). Otherwise, docstrings/comments in Italian for new code; inherited upstream code keeps English — do not translate existing text. Identifiers, log messages and commit-facing strings: English. User-facing WebUI strings are localized via i18n JSON files (`jenny/templates/ui/assets/i18n/{it,en}.json`), not hardcoded. "Identifiers" includes the WebUI's vocabulary — CSS classes, element ids, `data-*` attributes, i18n keys — and file names; the two shells are the home (`index.html`, `home-*.js`) and the workshop (`workshop.html`, `mobile-*.js`), and the home's own pages are `HomePages` while a notebook's pages are `NotebookPages`. A name that is persisted or on the wire (`config.json`, `localStorage`, an `/api/` field, an RPC, a `postMessage` type) does not change without a migration: see `Config._migrate_casa_to_home` and `RENAMED_KEYS` in `shared/mascot.js`.
+- Language convention: every Markdown file under `arkhiva/` (skills, their references, prompt templates) is English only — examples, frontmatter and `{# … #}` Jinja comments included — because the model reads them and imitates their language; `tests/skills/test_prompt_markdown_is_english.py` enforces it, and a bundled skill's localized `user_summary` lives in the i18n JSON (`skills.userSummary.<name>`). Otherwise, docstrings/comments in Italian for new code; inherited upstream code keeps English — do not translate existing text. Identifiers, log messages and commit-facing strings: English. User-facing WebUI strings are localized via i18n JSON files (`arkhiva/templates/ui/assets/i18n/{it,en}.json`), not hardcoded. "Identifiers" includes the WebUI's vocabulary — CSS classes, element ids, `data-*` attributes, i18n keys — and file names; the two shells are the home (`index.html`, `home-*.js`) and the workshop (`workshop.html`, `mobile-*.js`), and the home's own pages are `HomePages` while a notebook's pages are `NotebookPages`. A name that is persisted or on the wire (`config.json`, `localStorage`, an `/api/` field, an RPC, a `postMessage` type) does not change without a migration: see `Config._migrate_casa_to_home` and `RENAMED_KEYS` in `shared/mascot.js`.
 
 ## Verification Commands
 
@@ -150,11 +150,11 @@ Run these before committing or opening a PR:
 
 ```bash
 # Lint
-ruff check jenny/ jenny_extensions/ tests/
+ruff check arkhiva/ arkhiva_extensions/ tests/
 
 # Static type check (pyright basic, zero runtime impact; config: pyrightconfig.json)
 # BLOCKING subset — must stay green (already error-clean):
-npx pyright jenny/bus jenny/command jenny/plan jenny/runtime jenny/session jenny/snapshot jenny/gateway_runtime.py jenny/extensions.py jenny_extensions
+npx pyright arkhiva/bus arkhiva/command arkhiva/plan arkhiva/runtime arkhiva/session arkhiva/snapshot arkhiva/gateway_runtime.py arkhiva/extensions.py arkhiva_extensions
 # Full-perimeter visibility (non-blocking; shows residual errors to tighten over time):
 npx pyright || true
 
@@ -162,16 +162,16 @@ npx pyright || true
 pytest -q -n auto --dist worksteal
 
 # Full CI-equivalent check (lint + type check + tests)
-ruff check jenny/ jenny_extensions/ tests/ && npx pyright jenny/bus jenny/command jenny/plan jenny/runtime jenny/session jenny/snapshot jenny/gateway_runtime.py jenny/extensions.py jenny_extensions && pytest -q -n auto --dist worksteal
+ruff check arkhiva/ arkhiva_extensions/ tests/ && npx pyright arkhiva/bus arkhiva/command arkhiva/plan arkhiva/runtime arkhiva/session arkhiva/snapshot arkhiva/gateway_runtime.py arkhiva/extensions.py arkhiva_extensions && pytest -q -n auto --dist worksteal
 ```
 
 ## Common File Locations
 
-- Config schema: `jenny/config/schema.py`; **write funnel: `jenny/config/store.py`** (file fidelity — atomicity, backup, recovery — in `jenny/config/loader.py`)
-- Provider base / new provider template: `jenny/providers/base.py`
-- WebSocket channel + dispatcher: `jenny/channels/websocket.py`, `jenny/channels/dispatcher.py`
-- Tool registry: `jenny/agent/tools/registry.py`; explicit registration lists: `TOOLS` in each `jenny/agent/tools/*.py`, read by `loader.py`
-- Composition root & runtime state: `jenny/runtime/container.py`, `jenny/runtime/context.py`
-- Config schema + security: `jenny/config/schema.py` (`SecurityConfig`), env knobs: `jenny/config/runtime_env.py`
-- WebUI assets: `jenny/templates/ui/`
-- Tests mirror the `jenny/` package structure.
+- Config schema: `arkhiva/config/schema.py`; **write funnel: `arkhiva/config/store.py`** (file fidelity — atomicity, backup, recovery — in `arkhiva/config/loader.py`)
+- Provider base / new provider template: `arkhiva/providers/base.py`
+- WebSocket channel + dispatcher: `arkhiva/channels/websocket.py`, `arkhiva/channels/dispatcher.py`
+- Tool registry: `arkhiva/agent/tools/registry.py`; explicit registration lists: `TOOLS` in each `arkhiva/agent/tools/*.py`, read by `loader.py`
+- Composition root & runtime state: `arkhiva/runtime/container.py`, `arkhiva/runtime/context.py`
+- Config schema + security: `arkhiva/config/schema.py` (`SecurityConfig`), env knobs: `arkhiva/config/runtime_env.py`
+- WebUI assets: `arkhiva/templates/ui/`
+- Tests mirror the `arkhiva/` package structure.

@@ -1,6 +1,6 @@
-"""Jenny al lavoro e' un divisore nel filo, non una bolla.
+"""ARKHIVA al lavoro e' un divisore nel filo, non una bolla.
 
-Fino al 13/10/2026 la riga di Jenny al lavoro aveva la pelle delle bolle di
+Fino al 13/10/2026 la riga di ARKHIVA al lavoro aveva la pelle delle bolle di
 lavoro — bordo, fondo, il posto dove arrivano le risposte — e si leggeva come
 un messaggio («almost there, promise…»). Adesso e' una riga sottile con al
 centro il fiore, la parola e i secondi del turno.
@@ -34,13 +34,13 @@ const done = async (turn = 't1') => {
 """
 
 
-def test_jenny_at_work_is_a_divider_not_a_bubble() -> None:
+def test_arkhiva_at_work_is_a_divider_not_a_bubble() -> None:
     run_home(_HEAD + """
 const app = await boot();
 running();
 await tick(600);
 const el = line();
-assert.ok(el, 'la riga di Jenny al lavoro non c\\u2019e\\u2019');
+assert.ok(el, 'la riga di ARKHIVA al lavoro non c\\u2019e\\u2019');
 assert.equal(el.hidden, false);
 assert.equal(el.classList.contains('home-work'), false, 'ha ancora la pelle delle bolle');
 assert.equal(el.querySelectorAll('.home-typing-rule').length, 2, 'mancano i tratti del divisore');

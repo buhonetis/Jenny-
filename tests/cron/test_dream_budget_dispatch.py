@@ -20,16 +20,16 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from jenny.agent.dream_review import STATUS_COMPLETED
-from jenny.agent.tools.file_state import FileStates
-from jenny.config.schema import Config
-from jenny.runtime.cron_dispatch import CronDispatcher
+from arkhiva.agent.dream_review import STATUS_COMPLETED
+from arkhiva.agent.tools.file_state import FileStates
+from arkhiva.config.schema import Config
+from arkhiva.runtime.cron_dispatch import CronDispatcher
 
 _DREAM_JOB = SimpleNamespace(
     name="dream", id="dream", payload=SimpleNamespace(kind="system_event")
 )
 
-_REVIEW_TARGET = "jenny.agent.dream_review.run_dream_review"
+_REVIEW_TARGET = "arkhiva.agent.dream_review.run_dream_review"
 
 
 def _blocked_writes() -> FileStates:
@@ -247,7 +247,7 @@ def _dream_knobs_come_from_disk(monkeypatch: pytest.MonkeyPatch):
     def _load() -> Config:
         return _ACTIVE_CONFIG.get("config") or Config()
 
-    monkeypatch.setattr("jenny.config.loader.load_config", _load)
+    monkeypatch.setattr("arkhiva.config.loader.load_config", _load)
 
 
 def _install_review(monkeypatch: pytest.MonkeyPatch, spy: _ReviewSpy) -> None:

@@ -9,7 +9,7 @@ tolgono l'elemento né dalla tab order né dall'albero di accessibilità:
   nascosto con ``opacity: 0`` + ``pointer-events: none``: una tappa Tab cieca
   (l'anello di fuoco è invisibile) e un "Chiudi minichat, pulsante" letto da
   TalkBack su OGNI schermata. Che il problema fosse noto lo dimostra il
-  ``tabindex="-1"`` messo sul ``.jenny-duo`` accanto, che è lo stesso tipo di
+  ``tabindex="-1"`` messo sul ``.arkhiva-duo`` accanto, che è lo stesso tipo di
   elemento;
 * i ``.drawer`` sono fuori schermo per solo ``transform``, e il loro markup è
   statico in tutte le sezioni (sono apribili solo nella wiki): da chiusi
@@ -32,7 +32,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-ASSETS = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets"
+ASSETS = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets"
 CSS = ASSETS / "mobile-style.css"
 
 

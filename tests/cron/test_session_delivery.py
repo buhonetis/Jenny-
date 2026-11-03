@@ -1,7 +1,7 @@
 import pytest
 
-from jenny.cron.session_delivery import origin_delivery_context
-from jenny.cron.types import CronJob, CronPayload
+from arkhiva.cron.session_delivery import origin_delivery_context
+from arkhiva.cron.types import CronJob, CronPayload
 
 
 def test_origin_delivery_context_uses_explicit_origin_fields() -> None:

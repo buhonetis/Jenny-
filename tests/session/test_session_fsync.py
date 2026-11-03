@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 import pytest
 
-from jenny.session.manager import SessionManager
+from arkhiva.session.manager import SessionManager
 
 
 @pytest.fixture

@@ -13,10 +13,10 @@ import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from jenny.apps.manifest import load_app
-from jenny.apps.reader import append_readings, read_readings
-from jenny.apps.summary_view import field_value, summary_view
-from jenny.board import model
+from arkhiva.apps.manifest import load_app
+from arkhiva.apps.reader import append_readings, read_readings
+from arkhiva.apps.summary_view import field_value, summary_view
+from arkhiva.board import model
 
 ROME = timezone(timedelta(hours=2))
 NOW = datetime(2026, 10, 6, 13, 20, tzinfo=timezone.utc)

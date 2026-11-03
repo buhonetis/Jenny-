@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Host-only: diagnostic script. Never imported by the Android runtime.
-"""Ricostruisce la richiesta vera che Jenny manderebbe al modello, e la misura.
+"""Ricostruisce la richiesta vera che ARKHIVA manderebbe al modello, e la misura.
 
 Il turno gira con il vero ``AgentLoop.from_config`` sopra una **copia** di un
 workspace (per esempio quella del telefono, tirata giù con ``su`` e ``tar``),
@@ -60,12 +60,12 @@ class _RecordingProvider:
     def closed_reasoning_can_be_blank(self, model: str | None) -> bool:
         # La stessa risposta del provider vero (``OpenAICompatProvider``), cosi'
         # la richiesta registrata e' quella che partirebbe.
-        from jenny.providers.openai_compat_provider import OpenAICompatProvider
+        from arkhiva.providers.openai_compat_provider import OpenAICompatProvider
 
         return OpenAICompatProvider.closed_reasoning_can_be_blank(self, model)  # type: ignore[arg-type]
 
     async def chat_with_retry(self, *_args: Any, **kwargs: Any) -> Any:
-        from jenny.providers.base import LLMResponse
+        from arkhiva.providers.base import LLMResponse
 
         self.requests.append(json.loads(json.dumps(kwargs, default=str)))
         return LLMResponse(content="ok")
@@ -111,11 +111,11 @@ def measure(request: dict[str, Any]) -> dict[str, Any]:
 
 async def probe(workspace: Path, chat: str, message: str, *,
                 sync: bool = True) -> dict[str, Any]:
-    from jenny.agent.loop import AgentLoop
-    from jenny.bus.events import InboundMessage
-    from jenny.bus.queue import MessageBus
-    from jenny.config.loader import load_config
-    from jenny.runtime.context import get_runtime_context
+    from arkhiva.agent.loop import AgentLoop
+    from arkhiva.bus.events import InboundMessage
+    from arkhiva.bus.queue import MessageBus
+    from arkhiva.config.loader import load_config
+    from arkhiva.runtime.context import get_runtime_context
 
     ctx = get_runtime_context()
     ctx.workspace_dir = workspace
@@ -124,13 +124,13 @@ async def probe(workspace: Path, chat: str, message: str, *,
         # Come al primo avvio dopo un aggiornamento: i prompt di sistema e le
         # skill del pacchetto sovrascrivono quelli della copia, altrimenti si
         # misurerebbero i template della versione installata sul telefono.
-        from jenny.utils.helpers import sync_workspace_templates
+        from arkhiva.utils.helpers import sync_workspace_templates
 
         sync_workspace_templates(workspace, silent=True)
     config = load_config(workspace / "config.json")
     provider = _RecordingProvider(config.agents.defaults.model)
     loop = AgentLoop.from_config(config, MessageBus(), provider=provider)
-    from jenny.utils.helpers import estimate_prompt_tokens_chain
+    from arkhiva.utils.helpers import estimate_prompt_tokens_chain
 
     await loop._process_message(InboundMessage(
         channel="websocket", sender_id="probe", chat_id=chat, content=message,
@@ -167,7 +167,7 @@ def main() -> None:
         args.save.write_text(json.dumps(request, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"messages {report['messages']} · tools {report['tool_count']} · "
           f"{report['total_chars']:,} chars ≈ {report['real_tokens_estimate']:,} real tokens · "
-          f"Jenny's estimate {report['jenny_estimate']:,} · "
+          f"ARKHIVA's estimate {report['jenny_estimate']:,} · "
           f"summaries before the turn {report['summaries']}")
     for name, size in report["parts"].items():
         share = 100 * size / max(1, report["total_chars"])

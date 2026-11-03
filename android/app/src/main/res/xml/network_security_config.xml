@@ -12,8 +12,20 @@
         </trust-anchors>
     </base-config>
 
+    <!-- Inferencia y servicios del enclave local. El tráfico en claro se
+         permite SOLO hacia estas direcciones, enumeradas una por una: la
+         configuración de seguridad de red no admite rangos CIDR, y abrir
+         `base-config` a todo el espacio privado convertiría cualquier red
+         hostil (un Wi-Fi de aeropuerto con 192.168.x.x) en un destino
+         interceptable. -->
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="false">127.0.0.1</domain>
         <domain includeSubdomains="false">localhost</domain>
+        <!-- Anillo WireGuard del enclave (ChaCha20-Poly1305). -->
+        <domain includeSubdomains="false">10.8.0.1</domain>
+        <!-- Nodo JOLLYROGERS en la red overlay Tailscale. -->
+        <domain includeSubdomains="false">100.120.133.77</domain>
+        <!-- Host loopback tal como lo ve el emulador Android. -->
+        <domain includeSubdomains="false">10.0.2.2</domain>
     </domain-config>
 </network-security-config>

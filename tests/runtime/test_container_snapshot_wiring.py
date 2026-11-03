@@ -10,7 +10,7 @@ from __future__ import annotations
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
 
-from jenny.runtime.container import GatewayContainer
+from arkhiva.runtime.container import GatewayContainer
 
 
 class _RecordingSnapshot:

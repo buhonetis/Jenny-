@@ -11,9 +11,9 @@ import asyncio
 
 import pytest
 
-from jenny.agent import dream_cycle
-from jenny.agent.dream_cycle import claim_dream_cycle, release_dream_cycle
-from jenny.runtime.user_text import say
+from arkhiva.agent import dream_cycle
+from arkhiva.agent.dream_cycle import claim_dream_cycle, release_dream_cycle
+from arkhiva.runtime.user_text import say
 
 
 @pytest.fixture(autouse=True)

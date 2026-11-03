@@ -62,10 +62,10 @@ jobs:
       # The `dev` extra pins pytest, pytest-asyncio, ruff and the test-only
       # backends to exact versions (pyproject.toml).
       - run: pip install -e ".[dev]"
-      - run: ruff check jenny/ jenny_extensions/ tests/
+      - run: ruff check arkhiva/ arkhiva_extensions/ tests/
       # pyright is a static check only (zero runtime impact); config in pyrightconfig.json.
       # BLOCKING: restricted to the already-error-clean subset — must stay green.
-      - run: npx --yes pyright@1.1.411 jenny/bus jenny/command jenny/plan jenny/runtime jenny/session jenny/snapshot jenny/gateway_runtime.py jenny/extensions.py jenny_extensions
+      - run: npx --yes pyright@1.1.411 arkhiva/bus arkhiva/command arkhiva/plan arkhiva/runtime arkhiva/session arkhiva/snapshot arkhiva/gateway_runtime.py arkhiva/extensions.py arkhiva_extensions
       # NON-BLOCKING visibility: full perimeter, surfaces residual errors without failing CI.
       - run: npx --yes pyright@1.1.411 || true
 
@@ -125,7 +125,7 @@ jobs:
       # Il report non aveva consumatori — nessun `fail_under`, nessun badge,
       # nessun servizio esterno — e in cambio ha tenuto questa CI rossa per tre
       # release, cioè ha insegnato a ignorare l'unico segnale che conta. Per
-      # vederlo in locale: `pytest -q --cov=jenny`, sapendo che quelle prove
+      # vederlo in locale: `pytest -q --cov=arkhiva`, sapendo che quelle prove
       # della sandbox falliranno e che il motivo è questo.
       # `-n auto`: un processo per core (pytest-xdist, nell'extra `dev`);
       # `worksteal` perché i file jsdom sono pochi e lunghi, e con la

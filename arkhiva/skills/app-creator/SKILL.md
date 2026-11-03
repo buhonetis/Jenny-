@@ -1,0 +1,226 @@
+---
+name: app-creator
+description: >
+  Create or update ARKHIVA Apps (folders in workspace/apps/ with a typed-actions manifest,
+  a self-contained HTML UI, and agent context). Use when:
+  - User asks, in any language, to create or build an app ("create an app", "make me a ARKHIVA App for...")
+  - User taps the "+" button in the ARKHIVA Apps grid
+  - User wants to connect an external server (REST API) as an app with UI
+  Do NOT use for skills (chat-only capabilities, no screen) — use skill-creator for those.
+locked: true
+helper: app-builder
+---
+
+# App Creator
+
+A ARKHIVA App is a folder in `apps/<slug>/` (workspace-relative). It is always **general** — it
+lives in the App page, not inside a notebook — and every part is optional: a screen for the
+user, typed actions for the agent, a **reader** that reads something by itself on a clock, and
+a **summary**, the way it shows on a notebook board: a **strip** of a few blocks (a value, a
+list, a week…) that the house draws; a tap opens the screen.
+If it needs a screen, a live value or a place on a board, it's an app; if it only lives in
+chat, it's a skill.
+
+```
+apps/<slug>/
+├── app.json        # manifest: name, icon, server, actions, reader, summary (the contract)
+├── AGENT.md        # context for the agent: what the app is, preferences, thresholds
+├── run.py          # optional reader: `def run(ctx)`, run every N minutes with no model
+├── app/
+│   └── index.html  # optional screen (HTML/JS); only app/ is web-served
+└── data/           # app state (collections), shared between UI and agent — never web-served
+```
+
+<rule>
+**Write apps only with the `app` tool — never with write_file, edit_file or python_exec**
+(they refuse app code). `app action=draft` validates the files and runs the reader once on the
+app's real data; when something fails nothing changes (an existing app keeps running as it
+was): fix it with `app action=edit`. What happens when it works depends on your `app` tool:
+
+- it has `draft` and `publish`: the app is **live at once**, and the reply carries its first
+  real value;
+- it has `publish` but no `draft` (a notebook chat): you do not write the files — spawn an
+  `app-builder` with what the user wants, check the values it reports, then
+  `app action=publish`;
+- it has `draft` but no `publish` (you are the app-builder): the new version waits for the
+  main agent to publish it — report what you built and what it read.
+
+There is nothing for the user to approve; an app they do not like, they delete.
+</rule>
+
+<rule>
+**Every app that keeps state declares a `summary` with `blocks`** (see the reference): a
+reader, or any storage action that writes, means there is something to show at a glance —
+"38 %", "4 to buy", "€ 12,430". Do not ask the user whether they want it, nor which blocks:
+choose them yourself from what the app is for — the one thing that matters first, then at most
+one or two blocks of context. The strip's size (S/M/L/XL) follows from the blocks. An app with
+no state (a calculator) has none.
+</rule>
+
+For the full manifest schema, action kinds, and UI conventions, read
+[references/manifest.md](references/manifest.md) before writing any file.
+
+<rule>
+**The app UI runs in an iframe sandboxed with `allow-scripts` and nothing else.** Three
+things therefore fail *silently* — no error anywhere, the app just looks finished and does
+nothing when tapped:
+
+- **Never use `<form>`.** Submission is blocked *before* the `submit` event fires, so
+  `event.preventDefault()` never runs and cannot rescue it. Use
+  `<button type="button">` with a click handler, plus a `keydown` listener for Enter on
+  the input, and call `arkhiva.action()` from the handler.
+- **Never use `alert()`, `confirm()`, `prompt()`.** There is no `allow-modals`. Build
+  dialogs with `<dialog>` or kit markup.
+- **Never call `/api/apps/` with `fetch`.** Always go through `arkhiva.action()` — the
+  gateway is GET-only and answers no CORS preflight.
+
+`app action=draft` refuses a screen that does any of the three.
+</rule>
+
+<rule>
+**Every internal screen change goes through `arkhiva.navigate(label, state)`**, and the app
+repaints the previous screen on the `popstate` event (`arkhiva.back()` for the app's own "←"
+buttons). The app fills the screen and the phone's back button is the only way out: a screen
+change the SDK never heard about means the next Back press closes the *whole app*, taking the
+sub-screen or the half-filled form with it. A `<dialog>` counts as a level by itself — the SDK
+sees it and closes it first — which is one more reason to use `<dialog>` rather than a
+hand-rolled overlay `<div>`. See "Internal navigation and the Android back button" in
+[references/manifest.md](references/manifest.md).
+</rule>
+
+<rule>
+**A sideways swipe belongs to the home screen, unless the component under the finger is
+dragged sideways.** The user can pin an app as a page of the home, and a left/right swipe
+there changes page — a button never keeps it, a sideways-dragged component always does:
+
+- Buttons act on `click`, never on `pointerdown`/`touchstart`: a press that counts on
+  touch-down has already counted when the finger turns out to be swiping. Hold-to-repeat
+  starts after a delay and stops on `pointercancel` — the app gets one when the page takes
+  the swipe.
+- A component dragged sideways by your own code (carousel, swipe-to-delete row, map,
+  drawing area) declares it with CSS `touch-action: pan-y` (`none` if it also takes
+  vertical drags). `<input type="range">` and `overflow-x: auto` rows need nothing — and a
+  carousel built on native scrolling (`overflow-x: auto` + `scroll-snap-type`) is such a row:
+  `touch-action: pan-y` on it, or on its slides, stops the finger from swiping it at all.
+- `touch-action: none` on `body` takes the swipe from the whole app: only for a full-screen
+  game.
+</rule>
+
+<rule>
+**The app speaks the language the user is speaking in this conversation — not the language of
+the examples in this skill.** That covers everything the user sees (the `name` and
+`description` in `app.json`, UI labels, buttons, placeholders, empty and loading states,
+error texts) and everything the agent reads (action and param names, their descriptions,
+collection names, `AGENT.md`). `<html lang>` matches it: `lang="en"` for an English
+conversation. The examples below are in English only because they are examples: an app
+requested in German gets German labels, descriptions and identifiers. If the language is
+unclear (e.g. the user tapped "+" and has written nothing yet), use English.
+</rule>
+
+<rule>
+**Follow the Guided Conversation Flow below.** Ask ONE question at a time. Only write files
+AFTER the user has confirmed name and actions in Phase 3 — unless the request already answers
+the flow: what the app shows, where the data comes from (or that it is kept locally) and how
+often it reads. Then say the plan in one line and build it, without asking for confirmation.
+Never write real secrets into app.json or index.html, and never declare `server.auth` at all (see Secrets below).
+</rule>
+
+## Guided Conversation Flow
+
+The quoted lines show what to ask, not the words to use: ask in the user's language.
+
+### Phase 1: Understand Purpose
+
+> Sure! Tell me: what should this app do? What do you want to see when you open it?
+
+If the answer is vague, ask ONE clarifying question with a concrete example.
+
+### Phase 2: Understand Data and Actions
+
+Figure out where the data lives and what the app (and the agent) must be able to do:
+
+> Does the data live on an external server (give me the base URL and endpoints), or do we keep it locally?
+
+From the answers, derive the action list. Each thing the UI shows or changes, and each thing
+the agent should be able to do on the user's behalf, becomes one action:
+
+- Local data (notes, lists, logs) → `storage` actions on collections in `data/`.
+- External server (e.g. a LAN plant server) → `http` actions mapped onto its endpoints.
+
+If an endpoint needs auth, it cannot be used yet — say so (see Secrets).
+
+### Phase 3: Propose and Confirm
+
+> Here is my proposal:
+> - **Name:** Plants (`plants`)
+> - **Actions:** `list_plants` (http GET /plants), `plant_humidity` (http GET /plants/{id}/humidity), `log_care` (storage append to `care`)
+>
+> Does that work, or shall we change something?
+
+Slug rules: lowercase alphanumeric with single hyphens, max 32 chars, folder named exactly
+after the slug. Action names: snake_case, unique within the app — the agent will see them as
+tools named `<slug>_<action>`.
+
+### Phase 4: Draft the App
+
+Only after confirmation, call `app action=draft slug=<slug>` with `files` (in a notebook chat,
+the `app-builder` does this step). The first call of a new app carries `app.json`:
+
+1. `app.json` — follow [references/manifest.md](references/manifest.md) exactly, including the
+   `summary` with its `blocks` (and the `reader`, if the app reads something by itself).
+2. `AGENT.md` — 5–15 lines: what the app is for, user preferences and thresholds learned in the
+   conversation (e.g. "water the basil when humidity drops below 20%"), anything the agent
+   needs to act well. NOT a copy of the manifest.
+3. `run.py` — the reader, if any: `def run(ctx):` returning exactly the reader's fields.
+4. `app/index.html` — the screen, if any: built on the ARKHIVA Kit (theme tokens, classless base,
+   component vocabulary, chart helpers) following the conventions in the reference. Never invent
+   a custom design or load anything from an external host.
+
+Collections in `data/` are created on first write. If the tool reports a problem, fix it with
+`app action=edit` (one exact replacement in one file) and it tries again.
+
+### Phase 5: Tell and Place
+
+Once it is live (after `draft`, or after `publish`), the tool's answer carries the first real
+value: check it, then tell the user, in one or two lines, what it does and that it is in the App
+page. If the app is about a subject of a notebook (a plant, a portfolio),
+offer to put it on that notebook's board — `app action=place` makes a card that **is** the app,
+tied by a thread to the card it belongs with (`card`, e.g. the "Portfolio" app next to "ETF") —
+and do it when the user agrees. An app never goes inside another card's drawer. Placing it in a notebook also
+lets that notebook's chat use it.
+
+## Secrets
+
+**Never write an `auth` block in `app.json` — not even `{"secretRef": "<name>"}`.** The
+credential store is not implemented, and the http executor is fail-closed: a manifest that
+declares `server.auth` has **every** http action refused with 501, and since Sept 2026 the
+app is rejected at load as broken. This section previously said to write `secretRef` anyway
+"so manifests keep working when the store lands"; that advice shipped a real app whose only
+action was dead on arrival, and it is withdrawn.
+
+So the **screen's `http` actions** can only talk to an endpoint that needs no credentials (a
+LAN or Tailscale server without auth is the normal case).
+
+**A reader can authenticate, through an installed skill.** When an installed skill already
+holds the credential and a script that calls the service (e.g. `waterbot-imh`, whose script
+carries the hub's access headers), declare it in the reader (`"uses": "<skill>"`) and import
+its script from `run.py`: the reader fetches the data, the app stores it, and the screen and
+the summary read the app's own collections. That is the way to build an app on a protected
+service — see `uses` in [references/manifest.md](references/manifest.md). Only when no
+installed skill holds the credential, say plainly that the app cannot reach that service yet.
+
+Never put a raw token in `app.json`, `run.py` or `index.html` (the `app` tool refuses it). If
+the user pastes a token in chat, do not echo it and do not write it to any file in the
+workspace.
+
+## Boundaries
+
+- Apps live in `apps/`, never in `ui/` — `ui/` is re-extracted from the package on every
+  startup and would overwrite them.
+- Actions are declarative (`storage`/`http` only). The only Python an app has is its reader
+  (`run.py`), which reads and never writes; real server-side logic belongs in the app's external
+  server behind an `http` action.
+- The app never contacts the agent on its own. The only app→agent path is the user's explicit
+  hand-off to chat. Proactivity ("let me know if...") is scheduled work on the agent side, offered
+  as a follow-up after the app works — where it goes is decided by the recurring-work rule, not
+  here.

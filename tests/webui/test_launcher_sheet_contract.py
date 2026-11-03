@@ -5,7 +5,7 @@ Qui si guardano le tre proprietà del *foglio* che il passo 3 esiste per
 ottenere, e che si perderebbero senza rumore:
 
 * **difetto 02** — la ``description`` che il gateway manda per ogni skill e
-  ogni Jenny App arriva davvero alla riga, invece di essere buttata per un
+  ogni ARKHIVA App arriva davvero alla riga, invece di essere buttata per un
   nome troncato;
 * **difetto 05** — un guasto compare *nella* riga e su una riga sola, non in un
   blocco che alza la cella (nella griglia di oggi l'errore porta la riga da 100
@@ -31,7 +31,7 @@ from pathlib import Path
 from support.kotlin_source import read_source
 
 ROOT = Path(__file__).resolve().parents[2]
-ASSETS = ROOT / "jenny" / "templates" / "ui" / "assets"
+ASSETS = ROOT / "arkhiva" / "templates" / "ui" / "assets"
 
 
 def _src(name: str) -> str:
@@ -48,8 +48,8 @@ def _method(source: str, name: str) -> str:
 
 def test_the_gateway_description_reaches_the_entry() -> None:
     body = _method(_src("shared/apps-source.js"), "launcherEntries")
-    assert "app.description" in body, "la description delle Jenny App si perde"
-    assert "app.description || ''" in body, "le Jenny App portano la loro description"
+    assert "app.description" in body, "la description delle ARKHIVA App si perde"
+    assert "app.description || ''" in body, "le ARKHIVA App portano la loro description"
     assert "description: app.packageName" in body, (
         "le app Android non hanno description: al suo posto il pacchetto, che è "
         "un dato vero e si cerca"
@@ -113,7 +113,7 @@ def test_the_icon_image_does_not_steal_the_long_press() -> None:
     """Sul telefono il dito fermo su un'`<img>` trascinabile avvia il drag
     nativo: `dragstart`, poi `pointercancel`, e `setupLongPress` spegne il
     timer. Misurato su jenny_square: la scheda di un'app Android (quella con
-    Disinstalla) non si apriva, quella di una Jenny App, col glifo, si'."""
+    Disinstalla) non si apriva, quella di una ARKHIVA App, col glifo, si'."""
     body = _method(_src("mobile-launcher.js"), "_buildIcon")
     assert "img.draggable = false" in body
 
@@ -187,7 +187,7 @@ def test_the_launch_policy_lives_in_one_place() -> None:
 
 
 def test_only_an_android_launch_closes_the_sheet() -> None:
-    """Una app Android porta via il task; una Jenny App si apre *sopra* il
+    """Una app Android porta via il task; una ARKHIVA App si apre *sopra* il
     foglio e Indietro ci riporta (1.7).
 
     Dal passo 6.3 la condizione è **doppia**: solo `android`, e solo se l'avvio
@@ -230,7 +230,7 @@ def test_rows_are_options_of_a_listbox_not_buttons() -> None:
     # scorrimento di TalkBack passa per gli elementi focalizzabili, e un
     # `roving tabindex` darebbe a Tab una sola fermata su tutta la lista.
     assert "setAttribute('tabindex', '0')" in body
-    html = (ROOT / "jenny" / "templates" / "ui" / "workshop.html").read_text(encoding="utf-8")
+    html = (ROOT / "arkhiva" / "templates" / "ui" / "workshop.html").read_text(encoding="utf-8")
     assert 'role="listbox"' in html, "la lista non si dichiara"
     assert 'role="combobox"' in html, "il campo non governa la lista"
 
@@ -305,7 +305,7 @@ def test_shift_enter_opens_the_card_and_does_not_count_as_a_launch() -> None:
     assert "_usage.record" not in body
     detail = _method(_src("shared/apps-actions.js"), "detailEntry")
     assert "showAndroidAppSheet" in detail
-    assert "showJennyAppSheet" in detail
+    assert "showARKHIVAAppSheet" in detail
     # Niente `showSkillSheet`: le skill non entrano nel cassetto (non si
     # lanciano) e la scheda che le gestiva e' stata cancellata il 21/09/2026.
     assert "showSkillSheet" not in detail
@@ -406,7 +406,7 @@ def test_no_hardcoded_strings_in_the_sheet() -> None:
     for key in ("launcher.recent", "launcher.results", "launcher.noResults"):
         assert f"'{key}'" in source, f"{key} non usata"
     # Il placeholder e le etichette statiche stanno nell'HTML, non nel JS.
-    html = (ROOT / "jenny" / "templates" / "ui" / "workshop.html").read_text(encoding="utf-8")
+    html = (ROOT / "arkhiva" / "templates" / "ui" / "workshop.html").read_text(encoding="utf-8")
     assert 'data-i18n-placeholder="launcher.searchPlaceholder"' in html
     assert 'data-i18n-aria="launcher.clearSearch"' in html
 
@@ -423,7 +423,7 @@ def test_the_sheet_is_actually_in_the_page() -> None:
     blocco HTML lascerebbe verdi tutti gli altri test e un pulsante che non apre
     niente.
     """
-    html = (ROOT / "jenny" / "templates" / "ui" / "workshop.html").read_text(encoding="utf-8")
+    html = (ROOT / "arkhiva" / "templates" / "ui" / "workshop.html").read_text(encoding="utf-8")
     for node in ('id="launcher-sheet"', 'id="launcher-scrim"', 'id="launcher-list"',
                  'id="launcher-search"', 'id="launcher-title"', 'id="launcher-close"',
                  'id="launcher-handle-row"'):
@@ -455,7 +455,7 @@ def test_the_manage_row_is_gone_with_the_screen_it_led_to() -> None:
     disabilitata.
     """
     for doc in ("workshop.html", "index.html"):
-        html = (ROOT / "jenny" / "templates" / "ui" / doc).read_text(encoding="utf-8")
+        html = (ROOT / "arkhiva" / "templates" / "ui" / doc).read_text(encoding="utf-8")
         assert "launcher-manage" not in html, doc
     launcher = _src("mobile-launcher.js")
     assert "manageBtn" not in _without_comments_js(launcher)
@@ -475,7 +475,7 @@ def test_the_three_empty_states_are_three_different_sentences() -> None:
 
 def test_a_broken_bridge_is_not_an_empty_phone() -> None:
     """Il caso che il documento denuncia, e che gli stati vuoti da soli **non**
-    coprono: il ponte nativo tace, skill e Jenny App arrivano tutte, e mancano
+    coprono: il ponte nativo tace, skill e ARKHIVA App arrivano tutte, e mancano
     solo le app del telefono. La lista non è vuota — nessuno stato vuoto
     comparirebbe — e l'unico segno sarebbe un cassetto che non trova Telefono.
 
@@ -483,7 +483,7 @@ def test_a_broken_bridge_is_not_an_empty_phone() -> None:
     dichiara, il controller la tiene separata da "caricato", il foglio la
     mostra.
     """
-    server = (ROOT / "jenny" / "webui" / "android_apps_api.py").read_text(encoding="utf-8")
+    server = (ROOT / "arkhiva" / "webui" / "android_apps_api.py").read_text(encoding="utf-8")
     assert '{"apps": [], "error": "unavailable"}' in server, (
         "senza il campo, la risposta di un ponte rotto è identica a quella di "
         "un telefono senza app"
@@ -498,7 +498,7 @@ def test_a_broken_bridge_is_not_an_empty_phone() -> None:
     assert "listsFailed()" in apps
     launcher = _src("mobile-launcher.js")
     assert "_syncStatus" in launcher
-    html = (ROOT / "jenny" / "templates" / "ui" / "workshop.html").read_text(encoding="utf-8")
+    html = (ROOT / "arkhiva" / "templates" / "ui" / "workshop.html").read_text(encoding="utf-8")
     assert 'id="launcher-status"' in html
     # Fuori dalla lista: i figli di un `listbox` sono `option`, e un avviso là
     # dentro si annuncerebbe come una voce da aprire.
@@ -549,7 +549,7 @@ def test_the_new_step_six_strings_exist_in_both_locales() -> None:
 def test_the_search_field_does_not_autofocus() -> None:
     """D6: su un telefono con tastiera software l'autofocus alzerebbe la
     tastiera e si mangerebbe il foglio."""
-    html = (ROOT / "jenny" / "templates" / "ui" / "workshop.html").read_text(encoding="utf-8")
+    html = (ROOT / "arkhiva" / "templates" / "ui" / "workshop.html").read_text(encoding="utf-8")
     field = re.search(r'<input class="launcher-search".*?>', html, re.S)
     assert field, "campo di ricerca non trovato"
     assert "autofocus" not in field.group(0)
@@ -570,7 +570,7 @@ def test_the_gesture_margin_chain_is_unbroken() -> None:
     esattamente quegli otto pixel a separare "scorre" da "l'interfaccia
     collassa"). Questo test è il nodo che li tiene insieme.
     """
-    kotlin = read_source(ROOT / "android/app/src/main/java/com/flagdizero/jenny/MainActivity.kt")
+    kotlin = read_source(ROOT / "android/app/src/main/java/org/buhonet/agente/arkhiva/MainActivity.kt")
     assert "fun getBottomGestureInset()" in kotlin
     # Raggiunto solo per reflection: senza l'annotazione la WebView non lo vede,
     # e R8 in release non avrebbe motivo di tenerlo.
@@ -599,7 +599,7 @@ def test_the_margin_rounds_away_from_the_gesture_zone() -> None:
 
 def test_the_mascot_stays_on_top_of_the_sheet_and_lets_taps_through() -> None:
     """Col cassetto aperto lei resta **sopra** foglio e scrim (D3, 25/09/2026:
-    «Jenny sempre sopra»), e il dito le passa attraverso.
+    «ARKHIVA sempre sopra»), e il dito le passa attraverso.
 
     Fino a D3 qui si asseriva il contrario: `launcher-open` su `<html>` la
     faceva scendere a 98, sotto lo scrim, perche' a 120 restava dipinta sulle
@@ -615,9 +615,9 @@ def test_the_mascot_stays_on_top_of_the_sheet_and_lets_taps_through() -> None:
         "il segno che la faceva scendere sotto lo scrim e' tornato"
     )
     css = _src("mobile-style.css")
-    assert ".launcher-open .jenny-duo" not in css, "col cassetto aperto lei torna sotto lo scrim"
+    assert ".launcher-open .arkhiva-duo" not in css, "col cassetto aperto lei torna sotto lo scrim"
     # Il suo livello supera quello di foglio e scrim.
-    she = re.search(r"\n\.jenny-duo \{[^}]*?z-index: (\d+);", css)
+    she = re.search(r"\n\.arkhiva-duo \{[^}]*?z-index: (\d+);", css)
     sheet = re.search(r"\.launcher-sheet\s*\{[^}]*?z-index: (\d+);", css)
     scrim = re.search(r"\.launcher-scrim\s*\{[^}]*?z-index: (\d+);", css)
     assert she and sheet and scrim
@@ -635,7 +635,7 @@ def test_the_app_drawer_keeps_a_handle_after_the_dock_shrank() -> None:
     composer: la Console e' sul dock, quindi quel pulsante e' a un tocco da
     ogni cassetto.
     """
-    workshop = (ROOT / "jenny/templates/ui/workshop.html").read_text(encoding="utf-8")
+    workshop = (ROOT / "arkhiva/templates/ui/workshop.html").read_text(encoding="utf-8")
     assert 'id="btn-launcher"' in workshop, "il foglio non ha piu' nessuna maniglia"
 
     app = _src("mobile-app.js")
@@ -655,7 +655,7 @@ def test_the_dock_is_a_console_and_three_faculties() -> None:
     ``brain``, ``hands`` e ``memory`` non hanno una vista propria: sono tre
     cassetti di ``view-settings``, e il guscio lo sa da una tabella sola.
     """
-    html = (ROOT / "jenny/templates/ui/workshop.html").read_text(encoding="utf-8")
+    html = (ROOT / "arkhiva/templates/ui/workshop.html").read_text(encoding="utf-8")
     nav = html[html.index('<nav class="dock"'):html.index("</nav>")]
     modes = [m for m in re.findall(r'data-mode="([a-z]+)"', nav) if m != "onboarding"]
     assert modes == ["chat", "brain", "hands", "memory"], modes
@@ -677,7 +677,7 @@ def test_the_sheet_itself_shows_no_focus_ring() -> None:
     """Il foglio prende il fuoco all'apertura per fare da àncora a TalkBack e ai
     tasti, ma ha `tabindex="-1"`: da tastiera non ci si arriva, quindi l'anello
     non segnala nulla e si vede soltanto. I controlli *dentro* lo tengono."""
-    html = (ROOT / "jenny/templates/ui/workshop.html").read_text(encoding="utf-8")
+    html = (ROOT / "arkhiva/templates/ui/workshop.html").read_text(encoding="utf-8")
     sheet = re.search(r'<div class="launcher-sheet"[^>]*>', html).group(0)
     assert 'tabindex="-1"' in sheet, "se diventasse raggiungibile con Tab, l'anello servirebbe"
     css = _src("mobile-style.css")
@@ -770,7 +770,7 @@ def test_the_drawer_is_reachable_from_every_view() -> None:
     l'unico ingresso esista, sia agganciato, e che la Console sia sul dock —
     che è la riga da cui dipende tutto il ragionamento qui sopra.
     """
-    workshop = (ROOT / "jenny/templates/ui/workshop.html").read_text(encoding="utf-8")
+    workshop = (ROOT / "arkhiva/templates/ui/workshop.html").read_text(encoding="utf-8")
     settings = _src("mobile-settings.js")
 
     # La porta se n'è andata, e non deve tornare in un altro gruppo a caso.
@@ -811,7 +811,7 @@ def test_the_drawer_is_reachable_from_every_view() -> None:
     #    ingresso che esiste e si vede — e qui la pretende il banco: la pagina
     #    c'e', e' una delle fisse (che non si tolgono), e il cassetto dentro e'
     #    quello vero, incorporato. Nessun gesto dal bordo basso, di nuovo.
-    home = (ROOT / "jenny/templates/ui/index.html").read_text(encoding="utf-8")
+    home = (ROOT / "arkhiva/templates/ui/index.html").read_text(encoding="utf-8")
     assert 'data-page="app"' in home, "la casa non ha piu' la pagina App"
     app_page = home.split('data-page="app"', 1)[1].split('data-page="chat"', 1)[0]
     assert 'id="launcher-list"' in app_page, "la pagina App non contiene il cassetto"
@@ -848,7 +848,7 @@ def test_the_dead_dock_branch_is_gone() -> None:
     sparisce senza che nulla diventi rosso.
     """
     for doc in ("workshop.html", "index.html"):
-        html = (ROOT / "jenny/templates/ui" / doc).read_text(encoding="utf-8")
+        html = (ROOT / "arkhiva/templates/ui" / doc).read_text(encoding="utf-8")
         assert "data-opens" not in _without_comments_html(html), doc
     assert "dataset.opens" not in _without_comments_js(_src("mobile-app.js"))
 
@@ -869,8 +869,8 @@ def test_what_the_sheet_hides_at_runtime_really_disappears() -> None:
     volta per questa stessa classe di difetto in questo progetto.
     """
     js = _src("mobile-launcher.js")
-    workshop = (ROOT / "jenny/templates/ui/workshop.html").read_text(encoding="utf-8")
-    home = (ROOT / "jenny/templates/ui/index.html").read_text(encoding="utf-8")
+    workshop = (ROOT / "arkhiva/templates/ui/workshop.html").read_text(encoding="utf-8")
+    home = (ROOT / "arkhiva/templates/ui/index.html").read_text(encoding="utf-8")
     css = _src("mobile-style.css")
 
     # I campi che il cassetto nasconde a runtime, risaliti al loro nodo.
@@ -919,7 +919,7 @@ def test_nothing_in_the_home_shows_a_hardcoded_string() -> None:
     scritta da qualcuno**: dal cassetto, che ora ha la sua passata, o dal
     guscio. Una chiave che nessuno scrive è un segnaposto che resta a schermo.
     """
-    home = (ROOT / "jenny/templates/ui/index.html").read_text(encoding="utf-8")
+    home = (ROOT / "arkhiva/templates/ui/index.html").read_text(encoding="utf-8")
     # I moduli che possiedono dei nodi nel markup della casa. `apps-actions.js`
     # e' entrato nell'elenco il 21/09/2026 con i due fogli per-app, che sono
     # arrivati dall'officina portandosi dietro le sue parole.
@@ -1051,7 +1051,7 @@ def test_only_the_home_page_is_a_grid() -> None:
 def test_the_suggested_row_is_outside_the_listbox() -> None:
     """Un'app suggerita sta anche nell'A–Z: due `option` per una cosa sola
     darebbero a `aria-activedescendant` due id fra cui scegliere."""
-    home = (ROOT / "jenny/templates/ui/index.html").read_text(encoding="utf-8")
+    home = (ROOT / "arkhiva/templates/ui/index.html").read_text(encoding="utf-8")
     top = home.index('id="launcher-top"')
     assert top < home.index('id="launcher-list"'), "le suggerite stanno sopra la griglia"
     tag = re.search(r'<div[^>]*id="launcher-top"[^>]*>', home).group(0)

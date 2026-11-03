@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import json
 
-from jenny.agent.subagent_records import SubagentRecord, SubagentRecordStore, SubagentSpec
+from arkhiva.agent.subagent_records import SubagentRecord, SubagentRecordStore, SubagentSpec
 
 
 def _record(**kw) -> SubagentRecord:

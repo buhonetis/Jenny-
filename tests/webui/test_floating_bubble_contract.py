@@ -27,10 +27,10 @@ from support.js_harness import requires_node, run_js
 from support.kotlin_source import read_source
 
 ROOT = Path(__file__).resolve().parents[2]
-ASSETS = ROOT / "jenny" / "templates" / "ui" / "assets"
+ASSETS = ROOT / "arkhiva" / "templates" / "ui" / "assets"
 THEME_JS = ASSETS / "shared" / "theme.js"
 BRIDGE_JS = ASSETS / "shared" / "native-bridge.js"
-ANDROID = ROOT / "android/app/src/main/java/com/flagdizero/jenny"
+ANDROID = ROOT / "android/app/src/main/java/org/buhonet/agente/arkhiva"
 
 TOKENS = [
     "bubble-user-bg", "bubble-user-text", "bubble-user-border",
@@ -50,7 +50,7 @@ globalThis.document = {
 globalThis.sent = [];
 globalThis.window = {
   dispatchEvent: () => {},
-  JennyNative: { setFloatingBubble: (json) => { globalThis.sent.push(json); } },
+  ArkhivaNative: { setFloatingBubble: (json) => { globalThis.sent.push(json); } },
 };
 globalThis.getComputedStyle = () => ({
   getPropertyValue: (token) => (globalThis.tokens || {})[token] || '',

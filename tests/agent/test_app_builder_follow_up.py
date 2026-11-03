@@ -13,10 +13,10 @@ import asyncio
 import json
 from pathlib import Path
 
-from jenny.agent.runner import AgentRunResult, AgentRunSpec
-from jenny.agent.tools import app_tool
-from jenny.agent.tools.context import RequestContext
-from jenny.agent.tools.spawn import SpawnTool
+from arkhiva.agent.runner import AgentRunResult, AgentRunSpec
+from arkhiva.agent.tools import app_tool
+from arkhiva.agent.tools.context import RequestContext
+from arkhiva.agent.tools.spawn import SpawnTool
 from tests.agent.test_subagent_send import _completing_runner, _failing_runner, _manager
 
 KEY = "unified:default"
@@ -112,11 +112,11 @@ async def test_a_conversation_too_long_starts_a_new_builder(tmp_path: Path) -> N
 
 async def test_a_builder_leaves_its_lineage_on_the_app_it_changes(tmp_path: Path,
                                                                   monkeypatch) -> None:
-    from jenny.agent.tools.app_tool import AppBuildTool, builder_for
+    from arkhiva.agent.tools.app_tool import AppBuildTool, builder_for
 
     workspace = tmp_path / "workspace"
     workspace.mkdir()
-    monkeypatch.setattr("jenny.config.paths.get_workspace_path", lambda: workspace)
+    monkeypatch.setattr("arkhiva.config.paths.get_workspace_path", lambda: workspace)
     manifest = {"name": "Spesa", "description": "list",
                 "actions": [{"name": "add", "description": "Add", "kind": "storage",
                              "op": "append", "collection": "items",
@@ -132,7 +132,7 @@ async def test_a_builder_leaves_its_lineage_on_the_app_it_changes(tmp_path: Path
 
 
 def test_the_builder_tools_know_their_lineage(tmp_path: Path) -> None:
-    from jenny.agent.agent_types import get_agent_type
+    from arkhiva.agent.agent_types import get_agent_type
 
     sm = _manager(tmp_path)
     registry = sm._build_tools(agent_type=get_agent_type("app-builder"),

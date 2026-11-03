@@ -10,7 +10,7 @@ progetto diceva «scrivi solo dentro questa cartella»: la stessa classe di dife
 che il passo 2 ha sistemato nel prompt, qui sul lato dei file.
 
 Sono venute a galla facendo il passo 4: **fare la sola lettura obbliga a trovare
-tutte le scritture.** La Todo il 22/08 sul telefono (chiedendo a Jenny di
+tutte le scritture.** La Todo il 22/08 sul telefono (chiedendo a ARKHIVA di
 aggirare il divieto), ``downloads/`` leggendo il codice subito dopo.
 
 Le due si chiudono in modo diverso, e la differenza è una decisione sul
@@ -31,15 +31,15 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from jenny.agent.tools.context import (
+from arkhiva.agent.tools.context import (
     RequestContext,
     bind_request_context,
     reset_request_context,
 )
-from jenny.agent.tools.download import DOWNLOADS_SUBDIR, DownloadFileTool
-from jenny.apps.manifest import AppAction
-from jenny.apps.storage import StorageError, execute_storage_action
-from jenny.security.workspace_access import (
+from arkhiva.agent.tools.download import DOWNLOADS_SUBDIR, DownloadFileTool
+from arkhiva.apps.manifest import AppAction
+from arkhiva.apps.storage import StorageError, execute_storage_action
+from arkhiva.security.workspace_access import (
     WorkspaceScopeResolver,
     build_workspace_scope,
     enter_workspace_scope,
@@ -123,7 +123,7 @@ async def test_an_app_placed_on_the_board_is_writable_from_that_notebook(install
     «Comprato 4 VWCE» detto in Soldi deve finire nell'app ETF posata in Soldi; da
     un altro quaderno, dove non e' posata, resta il rifiuto di prima.
     """
-    from jenny.board.store import mutate_board
+    from arkhiva.board.store import mutate_board
 
     mutate_board(_project(install), lambda b: b["cards"].append({
         "id": "lista", "title": "Lista", "pos": {"x": 1, "y": 1},

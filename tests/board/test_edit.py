@@ -1,7 +1,7 @@
-"""Le scritture dell'utente sulla bacheca (``jenny/board/edit.py``).
+"""Le scritture dell'utente sulla bacheca (``arkhiva/board/edit.py``).
 
 Le fanno l'interfaccia e l'editore dei quaderni, e valgono come dell'utente:
-il giardiniere, che scrive come ``jenny``, non può disfarle. Il caso da cui è
+il giardiniere, che scrive come ``arkhiva``, non può disfarle. Il caso da cui è
 nato tutto è del 09/10/2026: una scheda che raccoglieva tre piante, da dividere
 in una scheda per pianta.
 """
@@ -13,8 +13,8 @@ from pathlib import Path
 
 import pytest
 
-from jenny.board import edit, model
-from jenny.board.store import (
+from arkhiva.board import edit, model
+from arkhiva.board.store import (
     BoardOwnershipError,
     mutate_board,
     read_board,
@@ -29,11 +29,11 @@ def _seed(notebook: Path) -> None:
         board["cards"].append({
             "id": "nuove", "title": "Nuove piante", "pages": [
                 "ginkgo.md", "ginkgo-talea.md", "ginkgo-vaso.md", "dormienza.md",
-            ], "pos": {"x": 5, "y": 6, "by": "jenny"},
+            ], "pos": {"x": 5, "y": 6, "by": "arkhiva"},
         })
         board["cards"].append({
             "id": "acero", "title": "Acero", "pages": ["travaso-acero.md"],
-            "pos": {"x": 40, "y": 6, "by": "jenny"},
+            "pos": {"x": 40, "y": 6, "by": "arkhiva"},
             "userSections": [{"id": "s-cron", "kind": "cron", "job": "j1", "name": "meteo"}],
         })
 
@@ -106,8 +106,8 @@ def test_a_page_that_does_not_exist_is_refused(notebook: Path) -> None:
 
 def _seal(notebook: Path, card_id: str) -> None:
     """Il cassetto scritto adesso, con l'impronta delle pagine com'è sul disco."""
-    from jenny.board.drawers import page_text, pages_fingerprint
-    from jenny.board.view import wiki_titles
+    from arkhiva.board.drawers import page_text, pages_fingerprint
+    from arkhiva.board.view import wiki_titles
 
     card = model.card_by_id(read_board(notebook), card_id)
     now = pages_fingerprint(card["pages"], wiki_titles(notebook),
@@ -145,7 +145,7 @@ def test_a_page_taken_off_is_not_put_back_by_the_gardener(notebook: Path) -> Non
     """Una pagina vera tolta da ogni scheda è un orfano; il giardiniere assegna gli
     orfani *nuovi* alla scheda a cui appartengono chiaramente — quella da cui
     l'utente l'ha appena tolta. Per lui deve essere un orfano già visto."""
-    from jenny.agent.board_pass import BoardPass
+    from arkhiva.agent.board_pass import BoardPass
 
     _seed(notebook)
     (notebook / "wiki" / "dormienza.md").unlink()
@@ -250,7 +250,7 @@ def test_a_card_next_to_another(notebook: Path) -> None:
 
 async def test_a_reminder_is_a_notebook_job_and_done_takes_it_away(notebook: Path, cron) -> None:
     """Un promemoria è un singolo dello scheduler, legato al quaderno e alla scheda."""
-    from jenny.board.cron_link import scope_of
+    from arkhiva.board.cron_link import scope_of
 
     _seed(notebook)
     rid = await edit.add_reminder(notebook, "acero", "Travaso",
@@ -299,8 +299,8 @@ async def test_a_condition_reminder_repeats_at_the_users_pace(notebook: Path, cr
 
 async def test_the_same_date_keeps_an_exact_time(notebook: Path, cron) -> None:
     """Correggere solo il testo dal calendario rimanda la stessa data: l'ora resta."""
-    from jenny.board.cron_link import add_notebook_job
-    from jenny.cron.dates import date_schedule
+    from arkhiva.board.cron_link import add_notebook_job
+    from arkhiva.cron.dates import date_schedule
 
     _seed(notebook)
     job = add_notebook_job(cron, "piante", "acero", name="Concime", message="Concime",
@@ -319,8 +319,8 @@ async def test_the_same_date_keeps_an_exact_time(notebook: Path, cron) -> None:
 
 
 async def test_a_cron_that_repeats_is_not_a_reminder(notebook: Path, cron) -> None:
-    from jenny.board.cron_link import add_notebook_job
-    from jenny.cron.types import CronSchedule
+    from arkhiva.board.cron_link import add_notebook_job
+    from arkhiva.cron.types import CronSchedule
 
     _seed(notebook)
     job = add_notebook_job(cron, "piante", "acero", name="Meteo", message="m",
@@ -386,7 +386,7 @@ async def test_why_points_to_a_real_page_or_to_nothing(notebook: Path, cron) -> 
 
 
 async def test_clear_job_whys_after_removed_pages(notebook: Path, cron) -> None:
-    from jenny.board.cron_link import clear_job_whys
+    from arkhiva.board.cron_link import clear_job_whys
 
     _seed(notebook)
     rid = await _reminder(notebook, cron, why="dormienza.md")
@@ -399,7 +399,7 @@ async def test_clear_job_whys_after_removed_pages(notebook: Path, cron) -> None:
 async def test_attach_reminder_moves_it_to_another_card(notebook: Path, cron) -> None:
     """Un promemoria sta su una scheda sola: attaccarlo altrove lo sposta (con un
     id nuovo: lo scheduler non cambia il legame di un job), rifarlo non scrive."""
-    from jenny.board.cron_link import scope_of
+    from arkhiva.board.cron_link import scope_of
 
     _seed(notebook)
     rid = await _reminder(notebook, cron, why="dormienza.md")

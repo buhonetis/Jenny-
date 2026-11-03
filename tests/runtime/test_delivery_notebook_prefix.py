@@ -19,16 +19,16 @@ from typing import Any
 import pytest
 from support.aio import drain_nowait
 
-from jenny.agent.tools.context import RequestContext
-from jenny.agent.tools.message import MessageTool
-from jenny.board.cron_link import make_link, notebook_delivery
-from jenny.board.model import NOTEBOOK
-from jenny.bus.events import INTERNAL_CHANNEL, OutboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.cron.bound_runner import _bound_session_delivery_context
-from jenny.cron.types import CronJob, CronPayload
-from jenny.runtime.delivery import ChannelDeliverer, with_notebook_prefix
-from jenny.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.agent.tools.context import RequestContext
+from arkhiva.agent.tools.message import MessageTool
+from arkhiva.board.cron_link import make_link, notebook_delivery
+from arkhiva.board.model import NOTEBOOK
+from arkhiva.bus.events import INTERNAL_CHANNEL, OutboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.cron.bound_runner import _bound_session_delivery_context
+from arkhiva.cron.types import CronJob, CronPayload
+from arkhiva.runtime.delivery import ChannelDeliverer, with_notebook_prefix
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
 
 TELEGRAM_CHAT = "42"
 
@@ -186,20 +186,20 @@ def test_no_notebook_no_prefix() -> None:
 
 @pytest.fixture
 def piante(tmp_path, monkeypatch):
-    from jenny.board.store import mutate_board
+    from arkhiva.board.store import mutate_board
 
     root = tmp_path / "workspace" / "wikis" / "piante"
     (root / "wiki").mkdir(parents=True)
     mutate_board(root, lambda b: None)
     monkeypatch.setattr(
-        "jenny.board.cron_link.notebook_root",
+        "arkhiva.board.cron_link.notebook_root",
         lambda name: root if name == "piante" else None,
     )
 
     async def _quiet(_name):
         pass
 
-    monkeypatch.setattr("jenny.board.notify.board_changed", _quiet)
+    monkeypatch.setattr("arkhiva.board.notify.board_changed", _quiet)
     return root
 
 
@@ -220,7 +220,7 @@ class _LoopLike:
                  via_tool: str = "", error: bool = False) -> None:
         from support.sessions import FakeSessions
 
-        from jenny.agent.tools.registry import ToolRegistry
+        from arkhiva.agent.tools.registry import ToolRegistry
 
         self.tools = ToolRegistry()
         self.sessions = FakeSessions()
@@ -230,7 +230,7 @@ class _LoopLike:
         self.received: list[Any] = []
 
     async def submit_cron_turn(self, msg):
-        from jenny.agent.turn_types import TurnOutcome
+        from arkhiva.agent.turn_types import TurnOutcome
 
         self.received.append(msg)
         if self._via_tool:
@@ -249,8 +249,8 @@ class _LoopLike:
 
 
 def _reminder(tmp_path, *, notebook: bool) -> CronJob:
-    from jenny.cron.service import CronService
-    from jenny.cron.types import CronSchedule
+    from arkhiva.cron.service import CronService
+    from arkhiva.cron.types import CronSchedule
 
     origin = (notebook_delivery("piante") if notebook else
               {"session_key": UNIFIED_SESSION_KEY, "origin_channel": "websocket",
@@ -262,7 +262,7 @@ def _reminder(tmp_path, *, notebook: bool) -> CronJob:
 
 
 async def _ring(job: CronJob, agent: _LoopLike) -> None:
-    from jenny.cron.bound_runner import run_bound_cron_job
+    from arkhiva.cron.bound_runner import run_bound_cron_job
 
     await run_bound_cron_job(job, agent=agent, cron=_Recorder())
 
@@ -337,7 +337,7 @@ def test_the_agent_is_handed_the_mirror() -> None:
     sua chat senza che nulla lo dica."""
     import inspect
 
-    from jenny.runtime.container import GatewayContainer
+    from arkhiva.runtime.container import GatewayContainer
 
     source = inspect.getsource(GatewayContainer)
     assert "agent.mirror_delivery = self._deliverer.mirror" in source

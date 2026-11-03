@@ -52,7 +52,7 @@ The real containment lives outside the interpreter:
 - the **Android app sandbox** (the app's own UID and permissions);
 - the **workspace path policy** for filesystem writes, enforced for the builtin
   `open` / `io.open` / `pathlib` paths as well as the registered helpers and
-  `os.open` (`jenny/security/workspace_policy.py`);
+  `os.open` (`arkhiva/security/workspace_policy.py`);
 - the **SSRF policy** for outbound network.
 
 `httpx` is deliberately **not** in the default allowlist: outbound network from
@@ -79,7 +79,7 @@ concrete reason.
 ## Network access (SSRF)
 
 Outbound requests from agent tools pass through `validate_url_target`
-(`jenny/security/network.py`), which blocks loopback, RFC1918 private ranges,
+(`arkhiva/security/network.py`), which blocks loopback, RFC1918 private ranges,
 CGNAT, link-local, and cloud metadata endpoints including `169.254.169.254`.
 The only escape hatch is `security.ssrf_whitelist`.
 

@@ -27,8 +27,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from jenny.agent.memory import MemoryStore
-from jenny.utils.prompt_templates import render_template
+from arkhiva.agent.memory import MemoryStore
+from arkhiva.utils.prompt_templates import render_template
 
 
 def _dream_write_surface(tmp_path: Path) -> dict[str, tuple[str | None, set[str]]]:

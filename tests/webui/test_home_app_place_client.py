@@ -34,9 +34,9 @@ for (const m of ['board.card.add', 'board.section.add']) {
 const app = await boot();
 await tick(20);
 const actions = app.appsActions();
-await app.appsSource().awaitJennyApps();
+await app.appsSource().awaitARKHIVAApps();
 const rpcs = (method) => sent.filter((m) => m.type === 'rpc' && m.method === method);
-const buttons = () => [...$('jenny-app-sheet-actions').querySelectorAll('button')];
+const buttons = () => [...$('arkhiva-app-sheet-actions').querySelectorAll('button')];
 """
 
 
@@ -50,7 +50,7 @@ def test_an_app_without_a_screen_opens_its_sheet_not_an_empty_page() -> None:
       await actions.openApp('waterbot');
       await tick(10);
       assert.equal(document.querySelector('.app-frame-overlay'), null, 'una pagina che non esiste');
-      assert.ok($('jenny-app-sheet').open, 'il suo foglio');
+      assert.ok($('arkhiva-app-sheet').open, 'il suo foglio');
       const rows = buttons().map((b) => b.textContent.trim());
       assert.ok(!rows.includes('Open'), rows.join(' | '));
       assert.ok(rows.includes('Put in a notebook…'), rows.join(' | '));

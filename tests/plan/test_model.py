@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from jenny.plan.model import (
+from arkhiva.plan.model import (
     MAX_STEP_DETAIL,
     PLAN_STATUSES,
     PLAN_TRANSITIONS,
@@ -523,7 +523,7 @@ def test_a_new_done_when_tags_the_step_changed() -> None:
 def test_drafting_expires_after_twelve_hours_of_silence() -> None:
     from datetime import datetime, timedelta, timezone
 
-    from jenny.plan.model import drafting_expired, drafting_view
+    from arkhiva.plan.model import drafting_expired, drafting_view
 
     now = datetime(2026, 10, 23, 20, 0, tzinfo=timezone.utc)
     fresh = (now - timedelta(hours=11)).isoformat()

@@ -38,12 +38,12 @@ from types import SimpleNamespace
 
 import pytest
 
-from jenny.agent.loop import AgentLoop
-from jenny.agent.loop_tasks import LoopTasksMixin
-from jenny.agent.session_locks import SessionLocks
-from jenny.agent.tools.file_state import FileStateStore
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.agent.loop_tasks import LoopTasksMixin
+from arkhiva.agent.session_locks import SessionLocks
+from arkhiva.agent.tools.file_state import FileStateStore
 
-pytestmark = pytest.mark.usefixtures("_configure_jenny_workspace")
+pytestmark = pytest.mark.usefixtures("_configure_arkhiva_workspace")
 
 
 class _RegistryAgent:
@@ -134,7 +134,7 @@ def test_dream_keys_become_bounded_instead_of_disappearing(tmp_path: Path) -> No
     giorno, e la sua chiave la conia ``MemoryStore``: portarci un ``finally``
     vorrebbe dire toccare quel file per 1,5 kB di byte morti.
     """
-    from jenny.agent.memory import MemoryStore
+    from arkhiva.agent.memory import MemoryStore
 
     agent = _RegistryAgent(tmp_path)
     base = datetime(2026, 8, 23, 2, 0, 0)

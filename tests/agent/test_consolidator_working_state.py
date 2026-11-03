@@ -13,11 +13,11 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from jenny.agent.autocompact import AutoCompact
-from jenny.agent.consolidator import split_working_state
-from jenny.agent.memory import Consolidator, MemoryStore
-from jenny.session.keys import UNIFIED_SESSION_KEY
-from jenny.session.manager import SessionManager
+from arkhiva.agent.autocompact import AutoCompact
+from arkhiva.agent.consolidator import split_working_state
+from arkhiva.agent.memory import Consolidator, MemoryStore
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.session.manager import SessionManager
 
 FACTS = "- [durable] The user keeps the garden notes in serra.md"
 STATE = "- Ongoing: a pruning plan for the roses\n- Open items: send the list on Friday"
@@ -200,7 +200,7 @@ async def test_a_hanging_summary_call_gives_up_and_leaves_the_session_whole(
     async def hang(**_kwargs):
         await asyncio.sleep(30)
 
-    monkeypatch.setenv("JENNY_LLM_TIMEOUT_S", "0.05")
+    monkeypatch.setenv("ARKHIVA_LLM_TIMEOUT_S", "0.05")
     consolidator.provider.chat_with_retry = hang
     _fill(consolidator)
 

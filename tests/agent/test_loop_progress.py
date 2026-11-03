@@ -6,18 +6,18 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from support.agent import make_loop
 
-from jenny.agent.loop import AgentLoop
-from jenny.agent.progress_events import (
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.agent.progress_events import (
     invoke_file_edit_progress,
     on_progress_accepts_file_edit_events,
 )
-from jenny.bus.events import InboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.bus.runtime_events import TurnCompleted
-from jenny.providers.base import LLMResponse, ToolCallRequest
-from jenny.runtime.user_text import say
-from jenny.session.webui_turns import WebuiTurnCoordinator
-from jenny.utils.llm_runtime import LLMRuntime
+from arkhiva.bus.events import InboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.bus.runtime_events import TurnCompleted
+from arkhiva.providers.base import LLMResponse, ToolCallRequest
+from arkhiva.runtime.user_text import say
+from arkhiva.session.webui_turns import WebuiTurnCoordinator
+from arkhiva.utils.llm_runtime import LLMRuntime
 
 
 def _make_loop(tmp_path: Path) -> AgentLoop:
@@ -192,7 +192,7 @@ class TestToolEventProgress:
         # lo dichiara, ed è precisamente ciò che rende il caso interessante.
         prepare_trackers = MagicMock(side_effect=AssertionError("unexpected file snapshot"))
         monkeypatch.setattr(
-            "jenny.agent.tool_execution.prepare_file_edit_trackers", prepare_trackers,
+            "arkhiva.agent.tool_execution.prepare_file_edit_trackers", prepare_trackers,
         )
 
         async def on_progress(

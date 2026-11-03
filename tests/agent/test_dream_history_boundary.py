@@ -23,7 +23,7 @@ from __future__ import annotations
 
 import pytest
 
-from jenny.agent.memory import MemoryStore
+from arkhiva.agent.memory import MemoryStore
 
 # Chiavi di comodo. La forma con suffisso e' quella vera in produzione
 # (``cron:<job_id>``, ``dream:<timestamp>``).

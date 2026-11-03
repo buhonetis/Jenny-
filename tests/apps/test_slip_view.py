@@ -6,8 +6,8 @@ import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from jenny.apps.manifest import load_app
-from jenny.apps.slip_view import slip_view
+from arkhiva.apps.manifest import load_app
+from arkhiva.apps.slip_view import slip_view
 
 NOW = datetime(2026, 10, 8, 12, 0, tzinfo=timezone.utc)  # un giovedi'
 

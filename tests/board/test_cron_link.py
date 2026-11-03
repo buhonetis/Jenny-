@@ -11,10 +11,10 @@ from pathlib import Path
 
 import pytest
 
-from jenny.board import cron_link, model
-from jenny.board.store import mutate_board
-from jenny.cron.service import CronService, _load_board_link
-from jenny.cron.types import CronSchedule
+from arkhiva.board import cron_link, model
+from arkhiva.board.store import mutate_board
+from arkhiva.cron.service import CronService, _load_board_link
+from arkhiva.cron.types import CronSchedule
 
 
 @pytest.fixture
@@ -23,7 +23,7 @@ def notebook(tmp_path: Path, monkeypatch):
     (root / "wiki").mkdir(parents=True)
     mutate_board(root, lambda b: b["cards"].append(
         {"id": "annunci", "title": "Annunci", "pages": [], "pos": {"x": 1, "y": 1}}))
-    monkeypatch.setattr("jenny.board.cron_link.notebook_root",
+    monkeypatch.setattr("arkhiva.board.cron_link.notebook_root",
                         lambda name: root if name == "casa" and (root / "wiki").is_dir() else None)
     return root
 

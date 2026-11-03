@@ -12,11 +12,11 @@ from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock
 
-from jenny.bus.events import OutboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.channels.dispatcher import WebSocketDispatcher
-from jenny.channels.websocket import WebSocketChannel, WebSocketConfig
-from jenny.webui.gateway_services import build_gateway_services
+from arkhiva.bus.events import OutboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.channels.dispatcher import WebSocketDispatcher
+from arkhiva.channels.websocket import WebSocketChannel, WebSocketConfig
+from arkhiva.webui.gateway_services import build_gateway_services
 
 
 def _spy(monkeypatch, target: str) -> list[tuple[str, Any]]:
@@ -48,8 +48,8 @@ def _ws_channel(bus: MessageBus) -> WebSocketChannel:
 
 
 async def test_a_notebook_answer_passes_its_chat_id(tmp_path, monkeypatch) -> None:
-    monkeypatch.setattr("jenny.config.paths.get_data_dir", lambda: tmp_path)
-    seen = _spy(monkeypatch, "jenny.channels.ws_sender.notify_delivery")
+    monkeypatch.setattr("arkhiva.config.paths.get_data_dir", lambda: tmp_path)
+    seen = _spy(monkeypatch, "arkhiva.channels.ws_sender.notify_delivery")
     ws = _ws_channel(MessageBus())
     await ws.send(OutboundMessage(channel="websocket", chat_id="project:Casa", content="fatto"))
     await ws.send(OutboundMessage(channel="websocket", chat_id="default", content="ciao"))
@@ -59,7 +59,7 @@ async def test_a_notebook_answer_passes_its_chat_id(tmp_path, monkeypatch) -> No
 async def test_a_streamed_final_passes_the_chat_id_only_from_the_webui(monkeypatch) -> None:
     """Il percorso del finale streammato è comune a tutti i canali: un
     ``chat_id`` che non è della WebUI non nomina un quaderno, e non passa."""
-    seen = _spy(monkeypatch, "jenny.channels.dispatcher.notify_delivery")
+    seen = _spy(monkeypatch, "arkhiva.channels.dispatcher.notify_delivery")
     for channel in ("websocket", "telegram"):
         msg = OutboundMessage(
             channel=channel, chat_id="project:Casa", content="fatto",

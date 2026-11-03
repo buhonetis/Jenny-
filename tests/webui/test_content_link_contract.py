@@ -3,9 +3,9 @@
 Il difetto storico: né la chat né la wiki intercettavano gli ``<a href>`` del
 contenuto. ``renderMarkdown`` non registra alcun renderer per ``a``, DOMPurify
 conserva gli href relativi, e in wiki ``_wireWikiLinks`` cablava soltanto
-``a.wikilink`` — la classe che ``jenny/webui/wiki.py`` emette **solo** per
+``a.wikilink`` — la classe che ``arkhiva/webui/wiki.py`` emette **solo** per
 ``[[Target]]``. Quindi un ``[report](note.md)`` o un ``[cerca](www.google.com)``
-scritti da Jenny (o a mano in una pagina wiki) erano navigazioni di main frame
+scritti da ARKHIVA (o a mano in una pagina wiki) erano navigazioni di main frame
 vere, risolte sull'origine del gateway:
 
 * la SPA veniva ricaricata **senza** il fragment ``#bs=`` — de-autenticata,
@@ -39,10 +39,10 @@ from pathlib import Path
 from support.kotlin_source import read_source
 
 ROOT = Path(__file__).resolve().parents[2]
-ASSETS = ROOT / "jenny" / "templates" / "ui" / "assets"
+ASSETS = ROOT / "arkhiva" / "templates" / "ui" / "assets"
 CHAT_JS = ASSETS / "mobile-chat.js"
 MAIN_ACTIVITY = (
-    ROOT / "android" / "app" / "src" / "main" / "java" / "com" / "flagdizero" / "jenny" / "MainActivity.kt"
+    ROOT / "android" / "app" / "src" / "main" / "java" / "com" / "flagdizero" / "arkhiva" / "MainActivity.kt"
 )
 
 # Tutto ciò che, eseguito prima di preventDefault(), lascerebbe partire la

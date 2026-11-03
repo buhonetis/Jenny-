@@ -1,16 +1,16 @@
-"""Tests for the Jenny Apps http action executor (proxy leg)."""
+"""Tests for the ARKHIVA Apps http action executor (proxy leg)."""
 
 from __future__ import annotations
 
 import pytest
 
-import jenny.apps.http as apps_http
-from jenny.apps.http import (
+import arkhiva.apps.http as apps_http
+from arkhiva.apps.http import (
     HttpActionError,
     build_request,
     execute_http_action,
 )
-from jenny.apps.manifest import AppAction, AppManifest
+from arkhiva.apps.manifest import AppAction, AppManifest
 
 
 def _manifest(base_url="http://192.168.1.50:8080", auth=None) -> AppManifest:
@@ -129,7 +129,7 @@ class TestExecuteHttpAction:
         assert result == {"ok": True, "status": 200, "data": {"plants": []}}
         assert _FakeClient.last.kwargs["follow_redirects"] is False
         # Un nome con recapito: Wikimedia risponde 403 a ``python-httpx``.
-        assert _FakeClient.last.headers["User-Agent"].startswith("Jenny/")
+        assert _FakeClient.last.headers["User-Agent"].startswith("ARKHIVA/")
 
     async def test_response_size_cap(self, monkeypatch):
         monkeypatch.setattr(apps_http, "validate_app_server_target", lambda url: (True, ""))

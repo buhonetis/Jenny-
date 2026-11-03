@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from jenny.config.schema import Config, ToolsConfig
-from jenny.config.tool_schemas import LocationConfig
+from arkhiva.config.schema import Config, ToolsConfig
+from arkhiva.config.tool_schemas import LocationConfig
 
 
 def test_defaults():

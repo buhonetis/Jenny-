@@ -1,7 +1,7 @@
-"""Tests for tool hint formatting (jenny.utils.tool_hints)."""
+"""Tests for tool hint formatting (arkhiva.utils.tool_hints)."""
 
-from jenny.providers.base import ToolCallRequest
-from jenny.utils.tool_hints import format_tool_hints
+from arkhiva.providers.base import ToolCallRequest
+from arkhiva.utils.tool_hints import format_tool_hints
 
 
 def _tc(name: str, args) -> ToolCallRequest:
@@ -21,7 +21,7 @@ class TestToolHintKnownTools:
         assert result == 'read foo.txt'
 
     def test_read_file_long_path(self):
-        result = _hint([_tc("read_file", {"path": "/home/user/.local/share/uv/tools/jenny/agent/loop.py"})])
+        result = _hint([_tc("read_file", {"path": "/home/user/.local/share/uv/tools/arkhiva/agent/loop.py"})])
         assert "loop.py" in result
         assert "read " in result
 
@@ -64,14 +64,14 @@ class TestToolHintKnownTools:
 
     def test_exec_abbreviates_linux_paths(self):
         """Unix absolute paths in exec commands should be folded."""
-        cmd = "cd /home/user/projects/jenny/.worktree/tomain && make build"
+        cmd = "cd /home/user/projects/arkhiva/.worktree/tomain && make build"
         result = _hint([_tc("python_exec", {"code": cmd})])
         assert "\u2026/" in result
         assert "projects" not in result
 
     def test_exec_abbreviates_home_paths(self):
         """~/ paths in exec commands should be folded."""
-        cmd = "cd ~/projects/jenny-py/workspace && pytest tests/"
+        cmd = "cd ~/projects/arkhiva-py/workspace && pytest tests/"
         result = _hint([_tc("python_exec", {"code": cmd})])
         assert "\u2026/" in result
 
@@ -295,14 +295,14 @@ class TestToolHintMaxLength:
 
     def test_path_type_respects_max_length(self):
         """Path-type tools (read_file, write_file, etc.) should honor max_length."""
-        long_path = "/home/user/.local/share/uv/tools/jenny/agent/loop.py"
+        long_path = "/home/user/.local/share/uv/tools/arkhiva/agent/loop.py"
         short = _hint([_tc("read_file", {"path": long_path})], max_length=40)
         long = _hint([_tc("read_file", {"path": long_path})], max_length=120)
         assert len(long) > len(short)
 
     def test_edit_file_path_respects_max_length(self):
         """edit_file (is_path=True) should honor max_length, not stay hardcoded at 40."""
-        long_path = "/home/user/projects/jenny/src/agent/loop.py"
+        long_path = "/home/user/projects/arkhiva/src/agent/loop.py"
         short = _hint([_tc("edit_file", {"path": long_path})], max_length=40)
         long = _hint([_tc("edit_file", {"path": long_path})], max_length=120)
         assert len(long) > len(short)

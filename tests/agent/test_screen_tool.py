@@ -1,7 +1,7 @@
-"""Gli occhi di Jenny: la lettura dello schermo presa al tocco sulla mascotte.
+"""Gli occhi di ARKHIVA: la lettura dello schermo presa al tocco sulla mascotte.
 
 Fuori dal telefono non c'è nessuno schermo: il bridge si finge sostituendo le
-funzioni di ``jenny/runtime/screen.py`` che il tool chiama, e si prova il resto —
+funzioni di ``arkhiva/runtime/screen.py`` che il tool chiama, e si prova il resto —
 che lo schermo si veda **solo** nel turno del fumetto, che il turno si segni come
 non fidato, che una lettura scaduta o protetta non dia niente, e che i nomi con
 cui Python chiama Kotlin esistano davvero dall'altra parte.
@@ -16,11 +16,11 @@ from typing import Any
 import pytest
 from support.kotlin_source import read_source
 
-from jenny.agent.tools import screen as tool_mod
-from jenny.agent.tools.context import RequestContext, bind_request_context, reset_request_context
-from jenny.agent.tools.screen import ScreenTool
-from jenny.bus.events import FLOATING_CHANNEL, InboundMessage
-from jenny.runtime import screen as rs
+from arkhiva.agent.tools import screen as tool_mod
+from arkhiva.agent.tools.context import RequestContext, bind_request_context, reset_request_context
+from arkhiva.agent.tools.screen import ScreenTool
+from arkhiva.bus.events import FLOATING_CHANNEL, InboundMessage
+from arkhiva.runtime import screen as rs
 from tests.agent.test_prompt_matches_offered_tools import (  # noqa: F401
     _loop_with_capture,
     _offered_names,
@@ -28,7 +28,7 @@ from tests.agent.test_prompt_matches_offered_tools import (  # noqa: F401
 )
 
 REPO = Path(__file__).resolve().parents[2]
-KT = REPO / "android/app/src/main/java/com/flagdizero/jenny"
+KT = REPO / "android/app/src/main/java/org/buhonet/agente/arkhiva"
 
 SUMMARY = {
     "id": "snap-1", "takenAt": 1_760_000_000_000, "app": "Chrome",
@@ -69,7 +69,7 @@ class TestSummary:
         assert "it.wikipedia.org/wiki/Potatura" in line and "`screen`" in line
 
     def test_the_runtime_line_never_carries_the_content(self):
-        """Il testo dello schermo è non fidato e costa: entra solo se Jenny lo
+        """Il testo dello schermo è non fidato e costa: entra solo se ARKHIVA lo
         chiede, mai nel contesto di ogni turno del fumetto."""
         (line,) = rs.screen_runtime_lines({rs.SCREEN_META_KEY: {**SUMMARY, "text": "SEGRETO"}})
         assert "SEGRETO" not in line
@@ -87,7 +87,7 @@ class TestSummary:
         assert rs.has_screen(metadata) is False and rs.screen_off(metadata) is True
 
     def test_an_expired_reading_asks_for_a_new_tap(self):
-        """Dopo dieci minuti la lettura non c'è più: Jenny non deve credere lo
+        """Dopo dieci minuti la lettura non c'è più: ARKHIVA non deve credere lo
         schermo spento (lo ha fatto, su ``jenny_s22``), ma chiedere un tocco."""
         metadata = {rs.SCREEN_META_KEY: rs.parse_summary('{"expired": true}')}
         (line,) = rs.screen_runtime_lines(metadata)
@@ -215,7 +215,7 @@ class TestTool:
 
     async def test_a_page_cut_on_the_phone_points_to_its_address(self, fake):
         """La visita si ferma a tempo sul telefono (``ScreenText.render``): il
-        resto della pagina sta al suo indirizzo, e Jenny lo deve sapere."""
+        resto della pagina sta al suo indirizzo, e ARKHIVA lo deve sapere."""
         fake["content"] = {**CONTENT, "truncated": True}
         out = json.loads(await _run(WITH_SCREEN, action="read"))
         assert out["truncated"] is True and "at its address" in out["note"]
@@ -271,7 +271,7 @@ class TestTool:
         out = json.loads(await _run(WITH_SCREEN, action="image", image=9))
         assert "no image 9" in out["error"]
 
-    def test_only_jenny_has_it(self):
+    def test_only_arkhiva_has_it(self):
         """Un subagent non ha un utente davanti allo schermo."""
         assert ScreenTool._scopes == {"core", "orchestrator"}
 

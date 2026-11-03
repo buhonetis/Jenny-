@@ -21,13 +21,13 @@ from pathlib import Path
 
 _REPO = Path(__file__).resolve().parents[2]
 _SCANNED = (
-    (_REPO / "jenny" / "webui", "*.py"),
-    (_REPO / "jenny" / "channels", "*.py"),
-    (_REPO / "jenny" / "templates" / "ui" / "assets", "*.js"),
+    (_REPO / "arkhiva" / "webui", "*.py"),
+    (_REPO / "arkhiva" / "channels", "*.py"),
+    (_REPO / "arkhiva" / "templates" / "ui" / "assets", "*.js"),
 )
 
-# Header con un payload dentro: ``X-Jenny-<qualcosa>-Data``.
-_PAYLOAD_HEADER_RE = re.compile(r"X-Jenny-[A-Za-z]+-Data", re.IGNORECASE)
+# Header con un payload dentro: ``X-ARKHIVA-<qualcosa>-Data``.
+_PAYLOAD_HEADER_RE = re.compile(r"X-ARKHIVA-[A-Za-z]+-Data", re.IGNORECASE)
 
 # Le uniche coppie (file, header) ammesse. I payload del backup sono piccoli e
 # limitati (passphrase, staged_path, snapshot_id, label) e il base64 serve a
@@ -35,8 +35,8 @@ _PAYLOAD_HEADER_RE = re.compile(r"X-Jenny-[A-Za-z]+-Data", re.IGNORECASE)
 # scelta di sicurezza, non un trucco per la dimensione. Migrabile sull'RPC
 # senza design nuovo — quando succede, questa lista va svuotata.
 _ALLOWED_PAIRS = {
-    ("backup_routes.py", "x-jenny-backup-data"),
-    ("api-client.js", "x-jenny-backup-data"),
+    ("backup_routes.py", "x-arkhiva-backup-data"),
+    ("api-client.js", "x-arkhiva-backup-data"),
 }
 
 
@@ -65,7 +65,7 @@ def test_no_payload_travels_in_an_http_header() -> None:
 
 def test_the_backup_exception_is_still_real() -> None:
     """Se il backup migra sull'RPC, ``_ALLOWED_PAIRS`` va svuotata."""
-    backup = (_REPO / "jenny" / "webui" / "backup_routes.py").read_text(encoding="utf-8")
+    backup = (_REPO / "arkhiva" / "webui" / "backup_routes.py").read_text(encoding="utf-8")
     assert _PAYLOAD_HEADER_RE.search(backup), (
         "backup_routes.py non usa più un payload header: togli l'eccezione da "
         "_ALLOWED_PAIRS in questo test"

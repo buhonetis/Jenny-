@@ -2,7 +2,7 @@
 
 Il test che conta di più è la **parità con ``lint_wiki.py``**: ``check`` e il lint
 sono due implementazioni degli stessi controlli (il lint non si può importare:
-stampa, scrive ``.jenny/lint_journal.json`` e su Android non importa ``jenny``),
+stampa, scrive ``.arkhiva/lint_journal.json`` e su Android non importa ``arkhiva``),
 e qui si tengono insieme sulle voci in comune, su una wiki di prova che le
 sbaglia tutte.
 
@@ -29,10 +29,10 @@ from pathlib import Path
 
 import pytest
 
-from jenny.board import notebook_ops as ops
-from jenny.board.store import mutate_board, write_card_summary
+from arkhiva.board import notebook_ops as ops
+from arkhiva.board.store import mutate_board, write_card_summary
 
-_LINT = Path(__file__).resolve().parents[2] / "jenny" / "skills" / "llm-wiki" / "scripts"
+_LINT = Path(__file__).resolve().parents[2] / "arkhiva" / "skills" / "llm-wiki" / "scripts"
 
 
 @pytest.fixture(scope="module")
@@ -54,7 +54,7 @@ def _jobs(tmp_path: Path, monkeypatch, jobs: list[dict]) -> None:
     """I promemoria del quaderno sono job: ``cron/jobs.json`` del workspace."""
     import json
 
-    from jenny.runtime.context import get_runtime_context
+    from arkhiva.runtime.context import get_runtime_context
 
     _write(tmp_path / "cron" / "jobs.json", json.dumps({"jobs": jobs}))
     monkeypatch.setattr(get_runtime_context(), "workspace_dir", tmp_path)
@@ -192,7 +192,7 @@ def test_every_job_of_the_notebook_with_a_dead_why_is_a_defect(broken: Path, tmp
 
 
 def test_the_shared_constants_stay_equal(lint_wiki) -> None:
-    from jenny.agent.gardener import MAP_TARGET_CHARS, page_ceiling
+    from arkhiva.agent.gardener import MAP_TARGET_CHARS, page_ceiling
 
     assert ops.PAGE_STATES == lint_wiki.PAGE_STATES
     assert ops.RESEARCH_SUBDIRS == lint_wiki.RESEARCH_SUBDIRS
@@ -249,13 +249,13 @@ def test_map_counts_subject_by_topic_with_file_and_line(tmp_path: Path) -> None:
     _write(root / "wiki" / "acero.md", "# Acero\n\nIl substrato è acido.\nLuce piena.\n")
     _write(root / "wiki" / "fico.md", "# Fico\n\nAcqua poca.\n")
     _write(root / "raw" / "notes" / "misto.md", "Il ficus e l'acero: terriccio drenante.\n")
-    _write(root / ".jenny" / "tool-results" / "x.md", "acero substrato\n")
+    _write(root / ".arkhiva" / "tool-results" / "x.md", "acero substrato\n")
     subjects = ops.parse_terms([{"name": "Acero", "aliases": ["Acer"]},
                                 {"name": "Fico", "aliases": ["ficus"]}], "aliases")
     topics = ops.parse_terms([{"name": "substrato", "keywords": ["terriccio"]},
                               {"name": "acqua"}], "keywords")
     out = ops.map_notebook(root, subjects, topics, ["wiki", "raw"], per_cell=3, max_chars=12000)
-    assert "Map of 3 text files" in out  # .jenny/ non si legge
+    assert "Map of 3 text files" in out  # .arkhiva/ non si legge
     assert "| Acero (2) | 2 | 0 |" in out
     assert "| Fico (2) | 1 | 1 |" in out
     assert "- wiki/acero.md:3 — Il substrato è acido." in out

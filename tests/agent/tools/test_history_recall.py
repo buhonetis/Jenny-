@@ -16,12 +16,12 @@ from types import SimpleNamespace
 
 import pytest
 
-from jenny.agent.tools.memory_recall import (
+from arkhiva.agent.tools.memory_recall import (
     _INDEX_MAX_CHARS,
     HistoryRecallTool,
     MemoryRecallTool,
 )
-from jenny.security.workspace_access import enter_workspace_scope
+from arkhiva.security.workspace_access import enter_workspace_scope
 
 
 @dataclass
@@ -251,7 +251,7 @@ class TestAlongsideRecall:
 
 async def test_a_diary_row_opens_with_its_journal_lines(tmp_path: Path) -> None:
     """Dall'indice alla pagina: la riga del diario porta con se' le righe vere attorno."""
-    from jenny.agent.memory import MemoryStore
+    from arkhiva.agent.memory import MemoryStore
 
     journal = tmp_path / "wikis" / "film" / "raw" / "journal" / "20261011.md"
     journal.parent.mkdir(parents=True)
@@ -271,7 +271,7 @@ async def test_a_diary_row_opens_with_its_journal_lines(tmp_path: Path) -> None:
 
 
 async def test_a_ref_outside_the_installation_is_not_read(tmp_path: Path) -> None:
-    from jenny.agent.memory import MemoryStore
+    from arkhiva.agent.memory import MemoryStore
 
     outside = tmp_path.parent / "segreto.txt"
     outside.write_text("non leggermi", encoding="utf-8")

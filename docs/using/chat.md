@@ -94,7 +94,7 @@ A few honest caveats:
 
 ## Clickable file paths in replies
 
-Separately from the "files modified" pill, Jenny turns file-path-looking text inside a reply into clickable links. A string only becomes a link if it looks like a **relative path with a directory prefix and a file extension** — for example `jenny/foo.py` or `./notes.md` work, but a bare `config.json` or an absolute path like `/data/.../file.py` does not.
+Separately from the "files modified" pill, Jenny turns file-path-looking text inside a reply into clickable links. A string only becomes a link if it looks like a **relative path with a directory prefix and a file extension** — for example `arkhiva/foo.py` or `./notes.md` work, but a bare `config.json` or an absolute path like `/data/.../file.py` does not.
 
 Tapping such a link opens a read-only inline preview attached to that message: file path, detected language, size, and syntax-highlighted content with line numbers, plus an **"Open in editor"** link that jumps to the Memory drawer (**The real files**) with the file loaded there for editing. Tapping the path again (or the close button) closes the preview.
 

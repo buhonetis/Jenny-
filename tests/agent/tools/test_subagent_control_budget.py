@@ -1,4 +1,4 @@
-"""Gli strumenti di Jenny dicono il vero su un aiutante fermato al budget.
+"""Gli strumenti di ARKHIVA dicono il vero su un aiutante fermato al budget.
 
 Prima del 24/10/2026 ``subagent_send`` prometteva di riprendere un aiutante
 «appena finito» e di rilanciare da zero uno «fallito» — e un aiutante fermato al
@@ -11,7 +11,7 @@ from __future__ import annotations
 import time
 from types import SimpleNamespace
 
-from jenny.agent.tools.subagent_control import (
+from arkhiva.agent.tools.subagent_control import (
     SubagentRestartTool,
     SubagentSendTool,
     SubagentStatusTool,

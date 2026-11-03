@@ -1,6 +1,6 @@
-"""Il pallino su Jenny: una risposta arrivata mentre la sua chat era chiusa.
+"""Il pallino su ARKHIVA: una risposta arrivata mentre la sua chat era chiusa.
 
-Dal 05/10/2026 la chat sta dietro Jenny, e una risposta che arriva mentre
+Dal 05/10/2026 la chat sta dietro ARKHIVA, e una risposta che arriva mentre
 guardi altro non si vedrebbe. ``shared/unseen-replies.js`` decide quando
 accendere il pallino; qui gira il modulo vero con i vicini finti, e i frame
 sono quelli che il gateway manda davvero (``delta``, ``message``,
@@ -17,7 +17,7 @@ from pathlib import Path
 from support.home_dom import requires_jsdom, run_home
 from support.js_harness import requires_node, run_module
 
-ASSETS = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets"
+ASSETS = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets"
 
 pytestmark = requires_node
 
@@ -99,7 +99,7 @@ def test_a_silent_turn_or_a_stop_lights_nothing() -> None:
 
 
 def test_the_dot_is_for_the_conversation_she_would_open_from_here() -> None:
-    """Una risposta nel quaderno non accende niente sopra le App, dove Jenny
+    """Una risposta nel quaderno non accende niente sopra le App, dove ARKHIVA
     aprirebbe la personale; tornando sulla bacheca si accende."""
     _run("""
       turn('project:piante');
@@ -123,7 +123,7 @@ def test_a_frame_without_a_chat_id_belongs_to_the_open_conversation() -> None:
 @requires_jsdom
 def test_a_reply_on_the_apps_page_lights_her_and_opening_the_chat_clears_it() -> None:
     """Nella casa vera: la risposta arriva mentre sei sulle App, il pallino si
-    accende e lo dice anche a chi non lo vede; tocchi Jenny, la chat sale, e
+    accende e lo dice anche a chi non lo vede; tocchi ARKHIVA, la chat sale, e
     il pallino si spegne."""
     run_home("""
 import assert from 'node:assert/strict';
@@ -135,12 +135,12 @@ await tick(10);
 frame({ event: 'delta', text: 'ecco la risposta', chat_id: 'default' });
 frame({ event: 'turn_end', chat_id: 'default' });
 await tick(10);
-assert.ok(app.jenny.el.classList.contains('has-dot'), 'il pallino non si e\\u2019 acceso');
-assert.match(app.jenny.el.getAttribute('aria-label'), / · /);
-app.jenny._onTap();
+assert.ok(app.arkhiva.el.classList.contains('has-dot'), 'il pallino non si e\\u2019 acceso');
+assert.match(app.arkhiva.el.getAttribute('aria-label'), / · /);
+app.arkhiva._onTap();
 await tick(30);
 assert.equal(app.chatOver, true);
-assert.ok(!app.jenny.el.classList.contains('has-dot'), 'aperta la chat il pallino resta');
+assert.ok(!app.arkhiva.el.classList.contains('has-dot'), 'aperta la chat il pallino resta');
 """)
 
 

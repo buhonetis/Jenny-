@@ -61,7 +61,7 @@ async def test_nothing_else_of_data_is_reachable(tmp_path: Path) -> None:
 
 
 async def test_a_huge_file_is_refused(tmp_path: Path) -> None:
-    from jenny.apps.slip_view import MAX_MEDIA_BYTES
+    from arkhiva.apps.slip_view import MAX_MEDIA_BYTES
 
     handler = make_handler(tmp_path / "skills")
     ws = _workspace(tmp_path)
@@ -77,8 +77,8 @@ async def test_a_huge_file_is_refused(tmp_path: Path) -> None:
 def test_the_photos_block_lists_the_newest_images(tmp_path: Path) -> None:
     import os
 
-    from jenny.apps.manifest import load_app
-    from jenny.apps.slip_view import slip_view
+    from arkhiva.apps.manifest import load_app
+    from arkhiva.apps.slip_view import slip_view
 
     ws = _workspace(tmp_path)
     app_dir = ws / "apps" / "diario"

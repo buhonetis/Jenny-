@@ -18,19 +18,19 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from jenny.agent.loop import AgentLoop
-from jenny.agent.tools.base import Tool
-from jenny.agent.tools.context import ContextAware, RequestContext
-from jenny.bus.events import InboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.providers.base import LLMResponse, ToolCallRequest
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.agent.tools.base import Tool
+from arkhiva.agent.tools.context import ContextAware, RequestContext
+from arkhiva.bus.events import InboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.providers.base import LLMResponse, ToolCallRequest
 
 
 def _webui_metadata() -> dict[str, Any]:
     """Metadati di un messaggio della WebUI, come li costruisce il canale.
 
     Copia fedele di ``WebSocketChannel._dispatch_envelope`` + ``_handle_message``
-    (jenny/channels/websocket.py): ``webui_turn_id`` viene dal client,
+    (arkhiva/channels/websocket.py): ``webui_turn_id`` viene dal client,
     ``_wants_stream`` dal canale. Nessun ``message_id``: e il punto del test.
     """
     return {
@@ -54,7 +54,7 @@ def test_the_websocket_channel_still_sends_no_message_id() -> None:
     ``message_id`` resta un id di *routing* (reply/announce), non l'identita di
     un turno, e le guardie per-turno non vanno riagganciate la.
     """
-    for relative in ("jenny/channels/websocket.py", "jenny/channels/ws_parsing.py"):
+    for relative in ("arkhiva/channels/websocket.py", "arkhiva/channels/ws_parsing.py"):
         source = (_REPO_ROOT / relative).read_text(encoding="utf-8")
         assert '"message_id"' not in source, relative
 

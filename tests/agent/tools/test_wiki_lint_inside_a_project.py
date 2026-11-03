@@ -36,11 +36,11 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.tools.python_exec import PythonExecTool
-from jenny.agent.tools.python_exec_builtins import _register_builtin_functions
-from jenny.config.paths import get_workspace_path, set_workspace_dir
-from jenny.config.tool_schemas import PythonExecConfig
-from jenny.security.workspace_access import (
+from arkhiva.agent.tools.python_exec import PythonExecTool
+from arkhiva.agent.tools.python_exec_builtins import _register_builtin_functions
+from arkhiva.config.paths import get_workspace_path, set_workspace_dir
+from arkhiva.config.tool_schemas import PythonExecConfig
+from arkhiva.security.workspace_access import (
     bind_workspace_scope,
     reset_workspace_scope,
     validate_workspace_scope_payload,
@@ -63,7 +63,7 @@ def fake_scripts(monkeypatch: pytest.MonkeyPatch) -> None:
     cartella la scrive il modello: scriverli in ``<workspace>/skills`` non li
     farebbe più girare.
     """
-    from jenny.agent.tools import python_exec_builtins as builtins_mod
+    from arkhiva.agent.tools import python_exec_builtins as builtins_mod
 
     real = builtins_mod._read_packaged_wiki_script
     fakes = {"lint_wiki.py": _FAKE_LINT, "scaffold.py": _FAKE_SCAFFOLD}

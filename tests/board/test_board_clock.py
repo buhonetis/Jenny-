@@ -10,9 +10,9 @@ import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from jenny.board import clock
-from jenny.board.clock import run_reminders, watch_app_sections
-from jenny.board.store import mutate_board, read_board
+from arkhiva.board import clock
+from arkhiva.board.clock import run_reminders, watch_app_sections
+from arkhiva.board.store import mutate_board, read_board
 
 
 class _Agent:

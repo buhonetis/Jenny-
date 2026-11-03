@@ -1,4 +1,4 @@
-"""Test per jenny/runtime/delivery.py (``ChannelDeliverer``).
+"""Test per arkhiva/runtime/delivery.py (``ChannelDeliverer``).
 
 Copre: pubblicazione sul bus, mirroring nella sessione unificata quando
 ``record`` è attivo (via parametro o via metadata ``_record_channel_delivery``),
@@ -15,10 +15,10 @@ from typing import Any
 
 import pytest
 
-from jenny.bus.events import INTERNAL_CHANNEL, OutboundMessage
-from jenny.runtime.delivery import ChannelDeliverer
-from jenny.session.keys import UNIFIED_SESSION_KEY
-from jenny.session.manager import SessionManager
+from arkhiva.bus.events import INTERNAL_CHANNEL, OutboundMessage
+from arkhiva.runtime.delivery import ChannelDeliverer
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.session.manager import SessionManager
 
 
 class _FakeBus:

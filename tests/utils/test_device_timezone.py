@@ -5,7 +5,7 @@ import types
 
 import pytest
 
-from jenny.utils.device_timezone import detect_device_timezone
+from arkhiva.utils.device_timezone import detect_device_timezone
 
 
 def _fake_java(get_id) -> types.SimpleNamespace:

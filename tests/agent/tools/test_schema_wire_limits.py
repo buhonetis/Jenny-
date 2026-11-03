@@ -12,9 +12,9 @@ from __future__ import annotations
 from typing import Any, Iterator
 from unittest.mock import MagicMock
 
-from jenny.agent.tools.loader import ToolLoader
-from jenny.agent.tools.registry import ToolRegistry
-from jenny.agent.tools.schema import WIRE_STRING_LIMIT
+from arkhiva.agent.tools.loader import ToolLoader
+from arkhiva.agent.tools.registry import ToolRegistry
+from arkhiva.agent.tools.schema import WIRE_STRING_LIMIT
 
 # Keyword che il convertitore JSON-Schema→grammatica traduce in ripetizioni.
 # I bound interi (`minimum`/`maximum`) NON rientrano: diventano regole per-cifra,

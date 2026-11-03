@@ -22,11 +22,11 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent import context as context_module
-from jenny.agent.context import ContextBuilder
-from jenny.agent.gardener import GardenerStore
-from jenny.agent.tools.apply_patch import ApplyPatchTool
-from jenny.agent.tools.filesystem import EditFileTool, WriteFileTool, _page_over_ceiling_note
+from arkhiva.agent import context as context_module
+from arkhiva.agent.context import ContextBuilder
+from arkhiva.agent.gardener import GardenerStore
+from arkhiva.agent.tools.apply_patch import ApplyPatchTool
+from arkhiva.agent.tools.filesystem import EditFileTool, WriteFileTool, _page_over_ceiling_note
 
 # La frase che il modello legge. Ne bastano tre parole per distinguere «avvisato»
 # da «zitto», e sono quelle della regola SPLIT del prompt del giardiniere.

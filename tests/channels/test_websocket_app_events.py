@@ -9,9 +9,9 @@ from unittest.mock import AsyncMock, MagicMock
 
 from port_alloc import free_port
 
-from jenny.bus.events import OutboundMessage
-from jenny.channels.websocket import WebSocketChannel, WebSocketConfig
-from jenny.webui.gateway_services import build_gateway_services
+from arkhiva.bus.events import OutboundMessage
+from arkhiva.channels.websocket import WebSocketChannel, WebSocketConfig
+from arkhiva.webui.gateway_services import build_gateway_services
 
 
 def _ch(bus: Any) -> WebSocketChannel:

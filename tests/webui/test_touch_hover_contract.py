@@ -15,8 +15,8 @@ from pathlib import Path
 
 from support import css_levels
 
-ASSETS = Path(__file__).resolve().parents[2] / "jenny" / "templates" / "ui" / "assets"
-SHEETS = (ASSETS / "mobile-style.css", ASSETS / "home-style.css", ASSETS / "apps" / "jenny-kit.css")
+ASSETS = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "ui" / "assets"
+SHEETS = (ASSETS / "mobile-style.css", ASSETS / "home-style.css", ASSETS / "apps" / "arkhiva-kit.css")
 
 
 def test_no_rule_reverts_to_the_browser_sheet() -> None:

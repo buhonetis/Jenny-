@@ -16,8 +16,8 @@ import time
 import pytest
 from support.cron import reschedule_job
 
-from jenny.cron.service import CronService
-from jenny.cron.types import CronSchedule
+from arkhiva.cron.service import CronService
+from arkhiva.cron.types import CronSchedule
 
 _MINUTE_MS = 60_000
 

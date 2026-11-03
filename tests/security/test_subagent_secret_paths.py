@@ -5,7 +5,7 @@ Fino all'11/10/2026 un subagent nella chat personale poteva leggere
 bot Telegram) con ``read_file``, ``grep apiKey .`` o ``open()`` in
 ``python_exec``, e un subagent di quaderno con la lettura dell'installazione.
 Ogni superficie qui sotto passa ora da ``security.subagent_policy``; fuori da un
-subagent (Jenny principale) le stesse letture funzionano ancora.
+subagent (ARKHIVA principale) le stesse letture funzionano ancora.
 """
 
 from __future__ import annotations
@@ -14,13 +14,13 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent.tools.filesystem import ReadFileTool, WriteFileTool
-from jenny.agent.tools.python_exec import PythonExecTool
-from jenny.agent.tools.python_exec_builtins import _register_builtin_functions
-from jenny.agent.tools.search import GrepTool
-from jenny.config.tool_schemas import PythonExecConfig
-from jenny.security.subagent_policy import SubagentRunPolicy, enter_subagent_policy
-from jenny.security.workspace_access import (
+from arkhiva.agent.tools.filesystem import ReadFileTool, WriteFileTool
+from arkhiva.agent.tools.python_exec import PythonExecTool
+from arkhiva.agent.tools.python_exec_builtins import _register_builtin_functions
+from arkhiva.agent.tools.search import GrepTool
+from arkhiva.config.tool_schemas import PythonExecConfig
+from arkhiva.security.subagent_policy import SubagentRunPolicy, enter_subagent_policy
+from arkhiva.security.workspace_access import (
     bind_workspace_scope,
     reset_workspace_scope,
     validate_workspace_scope_payload,
@@ -37,7 +37,7 @@ def ws(tmp_path: Path) -> Path:
     (root / "skills").mkdir()
     (root / "config.json").write_text(f'{{"apiKey": "{_KEY}"}}', encoding="utf-8")
     (root / "config.json.bak").write_text(f'{{"apiKey": "{_KEY}"}}', encoding="utf-8")
-    snap = root / ".jenny" / "snapshots" / "objects"
+    snap = root / ".arkhiva" / "snapshots" / "objects"
     snap.mkdir(parents=True)
     (snap / "ab12").write_text(_KEY, encoding="utf-8")
     (root / "notes.md").write_text("niente di segreto", encoding="utf-8")
@@ -59,7 +59,7 @@ def _exec_tool(ws: Path) -> PythonExecTool:
 
 
 @pytest.mark.parametrize("name", [
-    "config.json", "config.json.bak", ".jenny/snapshots/objects/ab12",
+    "config.json", "config.json.bak", ".arkhiva/snapshots/objects/ab12",
 ])
 async def test_read_file_refuses_the_secrets_in_a_subagent(ws: Path, name: str) -> None:
     tool = ReadFileTool(workspace=ws, allowed_dir=ws, restrict_to_workspace=True)

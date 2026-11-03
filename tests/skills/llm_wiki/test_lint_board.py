@@ -7,10 +7,10 @@ from pathlib import Path
 
 import pytest
 
-from jenny.board import model
-from jenny.board.store import mutate_board, write_card_summary
+from arkhiva.board import model
+from arkhiva.board.store import mutate_board, write_card_summary
 
-_SCRIPTS = Path(__file__).resolve().parents[3] / "jenny" / "skills" / "llm-wiki" / "scripts"
+_SCRIPTS = Path(__file__).resolve().parents[3] / "arkhiva" / "skills" / "llm-wiki" / "scripts"
 
 
 @pytest.fixture(scope="module")

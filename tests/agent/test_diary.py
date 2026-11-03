@@ -1,4 +1,4 @@
-"""Il diario in testa a Jenny: chi vede quali righe, in due gradi, senza rompere la cache.
+"""Il diario in testa a ARKHIVA: chi vede quali righe, in due gradi, senza rompere la cache.
 
 Il caso da cui viene (11/10/2026): un film visto e commentato in un quaderno,
 scritto nel suo journal e specchiato in ``history.jsonl``; due ore dopo la chat
@@ -13,18 +13,18 @@ from pathlib import Path
 
 import pytest
 
-from jenny.agent import context as context_module
-from jenny.agent.context import ContextBuilder
-from jenny.agent.diary import (
+from arkhiva.agent import context as context_module
+from arkhiva.agent.context import ContextBuilder
+from arkhiva.agent.diary import (
     DIARY_STATE_KEY,
     REFREEZE_AFTER_NEW,
     diary_turn,
     render_section,
     visible_rows,
 )
-from jenny.agent.memory import MemoryStore
+from arkhiva.agent.memory import MemoryStore
 
-pytestmark = pytest.mark.usefixtures("_configure_jenny_workspace")
+pytestmark = pytest.mark.usefixtures("_configure_arkhiva_workspace")
 
 NOW = datetime(2026, 10, 11, 20, 0)
 PERSONAL = "unified:default"
@@ -217,7 +217,7 @@ def test_a_diary_row_is_not_repeated_in_recent_history(tmp_path: Path) -> None:
 def test_the_diary_has_no_waiting_part_any_more() -> None:
     """Un promemoria del quaderno è un job che, scattato, se ne va: non resta niente
     di «scattato e non chiuso» da far vedere alla chat personale."""
-    import jenny.agent.diary as diary
+    import arkhiva.agent.diary as diary
 
     assert not hasattr(diary, "waiting_threads") and not hasattr(diary, "Thread")
     meta: dict = {}

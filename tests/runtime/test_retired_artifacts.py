@@ -10,7 +10,7 @@ from pathlib import Path
 
 from loguru import logger as loguru_logger
 
-from jenny.runtime.retired_artifacts import sweep_retired_artifacts
+from arkhiva.runtime.retired_artifacts import sweep_retired_artifacts
 
 
 def _legacy_workspace(tmp_path: Path) -> Path:
@@ -72,11 +72,11 @@ def test_a_fresh_workspace_is_fine(tmp_path) -> None:
 
 def test_the_map_layout_goes_with_the_map(tmp_path) -> None:
     """Gli spilli della mappa a grafo: la mappa e' uscita dalla casa con la
-    bacheca, e il file non lo legge piu' nessuno. Il resto di ``.jenny/`` resta."""
+    bacheca, e il file non lo legge piu' nessuno. Il resto di ``.arkhiva/`` resta."""
     ws = tmp_path / "workspace"
-    (ws / ".jenny").mkdir(parents=True)
-    (ws / ".jenny" / "map-layout.json").write_text('{"piante": {}}', encoding="utf-8")
-    (ws / ".jenny" / "internal.json").write_text("{}", encoding="utf-8")
+    (ws / ".arkhiva").mkdir(parents=True)
+    (ws / ".arkhiva" / "map-layout.json").write_text('{"piante": {}}', encoding="utf-8")
+    (ws / ".arkhiva" / "internal.json").write_text("{}", encoding="utf-8")
     removed = {p.relative_to(ws).as_posix() for p in sweep_retired_artifacts(ws)}
-    assert removed == {".jenny/map-layout.json"}
-    assert (ws / ".jenny" / "internal.json").exists()
+    assert removed == {".arkhiva/map-layout.json"}
+    assert (ws / ".arkhiva" / "internal.json").exists()

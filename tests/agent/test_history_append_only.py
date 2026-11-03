@@ -16,12 +16,12 @@ from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
-from jenny.agent.loop import AgentLoop
-from jenny.agent.tools.base import Tool
-from jenny.bus.events import InboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.providers.base import LLMResponse, ToolCallRequest
-from jenny.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.agent.loop import AgentLoop
+from arkhiva.agent.tools.base import Tool
+from arkhiva.bus.events import InboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.providers.base import LLMResponse, ToolCallRequest
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
 
 # Le chiavi che un provider mette sul filo: il resto dei dict (metadati di
 # riga) non arriva all'API, quindi non conta per la cache.
@@ -169,10 +169,10 @@ async def test_a_subagent_announce_is_resent_as_it_was_sent(tmp_path: Path) -> N
 def test_a_mid_turn_message_is_resent_with_its_label() -> None:
     """L'etichetta la mette il governatore a ogni richiesta del turno: il turno
     dopo la deve ritrovare, mentre ``content`` resta come l'utente l'ha scritto."""
-    from jenny.agent.context_governor import MID_TURN_LABEL
-    from jenny.config.schema import AgentDefaults
-    from jenny.session.history_meta import MID_TURN_META
-    from jenny.session.manager import Session
+    from arkhiva.agent.context_governor import MID_TURN_LABEL
+    from arkhiva.config.schema import AgentDefaults
+    from arkhiva.session.history_meta import MID_TURN_META
+    from arkhiva.session.manager import Session
 
     loop = AgentLoop.__new__(AgentLoop)
     loop.max_tool_result_chars = AgentDefaults().max_tool_result_chars
@@ -250,7 +250,7 @@ async def test_deepseek_drops_closed_reasoning_when_the_cache_is_lost(tmp_path: 
 
 
 async def test_deepseek_drops_closed_reasoning_past_the_cap(tmp_path: Path) -> None:
-    from jenny.agent.context_governor import CLOSED_REASONING_KEEP_CHARS
+    from arkhiva.agent.context_governor import CLOSED_REASONING_KEEP_CHARS
 
     loop = _deepseek_loop(tmp_path)
     long = "x" * (CLOSED_REASONING_KEEP_CHARS // 2)

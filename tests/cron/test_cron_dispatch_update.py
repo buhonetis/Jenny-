@@ -18,13 +18,13 @@ from unittest.mock import MagicMock
 import pytest
 from support.sessions import FakeSessions
 
-from jenny.config.loader import get_config_path, save_config
-from jenny.config.schema import Config
-from jenny.runtime import cron_dispatch
-from jenny.runtime.cron_dispatch import UPDATE_SESSION_KEY, CronDispatcher
-from jenny.runtime.update_check import UpdateInfo
-from jenny.session.turn_visibility import TurnVisibility
-from jenny.webui.metadata import WEBUI_MESSAGE_SOURCE_METADATA_KEY
+from arkhiva.config.loader import get_config_path, save_config
+from arkhiva.config.schema import Config
+from arkhiva.runtime import cron_dispatch
+from arkhiva.runtime.cron_dispatch import UPDATE_SESSION_KEY, CronDispatcher
+from arkhiva.runtime.update_check import UpdateInfo
+from arkhiva.session.turn_visibility import TurnVisibility
+from arkhiva.webui.metadata import WEBUI_MESSAGE_SOURCE_METADATA_KEY
 
 _UPDATE_JOB = SimpleNamespace(
     name="update_check", id="update_check", payload=SimpleNamespace(kind="system_event")
@@ -33,7 +33,7 @@ _UPDATE_JOB = SimpleNamespace(
 _INFO = UpdateInfo(
     version_code=9,
     version_name="0.7.0",
-    apk_url="https://example.com/jenny-0.7.0.apk",
+    apk_url="https://example.com/arkhiva-0.7.0.apk",
     sha256="a" * 64,
     size=48210944,
     notes_url="https://example.com/notes",
@@ -89,8 +89,8 @@ def config_file(tmp_path, monkeypatch: pytest.MonkeyPatch):
     è obbligatorio — senza, questi test leggerebbero il ``config.json`` di chi
     esegue la suite.
     """
-    from jenny.config import paths
-    from jenny.runtime.context import get_runtime_context
+    from arkhiva.config import paths
+    from arkhiva.runtime.context import get_runtime_context
 
     previous = paths.get_workspace_path()
     paths.set_workspace_dir(str(tmp_path))
@@ -117,16 +117,16 @@ def setup(config_file, monkeypatch: pytest.MonkeyPatch):
     ):
         updater = _Updater(info)
         monkeypatch.setattr(
-            "jenny.runtime.update_check.check_for_update", updater.check_for_update
+            "arkhiva.runtime.update_check.check_for_update", updater.check_for_update
         )
         monkeypatch.setattr(
-            "jenny.runtime.update_check.notified_version_code",
+            "arkhiva.runtime.update_check.notified_version_code",
             updater.notified_version_code,
         )
         monkeypatch.setattr(
-            "jenny.runtime.update_check.mark_notified", updater.mark_notified
+            "arkhiva.runtime.update_check.mark_notified", updater.mark_notified
         )
-        monkeypatch.setattr("jenny.runtime.notifier.post_alert", updater.post_alert)
+        monkeypatch.setattr("arkhiva.runtime.notifier.post_alert", updater.post_alert)
         agent = _FakeAgent()
         config_file(enabled=enabled, notify_in_chat=notify_in_chat)
         dispatcher = CronDispatcher(

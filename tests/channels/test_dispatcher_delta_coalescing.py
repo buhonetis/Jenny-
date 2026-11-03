@@ -5,11 +5,11 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from support.aio import wait_until
 
-from jenny.bus.events import OutboundMessage
-from jenny.bus.queue import MessageBus
-from jenny.channels.dispatcher import WebSocketDispatcher
-from jenny.channels.websocket import WebSocketChannel
-from jenny.config.schema import Config
+from arkhiva.bus.events import OutboundMessage
+from arkhiva.bus.queue import MessageBus
+from arkhiva.channels.dispatcher import WebSocketDispatcher
+from arkhiva.channels.websocket import WebSocketChannel
+from arkhiva.config.schema import Config
 
 
 def _mock_gateway() -> MagicMock:

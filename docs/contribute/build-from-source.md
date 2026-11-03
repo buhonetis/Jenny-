@@ -41,11 +41,11 @@ What a flavor adds lives outside the core, so the `foss` build doesn't contain i
 
 | | Core (every build) | Only in `play` |
 |---|---|---|
-| Python and WebUI | `jenny/` | `jenny_extensions/` — packaged by Chaquopy only in `play` (`build.gradle.kts`) |
+| Python and WebUI | `arkhiva/` | `arkhiva_extensions/` — packaged by Chaquopy only in `play` (`build.gradle.kts`) |
 | Kotlin | `android/app/src/main/` | `android/app/src/play/` |
 | Gradle dependencies | `implementation(...)` | `playImplementation(...)` |
 
-The core reaches an extension only through generic hooks — `jenny/extensions.py` on the Python
+The core reaches an extension only through generic hooks — `arkhiva/extensions.py` on the Python
 side, `shared/extensions.js` in the WebUI, `NativeExtension.kt` in the shell — and
 `tests/test_extensions.py` fails if the core names anything of the Drive. To check a built APK,
 run `python3 scripts/check_foss_apk.py <apk>` (and `--play` for the opposite check).
@@ -56,7 +56,7 @@ Opening `android/` in Android Studio and hitting Run does the same build through
 
 ### Redeploying UI-only changes
 
-Changes under `jenny/templates/ui/` (the WebUI's HTML/CSS/JS) are bundled into the APK's assets and re-extracted into the workspace at gateway startup — they do **not** show up just by restarting the app. You need to rebuild and reinstall (`./gradlew app:installFossDebug`) for the new UI to reach the device, every time.
+Changes under `arkhiva/templates/ui/` (the WebUI's HTML/CSS/JS) are bundled into the APK's assets and re-extracted into the workspace at gateway startup — they do **not** show up just by restarting the app. You need to rebuild and reinstall (`./gradlew app:installFossDebug`) for the new UI to reach the device, every time.
 
 ## Release builds and signing
 
@@ -82,7 +82,7 @@ For iterating on the Python side (agent loop, tools, providers, config) without 
 
 ```bash
 pip install -e .
-python -c "from jenny.android_entry import run_gateway; run_gateway('/path/to/some/dir')"
+python -c "from arkhiva.android_entry import run_gateway; run_gateway('/path/to/some/dir')"
 ```
 
 This is **not** a supported deployment target — Android is the only runtime target for Jenny (see `AGENTS.md`) — it's purely a way to exercise the gateway's Python side faster while you develop. `run_gateway()` starts the same async gateway the Android runtime calls from Kotlin via Chaquopy, listening on `127.0.0.1:18790` by default, with the WebSocket and HTTP (including the WebUI's static assets) served on that same port.

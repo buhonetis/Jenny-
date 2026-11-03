@@ -4,10 +4,10 @@ Misurato il 09/10/2026 sul Titan 2: dopo uno swipe della pista il composer aveva
 il fuoco e la tastiera (Pastiera) era legata a un ``TYPE_NULL``; si scriveva lo
 stesso, ma la lettera accentata a pressione lunga non usciva più. Il guscio
 rilega (``ImeBinding.kt``), e per farlo deve sapere dov'è il fuoco: lo dice
-questo script, con ``JennyNative.setEditableFocus``.
+questo script, con ``ArkhivaNative.setEditableFocus``.
 
 Qui si misura cosa dice e quando: ``text`` per un campo, ``none`` per il resto,
-``frame`` per l'iframe di una Jenny App; una volta sola per un ``blur`` seguito
+``frame`` per l'iframe di una ARKHIVA App; una volta sola per un ``blur`` seguito
 da un ``focus`` nello stesso giro; di nuovo per ogni nuovo fuoco su un campo,
 anche lo stesso. Che il guscio poi rileghi lo dice il telefono.
 """
@@ -21,7 +21,7 @@ from support.js_harness import requires_node, run_js
 
 SCRIPT = (
     Path(__file__).resolve().parents[2]
-    / "jenny" / "templates" / "ui" / "assets" / "shared" / "editable-focus.js"
+    / "arkhiva" / "templates" / "ui" / "assets" / "shared" / "editable-focus.js"
 )
 
 pytestmark = requires_node
@@ -41,7 +41,7 @@ const doc = {
 const sent = [];
 const timers = [];
 const win = {
-  JennyNative: __NATIVE__,
+  ArkhivaNative: __NATIVE__,
   setTimeout(fn) { timers.push(fn); },
 };
 
@@ -180,7 +180,7 @@ console.log(JSON.stringify({ ok: true }));
 
 
 def test_every_shell_loads_it_right_after_the_bridge() -> None:
-    """Legge `window.JennyNative` come `native-bridge.js` lo lascia: dopo di lui,
+    """Legge `window.ArkhivaNative` come `native-bridge.js` lo lascia: dopo di lui,
     prima dei moduli — e in tutti e tre i gusci."""
     ui = SCRIPT.parents[2]
     bridge = '<script src="/html-mobile/assets/shared/native-bridge.js"></script>'
@@ -188,7 +188,7 @@ def test_every_shell_loads_it_right_after_the_bridge() -> None:
     for shell in ("index.html", "workshop.html", "onboarding.html"):
         html = (ui / shell).read_text(encoding="utf-8")
         assert html.index(bridge) < html.index(mine) < html.index('type="module"'), shell
-    manifest = (SCRIPT.parents[5] / "jenny" / "utils" / "android_assets.py").read_text("utf-8")
+    manifest = (SCRIPT.parents[5] / "arkhiva" / "utils" / "android_assets.py").read_text("utf-8")
     assert '"assets/shared/editable-focus.js"' in manifest
 
 
@@ -210,7 +210,7 @@ def test_refocus_gives_the_field_its_focus_back_where_you_were() -> None:
         _FIELD
         + """
 focus(field); tick();
-const done = win.JennyEditableFocus.refocus();
+const done = win.ArkhivaEditableFocus.refocus();
 console.log(JSON.stringify({ done, calls, at: field.selectionStart, active: doc.activeElement === field }));
 """
     )
@@ -229,7 +229,7 @@ def test_refocus_is_not_told_to_the_shell_as_a_new_focus() -> None:
         + """
 focus(field); tick();
 sent.length = 0;
-win.JennyEditableFocus.refocus(); tick();
+win.ArkhivaEditableFocus.refocus(); tick();
 console.log(JSON.stringify(sent));
 """
     )
@@ -240,7 +240,7 @@ def test_refocus_leaves_anything_else_alone() -> None:
     out = _run_js(
         """
 focus({ tagName: 'BUTTON', blur() { throw new Error('no'); } }); tick();
-console.log(JSON.stringify({ done: win.JennyEditableFocus.refocus() }));
+console.log(JSON.stringify({ done: win.ArkhivaEditableFocus.refocus() }));
 """
     )
     assert out == {"done": False}

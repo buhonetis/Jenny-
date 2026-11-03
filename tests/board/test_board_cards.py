@@ -8,29 +8,29 @@ from pathlib import Path
 
 import pytest
 
-from jenny.board import model
-from jenny.board.removed import purge_removed_cards
-from jenny.board.store import (
+from arkhiva.board import model
+from arkhiva.board.removed import purge_removed_cards
+from arkhiva.board.store import (
     BoardOwnershipError,
     mutate_board,
     read_board,
     write_card_summary,
 )
-from jenny.board.view import build_board_view
-from jenny.webui.commands import CommandError, dispatch_command
+from arkhiva.board.view import build_board_view
+from arkhiva.webui.commands import CommandError, dispatch_command
 
 
 def _seed(notebook: Path) -> None:
     def apply(board):
         board["cards"].append({
             "id": "acero", "title": "Acero", "pages": ["travaso-acero.md"],
-            "pos": {"x": 5, "y": 6, "by": "jenny"}, "glyph": "leaf",
+            "pos": {"x": 5, "y": 6, "by": "arkhiva"}, "glyph": "leaf",
         })
         board["cards"].append({
             "id": "monstera", "title": "Monstera", "pages": ["rinvaso-monstera.md"],
-            "pos": {"x": 47, "y": 4, "by": "jenny"},
+            "pos": {"x": 47, "y": 4, "by": "arkhiva"},
         })
-        board["connections"].append({"a": "acero", "b": "monstera", "label": "vasi", "by": "jenny"})
+        board["connections"].append({"a": "acero", "b": "monstera", "label": "vasi", "by": "arkhiva"})
 
     mutate_board(notebook, apply)
 
@@ -74,7 +74,7 @@ async def test_rename_makes_the_title_the_users(ctx, notebook: Path) -> None:
                                                       "title": "Acerello"})
     card = model.card_by_id(read_board(notebook), "acero")
     assert (card["title"], card["titleBy"]) == ("Acerello", "user")
-    # E da li' Jenny non lo riscrive.
+    # E da li' ARKHIVA non lo riscrive.
     with pytest.raises(BoardOwnershipError):
         mutate_board(notebook, lambda b: b["cards"][0].update(title="Acero"), actor=model.JENNY)
 
@@ -94,7 +94,7 @@ async def test_remove_and_undo_put_back_place_threads_and_pages(ctx, notebook: P
     await dispatch_command(ctx, "board.card.restore", {"wiki": "piante", "id": "acero"})
     board = read_board(notebook)
     acero = model.card_by_id(board, "acero")
-    assert acero["pos"] == {"x": 5.0, "y": 6.0, "by": "jenny"}
+    assert acero["pos"] == {"x": 5.0, "y": 6.0, "by": "arkhiva"}
     assert acero["pages"] == ["travaso-acero.md"]
     assert board["connections"][0]["label"] == "vasi"
     assert board["removedCards"] == []
@@ -102,7 +102,7 @@ async def test_remove_and_undo_put_back_place_threads_and_pages(ctx, notebook: P
         await dispatch_command(ctx, "board.card.restore", {"wiki": "piante", "id": "acero"})
 
 
-async def test_jenny_cannot_touch_the_removed_cards(ctx, notebook: Path) -> None:
+async def test_arkhiva_cannot_touch_the_removed_cards(ctx, notebook: Path) -> None:
     _seed(notebook)
     await dispatch_command(ctx, "board.card.remove", {"wiki": "piante", "id": "acero"})
     with pytest.raises(BoardOwnershipError):
@@ -112,8 +112,8 @@ async def test_jenny_cannot_touch_the_removed_cards(ctx, notebook: Path) -> None
 async def test_a_removed_card_pauses_its_crons_and_undo_resumes_them(
     ctx, notebook: Path, tmp_path: Path,
 ) -> None:
-    from jenny.cron.service import CronService
-    from jenny.cron.types import CronSchedule
+    from arkhiva.cron.service import CronService
+    from arkhiva.cron.types import CronSchedule
 
     _seed(notebook)
     service = CronService(tmp_path / "jobs.json")
@@ -147,8 +147,8 @@ async def test_a_removed_card_pauses_its_crons_and_undo_resumes_them(
 async def test_a_week_later_the_removed_card_is_gone_for_good(
     ctx, notebook: Path, tmp_path: Path,
 ) -> None:
-    from jenny.cron.service import CronService
-    from jenny.cron.types import CronSchedule
+    from arkhiva.cron.service import CronService
+    from arkhiva.cron.types import CronSchedule
 
     _seed(notebook)
     service = CronService(tmp_path / "jobs.json")
@@ -160,8 +160,8 @@ async def test_a_week_later_the_removed_card_is_gone_for_good(
     )
     mutate_board(notebook, lambda b: b["cards"][0]["userSections"].append(
         {"id": "s-cron", "kind": "cron", "job": job.id}))
-    from jenny.board.cron_link import add_notebook_job
-    from jenny.cron.dates import date_schedule
+    from arkhiva.board.cron_link import add_notebook_job
+    from arkhiva.cron.dates import date_schedule
 
     reminder = add_notebook_job(service, "piante", "acero", name="Travaso", message="Travaso",
                                 schedule=date_schedule("2099-03", "Europe/Rome"))
@@ -183,8 +183,8 @@ async def test_the_reminders_of_a_removed_card_pause_and_come_back(
     cron_ctx, cron, notebook: Path,
 ) -> None:
     """«Togli» ferma quel che la scheda fa da sé: anche i suoi promemoria, che sono job."""
-    from jenny.board.cron_link import add_notebook_job, notebook_jobs
-    from jenny.cron.dates import date_schedule
+    from arkhiva.board.cron_link import add_notebook_job, notebook_jobs
+    from arkhiva.cron.dates import date_schedule
 
     _seed(notebook)
     job = add_notebook_job(cron, "piante", "acero", name="Travaso", message="Travaso",

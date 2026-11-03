@@ -1,7 +1,7 @@
 """Il giro ``cloud_backup`` dell'estensione Drive, passato dal ``CronDispatcher``.
 
 Due requisiti: il giro gira **anche senza agente** (spedire una copia non ha
-bisogno del modello), e l'avviso dopo tre notti lo dà Jenny con un turno
+bisogno del modello), e l'avviso dopo tre notti lo dà ARKHIVA con un turno
 silenzioso — o, senza agente, la notifica nuda.
 """
 
@@ -13,12 +13,12 @@ from typing import Any
 import pytest
 from support.sessions import FakeSessions
 
-from jenny.extensions import ExtensionHost
-from jenny.runtime.cron_dispatch import CronDispatcher
-from jenny.session.turn_visibility import TurnVisibility
-from jenny_extensions.drive import cloud_service, cron
-from jenny_extensions.drive.cron import ALERT_SESSION_KEY as CLOUD_ALERT_SESSION_KEY
-from jenny_extensions.drive.cron import JOB_ID as CLOUD_BACKUP_JOB_ID
+from arkhiva.extensions import ExtensionHost
+from arkhiva.runtime.cron_dispatch import CronDispatcher
+from arkhiva.session.turn_visibility import TurnVisibility
+from arkhiva_extensions.drive import cloud_service, cron
+from arkhiva_extensions.drive.cron import ALERT_SESSION_KEY as CLOUD_ALERT_SESSION_KEY
+from arkhiva_extensions.drive.cron import JOB_ID as CLOUD_BACKUP_JOB_ID
 
 _JOB = SimpleNamespace(
     name=CLOUD_BACKUP_JOB_ID, id=CLOUD_BACKUP_JOB_ID, payload=SimpleNamespace(kind="system_event")
@@ -68,7 +68,7 @@ async def test_the_backup_runs_without_an_agent(make_dispatcher) -> None:
     assert ticks == [1]
 
 
-async def test_jenny_says_it_in_a_silent_turn(make_dispatcher) -> None:
+async def test_arkhiva_says_it_in_a_silent_turn(make_dispatcher) -> None:
     agent = _FakeAgent()
     dispatcher, _ = make_dispatcher(agent, {"action": "failed", "alert": _ALERT})
 
@@ -97,7 +97,7 @@ async def test_without_an_agent_the_alert_is_a_bare_notification(
 ) -> None:
     sent: list[tuple[str, dict]] = []
     monkeypatch.setattr(
-        "jenny.runtime.notifier.notify_delivery", lambda text, meta: sent.append((text, meta))
+        "arkhiva.runtime.notifier.notify_delivery", lambda text, meta: sent.append((text, meta))
     )
     dispatcher, _ = make_dispatcher(None, {"action": "failed", "alert": _ALERT})
 

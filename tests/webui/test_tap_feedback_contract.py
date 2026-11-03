@@ -86,9 +86,9 @@ def test_the_blue_flash_is_off_once_for_the_whole_document() -> None:
     )
 
 
-def test_jenny_apps_have_it_off_too() -> None:
+def test_arkhiva_apps_have_it_off_too() -> None:
     """Un'app gira in un iframe: l'ereditarieta' non passa il confine."""
-    kit = _sheet("apps/jenny-kit.css")
+    kit = _sheet("apps/arkhiva-kit.css")
     html = [body for sel, body, _ in css_levels.rules(kit) if sel.strip() == "html"]
     assert any("-webkit-tap-highlight-color: transparent" in body for body in html)
 

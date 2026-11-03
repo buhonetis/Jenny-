@@ -1,7 +1,7 @@
 """Tests per ``SubagentManager.status_snapshot`` e la pubblicazione sul bus.
 
 Il contratto dello snapshot e consumato dal pannello della WebUI, che non importa
-nulla da ``jenny/agent``: qui si pinnano forma, chiavi e serializzabilita JSON.
+nulla da ``arkhiva/agent``: qui si pinnano forma, chiavi e serializzabilita JSON.
 """
 
 from __future__ import annotations
@@ -16,15 +16,15 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from support.aio import drain_nowait
 
-from jenny.agent.subagent import (
+from arkhiva.agent.subagent import (
     MAX_AUTO_ATTEMPTS,
     SubagentManager,
     SubagentSpec,
     SubagentStatus,
 )
-from jenny.agent.subagent_records import SubagentRecord
-from jenny.bus.events import OUTBOUND_META_SUBAGENT_STATUS
-from jenny.bus.queue import MessageBus
+from arkhiva.agent.subagent_records import SubagentRecord
+from arkhiva.bus.events import OUTBOUND_META_SUBAGENT_STATUS
+from arkhiva.bus.queue import MessageBus
 
 # ``task`` e ``tool_events`` sono i due campi che la modale di dettaglio del
 # pannello mostra e la card, larga una riga, non puo: senza di loro l'unico modo
@@ -47,7 +47,7 @@ RECENT_KEYS = {
     "task_id", "lineage_id", "attempt", "label", "task", "agent_type", "state",
     "stop_reason", "cancel_reason", "result_summary", "ended_at", "can_restart",
     # La scheda «si e fermato» della casa: «fai continuare» al posto del rilancio
-    # (``resumable``), via quando Jenny ha avuto il resoconto (``handled_at``),
+    # (``resumable``), via quando ARKHIVA ha avuto il resoconto (``handled_at``),
     # raggruppata per passo (``plan_id``/``plan_step``).
     "resumable", "handled_at", "plan_id", "plan_step",
     # Chi l'ha fermata, i file ancora da annullare e l'ultimo annulla
@@ -162,7 +162,7 @@ def test_task_is_capped_in_both_lists(tmp_path: Path) -> None:
     Con cinque subagent in parallelo un task da 50 KB sarebbe un frame da spedire
     cinque volte per ogni cambio di stato.
     """
-    from jenny.agent.subagent import _SNAPSHOT_TASK_CHARS
+    from arkhiva.agent.subagent import _SNAPSHOT_TASK_CHARS
 
     mgr = _manager(tmp_path)
     huge = "x" * (_SNAPSHOT_TASK_CHARS * 3)
@@ -187,7 +187,7 @@ def test_task_is_capped_in_both_lists(tmp_path: Path) -> None:
 
 def test_tool_events_are_a_bounded_json_only_tail(tmp_path: Path) -> None:
     """Coda corta e ricostruita: nessuna chiave nuova, nessun valore non JSON."""
-    from jenny.agent.subagent import _SNAPSHOT_TOOL_EVENTS_LIMIT
+    from arkhiva.agent.subagent import _SNAPSHOT_TOOL_EVENTS_LIMIT
 
     mgr = _manager(tmp_path)
     events = [

@@ -19,7 +19,7 @@ from .ui_paths import EXT_UI, ROOT
 
 CLOUD_JS = (EXT_UI / "cloud-backup.js").read_text(encoding="utf-8")
 ONBOARDING_JS = (EXT_UI / "onboarding.js").read_text(encoding="utf-8")
-KOTLIN = ROOT / "android" / "app" / "src" / "play" / "java" / "com" / "flagdizero" / "jenny"
+KOTLIN = ROOT / "android" / "app" / "src" / "play" / "java" / "com" / "flagdizero" / "arkhiva"
 
 pytestmark = requires_node
 
@@ -28,7 +28,7 @@ def test_consent_goes_through_the_generic_extension_command() -> None:
     run_js(f"""
       import assert from 'node:assert/strict';
       const sent = [];
-      globalThis.window = {{ JennyNative: {{ extensionCall: (...a) => sent.push(a) }} }};
+      globalThis.window = {{ ArkhivaNative: {{ extensionCall: (...a) => sent.push(a) }} }};
       globalThis.document = {{ visibilityState: 'visible', addEventListener() {{}}, removeEventListener() {{}} }};
       const NATIVE_ANSWER_GRACE_MS = 60000;
       const EXTENSION = 'drive';

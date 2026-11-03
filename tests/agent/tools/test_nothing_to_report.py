@@ -24,14 +24,14 @@ from unittest.mock import AsyncMock, MagicMock
 
 from support.agent import make_loop, make_provider
 
-from jenny.agent.tools import nothing_to_report as ntr
-from jenny.agent.tools.context import RequestContext
-from jenny.agent.tools.message import MessageTool
-from jenny.agent.tools.nothing_to_report import NothingToReportTool, declared_marker_lines
-from jenny.bus.events import InboundMessage, OutboundMessage
-from jenny.cron.session_turns import monitor_session_key
-from jenny.providers.base import LLMResponse, ToolCallRequest
-from jenny.session.turn_visibility import TurnVisibility, silent_turn_metadata
+from arkhiva.agent.tools import nothing_to_report as ntr
+from arkhiva.agent.tools.context import RequestContext
+from arkhiva.agent.tools.message import MessageTool
+from arkhiva.agent.tools.nothing_to_report import NothingToReportTool, declared_marker_lines
+from arkhiva.bus.events import InboundMessage, OutboundMessage
+from arkhiva.cron.session_turns import monitor_session_key
+from arkhiva.providers.base import LLMResponse, ToolCallRequest
+from arkhiva.session.turn_visibility import TurnVisibility, silent_turn_metadata
 
 # Un turno silenzioso di lavoro interno: la sessione di un monitor del cron.
 MONITOR_SESSION_KEY = monitor_session_key("rain-check")
@@ -341,7 +341,7 @@ def test_the_tool_description_does_not_teach_the_routing_rule() -> None:
 
 
 def test_the_module_is_registered_in_the_loader_list() -> None:
-    from jenny.agent.tools.loader import _HARDCODED_TOOL_MODULES
+    from arkhiva.agent.tools.loader import _HARDCODED_TOOL_MODULES
 
     assert "nothing_to_report" in _HARDCODED_TOOL_MODULES
 

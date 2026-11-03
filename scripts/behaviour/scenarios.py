@@ -804,7 +804,7 @@ STAGE_3.append(Scenario(
            "Cambia il titolo della poesia in «Onde {n}»."],
     check=_follow_up,
     # Il commento di ``SpawnTool._to_known_builder`` (08/10/2026): «la regola
-    # follow-up: subagent_send Jenny non l'ha mai applicata». Per le app la fa il
+    # follow-up: subagent_send ARKHIVA non l'ha mai applicata». Per le app la fa il
     # codice; per gli altri tipi resta questa frase.
     calibration=[Edit("agent/orchestrator.md",
                       "use\n`subagent_send` with its id: it works whether the subagent is running, "
@@ -814,14 +814,14 @@ STAGE_3.append(Scenario(
                       "`subagent_send` for a\nfinished one.")],
 ))
 
-# -- stadio 4: il diario (una Jenny sola fra chat e quaderni) ----------------------
+# -- stadio 4: il diario (una ARKHIVA sola fra chat e quaderni) ----------------------
 #
 # Le scene del piano del diario: quel che succede in un quaderno, la chat
 # personale deve saperlo senza andarselo a cercare; e quel che e' di un
 # quaderno non deve saltar fuori quando si parla d'altro. Il preludio gira in un
 # quaderno usa e getta, la domanda nella chat personale, sessione nuova.
 
-#: Gli strumenti con cui Jenny va a *cercare*: saperlo cercando e' la Jenny di
+#: Gli strumenti con cui ARKHIVA va a *cercare*: saperlo cercando e' la ARKHIVA di
 #: oggi («ah gia'», dopo aver riletto il quaderno), non quella del diario.
 _DIGGING = ("recall_history", "recall", "read_file", "grep", "find_files", "list_dir",
             "python_exec")
@@ -885,7 +885,7 @@ DIARY = [
         # come riassunto — successo il 12/10/2026, 1 giro su 3 per modello.
         notebook_prelude=["L'idraulico {n} ha rifatto la guarnizione del bagno, adesso non "
                           "perde più. Segnatelo."],
-        turns=["Ciao Jenny!"],
+        turns=["Ciao ARKHIVA!"],
         check=_stays_out, kind="probe",
     ),
 ]
@@ -1092,9 +1092,9 @@ _CADENCE_WORDS = re.compile(
 
 
 def _cadence_said(obs: Observation, n: Mapping[str, str]) -> list[Check]:
-    """Una condizione senza cadenza: Jenny la sceglie o la chiede, ma la dice.
+    """Una condizione senza cadenza: ARKHIVA la sceglie o la chiede, ma la dice.
 
-    Decisione dell'utente (01/11/2026): la cadenza puo' proporla Jenny, purche'
+    Decisione dell'utente (01/11/2026): la cadenza puo' proporla ARKHIVA, purche'
     non resti nascosta — un orologio che l'utente non ha scelto e non vede e'
     cio' che aveva rifiutato.
     """
@@ -1169,7 +1169,7 @@ LATER = [
     Scenario(
         name="condition_cadence_is_said",
         stage=1, area="cron",
-        promise="una condizione senza cadenza: Jenny la chiede o la sceglie, ma la dice sempre",
+        promise="una condizione senza cadenza: ARKHIVA la chiede o la sceglie, ma la dice sempre",
         turns=["Avvisami quando il totale del portafoglio supera 90000 euro ({n})."],
         check=_cadence_said,
         calibration=[Edit("agent/scheduling.md",

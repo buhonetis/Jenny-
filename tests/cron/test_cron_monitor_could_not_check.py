@@ -30,18 +30,18 @@ from typing import Any
 import pytest
 from support.sessions import FakeSessions
 
-from jenny.agent.tools.registry import ToolRegistry
-from jenny.agent.turn_types import TurnOutcome
-from jenny.bus.events import InboundMessage
-from jenny.cron.bound_runner import (
+from arkhiva.agent.tools.registry import ToolRegistry
+from arkhiva.agent.turn_types import TurnOutcome
+from arkhiva.bus.events import InboundMessage
+from arkhiva.cron.bound_runner import (
     MONITOR_ESCALATE_AFTER_FAILURES,
     could_not_check_reason,
     run_bound_cron_job,
 )
-from jenny.cron.could_not_check import ESCALATION_ASK_LIMIT
-from jenny.cron.service import CronService
-from jenny.cron.types import CronJobState, CronSchedule
-from jenny.utils.prompt_templates import render_template
+from arkhiva.cron.could_not_check import ESCALATION_ASK_LIMIT
+from arkhiva.cron.service import CronService
+from arkhiva.cron.types import CronJobState, CronSchedule
+from arkhiva.utils.prompt_templates import render_template
 
 _MESSAGE = "controlla la pioggia nelle città e avvisami solo sopra il 70%"
 
@@ -52,8 +52,8 @@ _MESSAGE = "controlla la pioggia nelle città e avvisami solo sopra il 70%"
 # posto solo, perché sono l'unico punto in cui questi test conoscono la prosa
 # del template: se la riscrivi, si aggiornano qui e i test di contratto qui
 # sotto ti dicono subito che l'hai fatto.
-_ALREADY_WARNED = "ALREADY been told"
-_MUST_WARN = "must find out"
+_ALREADY_WARNED = "YA se le dijo"
+_MUST_WARN = "tiene que enterarse"
 
 
 @cache
@@ -232,7 +232,7 @@ class TestTheStreakSpeaksOnce:
         await _cycles(service, job_id, MONITOR_ESCALATE_AFTER_FAILURES)
 
         escalation_prompt = agent.prompts[MONITOR_ESCALATE_AFTER_FAILURES - 1]
-        assert f" {MONITOR_ESCALATE_AFTER_FAILURES - 1} times in a row" in escalation_prompt
+        assert f" {MONITOR_ESCALATE_AFTER_FAILURES - 1} ejecuciones seguidas sin poder correr" in escalation_prompt
 
     async def test_the_run_that_alerted_still_counts_as_a_missed_check(
         self, tmp_path: Path
@@ -296,7 +296,7 @@ class TestTheSilentOutcomes:
     async def test_the_legitimate_silent_case_survives(self) -> None:
         """Un controllo che gira e non trova niente resta un successo muto."""
         prompt = _base_prompt()
-        assert "If you did the check and there is nothing new or noteworthy" in prompt
+        assert "Si hiciste la comprobación y no hay nada nuevo ni digno de mención" in prompt
         assert "`checked=true`" in prompt
 
     async def test_a_partial_check_is_not_a_quiet_one(self) -> None:
@@ -305,8 +305,8 @@ class TestTheSilentOutcomes:
         agent non ha `python_exec`) e ha chiamato `nothing_to_report`. Un
         controllo fatto a metà va a un aiutante o è un CHECK_FAILED."""
         prompt = _base_prompt()
-        assert "you have not checked" in prompt
-        assert "spawn" in prompt and "`checked=false` naming the step" in prompt
+        assert "no has comprobado" in prompt
+        assert "spawn" in prompt and "`checked=false` nombrando el paso" in prompt
 
 
 class _RepeatsItsOwnWarning(_FakeMonitorAgent):
@@ -531,7 +531,7 @@ class TestTheAskIsBoundedNotEndless:
     all'utente ogni mezz'ora. "Per sempre" non è un costo accettabile nemmeno
     nella direzione del rumore.
 
-    Dove la finestra finisce comincia ``jenny/cron/silence_watchdog.py``, che
+    Dove la finestra finisce comincia ``arkhiva/cron/silence_watchdog.py``, che
     l'allarme lo alza da sé — v. ``ESCALATION_ASK_LIMIT``.
     """
 
@@ -551,7 +551,7 @@ class TestTheAskIsBoundedNotEndless:
         """Le due finestre sono contigue: non resta un run scoperto."""
         alerts: list[str] = []
         monkeypatch.setattr(
-            "jenny.runtime.notifier.notify_delivery",
+            "arkhiva.runtime.notifier.notify_delivery",
             lambda content, metadata: alerts.append(content),
         )
         service, job_id, agent = _monitor(tmp_path, agent=_WarnsAndNeverDeclaresIt())
@@ -585,8 +585,8 @@ class TestTheAskIsBoundedNotEndless:
 
         escalation_prompt = agent.prompts[-1]
         assert _MUST_WARN in escalation_prompt
-        assert "this run's message is the warning" in escalation_prompt
-        assert "already told them" not in escalation_prompt
+        assert "el mensaje de esta ejecución es el aviso" in escalation_prompt
+        assert "ya se le dijo" not in escalation_prompt
 
 
 class TestRecovery:

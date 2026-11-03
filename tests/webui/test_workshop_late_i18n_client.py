@@ -9,7 +9,7 @@ Non lo facevano:
   titoli delle azioni (tooltip ed etichetta del lettore di schermo) restavano
   ``header.back`` e ``header.refresh``;
 * la minichat rileggeva solo il placeholder: scrim, campo e bottone d'invio
-  restavano con ``jenny.send`` come nome.
+  restavano con ``arkhiva.send`` come nome.
 
 Qui i metodi veri girano in node con un ``i18n`` che traduce solo dopo il
 ``load``.
@@ -67,7 +67,7 @@ console.log('ok');
 
 
 def test_the_chat_identity_and_commands_are_translated_after_load() -> None:
-    """La riga «Jenny · online» e il chip «Commands» la chat li scrive al primo
+    """La riga «ARKHIVA · online» e il chip «Commands» la chat li scrive al primo
     ``activate()``, che puo' venire prima delle traduzioni. Fino al 05/10/2026
     le traduzioni arrivavano in tempo per caso (le chiedeva per prima la
     minichat); senza di lei sul telefono restavano ``chat.online`` e

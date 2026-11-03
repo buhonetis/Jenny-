@@ -3,8 +3,8 @@ notebook JSON editing, and create-file semantics."""
 
 import pytest
 
-from jenny.agent.tools import file_state
-from jenny.agent.tools.filesystem import EditFileTool, ReadFileTool
+from arkhiva.agent.tools import file_state
+from arkhiva.agent.tools.filesystem import EditFileTool, ReadFileTool
 
 # ---------------------------------------------------------------------------
 # Read-before-edit tracking

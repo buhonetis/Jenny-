@@ -1,6 +1,6 @@
 """Il motore del lettore di un'app: uscita validata, guasti, rete, sandbox, letture.
 
-Il motore e' quello delle micro app (``jenny/board/micro.py``), che il lettore
+Il motore e' quello delle micro app (``arkhiva/board/micro.py``), che il lettore
 riusa; questi test lo provano dalla strada che gira davvero, ``run_reader``.
 """
 
@@ -12,9 +12,9 @@ from pathlib import Path
 
 import pytest
 
-from jenny.apps import reader
-from jenny.board import micro as mc
-from jenny.board import model
+from arkhiva.apps import reader
+from arkhiva.board import micro as mc
+from arkhiva.board import model
 
 NOW = datetime(2026, 10, 5, 12, 0, tzinfo=timezone.utc)
 
@@ -83,7 +83,7 @@ async def test_three_code_errors_in_a_row_break_it_and_back_off(tmp_path) -> Non
 
 
 async def test_a_reader_error_shows_where_it_happened(tmp_path) -> None:
-    """L'errore che arriva a Jenny e' quello vero, con la riga dell'app: non un
+    """L'errore che arriva a ARKHIVA e' quello vero, con la riga dell'app: non un
     finto SyntaxError del sandbox, non la sola cornice esterna."""
     _app(tmp_path, "def fetch():\n    raise RuntimeError('HTTP 429 from hub')\n"
                    "def run(ctx):\n    return fetch()\n")
@@ -244,7 +244,7 @@ def test_ordinary_code_is_not_a_credential() -> None:
 
 def test_a_run_may_make_eight_requests(monkeypatch) -> None:
     """Quattro ETF, un prezzo ciascuno, con un ritentativo: con 3 non ci stavano."""
-    import jenny.security.network as net
+    import arkhiva.security.network as net
 
     monkeypatch.setattr(net, "validate_app_server_target", lambda url: (True, ""))
     http = mc.MicroHttp(["api.example.com"])
@@ -256,14 +256,14 @@ def test_a_run_may_make_eight_requests(monkeypatch) -> None:
 
 
 def test_http_says_who_it_is_and_why_it_was_refused(monkeypatch) -> None:
-    """Un 403 col suo motivo, e la richiesta col nome di Jenny.
+    """Un 403 col suo motivo, e la richiesta col nome di ARKHIVA.
 
     Wikimedia rifiuta ``python-httpx`` con «robot policy»: con solo «HTTP 403» il
     modello riprovava alla cieca.
     """
     import httpx
 
-    import jenny.security.network as net
+    import arkhiva.security.network as net
 
     sent = {}
 
@@ -280,14 +280,14 @@ def test_http_says_who_it_is_and_why_it_was_refused(monkeypatch) -> None:
     with pytest.raises(RuntimeError) as e:
         mc.MicroHttp(["api.example.com"]).get_text("https://api.example.com/q")
     assert str(e.value) == "HTTP 403 from https://api.example.com/q: Please respect our robot policy"
-    assert sent["ua"].startswith("Jenny/")
+    assert sent["ua"].startswith("ARKHIVA/")
 
 
 def test_a_user_agent_from_the_reader_replaces_jennys(monkeypatch) -> None:
     """Le maiuscole non contano: ``user-agent`` del lettore sostituisce, non affianca."""
     import httpx
 
-    import jenny.security.network as net
+    import arkhiva.security.network as net
 
     sent = {}
 

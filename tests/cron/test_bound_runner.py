@@ -1,9 +1,9 @@
-"""Test per jenny/cron/bound_runner.py.
+"""Test per arkhiva/cron/bound_runner.py.
 
 Copre ``run_bound_cron_job`` (validazione, esito ok/errore, gestione del
 contesto ``CronTool``, metadata webui/trigger) e ``is_bound_cron_job``
-(``jenny/cron/session_turns.py``): quest'ultima è il gate booleano usato da
-``jenny/runtime/cron_dispatch.py`` subito prima di invocare
+(``arkhiva/cron/session_turns.py``): quest'ultima è il gate booleano usato da
+``arkhiva/runtime/cron_dispatch.py`` subito prima di invocare
 ``run_bound_cron_job`` e non ha un file di test proprio, quindi la copriamo
 qui insieme al runner che la consuma concettualmente.
 """
@@ -17,29 +17,29 @@ from typing import Any
 import pytest
 from support.sessions import FakeSessions
 
-from jenny.agent.tools.context import RequestContext
-from jenny.agent.tools.cron import CronTool
-from jenny.agent.tools.registry import ToolRegistry
-from jenny.agent.turn_types import TurnOutcome
-from jenny.bus.events import InboundMessage, OutboundMessage
-from jenny.cron.bound_runner import (
+from arkhiva.agent.tools.context import RequestContext
+from arkhiva.agent.tools.cron import CronTool
+from arkhiva.agent.tools.registry import ToolRegistry
+from arkhiva.agent.turn_types import TurnOutcome
+from arkhiva.bus.events import InboundMessage, OutboundMessage
+from arkhiva.cron.bound_runner import (
     CRON_WAKELOCK_TIMEOUT_S,
     MONITOR_KEEP_RECENT_MESSAGES,
     run_bound_cron_job,
 )
-from jenny.cron.service import CronService
-from jenny.cron.session_turns import (
+from arkhiva.cron.service import CronService
+from arkhiva.cron.session_turns import (
     CRON_DEFER_UNTIL_IDLE_META,
     CRON_MONITOR_META,
     CRON_TRIGGER_META,
     is_bound_cron_job,
     monitor_session_key,
 )
-from jenny.cron.types import CronJob, CronJobSilencedError, CronPayload
-from jenny.session.keys import UNIFIED_SESSION_KEY
-from jenny.session.turn_visibility import is_silent_turn
-from jenny.utils.prompt_templates import render_template
-from jenny.webui.metadata import WEBUI_MESSAGE_SOURCE_METADATA_KEY, WEBUI_TURN_METADATA_KEY
+from arkhiva.cron.types import CronJob, CronJobSilencedError, CronPayload
+from arkhiva.session.keys import UNIFIED_SESSION_KEY
+from arkhiva.session.turn_visibility import is_silent_turn
+from arkhiva.utils.prompt_templates import render_template
+from arkhiva.webui.metadata import WEBUI_MESSAGE_SOURCE_METADATA_KEY, WEBUI_TURN_METADATA_KEY
 
 
 def _bound_job(
@@ -326,11 +326,11 @@ class TestRunBoundCronJobSuccess:
         """Il job eredita ``webui`` dal turno che l'ha creato, e la consegna lo toglie.
 
         Con ``webui`` l'alert passa da ``postReply``, che tace con l'app davanti:
-        con Jenny launcher, sempre davanti, un promemoria creato dalla chat non
+        con ARKHIVA launcher, sempre davanti, un promemoria creato dalla chat non
         suonava mai a schermo acceso (s22, 28/10/2026). Un promemoria e' un
         avviso: tace solo con la sua chat a schermo.
         """
-        from jenny.runtime.notifier import is_app_reply
+        from arkhiva.runtime.notifier import is_app_reply
 
         job = _bound_job(
             origin_channel="websocket",
@@ -701,7 +701,7 @@ class TestWakelock:
         return events
 
     async def test_the_job_body_runs_inside_the_wakelock(self, monkeypatch) -> None:
-        events = self._spy(monkeypatch, "jenny.cron.bound_runner")
+        events = self._spy(monkeypatch, "arkhiva.cron.bound_runner")
         agent = _FakeAgent()
         cron = _FakeCronRecorder()
 
@@ -712,7 +712,7 @@ class TestWakelock:
         assert events[0][2] == CRON_WAKELOCK_TIMEOUT_S
 
     async def test_a_failing_job_still_leaves_the_block(self, monkeypatch) -> None:
-        events = self._spy(monkeypatch, "jenny.cron.bound_runner")
+        events = self._spy(monkeypatch, "arkhiva.cron.bound_runner")
         agent = _FakeAgent(error=RuntimeError("boom"))
         cron = _FakeCronRecorder()
 
@@ -724,7 +724,7 @@ class TestWakelock:
     async def test_a_silenced_monitor_still_leaves_the_block(self, monkeypatch) -> None:
         # ``CronJobSilencedError`` è un esito RIUSCITO che esce per eccezione:
         # il ramo più facile da dimenticare quando si sposta un `finally`.
-        events = self._spy(monkeypatch, "jenny.cron.bound_runner")
+        events = self._spy(monkeypatch, "arkhiva.cron.bound_runner")
         agent = _FakeAgent(response="", spoke=False)
         cron = _FakeCronRecorder()
 

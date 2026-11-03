@@ -28,12 +28,12 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from jenny.agent.tools.context import RequestContext
-from jenny.agent.tools.cron import CronTool
-from jenny.agent.tools.download import DownloadFileTool
-from jenny.apps.manifest import AppAction
-from jenny.apps.storage import StorageError, execute_storage_action
-from jenny.security.workspace_access import (
+from arkhiva.agent.tools.context import RequestContext
+from arkhiva.agent.tools.cron import CronTool
+from arkhiva.agent.tools.download import DownloadFileTool
+from arkhiva.apps.manifest import AppAction
+from arkhiva.apps.storage import StorageError, execute_storage_action
+from arkhiva.security.workspace_access import (
     READONLY_TOOL_REFUSAL,
     build_workspace_scope,
     enter_workspace_scope,
@@ -141,7 +141,7 @@ def _cron_tool(session_key: str) -> tuple[CronTool, _Cron]:
 async def test_cron_is_closed_in_the_personal_chat_too(readonly: Path, params: dict) -> None:
     """Il passo 3 chiudeva solo i progetti; la sola lettura vale anche qui.
 
-    Un job è fra le cose più durature che Jenny possa creare: sopravvive al
+    Un job è fra le cose più durature che ARKHIVA possa creare: sopravvive al
     turno, alla conversazione e al riavvio.
     """
     tool, service = _cron_tool("unified:default")

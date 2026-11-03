@@ -13,16 +13,16 @@ from pathlib import Path
 import httpx
 import pytest
 
-from jenny.snapshot.engine import SnapshotEngine
-from jenny_extensions.drive.cloud import CloudRepository, generate_master_key
-from jenny_extensions.drive.cloud_drive import DriveConsentError, DriveError, DriveSink
-from jenny_extensions.drive.cloud_sink import RemoteNotFoundError
+from arkhiva.snapshot.engine import SnapshotEngine
+from arkhiva_extensions.drive.cloud import CloudRepository, generate_master_key
+from arkhiva_extensions.drive.cloud_drive import DriveConsentError, DriveError, DriveSink
+from arkhiva_extensions.drive.cloud_sink import RemoteNotFoundError
 
 from .fake_drive import FOLDER_MIME, FakeDrive
 
 pytest.importorskip("cryptography")
 
-from jenny.snapshot.crypto_backends.dev import DevAesGcmBackend  # noqa: E402
+from arkhiva.snapshot.crypto_backends.dev import DevAesGcmBackend  # noqa: E402
 
 _CHUNK = 256 << 10
 
@@ -69,7 +69,7 @@ async def test_creates_the_folder_tree_on_first_write(tmp_path: Path) -> None:
     await sink.put_bytes("packs/a.jpk", b"uno")
     await sink.put_bytes("repo.json", b"{}")
 
-    (root,) = drive.find("Jenny")
+    (root,) = drive.find("ARKHIVA")
     assert root.parents == ["root"] and root.mime == FOLDER_MIME
     (packs,) = drive.find("packs")
     assert packs.parents == [root.id]
@@ -93,8 +93,8 @@ async def test_putting_an_existing_key_updates_it(tmp_path: Path) -> None:
 
 async def test_duplicate_folders_resolve_to_the_oldest() -> None:
     drive = FakeDrive()
-    old = drive.add("Jenny", ["root"], FOLDER_MIME)
-    drive.add("Jenny", ["root"], FOLDER_MIME)
+    old = drive.add("ARKHIVA", ["root"], FOLDER_MIME)
+    drive.add("ARKHIVA", ["root"], FOLDER_MIME)
     sink, _, _ = _sink(drive)
 
     await sink.put_bytes("repo.json", b"x")
@@ -209,11 +209,11 @@ async def test_missing_keys() -> None:
 
 async def test_names_with_quotes_are_escaped() -> None:
     drive = FakeDrive()
-    sink, _, _ = _sink(drive, root_name="Jenny's")
+    sink, _, _ = _sink(drive, root_name="ARKHIVA's")
 
     await sink.put_bytes("it's.txt", b"x")
 
-    fresh, _, _ = _sink(drive, root_name="Jenny's")
+    fresh, _, _ = _sink(drive, root_name="ARKHIVA's")
     assert await fresh.list("") == ["it's.txt"]
 
 
@@ -223,7 +223,7 @@ async def test_a_whole_repository_roundtrip_over_drive(tmp_path: Path) -> None:
     (ws / "MEMORY.md").write_text("ricordi", encoding="utf-8")
     for i in range(6):
         (ws / "memory" / f"f{i}.bin").write_bytes(os.urandom(200_000))
-    engine = SnapshotEngine(ws, ws / ".jenny" / "snapshots")
+    engine = SnapshotEngine(ws, ws / ".arkhiva" / "snapshots")
     manifest = engine.create_snapshot(trigger="cloud")
     drive = FakeDrive()
     key = generate_master_key()
@@ -240,7 +240,7 @@ async def test_a_whole_repository_roundtrip_over_drive(tmp_path: Path) -> None:
     fresh = await CloudRepository.open(other, key, tmp_path / "state2", backend=backend)
     await fresh.restore((await fresh.list_snapshots())[0], tmp_path / "back")
     for path in ws.rglob("*"):
-        if path.is_file() and ".jenny" not in path.parts:
+        if path.is_file() and ".arkhiva" not in path.parts:
             assert (tmp_path / "back" / path.relative_to(ws)).read_bytes() == path.read_bytes()
 
 
@@ -287,7 +287,7 @@ async def test_a_single_big_file_moves_the_bar_while_its_pack_goes_up(tmp_path: 
     ws = tmp_path / "ws"
     (ws / "uploads").mkdir(parents=True)
     (ws / "uploads" / "foto.jpg").write_bytes(os.urandom(4 * _CHUNK))
-    engine = SnapshotEngine(ws, ws / ".jenny" / "snapshots")
+    engine = SnapshotEngine(ws, ws / ".arkhiva" / "snapshots")
     manifest = engine.create_snapshot(trigger="cloud")
     drive = FakeDrive()
     sink, _, _ = _sink(drive)

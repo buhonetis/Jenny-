@@ -2,7 +2,7 @@
 
 Un'installazione che si aggiorna ha ancora quel file: la prima passata
 dell'orologio lo converte, così le attese aperte non smettono di suonare in
-silenzio (:mod:`jenny.board.legacy_reminders`).
+silenzio (:mod:`arkhiva.board.legacy_reminders`).
 """
 
 from __future__ import annotations
@@ -11,11 +11,11 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-from jenny.board import model
-from jenny.board.clock import CLOCK_EVERY_MS, run_reminders
-from jenny.board.legacy_reminders import migrate_legacy_reminders
-from jenny.board.store import mutate_board
-from jenny.cron.service import CronService
+from arkhiva.board import model
+from arkhiva.board.clock import CLOCK_EVERY_MS, run_reminders
+from arkhiva.board.legacy_reminders import migrate_legacy_reminders
+from arkhiva.board.store import mutate_board
+from arkhiva.cron.service import CronService
 
 
 def _notebook(tmp_path: Path) -> tuple[Path, Path]:
@@ -50,7 +50,7 @@ def test_open_reminders_become_notebook_jobs_and_the_file_is_set_aside(tmp_path)
          "when": {"kind": "date", "date": "2030-03-10", "precision": "day"},
          "why": "travaso-acero.md", "by": "user"},
         {"id": "r-concime", "card": "sparita", "text": "Concime", "state": "open",
-         "when": {"kind": "date", "date": "2030-04", "precision": "month"}, "by": "jenny"},
+         "when": {"kind": "date", "date": "2030-04", "precision": "month"}, "by": "arkhiva"},
         {"id": "r-secco", "card": "acero", "text": "Terreno secco", "state": "open",
          "when": {"kind": "condition", "app": "waterbot", "params": {"sensor": "acero"},
                   "field": "moisture", "op": "<", "value": 15}},
@@ -68,11 +68,11 @@ def test_open_reminders_become_notebook_jobs_and_the_file_is_set_aside(tmp_path)
     assert travaso.payload.board["card"] == "acero"
     assert travaso.payload.why == "travaso-acero.md"
     assert travaso.payload.origin_metadata == {"by": "user", "legacyId": "r-travaso"}
-    # La scheda che non c'è più: l'attesa passa a tutto il quaderno, e resta di Jenny.
+    # La scheda che non c'è più: l'attesa passa a tutto il quaderno, e resta di ARKHIVA.
     concime = jobs["Concime"]
     assert model.scope_state({"cards": []}, concime.payload.board["card"]) != model.SCOPE_CARD
     assert concime.schedule.precision == "month"
-    assert concime.payload.origin_metadata["by"] == "jenny"
+    assert concime.payload.origin_metadata["by"] == "arkhiva"
     # La condizione: un ricorrente al passo dell'orologio, col suo filtro.
     secco = jobs["Terreno secco"]
     assert secco.schedule.kind == "every" and secco.schedule.every_ms == CLOCK_EVERY_MS
