@@ -1,6 +1,6 @@
 # Changelog
 
-What changed in each release of Arkhiva, written for the person holding the phone. The
+What changed in each release of ARKHIVA, written for the person holding the phone. The
 version numbers follow [Semantic Versioning](https://semver.org/): from 1.0 on, a change that
 breaks something you rely on gets a new major number.
 
@@ -13,9 +13,9 @@ Releases before 1.0 are described only on their
 
 The fork becomes **ARKHIVA Mobile**. The application id is now
 `org.buhonet.agente.arkhiva` and the visible name is ARKHIVA Mobile; the Python package is
-`arkhiva/`. A version installed as Arkhiva does not see this one's data
-directory, so the first start creates `.arkhiva` beside the old `.arkhiva`: copy the notebooks
-across by hand if you want them back. The full record of what changed, and what is still
+`arkhiva/`. A version installed as Jenny does not see this one's data directory, so the
+first start creates `.arkhiva` beside the old `.jenny`: copy the notebooks across by hand if
+you want them back. The full record of what changed, and what is still
 being converted, is in [docs/REBRANDING.md](docs/REBRANDING.md).
 
 ### Added

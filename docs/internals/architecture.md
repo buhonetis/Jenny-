@@ -173,7 +173,7 @@ Defaults (all relative to the workspace root unless noted):
 | Memory | `<workspace>/memory/` (`MEMORY.md`, `history.jsonl`) |
 | Cron store | `<workspace>/cron/jobs.json`, with `jobs.json.bak` refreshed before every save. An unreadable store falls back to the backup, then to an empty list, recording which on `RuntimeContext` so Settings can say so; it only refuses to start when the broken file cannot be moved aside |
 | Uploads (chat attachments) | `<workspace>/uploads/` |
-| Runtime data (media, WebUI display threads) | `<workspace>/.arkhiva/` (`media/`, `webui/`) — migrated automatically from the legacy `.miniarkhiva/`/`.nanobot/` names if found. Runtime logs are **not** written here; they only live in the in-memory ring buffer the `get_recent_logs` tool reads (see Tools below) |
+| Runtime data (media, WebUI display threads) | `<workspace>/.arkhiva/` (`media/`, `webui/`) Runtime logs are **not** written here; they only live in the in-memory ring buffer the `get_recent_logs` tool reads (see Tools below) |
 | Snapshots (workspace version history) | Sibling of the workspace directory, so a restore's atomic swap doesn't take snapshot history with it |
 
 The schema accepts both camelCase and snake_case keys on read, but every write (`arkhiva/config/store.py::mutate()`, which serialises through `save_config()` in `loader.py`) puts `config.json` back out with camelCase aliases — the free-form `websocket` block is the one exception, kept as written.

@@ -12,15 +12,18 @@ conserva la licencia y la atribución; ver [LICENSE](../LICENSE) y
 
 | Antes | Ahora |
 |---|---|
-| Nombre de producto | Arkhiva | **ARKHIVA Ω** / **ARKHIVA Mobile** |
-| applicationId | `com.buhonet.arkhiva` | **`org.buhonet.agente.arkhiva`** |
-| Paquete Kotlin | `com.buhonet.arkhiva` | `org.buhonet.agente.arkhiva` |
-| Paquete Python | `arkhiva/` | `arkhiva/` |
-| Directorio de datos | `.arkhiva` | `.arkhiva` |
+| Nombre de producto | Jenny | **ARKHIVA Ω** / **ARKHIVA Mobile** |
+| applicationId | `com.flagdizero.jenny` | **`org.buhonet.agente.arkhiva`** |
+| Paquete Kotlin | `com.flagdizero.jenny` | `org.buhonet.agente.arkhiva` |
+| Paquete Python | `jenny/` | `arkhiva/` |
+| Directorio de datos | `.jenny` | `.arkhiva` |
 | versionName | (heredado) | **`1.0.0-SOBERANO`** |
 | versionCode | (heredado) | **100** |
-| Tema nativo | `Theme.Arkhiva*` | `Theme.Arkhiva*` |
+| Tema nativo | `Theme.Jenny*` | `Theme.Arkhiva*` |
 | Logo / símbolo | mascota | **Ω**, sin mascota |
+
+Estos nombres antiguos aparecen **solo** aquí, como registro del cambio: el código, la
+interfaz y la documentación de producto ya no los contienen.
 
 Arranque del gateway en Android: `arkhiva/android_entry.py`. No hay entrada `python -m`:
 la app embebe Chaquopy y arranca el gateway por servicio.
