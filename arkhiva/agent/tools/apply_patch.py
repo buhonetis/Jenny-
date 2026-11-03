@@ -245,7 +245,7 @@ class ApplyPatchTool(_FsTool):
                 # taglio fa passare una patch che lo toglie, e un dry-run che
                 # dice «succeeded» per una patch che la scrittura vera rifiutera'
                 # e' una verifica che mente. L'ha notato l'aiutante stesso, al
-                # collaudo su jenny_s22 (26/10).
+                # collaudo su arkhiva_s22 (26/10).
                 for target, pending_text in writes.items():
                     if (refusal := _wiki_id_guard(target, pending_text)) is not None:
                         return refusal

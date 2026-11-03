@@ -251,7 +251,7 @@ class SubagentRunPolicy:
 
 
 _CURRENT: ContextVar[SubagentRunPolicy | None] = ContextVar(
-    "jenny_subagent_policy", default=None
+    "arkhiva_subagent_policy", default=None
 )
 
 
@@ -636,7 +636,7 @@ class TurnTaint:
                     self.sources.append(source)
 
 
-_TURN: ContextVar[TurnTaint | None] = ContextVar("jenny_turn_taint", default=None)
+_TURN: ContextVar[TurnTaint | None] = ContextVar("arkhiva_turn_taint", default=None)
 
 
 def turn_taint_for(messages: object, metadata: object, *meta_keys: str) -> TurnTaint:

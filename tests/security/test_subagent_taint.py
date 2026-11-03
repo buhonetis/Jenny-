@@ -277,7 +277,7 @@ def test_a_late_announce_keeps_its_taint_in_the_history_row() -> None:
     assert SUBAGENT_TAINT_META not in session.messages[-1]
 
 
-async def test_http_get_from_jennys_own_python_exec_taints_her_turn(
+async def test_http_get_from_arkhivas_own_python_exec_taints_her_turn(
     ws: Path, page_server: int,
 ) -> None:
     """Fuori da un subagent la marcatura va al turno, e dal worker ci arriva."""

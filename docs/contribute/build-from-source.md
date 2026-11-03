@@ -1,8 +1,8 @@
 # Building from source
 
-How to get a working build of Jenny on a device from a clean clone, plus a desktop-only shortcut for iterating on the Python side without a phone.
+How to get a working build of Arkhiva on a device from a clean clone, plus a desktop-only shortcut for iterating on the Python side without a phone.
 
-Jenny ships as an Android APK with an embedded Python 3.11 runtime (via [Chaquopy](https://chaquo.com/chaquopy/)) — there is no separate desktop distribution. Most users install the signed APK from GitHub Releases instead of building; see [Install the APK](../start/install.md) for that path. Building from source and installing on a device or emulator is the contributor path — the one this page covers — and it's also the way to get Jenny running without trusting a prebuilt binary. This page adds what a contributor typically also needs: a faster inner loop, release signing, and a way to exercise the Python gateway without a device at all.
+Arkhiva ships as an Android APK with an embedded Python 3.11 runtime (via [Chaquopy](https://chaquo.com/chaquopy/)) — there is no separate desktop distribution. Most users install the signed APK from GitHub Releases instead of building; see [Install the APK](../start/install.md) for that path. Building from source and installing on a device or emulator is the contributor path — the one this page covers — and it's also the way to get Arkhiva running without trusting a prebuilt binary. This page adds what a contributor typically also needs: a faster inner loop, release signing, and a way to exercise the Python gateway without a device at all.
 
 ## Prerequisites
 
@@ -62,7 +62,7 @@ Changes under `arkhiva/templates/ui/` (the WebUI's HTML/CSS/JS) are bundled into
 
 `./gradlew app:assembleFossRelease` also works from a clean clone, but by default it produces an **unsigned APK that Android refuses to install**. There is no keystore in this repository — release signing is left to whoever is building, via one of two sources (checked in this order):
 
-- Environment variables: `JENNY_KEYSTORE_PATH`, `JENNY_KEYSTORE_PASSWORD`, `JENNY_KEY_ALIAS`, `JENNY_KEY_PASSWORD`
+- Environment variables: `ARKHIVA_KEYSTORE_PATH`, `ARKHIVA_KEYSTORE_PASSWORD`, `ARKHIVA_KEY_ALIAS`, `ARKHIVA_KEY_PASSWORD`
 - A gitignored `android/keystore.properties` file with `storeFile`, `storePassword`, `keyAlias`, `keyPassword`
 
 If neither source supplies a complete set of four values, `app/build.gradle.kts` deliberately leaves the release build **unsigned rather than failing** — so `assembleFossRelease` keeps working for anyone who just wants to reproduce and inspect the artifact, even without a signing key. Gradle prints an explicit warning at build time in that case. When signing does apply, it's schemes v2 and v3 (v1/JAR signing is intentionally disabled — the app's `minSdk` of 26 makes it dead weight).
@@ -85,7 +85,7 @@ pip install -e .
 python -c "from arkhiva.android_entry import run_gateway; run_gateway('/path/to/some/dir')"
 ```
 
-This is **not** a supported deployment target — Android is the only runtime target for Jenny (see `AGENTS.md`) — it's purely a way to exercise the gateway's Python side faster while you develop. `run_gateway()` starts the same async gateway the Android runtime calls from Kotlin via Chaquopy, listening on `127.0.0.1:18790` by default, with the WebSocket and HTTP (including the WebUI's static assets) served on that same port.
+This is **not** a supported deployment target — Android is the only runtime target for Arkhiva (see `AGENTS.md`) — it's purely a way to exercise the gateway's Python side faster while you develop. `run_gateway()` starts the same async gateway the Android runtime calls from Kotlin via Chaquopy, listening on `127.0.0.1:18790` by default, with the WebSocket and HTTP (including the WebUI's static assets) served on that same port.
 
 ### The trap: the argument is `data_dir`, not the workspace
 
@@ -93,11 +93,11 @@ This is **not** a supported deployment target — Android is the only runtime ta
 
 ```python
 # Wrong: you already have a workspace dir and pass it directly —
-# Jenny creates ANOTHER workspace/ inside it.
+# Arkhiva creates ANOTHER workspace/ inside it.
 run_gateway("/path/to/some/dir/workspace")   # → workspace lives at
                                               #   /path/to/some/dir/workspace/workspace
 
-# Right: pass the parent directory; Jenny creates workspace/ under it.
+# Right: pass the parent directory; Arkhiva creates workspace/ under it.
 run_gateway("/path/to/some/dir")             # → workspace lives at
                                               #   /path/to/some/dir/workspace
 ```

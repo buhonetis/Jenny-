@@ -49,7 +49,7 @@ export const SIZE_KEYS = {
  *  puo' stare anche sopra le altre app. «Nascosta» non c'e' piu' dal
  *  05/10/2026: in casa ARKHIVA e' la porta della chat, e c'e' sempre.
  */
-export function jennyValue({ size, floating }) {
+export function arkhivaValue({ size, floating }) {
   const parts = [];
   parts.push(i18n.t(SIZE_KEYS[size] || SIZE_KEYS.sm));
   if (floating) parts.push(i18n.t('home.arkhiva.floatingShort'));
@@ -206,7 +206,7 @@ export class HomeARKHIVA {
 
   /** Il valore da scrivere sulla riga di «Tu e ARKHIVA». */
   value() {
-    return jennyValue({
+    return arkhivaValue({
       size: mascotSize(),
       floating: !!this.floating?.enabled,
     });

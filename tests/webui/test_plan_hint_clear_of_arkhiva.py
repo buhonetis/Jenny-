@@ -23,7 +23,7 @@ def _rule(selector: str) -> str:
     return found.group(1)
 
 
-def test_the_hint_row_stops_before_jennys_whole_box() -> None:
+def test_the_hint_row_stops_before_arkhivas_whole_box() -> None:
     rule = _rule(".home-shell .home-plan-hint")
     assert "var(--arkhiva-size" in rule
     # Il riquadro intero che sporge nella pagina, non la figura dentro di lui.

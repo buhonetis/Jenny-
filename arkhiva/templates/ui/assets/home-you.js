@@ -58,8 +58,8 @@ export class HomeYou {
     this.themeDesc = document.getElementById('home-theme-desc');
     this.workshopName = document.getElementById('home-workshop-name');
     this.workshopHint = document.getElementById('home-workshop-hint');
-    this.jennyLabel = document.getElementById('home-arkhiva-label');
-    this.jennyValue = document.getElementById('home-arkhiva-value');
+    this.arkhivaLabel = document.getElementById('home-arkhiva-label');
+    this.arkhivaValue = document.getElementById('home-arkhiva-value');
     this.modelLabel = document.getElementById('home-model-label');
     this.modelValue = document.getElementById('home-model-value');
     this.updatesLabel = document.getElementById('home-updates-label');
@@ -108,7 +108,7 @@ export class HomeYou {
 
   /** Come sta lei, sulla riga che porta da lei: «piccola · flottante». */
   sayARKHIVA(value) {
-    if (this.jennyValue) this.jennyValue.textContent = value || '';
+    if (this.arkhivaValue) this.arkhivaValue.textContent = value || '';
   }
 
   /** Chi risponde, sulla riga che porta a sceglierlo: la marca. */
@@ -121,7 +121,7 @@ export class HomeYou {
     if (this.workshopName) this.workshopName.textContent = i18n.t('home.workshop');
     if (this.workshopHint) this.workshopHint.textContent = i18n.t('home.you.workshopHint');
     /* La riga della sua stanza porta il suo nome, non quello dell'app. */
-    if (this.jennyLabel) this.jennyLabel.textContent = i18n.t('home.arkhiva.title', { name: botName.get() });
+    if (this.arkhivaLabel) this.arkhivaLabel.textContent = i18n.t('home.arkhiva.title', { name: botName.get() });
     if (this.modelLabel) this.modelLabel.textContent = i18n.t('home.model.title');
     if (this.updatesLabel) this.updatesLabel.textContent = i18n.t('home.updates.title');
     if (this.backupLabel) this.backupLabel.textContent = i18n.t('home.backup.title');

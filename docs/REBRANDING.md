@@ -1,10 +1,10 @@
-# Rebranding: jenny-android-ai-agent → ARKHIVA Ω (ARKHIVA Mobile)
+# Rebranding: arkhiva-android-ai-agent → ARKHIVA Ω (ARKHIVA Mobile)
 
 Registro de cambios respecto al proyecto original. Protocolo aplicado:
-`Ω-REBRAND-JENNY-001`, sobre la doctrina `Ω-EXTRACT-BUHONET-001` (v4.1.0-MOONSHOT).
+`Ω-REBRAND-ARKHIVA-001`, sobre la doctrina `Ω-EXTRACT-BUHONET-001` (v4.1.0-MOONSHOT).
 
-Origen: **jenny-android-ai-agent**, de **flagdizero**
-(<https://github.com/flagdizero/jenny-android-ai-agent>), AGPL-3.0. Esta obra derivada
+Origen: **arkhiva-android-ai-agent**, de **buhonet**
+(<https://github.com/buhonetis/Arkhiva->), AGPL-3.0. Esta obra derivada
 conserva la licencia y la atribución; ver [LICENSE](../LICENSE) y
 [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md).
 
@@ -22,14 +22,17 @@ conserva la licencia y la atribución; ver [LICENSE](../LICENSE) y
 | Tema nativo | `Theme.Jenny*` | `Theme.Arkhiva*` |
 | Logo / símbolo | mascota | **Ω**, sin mascota |
 
+Estos nombres antiguos aparecen **solo** aquí, como registro del cambio: el código, la
+interfaz y la documentación de producto ya no los contienen.
+
 Arranque del gateway en Android: `arkhiva/android_entry.py`. No hay entrada `python -m`:
 la app embebe Chaquopy y arranca el gateway por servicio.
 
 ## Renombrado interno
 
 - Árbol Java/Kotlin movido a `android/app/src/{main,foss,play,test}/java/org/buhonet/agente/arkhiva/`.
-- Clases `Jenny*` → `Arkhiva*` (`JennyApplication.kt` → `ArkhivaApplication.kt`,
-  `JennyBrowserBridge.kt` → `ArkhivaBrowserBridge.kt`, …).
+- Clases `Arkhiva*` → `Arkhiva*` (`ArkhivaApplication.kt` → `ArkhivaApplication.kt`,
+  `ArkhivaBrowserBridge.kt` → `ArkhivaBrowserBridge.kt`, …).
 - `AndroidManifest`, layouts, temas, drawables y canales de notificación actualizados al
   nuevo paquete y a la nueva identidad visual (`ic_launcher_arkhiva_*`, `ic_stat_arkhiva`).
 

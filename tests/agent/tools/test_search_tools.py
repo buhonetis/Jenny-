@@ -428,7 +428,7 @@ def test_subagent_prompt_respects_disabled_skills(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
-async def test_jennys_own_state_is_not_browsed_but_stays_readable(tmp_path: Path) -> None:
+async def test_arkhivas_own_state_is_not_browsed_but_stays_readable(tmp_path: Path) -> None:
     """``.arkhiva/`` e' stato interno: l'11/10/2026 la passata della bacheca l'ha
     trovato con ``find_files`` e ha riletto cinque volte l'output salvato di un
     tool della chat. Ne' elencarlo ne' cercarci dentro; il percorso esatto che un

@@ -31,6 +31,7 @@ from __future__ import annotations
 import re
 from collections.abc import Mapping
 from dataclasses import dataclass
+from functools import lru_cache
 from typing import TYPE_CHECKING, Any
 
 from arkhiva.session.history_meta import is_synthetic_history_row
@@ -39,60 +40,67 @@ from arkhiva.utils.helpers import strip_think
 if TYPE_CHECKING:
     from arkhiva.session.manager import Session
 
-# Le etichette che il client conosce (``MOOD_FACES`` in shared/arkhiva-mascot.js);
-# un contratto le tiene allineate. ``neutral`` non produce frame.
+# Il vocabolario vive in un **dataset**, non nel codice: ``MOODS``, il neutro, la
+# tabella emoji→umore e le faccine di testo stanno in
+# ``arkhiva/templates/datasets/mascot_mood.json``. Aggiungere una faccia e'
+# aggiungere una riga li'; cambiare qui una tabella sarebbe la seconda copia che
+# diverge dalla prima.
 #
 # Sono le espressioni che **esistono disegnate**: l'arte comanda, non il
 # vocabolario. Fino all'08/09/2026 erano cinque e comprendevano ``worried`` e
 # ``surprised``, che non hanno una faccia; ``angry`` invece ce l'ha.
-MOODS: tuple[str, ...] = ("happy", "sad", "angry", "neutral")
-NEUTRAL_MOOD = "neutral"
-
-# Il dizionario. Il criterio e' la faccia che si disegna, non la sfumatura: con
-# tre espressioni «contenta», «sollevata», «complice» e «affettuosa» sono tutte
-# ``happy``. Scritti con il loro ``U+FE0F`` dove ce l'hanno, per leggibilita':
-# la normalizzazione lo toglie sia qui sia nel testo.
 #
-# Fuori di proposito: gli ambigui (😅 🙃 😬 🤔 😐 😑 😶 👀 🤷 😳 😱 🫠 🥱 🤫 🧐
-# 🤌) e tutto cio' che non e' un'emozione (☀️ 🌧️ 🍝 📅 🚗, bandiere, oggetti,
-# frecce). Due sono usciti il 28/09/2026, quando la sua tavolozza e' stata
-# riscritta sul carattere (SOUL.md): 🙄, che per lei e' la presa in giro e
-# non la rabbia — ogni volta che faceva la brat la faccia si arrabbiava — e
-# 😭, che a vent'anni e' «sto morendo dal ridere» quanto il pianto.
-MOOD_EMOJI: Mapping[str, tuple[str, ...]] = {
-    "happy": (
-        # sorrisi e risate
-        "😀", "😃", "😄", "😁", "😆", "😊", "🙂", "😉", "😌", "😏", "😎", "🤗",
-        "🥰", "😍", "😘", "🤩", "🥳", "😂", "🤣", "😋", "😜", "😝", "😛",
-        # la sua firma: il ghigno, la complice, la spocchia, la risatina; e il
-        # «sono morta» dal ridere, il finto-obbediente, l'affetto
-        "😈", "💅", "🤭", "💀", "🫡", "🫶", "🥹",
-        # cuori
-        "❤️", "🧡", "💛", "💚", "💙", "💜", "🤍", "🖤", "💕", "💖", "💗", "💓",
-        "💞", "😻",
-        # festa e approvazione
-        "🎉", "🎊", "✨", "🌟", "💪", "👍", "👏", "🙌", "🥂", "🔥",
-    ),
-    "sad": (
-        "😢", "😞", "😔", "😟", "😕", "🙁", "☹️", "😥", "😰", "😓", "😩",
-        "😫", "🥺", "🥲", "😿", "💔", "😪", "😮‍💨",
-    ),
-    "angry": (
-        "😠", "😡", "🤬", "😤", "👿", "💢", "😒", "😾",
-    ),
-}
+# Il criterio e' la faccia che si disegna, non la sfumatura: con tre espressioni
+# «contenta», «sollevata», «complice» e «affettuosa» sono tutte ``happy``.
+# Fuori dal dataset di proposito: gli ambigui (😅 🙃 😬 🤔 😐 😑 😶 👀 🤷 😳 😱
+# 🫠 🥱 🤫 🧐 🤌) e tutto cio' che non e' un'emozione (☀️ 🌧️ 🍝 📅 🚗, bandiere,
+# oggetti, frecce).
+DATASET_PATH = "templates/datasets/mascot_mood.json"
 
-# Le faccine di testo. Mai attaccate a una parola ne' a un URL (``http://``):
-# i bordi sono la parte difficile, non l'elenco. Raddoppiate valgono una
-# (``:))`` e' ``:)``, ``:((`` e' ``:(``).
-_EMOTICONS: tuple[tuple[str, str], ...] = (
-    (r">:-?\(", "angry"),
-    (r":'\(", "sad"),
-    (r":-?\(", "sad"),
-    (r":-?\)", "happy"),
-    (r":-?D", "happy"),
-    (r";-?\)", "happy"),
-)
+
+@dataclass(frozen=True)
+class _MoodDataset:
+    """Il vocabolario, nella forma in cui il codice lo usa."""
+
+    moods: tuple[str, ...]
+    neutral: str
+    emoji: Mapping[str, tuple[str, ...]]
+    emoticons: tuple[tuple[str, str], ...]
+
+
+@lru_cache(maxsize=1)
+def _dataset() -> _MoodDataset:
+    """Legge il dataset dal pacchetto. Assente o malformato e' un errore, non un vuoto.
+
+    Un vocabolario vuoto non farebbe fallire niente: le facce semplicemente non
+    comparirebbero piu', che e' esattamente il guasto silenzioso che questo
+    modulo esiste per evitare.
+    """
+    import json
+    import pkgutil
+
+    raw = pkgutil.get_data("arkhiva", DATASET_PATH)
+    if raw is None:
+        raise RuntimeError(f"mascot mood dataset not found: {DATASET_PATH}")
+    data = json.loads(raw.decode("utf-8"))
+    moods = tuple(data["moods"])
+    emoji = {mood: tuple(items) for mood, items in data["emoji"].items()}
+    unknown = set(emoji) - set(moods)
+    if unknown:
+        raise RuntimeError(f"mascot mood dataset: moods not declared: {sorted(unknown)}")
+    return _MoodDataset(
+        moods=moods,
+        neutral=str(data["neutral"]),
+        emoji=emoji,
+        emoticons=tuple((item["pattern"], item["mood"]) for item in data["emoticons"]),
+    )
+
+
+_DATASET = _dataset()
+MOODS: tuple[str, ...] = _DATASET.moods
+NEUTRAL_MOOD = _DATASET.neutral
+MOOD_EMOJI: Mapping[str, tuple[str, ...]] = _DATASET.emoji
+_EMOTICONS: tuple[tuple[str, str], ...] = _DATASET.emoticons
 _EMOTICON_RE = re.compile(
     r"(?<![\w:;/>'])(" + "|".join(p for p, _ in _EMOTICONS) + r")(?!\w)"
 )

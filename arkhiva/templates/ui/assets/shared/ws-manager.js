@@ -32,7 +32,7 @@ export function chatIdOf(key) {
  * tunnel torna il browser tiene un socket «OPEN» che il telefono non conosce
  * piu'. Il ping dei frame WebSocket lo manda solo il server, e JS non lo vede:
  * la pagina restava muta, convinta di essere collegata (visto il 14/10/2026 su
- * jenny_s22, Tailscale fermato e riaperto). Un `ping` applicativo basta: su un
+ * arkhiva_s22, Tailscale fermato e riaperto). Un `ping` applicativo basta: su un
  * socket orfano la risposta e' un RST e il browser chiude da se'; in un tunnel
  * ancora giu' non torna niente, e dopo `PONG_WAIT_MS` il socket si scarta. */
 const LIVENESS_EVERY_MS = 25000;

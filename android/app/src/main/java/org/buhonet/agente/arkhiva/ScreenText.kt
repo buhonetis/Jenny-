@@ -21,7 +21,7 @@ import android.view.accessibility.AccessibilityNodeInfo
  *   `" è l'operazione…"`) e va riattaccato, non messo in colonna.
  * * **App nativa** — niente ruoli: ogni nodo con del testo è una riga.
  *
- * Misurato su `jenny_s22` (Chrome 154, 13/10/2026): una voce Wikipedia di
+ * Misurato su `arkhiva_s22` (Chrome 154, 13/10/2026): una voce Wikipedia di
  * ~20.000 caratteri arriva **intera**, anche le parti fuori schermo, in
  * 1.300 nodi e ~0,3 s.
  *
@@ -36,7 +36,7 @@ import android.view.accessibility.AccessibilityNodeInfo
  * chat flottante si apre allo scadere del tempo concesso alla lettura, e da quel
  * momento l'app sotto sparisce dalle finestre accessibili (v.
  * `FloatingOverlayController.expand`). Una visita che la scavalca non finisce
- * male, finisce **a pezzi**: misurato su `jenny_s22` il 13/10/2026 sulla voce
+ * male, finisce **a pezzi**: misurato su `arkhiva_s22` il 13/10/2026 sulla voce
  * «Roma», ~800 ms di visita contro 700 di tetto davano 25k caratteri a un tocco
  * e 39k al successivo. Fermandosi prima si ha sempre l'inizio della pagina,
  * coerente, e per il resto ARKHIVA ha l'indirizzo.

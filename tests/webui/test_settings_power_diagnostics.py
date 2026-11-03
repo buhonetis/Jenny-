@@ -38,7 +38,7 @@ _SECRET = "s3cr3t-diagnostics"
 ROOT = Path(__file__).resolve().parents[2]
 _UI_ASSETS = ROOT / "arkhiva" / "templates" / "ui" / "assets"
 _MAIN_ACTIVITY = (
-    ROOT / "android" / "app" / "src" / "main" / "java" / "com" / "flagdizero" / "arkhiva"
+    ROOT / "android" / "app" / "src" / "main" / "java" / "com" / "buhonet" / "arkhiva"
     / "MainActivity.kt"
 )
 

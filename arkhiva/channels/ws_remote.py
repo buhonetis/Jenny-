@@ -92,7 +92,7 @@ _CLOSE_TIMEOUT_S = 5.0
 #
 # L'app si apre **una volta sola** per episodio. Se 30 secondi dopo Tailscale
 # non è tornato, non è un kill: vuole l'utente (accesso non fatto, VPN non
-# autorizzata). Visto su jenny_s22 il 25/10/2026 con Tailscale senza accesso:
+# autorizzata). Visto su arkhiva_s22 il 25/10/2026 con Tailscale senza accesso:
 # ogni apertura metteva la sua schermata di login sopra ARKHIVA, ogni 2-10 minuti
 # per sempre, e ogni messaggio gli faceva postare una notifica. Da lì ARKHIVA
 # smette del tutto e il pannello lo dice; riprova solo quando Tailscale torna
@@ -112,7 +112,7 @@ ReviveFn = Callable[..., Awaitable[Any]]
 # connessione non la vedono (``GatewayHTTPHandler``), e il task di una
 # connessione è uno solo dall'handshake alla chiusura: impostata nel suo
 # ``process_request``, vale per tutto quel che segue.
-_REMOTE_KEY: ContextVar[str | None] = ContextVar("jenny_remote_key", default=None)
+_REMOTE_KEY: ContextVar[str | None] = ContextVar("arkhiva_remote_key", default=None)
 
 
 def auth_secret(master: str) -> str:

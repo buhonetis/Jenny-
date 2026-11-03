@@ -20,7 +20,7 @@ ARKHIVA: Tailscale risponde con una sua notifica («isn't ready to start the
 VPN») e basta. A portare davanti la sua schermata di login è solo l'app aperta;
 per questo ``RemoteListener`` la apre una volta sola per episodio. E aperta,
 un Tailscale senza accesso apre a sua volta il login nel browser (una Custom Tab
-di Chrome su ``login.tailscale.com``, vista su jenny_s22 il 25/10/2026).
+di Chrome su ``login.tailscale.com``, vista su arkhiva_s22 il 25/10/2026).
 
 Chiamate dirette via Chaquopy (``jclass``), senza un bridge Kotlin: sono tre
 intent, niente stato da tenere. La visibilità del pacchetto la dà già la
@@ -66,7 +66,7 @@ def _can_come_back() -> bool:
     di ARKHIVA è la mascotte flottante, che compare appena lei va dietro — se è
     accesa e il permesso c'è (``FloatingOverlayController.isActive``). Senza,
     il ritorno è bloccato («Background activity launch blocked», con
-    ``callingUidHasNonAppVisibleWindow: false``: jenny_s22, 25/10/2026) e
+    ``callingUidHasNonAppVisibleWindow: false``: arkhiva_s22, 25/10/2026) e
     Tailscale, o il suo login, resta sopra ARKHIVA. Da dietro, poi, non si apre
     nemmeno Tailscale. Se non si sa, no: un'apertura in meno costa meno di una
     ARKHIVA sepolta.

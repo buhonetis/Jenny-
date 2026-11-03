@@ -173,7 +173,7 @@ assert.equal(text(card.querySelector('.home-work-note')),
 frame({ event: 'subagent_status', chat_id: 'project:orto', running: [], recent: [stopped({
   changes: 0, undo: { restored: 1, kept: [{ path: 'x/c.md', reason: 'missing' }],
                       kept_count: 1, by: 'arkhiva', at: 6 } })] });
-assert.ok(text(card).includes(W.undone.jennyOne), text(card));
+assert.ok(text(card).includes(W.undone.arkhivaOne), text(card));
 assert.equal(text(card.querySelector('.home-work-note')),
              W.undone.keptOtherOne.replace('{files}', 'c.md'));
 """)

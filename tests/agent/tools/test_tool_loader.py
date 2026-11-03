@@ -309,7 +309,7 @@ def _tool_named(class_name: str, tool_name: str, **attrs: Any) -> type[Tool]:
 
 def _fake_tool_package(monkeypatch: pytest.MonkeyPatch, **modules: ModuleType) -> ModuleType:
     """Register a synthetic tool package and point the loader's module list at it."""
-    pkg = ModuleType("jenny_test_toolpkg")
+    pkg = ModuleType("arkhiva_test_toolpkg")
     pkg.__path__ = []  # type: ignore[attr-defined]
     monkeypatch.setitem(sys.modules, pkg.__name__, pkg)
     for name, module in modules.items():
@@ -350,7 +350,7 @@ def test_collision_is_not_swallowed_by_the_tolerant_path():
 
 def test_discover_raises_when_module_declares_no_tools(monkeypatch):
     """A tool module without a TOOLS list is still a hard startup error."""
-    module = ModuleType("jenny_test_toolpkg.no_tools")  # no TOOLS attribute
+    module = ModuleType("arkhiva_test_toolpkg.no_tools")  # no TOOLS attribute
     pkg = _fake_tool_package(monkeypatch, no_tools=module)
 
     with pytest.raises(ToolLoadError) as excinfo:
@@ -361,7 +361,7 @@ def test_discover_raises_when_module_declares_no_tools(monkeypatch):
 
 def test_load_raises_when_module_declares_no_tools(monkeypatch):
     """The abort propagates through load(), not just discover()."""
-    module = ModuleType("jenny_test_toolpkg.no_tools")
+    module = ModuleType("arkhiva_test_toolpkg.no_tools")
     pkg = _fake_tool_package(monkeypatch, no_tools=module)
 
     with pytest.raises(ToolLoadError):
@@ -369,7 +369,7 @@ def test_load_raises_when_module_declares_no_tools(monkeypatch):
 
 
 def test_discover_raises_on_non_tool_entry(monkeypatch):
-    module = ModuleType("jenny_test_toolpkg.bad_entry")
+    module = ModuleType("arkhiva_test_toolpkg.bad_entry")
     module.TOOLS = ["not_a_class"]  # type: ignore[attr-defined]
     pkg = _fake_tool_package(monkeypatch, bad_entry=module)
 

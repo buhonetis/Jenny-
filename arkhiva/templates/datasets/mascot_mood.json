@@ -1,0 +1,124 @@
+{
+  "_comment": "Vocabulario de umores de ARKHIVA. Fuente única: la carga arkhiva/session/mascot_mood.py. Añadir un emoji aquí es añadir una faccia posible; el código no guarda ninguna tabla propia.",
+  "moods": [
+    "happy",
+    "sad",
+    "angry",
+    "neutral"
+  ],
+  "neutral": "neutral",
+  "emoji": {
+    "happy": [
+      "😀",
+      "😃",
+      "😄",
+      "😁",
+      "😆",
+      "😊",
+      "🙂",
+      "😉",
+      "😌",
+      "😏",
+      "😎",
+      "🤗",
+      "🥰",
+      "😍",
+      "😘",
+      "🤩",
+      "🥳",
+      "😂",
+      "🤣",
+      "😋",
+      "😜",
+      "😝",
+      "😛",
+      "😈",
+      "💅",
+      "🤭",
+      "💀",
+      "🫡",
+      "🫶",
+      "🥹",
+      "❤️",
+      "🧡",
+      "💛",
+      "💚",
+      "💙",
+      "💜",
+      "🤍",
+      "🖤",
+      "💕",
+      "💖",
+      "💗",
+      "💓",
+      "💞",
+      "😻",
+      "🎉",
+      "🎊",
+      "✨",
+      "🌟",
+      "💪",
+      "👍",
+      "👏",
+      "🙌",
+      "🥂",
+      "🔥"
+    ],
+    "sad": [
+      "😢",
+      "😞",
+      "😔",
+      "😟",
+      "😕",
+      "🙁",
+      "☹️",
+      "😥",
+      "😰",
+      "😓",
+      "😩",
+      "😫",
+      "🥺",
+      "🥲",
+      "😿",
+      "💔",
+      "😪",
+      "😮‍💨"
+    ],
+    "angry": [
+      "😠",
+      "😡",
+      "🤬",
+      "😤",
+      "👿",
+      "💢",
+      "😒",
+      "😾"
+    ]
+  },
+  "emoticons": [
+    {
+      "pattern": ">:-?\\(",
+      "mood": "angry"
+    },
+    {
+      "pattern": ":'\\(",
+      "mood": "sad"
+    },
+    {
+      "pattern": ":-?\\(",
+      "mood": "sad"
+    },
+    {
+      "pattern": ":-?\\)",
+      "mood": "happy"
+    },
+    {
+      "pattern": ":-?D",
+      "mood": "happy"
+    },
+    {
+      "pattern": ";-?\\)",
+      "mood": "happy"
+    }
+  ]
+}

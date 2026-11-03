@@ -152,7 +152,7 @@ export class HomeBand {
    *  e' una scatola larga 312 col suo `overflow: hidden`, che accanto ai float
    *  non ci sta e non ci puo' passare sotto. Finiva *sotto* la sagoma, il
    *  blocco si allungava, la sagoma scendeva con lui, e fra la scheda e l'ora
-   *  restava mezzo schermo vuoto (jenny_s22, 02/11/2026). Senza sagoma la
+   *  restava mezzo schermo vuoto (arkhiva_s22, 02/11/2026). Senza sagoma la
    *  scheda puo' toccarla: lei sta sopra a tutto, e va bene cosi'. */
   _lastBlock() {
     const prev = this._aboveBand();

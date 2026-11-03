@@ -221,7 +221,7 @@ export class WhoPanel {
    *
    *  `invalidate()` svuota la cache senza rileggere, e un ridisegno arriva
    *  anche senza `show()`: il cambio di conversazione, il ResizeObserver
-   *  quando la pagina torna visibile. Visto su jenny_square il 10/10/2026:
+   *  quando la pagina torna visibile. Visto su arkhiva_square il 10/10/2026:
    *  creato un quaderno e tornati ai Quaderni, la pagina restava su
    *  «Caricamento…» per sempre. Una lettura sola alla volta; a lettura finita
    *  si ridisegna, e non si ricomincia — la cache e' piena, o `loadFailed`. */

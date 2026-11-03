@@ -15,7 +15,7 @@ plugins {
 //   keyAlias=arkhiva
 //   keyPassword=...
 //
-// ARKHIVA lee primero las variables ARKHIVA_* y cae a las JENNY_* heredadas
+// ARKHIVA lee primero las variables ARKHIVA_* y cae a las ARKHIVA_* heredadas
 // para no romper un keystore/CI ya configurado durante la transición.
 //
 // If neither source provides a full set, the release build is left UNSIGNED
@@ -32,13 +32,13 @@ fun signingCredential(propName: String, vararg envNames: String): String? =
     (envNames.firstNotNullOfOrNull { System.getenv(it) }
         ?: keystoreProps.getProperty(propName))?.takeIf { it.isNotBlank() }
 
-val releaseStoreFile = signingCredential("storeFile", "ARKHIVA_KEYSTORE_PATH", "JENNY_KEYSTORE_PATH")
+val releaseStoreFile = signingCredential("storeFile", "ARKHIVA_KEYSTORE_PATH", "ARKHIVA_KEYSTORE_PATH")
 val releaseStorePassword = signingCredential(
-    "storePassword", "ARKHIVA_KEYSTORE_PASSWORD", "JENNY_KEYSTORE_PASSWORD"
+    "storePassword", "ARKHIVA_KEYSTORE_PASSWORD", "ARKHIVA_KEYSTORE_PASSWORD"
 )
-val releaseKeyAlias = signingCredential("keyAlias", "ARKHIVA_KEY_ALIAS", "JENNY_KEY_ALIAS")
+val releaseKeyAlias = signingCredential("keyAlias", "ARKHIVA_KEY_ALIAS", "ARKHIVA_KEY_ALIAS")
 val releaseKeyPassword = signingCredential(
-    "keyPassword", "ARKHIVA_KEY_PASSWORD", "JENNY_KEY_PASSWORD"
+    "keyPassword", "ARKHIVA_KEY_PASSWORD", "ARKHIVA_KEY_PASSWORD"
 )
 
 val hasReleaseSigning = releaseStoreFile != null &&

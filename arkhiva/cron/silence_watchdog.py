@@ -87,7 +87,7 @@ def silently_broken_checks(state: CronJobState, *, now_ms: int) -> list[tuple[st
         consecutive=state.consecutive_could_not_check,
         escalated=state.could_not_check_escalated,
         # Dal 01/11/2026 il monitor data il suo avviso, e la finestra di quiete
-        # vale anche qui. Prima era un booleano solo, e su jenny_s22 un monitor
+        # vale anche qui. Prima era un booleano solo, e su arkhiva_s22 un monitor
         # morto avvisava in chat al terzo giro e poi, dal sesto, con questa
         # notifica a ogni giro: «non te l'ha detto nessuno», detto a chi lo
         # sapeva da tre giri. Un avviso scritto prima di quel campo resta senza

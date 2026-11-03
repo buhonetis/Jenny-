@@ -147,7 +147,7 @@ def test_arkhiva_cannot_change_a_card_app(notebook) -> None:
         "id": "wb", "title": "WaterBot", "pos": {"x": 1, "y": 1},
         "app": {"slug": "waterbot", "params": {}}}))
     with pytest.raises(BoardOwnershipError):
-        mutate_board(notebook, lambda b: b["cards"][0].pop("app"), actor=model.JENNY)
+        mutate_board(notebook, lambda b: b["cards"][0].pop("app"), actor=model.ARKHIVA)
 
 
 async def test_arkhiva_proposes_an_app_card_and_yes_places_it(ctx, notebook, waterbot) -> None:

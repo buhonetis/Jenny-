@@ -1,6 +1,6 @@
-# Contributing to Jenny
+# Contributing to Arkhiva
 
-Thanks for your interest in contributing! Jenny is young and moving fast, so
+Thanks for your interest in contributing! Arkhiva is young and moving fast, so
 a few simple rules keep things sane for everyone.
 
 ## Before you start
@@ -73,7 +73,7 @@ project name and logo are covered by a separate
 - Test on a real device when possible, and say which one.
 - If you change a prompt under `arkhiva/templates/agent/`, a skill, or a tool
   description, run [`scripts/behaviour_check.py`](scripts/behaviour/README.md)
-  against an emulator and paste the rates that moved. Several of Jenny's
+  against an emulator and paste the rates that moved. Several of Arkhiva's
   guarantees are sentences the model honours, not code, and no test goes red
   when one stops holding.
 

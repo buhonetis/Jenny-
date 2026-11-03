@@ -85,7 +85,7 @@ def test_list_skills_filter_unavailable_excludes_unmet_bin_requirement(
     _write_skill(
         skills_root,
         "needs_bin",
-        metadata_json={"requires": {"bins": ["jenny_test_fake_binary"]}},
+        metadata_json={"requires": {"bins": ["arkhiva_test_fake_binary"]}},
     )
     loader = SkillsLoader(workspace)
     assert loader.list_skills(filter_unavailable=True) == []
@@ -147,7 +147,7 @@ def test_list_skills_filter_unavailable_false_keeps_unmet_requirements(
     skill_path = _write_skill(
         skills_root,
         "blocked",
-        metadata_json={"requires": {"bins": ["jenny_test_fake_binary"]}},
+        metadata_json={"requires": {"bins": ["arkhiva_test_fake_binary"]}},
     )
 
     loader = SkillsLoader(workspace)
@@ -183,7 +183,7 @@ def test_list_skills_openclaw_metadata_parsed_for_requirements(
     skill_dir = skills_root / "openclaw_skill"
     skill_dir.mkdir(parents=True)
     skill_path = skill_dir / "SKILL.md"
-    oc_payload = json.dumps({"arkhiva": {"requires": {"bins": ["jenny_oc_bin"]}}}, separators=(",", ":"))
+    oc_payload = json.dumps({"arkhiva": {"requires": {"bins": ["arkhiva_oc_bin"]}}}, separators=(",", ":"))
     skill_path.write_text(
         "\n".join(["---", f"metadata: {oc_payload}", "---", "", "# OC"]),
         encoding="utf-8",

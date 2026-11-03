@@ -103,4 +103,4 @@ def test_what_speaks_of_her_carries_her_name_too() -> None:
     assert "{ name: botName.get() }" in member(_read("home-arkhiva.js"), "_sayFloating")
     assert "i18n.t('settings.location.hint', { name: botName.get() })" in _read("mobile-settings.js")
     apply = member(_read("home-app.js"), "_applyBotName")
-    assert "this.you?.applyTranslations()" in apply and "this.jennyRoom?.applyTranslations()" in apply
+    assert "this.you?.applyTranslations()" in apply and "this.arkhivaRoom?.applyTranslations()" in apply

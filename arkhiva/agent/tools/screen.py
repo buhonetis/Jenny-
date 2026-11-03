@@ -139,7 +139,7 @@ class ScreenTool(Tool):
         images = _images(data)
         url = data.get("url")
         # Il consiglio sbagliato è quello che viene spontaneo: «scorri più giù».
-        # Su ``jenny_s22`` (13/10/2026) ARKHIVA l'ha dato davvero, a una nota che
+        # Su ``arkhiva_s22`` (13/10/2026) ARKHIVA l'ha dato davvero, a una nota che
         # diceva solo «l'indirizzo dà la pagina intera». La lettura parte sempre
         # dall'inizio e si ferma a tempo (``ScreenText.render``): scorrere non
         # cambia niente, e va detto.

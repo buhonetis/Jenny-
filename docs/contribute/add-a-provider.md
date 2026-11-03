@@ -4,7 +4,7 @@ Most new providers need zero code — this page covers when you actually need to
 
 ## The two existing wire formats
 
-Jenny has no built-in provider catalog. A provider is a user-defined entry under `providers.providers` in `config.json` (`ProviderConfig` in `arkhiva/config/schema.py`):
+Arkhiva has no built-in provider catalog. A provider is a user-defined entry under `providers.providers` in `config.json` (`ProviderConfig` in `arkhiva/config/schema.py`):
 
 ```json
 {
@@ -76,7 +76,7 @@ def get_default_model(self) -> str:
 - **`get_default_model()`** returns the model identifier to use when none is set explicitly.
 - **`chat_stream()`** is *not* abstract — the base class provides a default that just calls `chat()` once and delivers the whole response through `on_content_delta` as a single chunk. Override it only if your endpoint has real token-by-token streaming and you want the UI to show it incrementally; otherwise the fallback is a correct (if non-streaming-looking) implementation for free.
 
-`LLMProvider` also gives you, for free, without touching them: retry with backoff (`chat_with_retry`/`chat_stream_with_retry`), a streaming idle timeout (`JENNY_STREAM_IDLE_TIMEOUT_S`, default 90 s, capped at 3600 s) and a separate, longer budget for the wait before the model's first output (`resolve_first_output_timeout_s`, 300 s, or 600 s on a loopback endpoint) — a new provider that streams should apply the second one until it sees its first delta and the first one after that, message-list repair helpers (role alternation, empty-content sanitization, image stripping) in `arkhiva/providers/message_repair.py`, and transient/persistent error classification in `arkhiva/providers/retry_policy.py`. Look at `AnthropicProvider` (`arkhiva/providers/anthropic_provider.py`) for a from-scratch implementation, or `OpenAICompatProvider` (`arkhiva/providers/openai_compat_provider.py`) for one that also handles the OpenAI Responses API variant (`arkhiva/providers/openai_responses/`) behind the same class via `api_type`.
+`LLMProvider` also gives you, for free, without touching them: retry with backoff (`chat_with_retry`/`chat_stream_with_retry`), a streaming idle timeout (`ARKHIVA_STREAM_IDLE_TIMEOUT_S`, default 90 s, capped at 3600 s) and a separate, longer budget for the wait before the model's first output (`resolve_first_output_timeout_s`, 300 s, or 600 s on a loopback endpoint) — a new provider that streams should apply the second one until it sees its first delta and the first one after that, message-list repair helpers (role alternation, empty-content sanitization, image stripping) in `arkhiva/providers/message_repair.py`, and transient/persistent error classification in `arkhiva/providers/retry_policy.py`. Look at `AnthropicProvider` (`arkhiva/providers/anthropic_provider.py`) for a from-scratch implementation, or `OpenAICompatProvider` (`arkhiva/providers/openai_compat_provider.py`) for one that also handles the OpenAI Responses API variant (`arkhiva/providers/openai_responses/`) behind the same class via `api_type`.
 
 ## Wiring it into the factory
 

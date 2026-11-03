@@ -283,7 +283,7 @@ def test_http_says_who_it_is_and_why_it_was_refused(monkeypatch) -> None:
     assert sent["ua"].startswith("ARKHIVA/")
 
 
-def test_a_user_agent_from_the_reader_replaces_jennys(monkeypatch) -> None:
+def test_a_user_agent_from_the_reader_replaces_arkhivas(monkeypatch) -> None:
     """Le maiuscole non contano: ``user-agent`` del lettore sostituisce, non affianca."""
     import httpx
 

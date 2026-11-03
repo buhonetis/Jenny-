@@ -49,15 +49,6 @@ def get_data_dir() -> Path:
     """Return the instance-level runtime data directory (inside workspace)."""
     workspace = get_workspace_path()
     data_dir = workspace / ".arkhiva"
-    # Migrate from earlier data-dir names in order. ``.jenny`` es el nombre que
-    # usaba el linaje upstream (flagdizero/jenny-android-ai-agent): se migra una
-    # sola vez para que una instalación existente conserve sesiones, registro y
-    # configuración al pasar a ARKHIVA.
-    for legacy_name in (".jenny", ".minijenny", ".nanobot"):
-        legacy_dir = workspace / legacy_name
-        if not data_dir.exists() and legacy_dir.exists():
-            legacy_dir.rename(data_dir)
-            logger.info("Migrated runtime data directory %s -> .arkhiva", legacy_name)
     return ensure_dir(data_dir)
 
 

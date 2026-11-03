@@ -62,7 +62,7 @@ def test_the_work_bubble_reads_on_its_glass() -> None:
     assert not page, f"la bolla del lavoro sulla pagina chat non si legge: {page}"
 
 
-def test_jennys_replies_have_no_card() -> None:
+def test_arkhivas_replies_have_no_card() -> None:
     """Le bolle le hai solo tu: lei scrive sul fondo, perche' le sue risposte
     sono lunghe e lo schermo e' quadrato (06/10/2026)."""
     css = re.sub(r"/\*.*?\*/", "", HOME_CSS.read_text(encoding="utf-8")

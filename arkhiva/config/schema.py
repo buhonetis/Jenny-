@@ -1003,7 +1003,7 @@ class SnapshotConfig(Base):
     # Quando un backup cifrato è stato **salvato davvero**, in secondi epoch;
     # 0 = mai. Non lo sa il gateway: lui prepara il file cifrato in staging, e
     # se quel file finisca su disco lo decide il picker SAF, che risponde solo
-    # al client (``window.jennyBackup.onExportDone``). Per questo lo scrive una
+    # al client (``window.arkhivaBackup.onExportDone``). Per questo lo scrive una
     # rotta che il client chiama a cose fatte, e per questo il campo si chiama
     # «esportato» e non «preparato»: sono due momenti diversi, e quello che
     # conta per chi legge «ultimo backup» è il secondo.

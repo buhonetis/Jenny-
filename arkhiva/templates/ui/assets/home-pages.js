@@ -616,7 +616,7 @@ export class HomePages {
     } catch {
       return;
     }
-    if (source.jennyListFailed?.()) return;
+    if (source.arkhivaListFailed?.()) return;
     if (panel.dataset.full !== mine) return;       // nel frattempo sei uscito
     if (list.some((a) => a.slug === page.ref)) return;
     panel.textContent = '';                        // via la cornice verso il nulla

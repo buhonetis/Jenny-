@@ -252,14 +252,14 @@ def _script(body: str, pages: list[dict], view: str = "chat") -> str:
               /* La modalita' ordina: finche' e' aperta il dito e' suo. */
               strip: { sorting: false },
               /* La fonte risponde **dopo un giro**, come la rete vera: al
-                 momento della domanda `jennyApps` e' ancora vuota. Un finto
+                 momento della domanda `arkhivaApps` e' ancora vuota. Un finto
                  che risponde subito avrebbe lasciato passare il difetto visto
                  sul telefono il 22 settembre 2026 — «non hai ARKHIVA App» a chi
                  ne aveva quattro. */
               appsSource: () => ({
                 ensureLoaded() {},
-                jennyApps: [],
-                jennyListFailed() { return globalThis.BROKEN_LIST === true; },
+                arkhivaApps: [],
+                arkhivaListFailed() { return globalThis.BROKEN_LIST === true; },
                 /* Chi si iscrive ai cambi dei dati delle app: il banco li
                    chiama a mano, come farebbe un frame del gateway. */
                 onAppDataChanged(fn) {
@@ -268,13 +268,13 @@ def _script(body: str, pages: list[dict], view: str = "chat") -> str:
                 },
                 awaitARKHIVAApps() {
                   return new Promise((r) => setTimeout(() => {
-                    this.jennyApps = [
+                    this.arkhivaApps = [
                       { slug: 'orto', name: 'Orto' },
                       { slug: 'lampo', name: 'Lampo' },
                       { slug: 'rotta', name: 'Rotta', broken: true },
                       { slug: 'fuori', name: 'Fuori', view_kind: 'external' },
                     ];
-                    r(this.jennyApps);
+                    r(this.arkhivaApps);
                   }, 30));
                 },
               }),
@@ -443,7 +443,7 @@ DUE_APP = ONE + [{"id": "p2", "kind": "app", "ref": "lampo"}]
 # ── Le quattro fisse, e la chat fra loro ────────────────────────────────────
 
 
-def test_a_fresh_home_is_the_four_fixed_pages_opened_on_jenny() -> None:
+def test_a_fresh_home_is_the_four_fixed_pages_opened_on_arkhiva() -> None:
     """App · ARKHIVA · Quaderni · Impostazioni, e si parte da ARKHIVA."""
     _run(
         "assert.equal(homePages.howMany, 4);\n"

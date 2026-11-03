@@ -29,9 +29,9 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-JENNY = ROOT / "arkhiva"
-APP_CREATOR = JENNY / "skills" / "app-creator"
-I18N = JENNY / "templates" / "ui" / "assets" / "i18n"
+ARKHIVA = ROOT / "arkhiva"
+APP_CREATOR = ARKHIVA / "skills" / "app-creator"
+I18N = ARKHIVA / "templates" / "ui" / "assets" / "i18n"
 
 # Due liste. Le parole «forti» non hanno omografi inglesi e ne basta una; le
 # «deboli» esistono anche in inglese o in un identificatore («con», «nota»,
@@ -72,7 +72,7 @@ def _prompt_markdown() -> list[Path]:
     i cui esempi il modello imita.
     """
     return sorted(
-        p for p in (JENNY / "skills").rglob("*.md") if "node_modules" not in p.parts
+        p for p in (ARKHIVA / "skills").rglob("*.md") if "node_modules" not in p.parts
     )
 
 
@@ -130,12 +130,12 @@ def test_bundled_skill_summaries_live_in_i18n_in_both_languages() -> None:
     — un rename lascerebbe il riassunto orfano e la riga vuota in Mani — e
     nessun ``SKILL.md`` integrato deve riportare ``user_summary``.
     """
-    names = {p.parent.name for p in (JENNY / "skills").glob("*/SKILL.md")}
+    names = {p.parent.name for p in (ARKHIVA / "skills").glob("*/SKILL.md")}
     for locale in ("it", "en"):
         summaries = json.loads((I18N / f"{locale}.json").read_text(encoding="utf-8"))[
             "skills"
         ]["userSummary"]
         assert set(summaries) <= names, (locale, set(summaries) - names)
         assert all(isinstance(v, str) and v.strip() for v in summaries.values()), locale
-    for path in (JENNY / "skills").glob("*/SKILL.md"):
+    for path in (ARKHIVA / "skills").glob("*/SKILL.md"):
         assert "user_summary:" not in path.read_text(encoding="utf-8"), path

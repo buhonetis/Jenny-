@@ -76,10 +76,10 @@ export class OnboardingController {
     // scriverebbe nel form nuovo (o riaprirebbe il campo custom su uno step che
     // non ce l'ha). Monotono, si invalida uscendo dallo step 2.
     this._modelsToken = 0;
-    this.jennyEl = null;
-    this.jennyImg = null;
-    this._jennyMotions = null;
-    this._jennyTimers = [];
+    this.arkhivaEl = null;
+    this.arkhivaImg = null;
+    this._arkhivaMotions = null;
+    this._arkhivaTimers = [];
   }
 
   activate() {
@@ -622,10 +622,10 @@ export class OnboardingController {
     if (!view) return;
     this._stopARKHIVA();
 
-    if (!this.jennyEl) this._buildARKHIVA(view);
+    if (!this.arkhivaEl) this._buildARKHIVA(view);
 
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      this.jennyImg.src = ARKHIVA_POSES.idle;
+      this.arkhivaImg.src = ARKHIVA_POSES.idle;
       return;
     }
 
@@ -633,14 +633,14 @@ export class OnboardingController {
     Object.values(ARKHIVA_POSES).forEach((src) => { new Image().src = src; });
 
     // Cade -> tonfo -> stordita -> si rialza -> saluta, e ogni tanto risaluta.
-    const m = this._jennyMotions;
-    this.jennyImg.src = ARKHIVA_POSES.fall;
+    const m = this._arkhivaMotions;
+    this.arkhivaImg.src = ARKHIVA_POSES.fall;
     m.play('squash', 'fall', () => {
-      this.jennyImg.src = ARKHIVA_POSES.ground;
+      this.arkhivaImg.src = ARKHIVA_POSES.ground;
       m.play('squash', 'impact');
-      this._jennyAfter(GROUND_HOLD_MS, () => {
-        m.play('squash', 'getup', () => this._jennyGreet());
-        this._jennyAfter(GETUP_SWAP_MS, () => { this.jennyImg.src = ARKHIVA_POSES.idle; });
+      this._arkhivaAfter(GROUND_HOLD_MS, () => {
+        m.play('squash', 'getup', () => this._arkhivaGreet());
+        this._arkhivaAfter(GETUP_SWAP_MS, () => { this.arkhivaImg.src = ARKHIVA_POSES.idle; });
       });
     });
   }
@@ -678,24 +678,24 @@ export class OnboardingController {
     squash.appendChild(stack);
     el.appendChild(squash);
     view.appendChild(el);
-    this.jennyEl = el;
-    this.jennyImg = img;
-    this._jennyMotions = new MotionChannels(el);
+    this.arkhivaEl = el;
+    this.arkhivaImg = img;
+    this._arkhivaMotions = new MotionChannels(el);
   }
 
-  _jennyGreet() {
-    this._jennyMotions.play('squash', 'greet', () => {
-      this._jennyAfter(REWAVE_EVERY_MS, () => this._jennyGreet());
+  _arkhivaGreet() {
+    this._arkhivaMotions.play('squash', 'greet', () => {
+      this._arkhivaAfter(REWAVE_EVERY_MS, () => this._arkhivaGreet());
     });
   }
 
   _stopARKHIVA() {
-    this._jennyTimers.forEach(clearTimeout);
-    this._jennyTimers = [];
-    this._jennyMotions?.stopAll();
+    this._arkhivaTimers.forEach(clearTimeout);
+    this._arkhivaTimers = [];
+    this._arkhivaMotions?.stopAll();
   }
 
-  _jennyAfter(ms, fn) {
-    this._jennyTimers.push(setTimeout(fn, ms));
+  _arkhivaAfter(ms, fn) {
+    this._arkhivaTimers.push(setTimeout(fn, ms));
   }
 }

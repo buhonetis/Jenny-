@@ -46,7 +46,7 @@ from arkhiva.agent.tools.registry import ToolRegistry
 from arkhiva.utils.android_assets import _SKILLS_MANIFEST, _SYSTEM_PROMPT_TEMPLATES
 from arkhiva.utils.helpers import load_bundled_template
 
-_JENNY = Path(__file__).resolve().parents[2] / "arkhiva"
+_ARKHIVA = Path(__file__).resolve().parents[2] / "arkhiva"
 
 # Le due case della regola. Non stanno in ``_ALLOWED`` perché non sono
 # eccezioni: sono il posto dove la regola deve stare, e un test che non le
@@ -143,7 +143,7 @@ def _model_facing_corpus() -> Iterator[tuple[str, str]]:
     for rel in _SKILLS_MANIFEST:
         if not rel.endswith(".md"):
             continue
-        path = _JENNY / "skills" / rel
+        path = _ARKHIVA / "skills" / rel
         if path.is_file():
             yield f"skill {rel}", path.read_text(encoding="utf-8")
 
@@ -158,11 +158,11 @@ def _model_facing_corpus() -> Iterator[tuple[str, str]]:
             yield f"tool {tool_name}.parameters{path_}", description
 
     for package in _PROMPT_PACKAGES:
-        for source in sorted((_JENNY / package).rglob("*.py")):
+        for source in sorted((_ARKHIVA / package).rglob("*.py")):
             tree = ast.parse(source.read_text(encoding="utf-8"))
             for lineno, text in _string_literals(tree):
                 if len(text) >= _PROMPT_SHAPED_MIN_LEN and text.strip().count(" ") >= 1:
-                    yield f"py {source.relative_to(_JENNY.parent)}:{lineno}", text
+                    yield f"py {source.relative_to(_ARKHIVA.parent)}:{lineno}", text
 
 
 # ---------------------------------------------------------------------------

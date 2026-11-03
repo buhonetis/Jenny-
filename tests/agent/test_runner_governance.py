@@ -565,7 +565,7 @@ def test_snip_history_preserves_user_message_after_truncation(monkeypatch):
     messages = [
         {"role": "system", "content": "system"},
         {"role": "assistant", "content": "previous reply"},
-        {"role": "user", "content": ".jenny的同目录"},
+        {"role": "user", "content": ".arkhiva的同目录"},
         {
             "role": "assistant",
             "content": None,
@@ -594,7 +594,7 @@ def test_snip_history_preserves_user_message_after_truncation(monkeypatch):
     token_sizes = {
         "system": 0,
         "previous reply": 200,
-        ".jenny的同目录": 80,
+        ".arkhiva的同目录": 80,
         "tool output 1": 80,
         "tool output 2": 80,
     }

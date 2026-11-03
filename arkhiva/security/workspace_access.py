@@ -47,7 +47,7 @@ _PROVIDER_LABELS = {
 }
 
 _CURRENT_WORKSPACE_SCOPE: ContextVar["WorkspaceScope | None"] = ContextVar(
-    "jenny_workspace_scope",
+    "arkhiva_workspace_scope",
     default=None,
 )
 

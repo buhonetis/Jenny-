@@ -195,7 +195,7 @@ def record_result(
                                 title=card["title"] if card else "", app=job_name)
 
     try:
-        mutate_board(root, apply, actor=model.JENNY)
+        mutate_board(root, apply, actor=model.ARKHIVA)
     except Exception as exc:  # noqa: BLE001 — l'esito sulla bacheca e' una cortesia
         logger.warning("cron: result of {} not recorded in {}: {}", job_name, root.name, exc)
 

@@ -47,7 +47,7 @@ from arkhiva.board.model import (
     BOARD_DIR,
     BOARD_FILE,
     CARDS_DIR,
-    JENNY,
+    ARKHIVA,
     USER,
     is_valid_id,
     normalize_board,
@@ -170,7 +170,7 @@ def _mutate(
     apply: Callable[[dict[str, Any]], bool | None],
     actor: str,
 ) -> dict[str, Any]:
-    if actor not in (USER, JENNY):
+    if actor not in (USER, ARKHIVA):
         raise ValueError(f"unknown actor {actor!r}")
     with _lock_for(path):
         current = normalize(_read_with_recovery(path))
@@ -178,7 +178,7 @@ def _mutate(
         if apply(current) is False:
             return before
         after = normalize(current)
-        if actor == JENNY:
+        if actor == ARKHIVA:
             problems = violations(before, after)
             if problems:
                 raise BoardOwnershipError(problems)

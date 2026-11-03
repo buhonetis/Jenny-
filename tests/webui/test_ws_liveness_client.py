@@ -1,6 +1,6 @@
 """Il battito del WebSocket della WebUI aperta da un altro dispositivo.
 
-Il 14/10/2026, su jenny_s22 con Tailscale fermato e riaperto, la pagina sul Mac
+Il 14/10/2026, su arkhiva_s22 con Tailscale fermato e riaperto, la pagina sul Mac
 teneva un socket «OPEN» che il telefono non conosceva piu': la chiusura del
 server non era mai arrivata, e il browser se ne accorge solo scrivendoci.
 ``shared/ws-manager.js`` manda quindi un ``ping`` applicativo — ogni 25 s e al

@@ -6,7 +6,7 @@ The board replaced the notebook's page list and its graph map. Both are gone fro
 
 ## Getting there
 
-Tap a notebook on the **Notebooks** page and it opens on its board, under the header row **← Notebooks › name**. A notebook you pinned as a page of its own opens its board as soon as you land on that page. The notebook's chat is behind Jenny: tap her and its conversation comes up full screen over the board, which stays visible beneath; tap her again, or press Back, to return to the board.
+Tap a notebook on the **Notebooks** page and it opens on its board, under the header row **← Notebooks › name**. A notebook you pinned as a page of its own opens its board as soon as you land on that page. The notebook's chat is behind Arkhiva: tap her and its conversation comes up full screen over the board, which stays visible beneath; tap her again, or press Back, to return to the board.
 
 <p align="center"><img src="../img/chat-over-board.png" alt="A notebook's chat open over its board, which stays visible beneath, blurred" width="300"></p>
 
@@ -24,12 +24,12 @@ Back from the board returns to the notebook's chat. Back from a drawer returns t
 | **Lilac notes** | One lilac note per card that has [your notes](#note), gathered: the two newest, each with its date, and *+N notes* for the rest; with more than one, the edge of a second sheet shows under it. Tied to its card by a thread, like the yellow one. Tapping it opens all the card's notes in a sheet, right there on the board. |
 | **Galleries** | A card's [photos](#photo): the three newest fanned out as small polaroids, the front one with its note, and how many there are. Tied to its card by a thread. Tapping it opens the card's gallery in a sheet, right there on the board. |
 | **Threads** | Thin red lines between two cards that a page ties together. See [Threads](#threads). |
-| **The envelope** | Bottom left: Jenny's proposals for changing the board's shape, with a count. See [The envelope](#the-envelope-jennys-proposals). |
+| **The envelope** | Bottom left: Arkhiva's proposals for changing the board's shape, with a count. See [The envelope](#the-envelope-arkhivas-proposals). |
 | **Since you last looked · N new** | A row at the top, shown only when something changed since you last opened the board, or proposals are waiting. See [Since you last looked](#since-you-last-looked). |
 
-The board is a **wall** you move around in every direction, with its origin in the middle: the screen you see when you open it is the origin, and there is room to the left, right, above and below. One finger on the background moves the wall, two fingers zoom and move it like a map — a pinch can start with a finger on a card, which then stays where it was — a double tap on the background goes back to the origin at normal size; on a computer the wheel moves it and Ctrl + wheel zooms. Drag a card near the edge of the screen and the wall moves with it. A card you accept from the envelope is placed in the free spot nearest to the middle of what you are looking at, and a card's sticky note next to it, wherever that card is. It holds at most **40 items**, cards and yellow sticky notes together — one note per card, however many reminders it holds, plus the free note of the whole notebook — and up to 16 threads. Lilac notes, galleries and labels do not count: they come from a card's drawer or from something you asked Jenny, and a photo or a cron should never be what fills the board. Positions are stored as percentages of the screen, from −1,000 to 1,000 (the screen to the right starts at 100, the one to the left at −100), so the same board fits a square screen and a tall one.
+The board is a **wall** you move around in every direction, with its origin in the middle: the screen you see when you open it is the origin, and there is room to the left, right, above and below. One finger on the background moves the wall, two fingers zoom and move it like a map — a pinch can start with a finger on a card, which then stays where it was — a double tap on the background goes back to the origin at normal size; on a computer the wheel moves it and Ctrl + wheel zooms. Drag a card near the edge of the screen and the wall moves with it. A card you accept from the envelope is placed in the free spot nearest to the middle of what you are looking at, and a card's sticky note next to it, wherever that card is. It holds at most **40 items**, cards and yellow sticky notes together — one note per card, however many reminders it holds, plus the free note of the whole notebook — and up to 16 threads. Lilac notes, galleries and labels do not count: they come from a card's drawer or from something you asked Arkhiva, and a photo or a cron should never be what fills the board. Positions are stored as percentages of the screen, from −1,000 to 1,000 (the screen to the right starts at 100, the one to the left at −100), so the same board fits a square screen and a tall one.
 
-Three buttons in the header work on the board: **+** asks what to add — a new card (see [Your cards](#your-cards)), a reminder for the whole notebook, or an automation, which opens the notebook's chat with the request started for Jenny — the **lens** opens [search](#search), and the **list** icon swaps the board for a plain list of the same cards — name, next reminder, how many notes and photos, signal, and the envelope as its last row — for anyone who prefers a list, and for screen readers.
+Three buttons in the header work on the board: **+** asks what to add — a new card (see [Your cards](#your-cards)), a reminder for the whole notebook, or an automation, which opens the notebook's chat with the request started for Arkhiva — the **lens** opens [search](#search), and the **list** icon swaps the board for a plain list of the same cards — name, next reminder, how many notes and photos, signal, and the envelope as its last row — for anyone who prefers a list, and for screen readers.
 
 ### One signal per card
 
@@ -46,27 +46,27 @@ No signal means nothing needs you.
 ### Gestures
 
 - **Tap** a card, its yellow sticky note or its label to open the drawer; a lilac note, a gallery, or the free note and label of the whole notebook open their sheet on the board.
-- **Drag** a card, a sticky note, a label or a gallery to move it. Its pin turns red: a red pin marks something you placed, a grey one something placed by the code when it was created. Jenny never moves a card or a note on her own — not the ones you placed, not the ones she placed; she does it when you ask her to (see [Asking Jenny](#asking-jenny)). A card's position is chosen once, when it is created: in the free spot nearest to where it was asked for — the middle of what you are looking at, or the point you held.
+- **Drag** a card, a sticky note, a label or a gallery to move it. Its pin turns red: a red pin marks something you placed, a grey one something placed by the code when it was created. Arkhiva never moves a card or a note on her own — not the ones you placed, not the ones she placed; she does it when you ask her to (see [Asking Arkhiva](#asking-arkhiva)). A card's position is chosen once, when it is created: in the free spot nearest to where it was asked for — the middle of what you are looking at, or the point you held.
 - **Press and hold** a card (about half a second) to lift it: its threads turn bold and show their labels, the cards at the other end lift, the rest of the board dims, and a bar rises at the bottom with **Rename** and **Remove from the board**. Tap the background, the **×** on the bar or Back to put everything back.
 - **Press and hold** the empty wall to make a new card right there, under your finger.
 
 ### Your cards
 
-The board's shape is yours, and you can change it directly — or [ask Jenny](#asking-jenny) — not only by answering the envelope:
+The board's shape is yours, and you can change it directly — or [ask Arkhiva](#asking-arkhiva) — not only by answering the envelope:
 
-- **New card**: the **+** in the header, or a press and hold on the empty wall. You give it a name; it is born empty, in the free spot nearest to where you asked, and fills as the gardener attaches pages to it, as Jenny puts pages in it when you ask, or as you add sections.
-- **Rename**: from the bar of a held card, or at the bottom of its drawer. The name becomes yours, and Jenny no longer rewrites it.
+- **New card**: the **+** in the header, or a press and hold on the empty wall. You give it a name; it is born empty, in the free spot nearest to where you asked, and fills as the gardener attaches pages to it, as Arkhiva puts pages in it when you ask, or as you add sections.
+- **Rename**: from the bar of a held card, or at the bottom of its drawer. The name becomes yours, and Arkhiva no longer rewrites it.
 - **Remove from the board**: from the same two places. There is no question first: the card goes, and **Undo** appears for a few seconds. Undo puts it back where it was, with its threads. Meanwhile what the card did by itself stops — its notebook crons and its reminders pause — and resumes with the undo. A removed card can be put back for **7 days** (the last 5 removed); after that it is gone for good, together with its crons and reminders. The wiki is never touched: its pages stay, and search finds them. Accepting **Put it away** from the envelope removes a card the same way, with the same undo.
 
-### Asking Jenny
+### Asking Arkhiva
 
-In the notebook's chat you can ask for any change to the notebook, in your own words: *split this card into one per plant*, *move the vase pages to the Ginkgo card*, *tie the fig to the terrace project*, *remind me to divide the cherry in November*, *put the old card away*, *yes to the proposal in the envelope*. Jenny hands the job to a helper of hers, the **notebook editor**, which changes pages, the map and the board, and rewrites the drawer of every card whose pages it moved. The board under the chat redraws itself when it is done.
+In the notebook's chat you can ask for any change to the notebook, in your own words: *split this card into one per plant*, *move the vase pages to the Ginkgo card*, *tie the fig to the terrace project*, *remind me to divide the cherry in November*, *put the old card away*, *yes to the proposal in the envelope*. Arkhiva hands the job to a helper of hers, the **notebook editor**, which changes pages, the map and the board, and rewrites the drawer of every card whose pages it moved. The board under the chat redraws itself when it is done.
 
-What the editor changes counts as yours, exactly as if you had done it by hand: the gardener cannot undo it. When a request could mean two things — or is only a question, *could this card be split?* — Jenny asks once before doing anything.
+What the editor changes counts as yours, exactly as if you had done it by hand: the gardener cannot undo it. When a request could mean two things — or is only a question, *could this card be split?* — Arkhiva asks once before doing anything.
 
 ### App cards
 
-A [Jenny App](mini-apps.md) goes on the board as a **card of its own**. Polaroids are the things; apps are **strips**: paper two polaroids wide, with the app's icon, its name and one datum on the right (*4 to buy*, *today +0.8 %* — or, when the app names none, its state: *at 14:02*, *stopped · 2 d ago*, *in alarm*), and below a few **blocks** the app chose: a big value with its trend, a week's chart, a list you can tick, a row of buttons, this week, this month, a progress bar, the latest photos…
+A [Arkhiva App](mini-apps.md) goes on the board as a **card of its own**. Polaroids are the things; apps are **strips**: paper two polaroids wide, with the app's icon, its name and one datum on the right (*4 to buy*, *today +0.8 %* — or, when the app names none, its state: *at 14:02*, *stopped · 2 d ago*, *in alarm*), and below a few **blocks** the app chose: a big value with its trend, a week's chart, a list you can tick, a row of buttons, this week, this month, a progress bar, the latest photos…
 
 Strips come in four sizes — **S, M, L, XL**: an M is as tall as a polaroid, an XL as two. The size comes from the app, not from its data, so the board never jumps when the numbers change; a list that does not fit ends with *and N more*. When the data stops arriving the strip greys out and the datum on the right says how old it is — an old value never looks fresh — and an alarm turns the value and the corner red. An app with no data at all stays a polaroid with its icon.
 
@@ -76,7 +76,7 @@ An app never goes inside another card's drawer, and a subject card always keeps 
 
 ### Threads
 
-A thread is always visible as a thin line with no words on it; its label — the reason two cards are tied, in a few words, such as *seeds taken from it* — appears when you press and hold either card. A drawer also lists its card's threads, and tapping one opens the card at the other end; the **×** beside it removes the thread, and Jenny will not propose that thread again. A board has at most **16** threads: more than that would be the graph the board replaced. On her own, Jenny adds threads only by proposing them; ask her in the chat and she ties two cards for you.
+A thread is always visible as a thin line with no words on it; its label — the reason two cards are tied, in a few words, such as *seeds taken from it* — appears when you press and hold either card. A drawer also lists its card's threads, and tapping one opens the card at the other end; the **×** beside it removes the thread, and Arkhiva will not propose that thread again. A board has at most **16** threads: more than that would be the graph the board replaced. On her own, Arkhiva adds threads only by proposing them; ask her in the chat and she ties two cards for you.
 
 ## The drawer
 
@@ -97,20 +97,20 @@ A drawer that has not been written yet says so, and is written on the next garde
 
 ### Correcting a section
 
-The drawer is written by Jenny from the wiki, so you do not edit it directly: you correct it, and the correction goes to the page it came from.
+The drawer is written by Arkhiva from the wiki, so you do not edit it directly: you correct it, and the correction goes to the page it came from.
 
 1. Open a section and tap **Correct** under it. Its text becomes a text field, and a line under it names the page the correction will go to — the section's first source page.
-2. Write what it should say, and tap **Send to Jenny**.
-3. The correction is filed as a report on that page — the same kind of audit file as [Report](./wiki.md#telling-jenny-something-is-wrong) in the reader, marked as coming from the board. Until it is dealt with, the section shows your text in italics with a paperclip: *your correction, I'm working it in*.
+2. Write what it should say, and tap **Send to Arkhiva**.
+3. The correction is filed as a report on that page — the same kind of audit file as [Report](./wiki.md#telling-arkhiva-something-is-wrong) in the reader, marked as coming from the board. Until it is dealt with, the section shows your text in italics with a paperclip: *your correction, I'm working it in*.
 4. On the next [board pass](./gardener.md#the-board-pass) the gardener applies the correction to the wiki page, closes the report, and rewrites the drawer from the corrected page. The section then shows **✓ Applied to the wiki** until you next open the drawer.
 
 Unlike Report, a correction does not take you to the chat: it is handled between conversations, by the gardener.
 
 ### Adding a section
 
-The yellow **+** at the bottom right — the same corner as the + of the Notebooks page — stays on screen while the drawer scrolls. It opens a fan of six kinds: reminder, note, app, cron, photo and other; tap outside it, the **×** or Back to close it. They are yours: Jenny does not add, change or remove them on her own — only when you ask her in the chat. Apps are sections that can be moved up or removed; removing one never changes the wiki. A card's crons are not sections: they are listed under **Automations**, from the jobs themselves. Notes and photos are not sections: they are the two decks under the brief. An app or a cron always comes that way: Jenny makes it **because you asked for it**.
+The yellow **+** at the bottom right — the same corner as the + of the Notebooks page — stays on screen while the drawer scrolls. It opens a fan of six kinds: reminder, note, app, cron, photo and other; tap outside it, the **×** or Back to close it. They are yours: Arkhiva does not add, change or remove them on her own — only when you ask her in the chat. Apps are sections that can be moved up or removed; removing one never changes the wiki. A card's crons are not sections: they are listed under **Automations**, from the jobs themselves. Notes and photos are not sections: they are the two decks under the brief. An app or a cron always comes that way: Arkhiva makes it **because you asked for it**.
 
-The rule behind apps and crons: **everything a notebook does by itself is on its board, where you can see it.** An app's reader reads a value for free; a cron is a job Jenny does on a schedule. Both carry the same signature — how often, the last run, the next one, and whether it uses the model.
+The rule behind apps and crons: **everything a notebook does by itself is on its board, where you can see it.** An app's reader reads a value for free; a cron is a job Arkhiva does on a schedule. Both carry the same signature — how often, the last run, the next one, and whether it uses the model.
 
 #### Note
 
@@ -122,13 +122,13 @@ The note stays on the card as you wrote it, and it is also written to the notebo
 
 #### Reminder
 
-Something to do, with a date: **What?** and **When?**, and a **Month only** box for something like "around March". The reminder goes into the card's care calendar and, when it is among the card's next three, onto its sticky note on the board. A reminder that concerns the whole notebook — *bring all the plants indoors on 1 December* — has no card: add it from the board's **+** or from the free note's sheet, or ask Jenny, who decides where it belongs. **Done** takes it away, and a `[said]` journal line records that it was done. **Remove**, from its **⋯**, takes it away; **Edit** changes its text or date. See [Reminders](#reminders) for when you are told.
+Something to do, with a date: **What?** and **When?**, and a **Month only** box for something like "around March". The reminder goes into the card's care calendar and, when it is among the card's next three, onto its sticky note on the board. A reminder that concerns the whole notebook — *bring all the plants indoors on 1 December* — has no card: add it from the board's **+** or from the free note's sheet, or ask Arkhiva, who decides where it belongs. **Done** takes it away, and a `[said]` journal line records that it was done. **Remove**, from its **⋯**, takes it away; **Edit** changes its text or date. See [Reminders](#reminders) for when you are told.
 
 #### App
 
 An app that shows **live data** — a sensor, a price, a count, a portfolio's value — and keeps it fresh. Since October 2026 there are no separate "micro apps": it is an ordinary [app](./mini-apps.md), and it lives on its own card next to this one ([App cards](#app-cards)). An app placed inside a drawer by an older version (a micro app, after the update) stays there and is drawn as below; the drawer of an app card with no screen shows its summary the same way.
 
-**App** asks *What do you want to see, or do?*; your sentence goes to the notebook's chat, and Jenny writes the app there and puts it on the board as a card of its own, tied to this one by a thread. She **runs its reader once before saving it**, and tells you the first value actually read and where it came from — *Acerello: 38 % · online, read from the WaterBot hub at 14:02*. **Or put one of your apps next to it…**, at the bottom of the sheet, does the same with an app you already have (asking for its parameters — which sensor, which plant — so the same app can be two cards showing two different things).
+**App** asks *What do you want to see, or do?*; your sentence goes to the notebook's chat, and Arkhiva writes the app there and puts it on the board as a card of its own, tied to this one by a thread. She **runs its reader once before saving it**, and tells you the first value actually read and where it came from — *Acerello: 38 % · online, read from the WaterBot hub at 14:02*. **Or put one of your apps next to it…**, at the bottom of the sheet, does the same with an app you already have (asking for its parameters — which sensor, which plant — so the same app can be two cards showing two different things).
 
 The drawer draws the app's **summary** in one of five shapes, always the same way:
 
@@ -142,14 +142,14 @@ The drawer draws the app's **summary** in one of five shapes, always the same wa
 
 For a list or a table the drawer also counts the rows: that count is what the trend, **Remind me when…** and the journal events work on.
 
-An app with a reader is read every *N* minutes (at least 15) with **no model turn**, so a reading costs nothing, and right after every change you make (a purchase recorded on its screen, or said to Jenny), so its value always matches its data. The section shows the value big, up to two more values as chips, a trend, the signature *every 30 min · from waterbot-imh*, up to two of the app's actions as buttons (*Water now*), **Open the app** when it has a screen, and **Remind me when…**, **Change** (asks Jenny in the chat) and **Remove** (the placement only: the app stays in the App page).
+An app with a reader is read every *N* minutes (at least 15) with **no model turn**, so a reading costs nothing, and right after every change you make (a purchase recorded on its screen, or said to Arkhiva), so its value always matches its data. The section shows the value big, up to two more values as chips, a trend, the signature *every 30 min · from waterbot-imh*, up to two of the app's actions as buttons (*Water now*), **Open the app** when it has a screen, and **Remind me when…**, **Change** (asks Arkhiva in the chat) and **Remove** (the placement only: the app stays in the App page).
 
 When something goes wrong the last good value stays, greyed, with its age, and the section says who fixes it:
 
 | What happened | What you see |
 |---|---|
 | the device or the network did not answer | a note under the value; it tries again by itself, and this never counts as broken |
-| the reader failed three times in a row | **It broke**, the card's red corner, and **Ask Jenny to fix it** |
+| the reader failed three times in a row | **It broke**, the card's red corner, and **Ask Arkhiva to fix it** |
 | a reading never stopped | it is put on hold until it is fixed |
 | the app is in the trash | **Put the app back** |
 
@@ -157,7 +157,7 @@ Alarm and stale data light the card's red corner, and a change of state (into al
 
 #### Cron
 
-A job Jenny does by herself on a schedule — *every morning look at the weather and tell me whether to water*, *every Monday look for new listings*. Ask for it in the notebook's chat (from a drawer, **Cron** opens the chat with *In the … drawer, every …* for you to finish). **Jenny decides where it belongs, without asking**: on the card it is about, or on the **whole notebook** when it concerns all of it, several cards or nothing on the board.
+A job Arkhiva does by herself on a schedule — *every morning look at the weather and tell me whether to water*, *every Monday look for new listings*. Ask for it in the notebook's chat (from a drawer, **Cron** opens the chat with *In the … drawer, every …* for you to finish). **Arkhiva decides where it belongs, without asking**: on the card it is about, or on the **whole notebook** when it concerns all of it, several cards or nothing on the board.
 
 A cron that repeats is a row of a mint [label](#what-is-on-the-board) on the board — the card's, or the free one of the whole notebook — and a card's crons are also in its drawer, under **Automations**. Each shows what the job does, how often in words (*every Sunday at 18:30*), its next run, its last result — *Last result (Monday 09:02): 3 new listings* — and **uses the model**, because every run is a real turn. A run that has something to say also delivers it in the notebook's chat, with the usual notification; a run with nothing to say only updates the label. **Pause**, **Change** and **Remove** are in the drawer and in the free label's sheet. A cron that fires once is a date: it is a line of a [sticky note](#what-is-on-the-board). Notebook crons are also listed in the workshop with their place, *Piante › Acero*, or *Piante* for the whole notebook. See [Notebook crons](./scheduling.md#notebook-crons).
 
@@ -173,7 +173,7 @@ Tap the polaroid, or **Full screen**, and the photo opens **whole**, in its own 
 
 A photo's note follows a note's rules: it is written to the notebook's journal as a `[said]` line that ends with the photo's path, so the gardener carries it into the wiki — the note, not the picture — and the photo shows **waiting for the wiki**, then **✓ in the wiki**. A photo without a note writes nothing to the journal. Removing a photo takes it off the card; the file stays in `raw/photos/`, and what already reached the wiki stays.
 
-Jenny sees a card's photos: when you talk about a card — its whole name, or a word of it that no other card has — its drawer reaches her with its photos, their notes and their paths, and she opens one when she needs to look at it. In the message right after you pin a photo or a note, she is told what you pinned, even if you do not name the card: *did you see it?* is enough.
+Arkhiva sees a card's photos: when you talk about a card — its whole name, or a word of it that no other card has — its drawer reaches her with its photos, their notes and their paths, and she opens one when she needs to look at it. In the message right after you pin a photo or a note, she is told what you pinned, even if you do not name the card: *did you see it?* is enough.
 
 #### Other
 
@@ -197,9 +197,9 @@ The pages themselves do not change: the `[[links]]` stay as they are written, an
 
 The lens is the one way to everything in the notebook, including pages that are in no drawer. It searches card names and every page, with the same rules the page search always had: page contents, not just titles; accents optional; the last word matching by prefix; titles ranking above a word buried in a paragraph. Each result says where it lives: **card** for a card, the card's name for a page in a drawer, **not on the board** for a page that is in none. A card opens its drawer, a page in a drawer opens in the reader (and back returns to that drawer), and a page off the board opens the preview sheet.
 
-## The envelope: Jenny's proposals
+## The envelope: Arkhiva's proposals
 
-The board's shape — which cards, where, which threads — is yours: you change it directly (see [Your cards](#your-cards)) or ask Jenny to (see [Asking Jenny](#asking-jenny)), and Jenny never changes it on her own initiative. On her own she proposes, and the proposal waits in the envelope until you answer — or until you tell her in the chat to accept it. Tap the envelope to read them:
+The board's shape — which cards, where, which threads — is yours: you change it directly (see [Your cards](#your-cards)) or ask Arkhiva to (see [Asking Arkhiva](#asking-arkhiva)), and Arkhiva never changes it on her own initiative. On her own she proposes, and the proposal waits in the envelope until you answer — or until you tell her in the chat to accept it. Tap the envelope to read them:
 
 | Proposal | When the gardener may make it |
 |---|---|
@@ -215,13 +215,13 @@ The gardener adds at most **2** new proposals per pass, and the envelope holds a
 
 ### A notebook's first board
 
-A notebook that has pages but no board gets its first board as a single proposal: the skeleton of the drawers (unless you already asked Jenny for one) and up to **9** cards, each with its pages — with every drawer already written, so the board is complete the moment you accept. Dated plans it finds in the pages (an unchecked `[ ]` with a date) become reminders on the right card. While the proposal waits, the empty board says *I've prepared a board for you: it's in the envelope.* If you decline it, it is not proposed again on its own.
+A notebook that has pages but no board gets its first board as a single proposal: the skeleton of the drawers (unless you already asked Arkhiva for one) and up to **9** cards, each with its pages — with every drawer already written, so the board is complete the moment you accept. Dated plans it finds in the pages (an unchecked `[ ]` with a date) become reminders on the right card. While the proposal waits, the empty board says *I've prepared a board for you: it's in the envelope.* If you decline it, it is not proposed again on its own.
 
 A page that fits no card stays off the board, which is fine: it remains searchable.
 
 ### A new notebook
 
-When you create a notebook in the home, its chat opens over the board and Jenny greets you (see [Creating a notebook](./projects.md#creating-a-notebook)). The skeleton is not asked: Jenny proposes one once the notebook has a few pages, and while the board is still empty you can ask her in the chat for the sections you want — *Pot and repotting, Water, Feeding, Light, History*.
+When you create a notebook in the home, its chat opens over the board and Arkhiva greets you (see [Creating a notebook](./projects.md#creating-a-notebook)). The skeleton is not asked: Arkhiva proposes one once the notebook has a few pages, and while the board is still empty you can ask her in the chat for the sections you want — *Pot and repotting, Water, Feeding, Light, History*.
 
 Close the chat and you find the empty board. *The board is empty* comes with an example sentence; tapping it opens the chat with the sentence ready to finish. The board fills as you talk and as the gardener works.
 
@@ -233,19 +233,19 @@ Every line is written by the code, from what was actually done, not by the model
 
 ## Reminders
 
-A notebook's reminders are jobs of the [scheduler](./scheduling.md), like everything that happens "later": they live in `cron/jobs.json` next to the personal chat's, and carry a label that says where they belong — the notebook, and the card when they have one. They come from two places: the ones you add (in a drawer, or for the whole notebook from the board's **+**), and the ones the gardener or Jenny take from what you say — a line that decides or plans something with a date (*repot it around March*) becomes a reminder on the card it is about, or on the whole notebook when it concerns no card in particular, pointing at the page that explains why. You can also ask for one from the personal chat: *remind me to repot the maple in March, in the plants notebook*.
+A notebook's reminders are jobs of the [scheduler](./scheduling.md), like everything that happens "later": they live in `cron/jobs.json` next to the personal chat's, and carry a label that says where they belong — the notebook, and the card when they have one. They come from two places: the ones you add (in a drawer, or for the whole notebook from the board's **+**), and the ones the gardener or Arkhiva take from what you say — a line that decides or plans something with a date (*repot it around March*) becomes a reminder on the card it is about, or on the whole notebook when it concerns no card in particular, pointing at the page that explains why. You can also ask for one from the personal chat: *remind me to repot the maple in March, in the plants notebook*.
 
 - A **dated** reminder is a job that fires once: at **09:00** (your time zone) on its day, or on the first of the month when only the month is known — or at the exact time you asked for. If the app was not running then, it fires as soon as it is back.
-- It rings in the **notebook's chat**, whichever chat it was asked from, with a notification, and Jenny says **why**: what is due and the reason, taken from the page the reminder points to.
+- It rings in the **notebook's chat**, whichever chat it was asked from, with a notification, and Arkhiva says **why**: what is due and the reason, taken from the page the reminder points to.
 - Once it has fired it is **gone** — from the sticky note, from the calendar, from the list. Before that, **Done** takes it away and writes a `[said]` journal line that it was done; **Remove** just takes it away.
 
-A reminder can also wait on an app's value instead of a date — *when moisture is below 20*. That is a job that **repeats**, at the pace you choose: **Remind me when…**, on an app section in a drawer, asks what to do, whether the value should drop below or rise above a threshold, and **Check every** — 1 hour, 6 hours or 1 day. At each check the code runs the app's reader and compares the fresh value: while the condition is false nothing else happens, and the model is not involved, so a check costs nothing. When it becomes true Jenny tells you, once; it is armed again only after a check finds it false. It stays on the sticky note, with its pace, until you mark it **Done** or **Remove** it.
+A reminder can also wait on an app's value instead of a date — *when moisture is below 20*. That is a job that **repeats**, at the pace you choose: **Remind me when…**, on an app section in a drawer, asks what to do, whether the value should drop below or rise above a threshold, and **Check every** — 1 hour, 6 hours or 1 day. At each check the code runs the app's reader and compares the fresh value: while the condition is false nothing else happens, and the model is not involved, so a check costs nothing. When it becomes true Arkhiva tells you, once; it is armed again only after a check finds it false. It stays on the sticky note, with its pace, until you mark it **Done** or **Remove** it.
 
 The system job **`reminders`** — the notebook clock — no longer looks at reminders: every **15 minutes** it runs the app readers that are due, notices when an app section changes state, and clears the cards removed more than a week ago. It is registered when the wiki is enabled (`wiki.enabled`), is listed among the protected [system jobs](./scheduling.md#protected-system-jobs), and costs nothing: an app's reading never involves the model.
 
-## What Jenny sees in a notebook with a board
+## What Arkhiva sees in a notebook with a board
 
-In the notebook's conversation, the board takes the place of the map (`wiki/index.md`) in the block Jenny gets on every turn: one line per card, with its brief, what runs by itself in its drawer (*auto: cron Weather*), its nearest reminder, and a problem flag when an app in its drawer is in alarm, stalled or broken, within **2,000 characters**, plus how many pages are off the board. One more line carries what belongs to the whole notebook — the names of its crons and its nearest reminder — even on a board with no cards. When your message names a card, that card's whole drawer is added to that turn — up to two drawers per message. See [What Jenny actually sees](./projects.md#what-jenny-actually-sees-the-board-the-map-and-the-pages).
+In the notebook's conversation, the board takes the place of the map (`wiki/index.md`) in the block Arkhiva gets on every turn: one line per card, with its brief, what runs by itself in its drawer (*auto: cron Weather*), its nearest reminder, and a problem flag when an app in its drawer is in alarm, stalled or broken, within **2,000 characters**, plus how many pages are off the board. One more line carries what belongs to the whole notebook — the names of its crons and its nearest reminder — even on a board with no cards. When your message names a card, that card's whole drawer is added to that turn — up to two drawers per message. See [What Arkhiva actually sees](./projects.md#what-arkhiva-actually-sees-the-board-the-map-and-the-pages).
 
 ## What the gardener does to the board
 
@@ -272,7 +272,7 @@ The files under `board/cards/` are summaries of the wiki, and the next board pas
 
 ## See also
 
-- [Notebooks](./projects.md) — what a notebook is, capture, and what Jenny sees on every turn.
+- [Notebooks](./projects.md) — what a notebook is, capture, and what Arkhiva sees on every turn.
 - [The gardener](./gardener.md) — the background pass that keeps the wiki and the board current.
 - [Plans](./plans.md) — reorganising a whole notebook, step by step, with a way back.
 - [Wiki](./wiki.md) — reading, editing and reporting a page.

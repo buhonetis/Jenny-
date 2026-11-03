@@ -240,7 +240,7 @@ def _harness() -> str:
         _HARNESS.replace("__TRANSLATIONS__", json.dumps({"it": it}, ensure_ascii=False))
         .replace("__T__", member(I18N_JS.read_text(encoding="utf-8"), "t"))
         .replace("__SIZES__", _const(MASCOT_JS.read_text(encoding="utf-8"), "MASCOT_SIZES"))
-        .replace("__ARKHIVA_VALUE__", function(src, "jennyValue"))
+        .replace("__ARKHIVA_VALUE__", function(src, "arkhivaValue"))
         .replace("__SIZE_LIST__", _const(src, "SIZES"))
         .replace("__SIZE_KEYS__", _const(src, "SIZE_KEYS"))
         .replace("__CTOR__", member(src, "constructor"))
@@ -279,12 +279,12 @@ def test_the_window_adds_itself_to_the_size() -> None:
     """La taglia, e la finestra flottante se c'e': sono due posti diversi.
     «Nascosta» non c'e' piu' dal 05/10/2026 — ARKHIVA e' la porta della chat."""
     _run_js("""
-      const con = jennyValue({ size: 'sm', floating: true });
+      const con = arkhivaValue({ size: 'sm', floating: true });
       assert.ok(con.includes(i18n.t('settings.mascotSizeSmall').toLowerCase()));
       assert.ok(con.includes(i18n.t('home.arkhiva.floatingShort').toLowerCase()));
       assert.ok(con.includes('\\u00b7'), 'le due cose non sono separate: ' + con);
 
-      const without = jennyValue({ size: 'sm', floating: false });
+      const without = arkhivaValue({ size: 'sm', floating: false });
       assert.ok(!without.includes('\\u00b7'), 'un separatore senza niente dopo: ' + without);
     """)
 
@@ -294,9 +294,9 @@ def test_the_room_reads_the_preferences_that_are_live() -> None:
     preferenze che disegnano lei."""
     _run_js("""
       const she = room({ available: true, enabled: true, active: true });
-      assert.equal(she.value(), jennyValue({ size: 'sm', floating: true }));
+      assert.equal(she.value(), arkhivaValue({ size: 'sm', floating: true }));
       she.pickSize('lg');
-      assert.equal(she.value(), jennyValue({ size: 'lg', floating: true }));
+      assert.equal(she.value(), arkhivaValue({ size: 'lg', floating: true }));
       assert.ok(changes >= 1, 'la riga di «Tu e ARKHIVA» non viene avvisata');
     """)
 
@@ -390,7 +390,7 @@ def test_a_call_that_failed_puts_the_switch_back() -> None:
       error = new Error('gateway giu');
       await she.toggleFloating();
       assert.equal(she.floatingBtn.classList.contains('is-on'), false);
-      assert.equal(she.value(), jennyValue({ size: 'sm', floating: false }));
+      assert.equal(she.value(), arkhivaValue({ size: 'sm', floating: false }));
     """)
 
 

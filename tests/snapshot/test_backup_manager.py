@@ -135,7 +135,7 @@ def test_build_zip_metadata_and_tree(tmp_path: Path) -> None:
     with zipfile.ZipFile(tmp_path / "export.zip") as archive:
         metadata = json.loads(archive.read("metadata.json").decode("utf-8"))
         assert metadata["format_version"] == 1
-        assert metadata["jenny_version"] == arkhiva.__version__
+        assert metadata["arkhiva_version"] == arkhiva.__version__
         assert isinstance(metadata["exported_at_ms"], int)
         assert archive.read("tree/SOUL.md") == b"anima"
 

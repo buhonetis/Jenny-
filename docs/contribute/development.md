@@ -1,6 +1,6 @@
 # Development
 
-Repository layout and a map of where each subsystem lives, for anyone working on Jenny's Python side.
+Repository layout and a map of where each subsystem lives, for anyone working on Arkhiva's Python side.
 
 Android is the only runtime target for the finished product, but nearly all of the logic — the agent loop, tools, providers, sessions, config — is plain Python that also runs under CPython on your desktop for testing. See [Build from source](build-from-source.md) for getting a real APK on a device, including the desktop-only `run_gateway()` shortcut for iterating on the Python side without one.
 
@@ -12,7 +12,7 @@ Android is the only runtime target for the finished product, but nearly all of t
 | `arkhiva/templates/ui/` | The mobile-first WebUI's static assets (HTML/CSS/JS), served by the gateway and rendered inside the Android WebView. |
 | `arkhiva/templates/` (top-level `.md` files) | Prompt templates (`AGENTS.md`, `SOUL.md`, `USER.md`, etc.) copied into a fresh workspace on first run. |
 | `arkhiva/skills/` | Built-in skill definitions (`SKILL.md` folders) loaded into agent context. |
-| `android/` | The native Android project: Kotlin `MainActivity`/`GatewayService`, the Gradle build, the Chaquopy configuration that embeds the `jenny` package and its pinned dependencies. |
+| `android/` | The native Android project: Kotlin `MainActivity`/`GatewayService`, the Gradle build, the Chaquopy configuration that embeds the `arkhiva` package and its pinned dependencies. |
 | `tests/` | The pytest suite. Mirrors the `arkhiva/` package structure directory-for-directory (`tests/agent/` for `arkhiva/agent/`, `tests/webui/` for `arkhiva/webui/`, and so on) — a new module usually gets a matching test directory in the same relative location. |
 | `docs/` | This documentation. |
 | `scripts/` | Standalone helper scripts (`check_dco.sh`, `vendorize_ui.py`, `capture_screenshots.sh`), kept outside CI YAML so they're runnable and testable on a developer machine too. |
@@ -21,8 +21,8 @@ Android is the only runtime target for the finished product, but nearly all of t
 ## Setting up a Python environment
 
 ```bash
-git clone https://github.com/flagdizero/jenny-android-ai-agent.git jenny
-cd jenny
+git clone https://github.com/buhonetis/Arkhiva-.git arkhiva
+cd arkhiva
 pip install -e ".[dev]"
 ```
 
@@ -55,7 +55,7 @@ The high-level data flow: an async `MessageBus` (`arkhiva/bus/queue.py`) decoupl
 | Config | `arkhiva/config/schema.py`, `loader.py` | Pydantic-*style* config (`arkhiva/pydantic_compat/` — a stdlib-only reimplementation, see `FORK_BOUNDARY.md`) loaded from `workspace/config.json`. Supports camelCase aliases for JSON compatibility. |
 | WebUI (frontend) | `arkhiva/templates/ui/` | The mobile-first SPA. Talks to the gateway over the same WebSocket used for chat, plus HTTP routes under `/api/`. |
 | WebUI (backend) | `arkhiva/webui/` | The `/api/` route handlers backing the SPA — apps, settings, media, skills, transcript, token usage, workspaces, file preview — plus gateway service/token wiring. |
-| Jenny Apps | `arkhiva/apps/` | Runtime for user-authored mini-apps: `manifest.py`, `executor.py`, `storage.py`, `summary.py`, `http.py`, `proxy.py`, `token.py`. See [Write a mini-app](write-a-mini-app.md). |
+| Arkhiva Apps | `arkhiva/apps/` | Runtime for user-authored mini-apps: `manifest.py`, `executor.py`, `storage.py`, `summary.py`, `http.py`, `proxy.py`, `token.py`. See [Write a mini-app](write-a-mini-app.md). |
 | Command router | `arkhiva/command/` | Slash command routing and built-in command handlers. |
 | Skills | `arkhiva/skills/` | Built-in skill definitions loaded into agent context. |
 | Security | `arkhiva/security/` | Workspace policy/access control plus SSRF network protections. |
@@ -77,7 +77,7 @@ Several large classes are decomposed into focused mixins/leaf modules composed v
 
 ## Config and security boundaries
 
-`arkhiva/config/schema.py::SecurityConfig` (`config.security`) is the canonical home for `restrict_to_workspace` / `ssrf_whitelist`. Only `restrict_to_workspace` is mirrored onto `ToolsConfig` for the tool layer; `ssrf_whitelist` lives on `SecurityConfig` alone, so writing `tools.ssrf_whitelist` is silently dropped. A validator migrates the legacy `tools.*` locations into `security` only for a config that has no `security` block at all — and every config Jenny has saved has one. `arkhiva/config/runtime_env.py` is the single layer for operational `JENNY_*` environment knobs — see [Environment variables](../reference/environment-variables.md). See [Security model](../internals/security-model.md) for what these boundaries actually enforce (and don't).
+`arkhiva/config/schema.py::SecurityConfig` (`config.security`) is the canonical home for `restrict_to_workspace` / `ssrf_whitelist`. Only `restrict_to_workspace` is mirrored onto `ToolsConfig` for the tool layer; `ssrf_whitelist` lives on `SecurityConfig` alone, so writing `tools.ssrf_whitelist` is silently dropped. A validator migrates the legacy `tools.*` locations into `security` only for a config that has no `security` block at all — and every config Arkhiva has saved has one. `arkhiva/config/runtime_env.py` is the single layer for operational `ARKHIVA_*` environment knobs — see [Environment variables](../reference/environment-variables.md). See [Security model](../internals/security-model.md) for what these boundaries actually enforce (and don't).
 
 ## Code style and conventions
 
@@ -92,6 +92,6 @@ Contribution flow, the Developer Certificate of Origin sign-off requirement, and
 - [Build from source](build-from-source.md) — getting a device build running, plus the desktop gateway shortcut
 - [Testing](testing.md) — running the test suite and the lint/type-check gates
 - [Write a tool](write-a-tool.md) — adding a new agent tool
-- [Write a mini-app](write-a-mini-app.md) — the Jenny Apps runtime
+- [Write a mini-app](write-a-mini-app.md) — the Arkhiva Apps runtime
 - [Add a provider](add-a-provider.md) — adding a new LLM provider integration
 - [Architecture](../internals/architecture.md) — the full data-flow diagram and extension points

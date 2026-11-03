@@ -102,7 +102,7 @@ class UpdateBridge(context: Context) {
          *  prodotto. */
         private const val ACTION_INSTALL_STATUS = "org.buhonet.agente.arkhiva.INSTALL_STATUS"
 
-        private const val UPDATE_CHANNEL_ID = "jenny_updates"
+        private const val UPDATE_CHANNEL_ID = "arkhiva_updates"
         private const val UPDATE_NOTIFICATION_ID = 3
 
         /**
@@ -619,7 +619,7 @@ class UpdateBridge(context: Context) {
         return try {
             val manager = appContext.getSystemService(NotificationManager::class.java)
                 ?: return false
-            // Canale dedicato e non `jenny_alerts`: quella è la voce dell'agente
+            // Canale dedicato e non `arkhiva_alerts`: quella è la voce dell'agente
             // e l'utente deve poterla silenziare senza perdersi il fatto che un
             // aggiornamento è fermo in attesa di un suo tocco.
             manager.createNotificationChannel(
@@ -640,7 +640,7 @@ class UpdateBridge(context: Context) {
             val notification = NotificationCompat.Builder(appContext, UPDATE_CHANNEL_ID)
                 .setContentTitle(appContext.getString(R.string.update_notification_title))
                 .setContentText(appContext.getString(R.string.update_notification_text))
-                .setSmallIcon(R.drawable.ic_stat_jenny)
+                .setSmallIcon(R.drawable.ic_stat_arkhiva)
                 .setAutoCancel(true)
                 .setOngoing(false)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)

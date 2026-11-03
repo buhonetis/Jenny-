@@ -265,7 +265,7 @@ class TestOpenAICompatTowardTheOthers:
             await provider.chat([{"role": "user", "content": "ciao"}])
         headers = seen[0].headers
         assert SESSION_HEADER not in headers
-        assert headers["http-referer"] == "https://github.com/flagdizero/jenny-android-ai-agent"
+        assert headers["http-referer"] == "https://github.com/buhonetis/Arkhiva-"
         assert headers["x-openrouter-title"] == "ARKHIVA"
         assert headers["x-openrouter-categories"] == "android-agent,personal-agent"
 

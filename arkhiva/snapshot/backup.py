@@ -169,7 +169,7 @@ class BackupManager:
             metadata = {
                 "format_version": BACKUP_FORMAT_VERSION,
                 "exported_at_ms": int(time.time() * 1000),
-                "jenny_version": _arkhiva_version(),
+                "arkhiva_version": _arkhiva_version(),
             }
             archive.writestr("metadata.json", json.dumps(metadata, ensure_ascii=False))
             # Il workspace è vivo durante l'export: un file sparito tra lo

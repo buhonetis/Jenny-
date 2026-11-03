@@ -36,7 +36,7 @@ ROOT = Path(__file__).resolve().parents[1]
 # Le parole del Drive che il core non deve contenere: identificatori, non prosa
 # (un commento che dice «la build Play ha la copia su Google Drive» non è codice).
 DRIVE_IDENTIFIERS = (
-    "cloudBackup", "jennyCloud", "connectDrive", "DriveBridge", "DriveExtension",
+    "cloudBackup", "arkhivaCloud", "connectDrive", "DriveBridge", "DriveExtension",
     "googleapis", "play-services", "cloud_backup", "arkhiva_extensions.drive",
     "arkhiva_extensions/drive", "cloud-backup.js", "cloud-backup-dialogs",
 )

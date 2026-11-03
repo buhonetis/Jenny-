@@ -80,7 +80,7 @@ class FloatingBridge(context: Context) {
      * Il `package:` chiede la pagina della sola ARKHIVA, ma dal 11 Android lo
      * **ignora** e apre l'elenco di tutte le app, dove lei è una riga. La pagina
      * di una sola app esiste (`android.settings.MANAGE_APP_OVERLAY_PERMISSION`),
-     * ma un'app qualunque riceve `SecurityException`: misurato su jenny_s22,
+     * ma un'app qualunque riceve `SecurityException`: misurato su arkhiva_s22,
      * Android 16, il 25/10/2026. Il secondo tentativo, senza pacchetto, è per le
      * ROM che rifiutano anche il primo.
      */

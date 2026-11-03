@@ -19,11 +19,11 @@ def _make_api(handler) -> TelegramAPI:
 async def test_get_me_returns_result() -> None:
     def handler(request: httpx.Request) -> httpx.Response:
         assert request.url.path == "/botTOKEN/getMe"
-        return httpx.Response(200, json={"ok": True, "result": {"username": "jenny_bot"}})
+        return httpx.Response(200, json={"ok": True, "result": {"username": "arkhiva_bot"}})
 
     api = _make_api(handler)
     me = await api.get_me()
-    assert me["username"] == "jenny_bot"
+    assert me["username"] == "arkhiva_bot"
     await api.close()
 
 

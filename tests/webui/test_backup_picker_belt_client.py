@@ -82,7 +82,7 @@ def test_a_silent_picker_is_a_cancel_once_back_on_the_page() -> None:
         const second = flow.runImportFlow();
         await settle();
         assert.equal(opened, 2);
-        window.jennyBackup.onImportPicked(false);
+        window.arkhivaBackup.onImportPicked(false);
         assert.equal(await second, false);
         """
     )
@@ -95,10 +95,10 @@ def test_an_answer_before_the_grace_wins_and_a_late_one_does_nothing() -> None:
         await settle();
         setVisible(false);
         setVisible(true);
-        window.jennyBackup.onImportPicked(false);
+        window.arkhivaBackup.onImportPicked(false);
         assert.equal(await p, false);
         fire();                     // la cintura scaduta dopo non tocca niente
-        window.jennyBackup.onImportPicked(true);   // tardiva, senza padrone
+        window.arkhivaBackup.onImportPicked(true);   // tardiva, senza padrone
         """
     )
 

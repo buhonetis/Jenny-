@@ -29,7 +29,7 @@ SCRIPT_PATH = REPO_ROOT / "scripts" / "release.py"
 
 def _load_release_module() -> ModuleType:
     """Carica lo script per path: ``scripts/`` non è un package importabile."""
-    spec = importlib.util.spec_from_file_location("jenny_release_script", SCRIPT_PATH)
+    spec = importlib.util.spec_from_file_location("arkhiva_release_script", SCRIPT_PATH)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
@@ -327,7 +327,7 @@ def test_manifest_matches_the_agreed_schema(repo: Path, apk: Path, tmp_path: Pat
             "--summary-en",
             "Automatic updates.",
             "--repo",
-            "flagdizero/jenny-android-ai-agent",
+            "buhonetis/Arkhiva-",
         )
         == 0
     )
@@ -353,11 +353,11 @@ def test_manifest_matches_the_agreed_schema(repo: Path, apk: Path, tmp_path: Pat
     assert manifest["version_code"] == 9
     assert manifest["version_name"] == "0.7.0"
     assert manifest["apk_url"] == (
-        "https://github.com/flagdizero/jenny-android-ai-agent/releases/download/"
+        "https://github.com/buhonetis/Arkhiva-/releases/download/"
         "v0.7.0/arkhiva-0.7.0.apk"
     )
     assert manifest["notes_url"] == (
-        "https://github.com/flagdizero/jenny-android-ai-agent/releases/tag/v0.7.0"
+        "https://github.com/buhonetis/Arkhiva-/releases/tag/v0.7.0"
     )
     assert manifest["sha256"] == hashlib.sha256(apk.read_bytes()).hexdigest()
     assert manifest["size"] == apk.stat().st_size

@@ -1,6 +1,6 @@
 # WebSocket Protocol
 
-Jenny exposes a WebSocket server channel used by the Android WebView UI and any compatible client — this page documents the wire protocol for integrators writing their own client.
+Arkhiva exposes a WebSocket server channel used by the Android WebView UI and any compatible client — this page documents the wire protocol for integrators writing their own client.
 
 ## On the Android device, this is not optional
 
@@ -58,7 +58,7 @@ Note the first argument is a *data directory*, not the workspace itself — the 
 
 Called as `run_gateway("/path/to/data_dir")`, with no `host=`/`port=`, it binds `127.0.0.1:18790` whatever `config.json` says — the same as the app. `host` and `port` set both the gateway and the WebSocket channel, since they share one port.
 
-If you would rather have `websocket.host` and `websocket.port` come from `config.json`, skip `run_gateway` and call the lower-level `jenny.gateway_runtime._run_gateway(config=None)` yourself: with no overrides given, it loads the config as it is and the schema defaults (`enabled: false`, port `8765`) apply. It is a private, test-patchable function and it does none of the workspace preparation `run_gateway` does — you set the workspace (`jenny.config.paths.set_workspace_dir`) and create the config first.
+If you would rather have `websocket.host` and `websocket.port` come from `config.json`, skip `run_gateway` and call the lower-level `arkhiva.gateway_runtime._run_gateway(config=None)` yourself: with no overrides given, it loads the config as it is and the schema defaults (`enabled: false`, port `8765`) apply. It is a private, test-patchable function and it does none of the workspace preparation `run_gateway` does — you set the workspace (`arkhiva.config.paths.set_workspace_dir`) and create the config first.
 
 You should see:
 
@@ -309,7 +309,7 @@ every turn:
 {"event": "goal_status", "chat_id": "default", "status": "running", "started_at": 1756640000.0}
 ```
 
-**`mascot_mood`** — how Jenny feels about the reply she just gave, for the on-screen mascot,
+**`mascot_mood`** — how Arkhiva feels about the reply she just gave, for the on-screen mascot,
 read by the server from the emoji in that reply (no model request). Sent after `turn_end`, only to subscribers of that chat, never retried and never persisted: the
 next turn replaces it, and a reload starts from a neutral face. `mood` is one of `happy`, `sad`,
 `angry` — the three expressions that exist as artwork (a neutral verdict sends nothing). `turn_id` is present when the turn had
@@ -327,7 +327,7 @@ appended to the transcript, so a reload replays it:
 {"event": "file_edit", "chat_id": "default", "edits": [{"path": "SOUL.md", "added": 2, "deleted": 1, "status": "done"}]}
 ```
 
-**`app_data_changed`** — a Jenny App's stored data changed, so an open app iframe should
+**`app_data_changed`** — a Arkhiva App's stored data changed, so an open app iframe should
 refresh itself. Broadcast to every connection, not just one chat's subscribers:
 
 ```json
@@ -411,12 +411,12 @@ one item fails, nothing is kept and the answer is an `error` with `detail: "imag
 `webui: true` plus an optional `turn_id` mark the message as sent by the WebUI, and
 `readonly: true` runs that one turn with the workspace read-only (any other value is ignored).
 `plan: true`, only on a notebook's chat (`"project:<name>"`), starts a planning: read-only
-whatever `readonly` says, and Jenny answers with a step-by-step plan for the user to approve
+whatever `readonly` says, and Arkhiva answers with a step-by-step plan for the user to approve
 instead of doing the job; `plan_revise: "<plan id>"` asks for a new version of a proposed plan.
-A planning can take several turns — Jenny looks at the notebook and may ask up to three questions
+A planning can take several turns — Arkhiva looks at the notebook and may ask up to three questions
 first — and while it lasts **the server** treats every message on that chat as part of it,
 read-only, with or without `plan: true` (the WebUI keeps sending it while the Plan button is on:
-it continues the planning going on, and opens a new one only if there is none). It ends when Jenny proposes the plan, with
+it continues the planning going on, and opens a new one only if there is none). It ends when Arkhiva proposes the plan, with
 `plan.cancel_drafting` (turning the Plan button off), with `/stop`, or after 12 hours without a
 turn; `plan.get {notebook}` says whether one is going on (`drafting`).
 
@@ -461,9 +461,9 @@ Reply — always one `rpc_result` per request, correlated by the opaque `id`:
 
 Error codes: `bad_request`, `forbidden`, `not_found`, `too_large`, `conflict`, `name_taken`, `unavailable`, `busy`, `bad_state`, `plan_running`, `rollback_failed`, `internal`.
 `name_taken` means the name asked for already belongs to something else (today: a notebook's new name is already a folder's or a conversation's).
-`conflict` is the only one that is not about the request but about the world: the request was fine, and the world moved underneath it — the file changed since the client read it (`page.write`, `workspace.write` with a `base`), or Jenny is still writing in that notebook (`project.rename`, `project.delete`). A client that gets it should not correct what it sent: re-read, or try again once she has finished.
-`busy` and `bad_state` come from the `plan.*` commands: Jenny is working in that notebook right now (a turn or a helper in flight — try again in a moment), or the plan is not in a state where that command applies.
-`plan_running` means the notebook is held by a plan that has started and is not closed yet (running, pausing, paused or waiting for an answer): until it finishes, or is stopped, nothing the user does writes in it — `page.write`, `audit.create`, the `board.*` writes (`board.seen` and `board.preview` excepted), `project.rename`, `project.delete`, and the `workspace.*` writes on a path inside it; nor does rolling back an older plan of the same notebook. Jenny's own file tools refuse to write in it too, from any conversation other than that notebook's. Everything that changes between the plan's first and last photo is then the plan's, which is what lets it be rolled back.
+`conflict` is the only one that is not about the request but about the world: the request was fine, and the world moved underneath it — the file changed since the client read it (`page.write`, `workspace.write` with a `base`), or Arkhiva is still writing in that notebook (`project.rename`, `project.delete`). A client that gets it should not correct what it sent: re-read, or try again once she has finished.
+`busy` and `bad_state` come from the `plan.*` commands: Arkhiva is working in that notebook right now (a turn or a helper in flight — try again in a moment), or the plan is not in a state where that command applies.
+`plan_running` means the notebook is held by a plan that has started and is not closed yet (running, pausing, paused or waiting for an answer): until it finishes, or is stopped, nothing the user does writes in it — `page.write`, `audit.create`, the `board.*` writes (`board.seen` and `board.preview` excepted), `project.rename`, `project.delete`, and the `workspace.*` writes on a path inside it; nor does rolling back an older plan of the same notebook. Arkhiva's own file tools refuse to write in it too, from any conversation other than that notebook's. Everything that changes between the plan's first and last photo is then the plan's, which is what lets it be rolled back.
 `rollback_failed` means a rollback (or its undo) started and stopped halfway, for a disk error: the notebook is partly back, `plan.rollback_failed` on the plan says so, and asking again is safe — what was already put back counts as "already as it was".
 A frame whose `id` is missing or malformed is dropped with a log line — there is nothing to
 correlate a reply to.
@@ -478,7 +478,7 @@ correlate a reply to.
 | `page.write` | `wiki`, `page`, `content`, `base` | Save a notebook page edited by hand from the reader. `base` is the markdown the editor opened on: if the file changed underneath, the answer is `conflict` and nothing is written. Honours `wiki.enabled` plus the same workspace flags. |
 | `audit.create` | `wiki`, `target`, `sel_start`, `sel_end`, `comment`, `author` | File a report anchored to a passage of a notebook page. `sel_start`/`sel_end` are offsets in the page's markdown source, which the gateway re-reads to compute the anchors; `target` defaults to `index.md`, `author` to `anonymous`. Replies `{id, filename, path}`. An unknown notebook is `bad_request`, a target outside the notebook's pages `forbidden`, a missing page `not_found`, a selection that cannot anchor `bad_request`. Honours `wiki.enabled`, and refuses with `unavailable` when the configuration cannot be read. |
 | `project.create` | `name`, `seed` | Create a project chat with its seed instruction. Both are required and whitespace-collapsed. |
-| `project.greet` | `name`, `lang`? | Jenny's first message in a notebook just created, asked once its chat is open: a short greeting written by the model from the notebook's name and scope line, in `lang` (`it`/`en`, default the configured language). It reaches the chat as a normal message of hers and is saved in the conversation. Only on an empty conversation, and dropped if the user wrote meanwhile: then the reply is `{greeted: false, reason}`. Without a model, or when it fails or takes more than 15 seconds, a fixed sentence is written instead. Replies `{greeted, fallback, text}`; `not_found` for a notebook that does not exist. |
+| `project.greet` | `name`, `lang`? | Arkhiva's first message in a notebook just created, asked once its chat is open: a short greeting written by the model from the notebook's name and scope line, in `lang` (`it`/`en`, default the configured language). It reaches the chat as a normal message of hers and is saved in the conversation. Only on an empty conversation, and dropped if the user wrote meanwhile: then the reply is `{greeted: false, reason}`. Without a model, or when it fails or takes more than 15 seconds, a fixed sentence is written instead. Replies `{greeted, fallback, text}`; `not_found` for a notebook that does not exist. |
 | `project.delete` | `name` | Delete a project chat and its session. Refused with `conflict` before anything is touched while something is still writing under that notebook (a turn, a subagent started there, a gardener pass, the autocompact), and with `bad_request` if the name is no project. A home page pinned to it goes with it. |
 | `project.rename` | `name`, `new_name` | Rename a project: its folder first, then its chat follows (the same order as a folder renamed by hand, which the gateway already knows how to finish after a crash). Refused before anything is touched if the new name would not open (`bad_request`), is already taken by a folder or a conversation (`name_taken`), or the old name is not a notebook (`not_found`), and with `conflict` while something is still writing under either name (a turn, a subagent started there, a gardener pass, the autocompact). A home page pinned to it follows the new name, and so do its scheduled jobs — their place on the board and the chat they deliver to; their ids are in `moved_crons`. |
 | `home.pages.set` | `pages`, `order` | Save the home pages: the whole list of added pages (`{id, kind, ref}`, at most 8, unique ids) and the order of every page, fixed ones included — each exactly once, or the answer is `bad_request` and nothing is written. Replies `{ok, pages, order}`. The list is read with `GET /api/home/pages`, which answers `{pages, order, fixed, max, kinds}`. |
@@ -486,18 +486,18 @@ correlate a reply to.
 | `settings.provider.update` | `name`, `format`, `api_base`, `api_key`, `ca_bundle`, `ca_bundle_clear` | Create or update a provider with its API key, then hot-reload the active provider. |
 | `telegram.save` | `token` | Save the Telegram bot token (checked with `getMe`) and restart the channel. |
 | `ssh.host.save` | `alias`, `host`, `port`, `username`, `auth`, `password`, `description`, `job_log_dir` | Create or update an SSH host. A missing `password` keeps the saved one. |
-| `onboarding.save` | `provider_name`, `format`, `api_key`, `api_base`, `model`, `bot_name`, `bot_icon`, `locale` | The first-run setup: save the provider with its API key, the model and Jenny's name, then wake the agent that was waiting for it and write the welcome message into the conversation. Replies `{status, chat_id, welcome_message}`. A missing provider or model is `bad_request` and nothing is saved. |
+| `onboarding.save` | `provider_name`, `format`, `api_key`, `api_base`, `model`, `bot_name`, `bot_icon`, `locale` | The first-run setup: save the provider with its API key, the model and Arkhiva's name, then wake the agent that was waiting for it and write the welcome message into the conversation. Replies `{status, chat_id, welcome_message}`. A missing provider or model is `bad_request` and nothing is saved. |
 | `apps.trash` | — | The app trash, newest first: `{trash: [{id, slug, name, at, records}]}`. Deleting an app moves its folder here, data included. |
 | `apps.restore` | `id` | Put an app back from the trash (`id` is the trash entry). `conflict` when an app with that slug exists again. |
 | `apps.purge` | `id` | Delete a trash entry for good, data included. The only way an app's files are erased. |
-| `staged.list` | — | The drafts waiting for your approval, oldest first: `{staged: [{id, target, sources, created_ms, new_file, target_sha256, diff, truncated}]}`. A draft is a change a subagent wanted to make to a file Jenny loads on her own (a skill, `cron/`, `USER.md`, memory) after reading content from outside you; see [Security model](../internals/security-model.md). |
+| `staged.list` | — | The drafts waiting for your approval, oldest first: `{staged: [{id, target, sources, created_ms, new_file, target_sha256, diff, truncated}]}`. A draft is a change a subagent wanted to make to a file Arkhiva loads on her own (a skill, `cron/`, `USER.md`, memory) after reading content from outside you; see [Security model](../internals/security-model.md). |
 | `staged.install` | `id`, `target_sha256` | Write a draft into place. `target_sha256` is the one `staged.list` returned (`null` for a new file): if the file changed since, the answer is `conflict` and nothing is written. No tool of the model can call this. |
 | `staged.discard` | `id` | Throw a draft away; the file stays as it was. |
-| `plan.get` | `id` or `notebook` | A step-by-step plan: `{plan}`, its `plan.json` plus `done` (steps behind it, done or skipped), `total` (cut steps excluded), `current_step_id`, `can_rollback`, `can_undo_rollback`, and `rollback_failed` (`{at, kind, error, applied?, total?}`) while a rollback that stopped halfway has not been retried. `plan.json` carries `coverage` (`[{item, have, missing, strategy, why}]`, `strategy` one of `notebook`, `web`, `ask`, `leave`: how each item the job needs is covered), `assumptions` (`[string]`: what Jenny decided on her own; approving approves them), `steps[].done_when` (each step's "done" criterion) — all empty for a plan written before them — and `blocked: {step, question, reason, at, kind, drafts}` while it waits: `kind: "question"` is a question for the user (`drafts: []`), `kind: "drafts"` means the step left changes as drafts (`drafts: [{id, target}]`, the ids of `staged.list`) that the user installs or discards with `staged.install` / `staged.discard`; when all are decided the step closes by itself and the plan goes on. With `notebook`: that notebook's open plan, or its most recent closed one, or `plan: null`, and next to it `drafting: {since, revise, reads} \| null` — the planning going on in that notebook (`revise`: the plan being reviewed, or `null`; `reads`: how many times Jenny has read the notebook since it started). |
+| `plan.get` | `id` or `notebook` | A step-by-step plan: `{plan}`, its `plan.json` plus `done` (steps behind it, done or skipped), `total` (cut steps excluded), `current_step_id`, `can_rollback`, `can_undo_rollback`, and `rollback_failed` (`{at, kind, error, applied?, total?}`) while a rollback that stopped halfway has not been retried. `plan.json` carries `coverage` (`[{item, have, missing, strategy, why}]`, `strategy` one of `notebook`, `web`, `ask`, `leave`: how each item the job needs is covered), `assumptions` (`[string]`: what Arkhiva decided on her own; approving approves them), `steps[].done_when` (each step's "done" criterion) — all empty for a plan written before them — and `blocked: {step, question, reason, at, kind, drafts}` while it waits: `kind: "question"` is a question for the user (`drafts: []`), `kind: "drafts"` means the step left changes as drafts (`drafts: [{id, target}]`, the ids of `staged.list`) that the user installs or discards with `staged.install` / `staged.discard`; when all are decided the step closes by itself and the plan goes on. With `notebook`: that notebook's open plan, or its most recent closed one, or `plan: null`, and next to it `drafting: {since, revise, reads} \| null` — the planning going on in that notebook (`revise`: the plan being reviewed, or `null`; `reads`: how many times Arkhiva has read the notebook since it started). |
 | `plan.list` | — | The open plans of every notebook, for the badge on its cover: `{plans: [{id, notebook, status, title, done, total, updated_at}]}`. |
-| `plan.full` | `id` | The full plan, read-only: `{title, coverage, assumptions, steps: [{id, title, detail, kind, status, tag, done_when}]}`. `detail` is what Jenny reads when the step opens. |
+| `plan.full` | `id` | The full plan, read-only: `{title, coverage, assumptions, steps: [{id, title, detail, kind, status, tag, done_when}]}`. `detail` is what Arkhiva reads when the step opens. |
 | `plan.cancel_drafting` | `notebook` | End the planning going on in that notebook (the Plan button turned off, or "Cancel the plan"): the next message is an ordinary one. `{cancelled}` is `false` when there was none. Emits `plan_changed`. |
-| `plan.approve` | `id`, `version`, `cut` | Approve a proposed plan, without the steps listed in `cut`: photo of the notebook, then the first step opens. `conflict` when `version` is not the one shown (Jenny wrote a newer one), `busy` while a turn or a helper is running there. No tool of the model can call this. |
+| `plan.approve` | `id`, `version`, `cut` | Approve a proposed plan, without the steps listed in `cut`: photo of the notebook, then the first step opens. `conflict` when `version` is not the one shown (Arkhiva wrote a newer one), `busy` while a turn or a helper is running there. No tool of the model can call this. |
 | `plan.discard` | `id` | Throw a proposal away. |
 | `plan.pause` | `id` | Pause after the current step. While paused, the notebook's chat is read-only. |
 | `plan.resume` | `id` | Cancel a pause that has not arrived yet, or open the next step (`busy` while a turn runs there). |
@@ -506,7 +506,7 @@ correlate a reply to.
 | `plan.step_files` | `id`, `step` | What one step changed: `{added, changed, removed}` (paths in the notebook), from the photos before and after it. `bad_state` while the step has not finished. |
 | `plan.changes` | `id` | What the whole plan changed: `{added, changed, removed, groups: {path: group}}`, from its first photo to its last (to the last finished step while it runs). Groups: `pages`, `sources`, `board`, `other`, `journal`. |
 | `plan.rollback_preview` | `id` | What going back would do, without doing it: `{report, expect_end}`. `report` lists the paths `restored`, `removed`, `already` as they were, `left` (changed after the plan: not touched), `kept`, `excluded` (the journal never goes back), with `counts` and per-group counts in `groups`. `expect_end` is the id of the photo of the notebook this summary was computed on. Only for a plan `done` or `stopped`. |
-| `plan.rollback` | `id`, `keep`, `expect_end` | Put the notebook back as it was before the plan, except the groups in `keep`. `expect_end` is the one the preview returned: the rollback photographs the notebook again, and if that photo is another one (the notebook changed since the summary), or Jenny is working there, the answer is `conflict` and nothing is touched. Replies `{report, discarded_drafts}`: the plan's drafts still waiting for approval are thrown away with the rollback (`[{id, target}]`), so they cannot bring back part of the work just undone. Jenny reads a line about it in her next turn, and a `[system]` line goes at the end of the notebook's journal. |
+| `plan.rollback` | `id`, `keep`, `expect_end` | Put the notebook back as it was before the plan, except the groups in `keep`. `expect_end` is the one the preview returned: the rollback photographs the notebook again, and if that photo is another one (the notebook changed since the summary), or Arkhiva is working there, the answer is `conflict` and nothing is touched. Replies `{report, discarded_drafts}`: the plan's drafts still waiting for approval are thrown away with the rollback (`[{id, target}]`), so they cannot bring back part of the work just undone. Arkhiva reads a line about it in her next turn, and a `[system]` line goes at the end of the notebook's journal. |
 | `plan.undo_rollback` | `id` | Undo the rollback: the notebook goes back as the plan had left it, where nothing changed since. Replies `{report}`; drafts discarded by the rollback do not come back. |
 | `board.seen` | `wiki`, `card` | Record that the user looked: the notebook's board (no `card`), or one card's drawer. Drives the "since you last looked" row and the blue dots. A notebook without a board is a no-op. |
 | `board.move` | `wiki`, `kind`, `id`, `x`, `y` | Move a card (`kind: card`), or something hanging from a card, `id` being the card's: its sticky note of reminders (`kind: postit`), its label of automations (`kind: auto`), its lilac note of the user's notes (`kind: notes`) or its gallery of photos (`kind: photos`). With `id: ""`, `postit` and `auto` move the free sticky note and the free label of the whole notebook. It goes to `x`,`y` percent of the board. The position becomes the user's, and the gardener never moves it again. |
@@ -514,7 +514,7 @@ correlate a reply to.
 | `board.card.rename` | `wiki`, `id`, `title` | Rename a card. The title becomes the user's, and the gardener no longer rewrites it. |
 | `board.card.remove` | `wiki`, `id` | Remove a card from the board, with an undo. The card, its threads and its place are kept for 7 days (at most 5 cards); its notebook crons and micro apps are paused and its reminders stay quiet meanwhile. The wiki is not touched. Replies `{title}`. |
 | `board.card.restore` | `wiki`, `id` | The undo of `board.card.remove`: the card goes back where it was, with its threads, and what it paused resumes. Pages another card took meanwhile stay with that card. `conflict` when the board is full. |
-| `board.suggestion.respond` | `wiki`, `id`, `answer`, `near`? | Answer one of Jenny's proposals in the envelope with `yes`, `no` or `later`. `yes` applies it (a card placed in a free spot — near `near`, `{x, y}` in board coordinates, the centre of what the user is looking at, when given — a thread, a page attached…); `no` is remembered for that subject and kind; `later` defers it for a few passes. A full board refuses a new card with `conflict`. |
+| `board.suggestion.respond` | `wiki`, `id`, `answer`, `near`? | Answer one of Arkhiva's proposals in the envelope with `yes`, `no` or `later`. `yes` applies it (a card placed in a free spot — near `near`, `{x, y}` in board coordinates, the centre of what the user is looking at, when given — a thread, a page attached…); `no` is remembered for that subject and kind; `later` defers it for a few passes. A full board refuses a new card with `conflict`. |
 | `board.connection.remove` | `wiki`, `a`, `b` | Remove the thread between two cards. Only the user removes threads. |
 | `board.offboard.want` | `wiki`, `page`, `from` | "I want to see it on the board": a page that is in no drawer is flagged for the next board pass, which attaches it to a drawer or proposes a card. |
 | `board.preview` | `wiki`, `page` | Count one preview of a page that is in no drawer. The board pass reads the count: a page the user keeps peeking at is one the board is neglecting. |
@@ -595,7 +595,7 @@ For production deployments where `websocketRequiresToken: true` (the default, an
 ### How it works
 
 1. The legitimate client (e.g. the Android WebView) reads `token_issue_secret` from the private workspace `config.json`.
-2. The client calls `GET /webui/bootstrap` with `Authorization: Bearer <secret>` or `X-Jenny-Auth: <secret>` to receive connection metadata (WebSocket URL, model name, etc.).
+2. The client calls `GET /webui/bootstrap` with `Authorization: Bearer <secret>` or `X-Arkhiva-Auth: <secret>` to receive connection metadata (WebSocket URL, model name, etc.).
 3. The client opens the WebSocket with `?token=<secret>&client_id=...`.
 4. The same secret is used for all subsequent HTTP API requests via `Authorization: Bearer <secret>`.
 
@@ -622,7 +622,7 @@ The bootstrap also carries `ui_version`, a fingerprint of the WebUI files this g
 Client flow:
 
 1. Read `websocket.token_issue_secret` from the app's private workspace.
-2. Call `GET /webui/bootstrap` with `X-Jenny-Auth: your-secret-here`.
+2. Call `GET /webui/bootstrap` with `X-Arkhiva-Auth: your-secret-here`.
 3. Connect to the WebSocket with `?client_id=alice&token=your-secret-here`.
 4. Call HTTP APIs with `Authorization: Bearer your-secret-here`.
 
@@ -665,11 +665,11 @@ After a reconnect the connection is back on the personal chat only, so a client 
 
 ### Backward compatibility
 
-Until October 2026 the channel also accepted untyped frames (plain text, or `{"content"|"text"|"message": ...}`) and routed them to the personal chat. Nothing in Jenny sent them any more, and they were removed: such a frame now gets an `untyped_frame` error. A client that sent them sends `{"type": "message", "content": ...}` instead, which without a `chat_id` goes to the same personal chat.
+Until October 2026 the channel also accepted untyped frames (plain text, or `{"content"|"text"|"message": ...}`) and routed them to the personal chat. Nothing in Arkhiva sent them any more, and they were removed: such a frame now gets an `untyped_frame` error. A client that sent them sends `{"type": "message", "content": ...}` instead, which without a `chat_id` goes to the same personal chat.
 
 ### Security boundary
 
-Anyone holding a valid WebSocket auth credential joins the personal conversation and sees its output, and can attach to any project chat. This is safe for Jenny's local, single-user model; auth on the handshake is the single line of defense.
+Anyone holding a valid WebSocket auth credential joins the personal conversation and sees its output, and can attach to any project chat. This is safe for Arkhiva's local, single-user model; auth on the handshake is the single line of defense.
 
 ## Security Notes
 
@@ -685,7 +685,7 @@ Anyone holding a valid WebSocket auth credential joins the personal conversation
 Outbound `message` events may include a `media` field containing local filesystem paths. Remote clients cannot access these files directly — they need either:
 
 - A shared filesystem mount, or
-- An HTTP file server serving the Jenny media directory
+- An HTTP file server serving the Arkhiva media directory
 
 ## Common Patterns
 
@@ -762,4 +762,4 @@ Clients connect to `ws://127.0.0.1:8765/chat/ws?client_id=...`. Trailing slashes
 
 - [Configuration reference](configuration.md) — full `config.json` field reference, including `websocket.*`.
 - [Settings](settings.md) — what is and is not exposed in the WebUI for this channel (none of `websocket.*` is UI-configurable).
-- [Security model](../internals/security-model.md) — how the bootstrap secret fits into Jenny's overall security boundaries.
+- [Security model](../internals/security-model.md) — how the bootstrap secret fits into Arkhiva's overall security boundaries.

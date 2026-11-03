@@ -54,7 +54,7 @@ object RestartNotice {
 
     /** Canale suo, non quello del service né quello degli avvisi: chi silenzia
      *  i promemoria di ARKHIVA non deve perdersi il fatto che ARKHIVA non c'è. */
-    private const val CHANNEL_ID = "jenny_restart"
+    private const val CHANNEL_ID = "arkhiva_restart"
 
     /** 1 è la notifica del service, 2 gli avvisi (con tag), 3 l'aggiornamento
      *  dell'APK. Senza tag: ce n'è una sola. */
@@ -153,7 +153,7 @@ object RestartNotice {
             val notification = NotificationCompat.Builder(appContext, CHANNEL_ID)
                 .setContentTitle(appContext.getString(R.string.restart_notice_title))
                 .setContentText(appContext.getString(R.string.restart_notice_text))
-                .setSmallIcon(R.drawable.ic_stat_jenny)
+                .setSmallIcon(R.drawable.ic_stat_arkhiva)
                 .setContentIntent(tapIntent(appContext))
                 .setAutoCancel(false)
                 .setOnlyAlertOnce(true)
