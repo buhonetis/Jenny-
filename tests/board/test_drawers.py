@@ -130,6 +130,6 @@ def test_the_drawer_writers_are_told_not_to_repeat_reminder_dates() -> None:
     from arkhiva.agent.board_tools import BoardWriteSummaryTool
 
     templates = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "agent"
-    assert "Never restate a scheduled\nreminder" in (templates / "board_pass.md").read_text()
-    assert "care calendar" in (templates / "types" / "notebook-editor.md").read_text()
-    assert "care calendar" in BoardWriteSummaryTool.description.fget(None)
+    assert "Nunca\ncites" in (templates / "board_pass.md").read_text()
+    assert "calendario de cuidados" in (templates / "types" / "notebook-editor.md").read_text()
+    assert "calendario de cuidados" in BoardWriteSummaryTool.description.fget(None)

@@ -2389,10 +2389,10 @@ class SubagentManager:
             logger.info("Suppressed stale announce from repudiated subagent [{}]", task_id)
             return
         status_text = {
-            "ok": "completed successfully",
-            "budget": "stopped at its iteration budget before finishing",
-            "cancelled": "was stopped by the user",
-        }.get(status, "failed")
+            "ok": "terminó correctamente",
+            "budget": "se detuvo en su presupuesto de iteraciones sin terminar",
+            "cancelled": "fue detenido por el usuario",
+        }.get(status, "falló")
 
         # Inject as system message to trigger main agent.
         # Use session_key_override to align with the main agent's effective
@@ -2535,7 +2535,7 @@ class SubagentManager:
         summary = (result.final_content or "").strip()
         if not summary or summary == _NO_FINAL_RESPONSE:
             return partial
-        return f"{summary}\n\nSteps before the stop:\n{partial}"
+        return f"{summary}\n\nPasos antes del alto:\n{partial}"
 
     @staticmethod
     def _format_partial_progress(result) -> str:

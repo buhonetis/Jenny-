@@ -192,8 +192,8 @@ def test_the_pointer_and_the_section_name_the_same_operation(skill: str) -> None
     )
     pointer = _flat(template.read_text(encoding="utf-8"))
 
-    assert "`compile` carries a section for this one" in pointer
-    assert "is that operation" in pointer, (
+    assert "`compile` lleva una sección para este" in pointer
+    assert "es esa operación" in pointer, (
         "il puntatore deve dire che una richiesta di sistemare la wiki *è* "
         "quell'operazione: fino al 26/08 diceva solo che il layout della skill non "
         "era questo progetto, e il modello ha improvvisato"

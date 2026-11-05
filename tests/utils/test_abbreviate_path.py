@@ -6,7 +6,11 @@ from arkhiva.utils.path import abbreviate_path
 
 
 class TestAbbreviatePathShort:
-    def test_short_path_unchanged(self):
+    def test_short_path_unchanged(self, monkeypatch):
+        # Il percorso non deve stare sotto la HOME di chi lancia la suite: se
+        # HOME è ``/home/user`` la regola «sostituisci la home con ~/» scatta
+        # legittimamente, e il test misurerebbe l'ambiente invece della regola.
+        monkeypatch.setenv("HOME", "/home/someone-else")
         assert abbreviate_path("/home/user/file.py") == "/home/user/file.py"
 
     def test_exact_max_len_unchanged(self):

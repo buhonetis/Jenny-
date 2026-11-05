@@ -75,8 +75,12 @@ class TestToolHintKnownTools:
         result = _hint([_tc("python_exec", {"code": cmd})])
         assert "\u2026/" in result
 
-    def test_exec_abbreviates_quoted_linux_paths_with_spaces(self):
+    def test_exec_abbreviates_quoted_linux_paths_with_spaces(self, monkeypatch):
         """Quoted Unix paths with spaces should still be folded."""
+        # Fuori dalla HOME della suite: se HOME è ``/home/user`` la regola
+        # «la home diventa ~/» scatta prima, e l'abbreviazione a puntini che
+        # questo test misura non viene mai esercitata.
+        monkeypatch.setenv("HOME", "/home/someone-else")
         cmd = 'cd "/home/user/My Documents/project" && pytest tests/'
         result = _hint([_tc("python_exec", {"code": cmd})])
         assert "\u2026/" in result
@@ -300,8 +304,9 @@ class TestToolHintMaxLength:
         long = _hint([_tc("read_file", {"path": long_path})], max_length=120)
         assert len(long) > len(short)
 
-    def test_edit_file_path_respects_max_length(self):
+    def test_edit_file_path_respects_max_length(self, monkeypatch):
         """edit_file (is_path=True) should honor max_length, not stay hardcoded at 40."""
+        monkeypatch.setenv("HOME", "/home/someone-else")
         long_path = "/home/user/projects/arkhiva/src/agent/loop.py"
         short = _hint([_tc("edit_file", {"path": long_path})], max_length=40)
         long = _hint([_tc("edit_file", {"path": long_path})], max_length=120)

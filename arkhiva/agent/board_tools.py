@@ -169,11 +169,12 @@ class BoardWriteSummaryTool(_BoardTool):
     @property
     def description(self) -> str:
         return (
-            "Write the drawer of a card listed as needing it: a brief, and one entry per skeleton "
-            "section that its pages have material for — two short sentences each, with the pages "
-            "it comes from. Leave out a section with no material rather than inventing one. "
-            "Copy a section unchanged when its pages did not change what it says. Do not "
-            "restate scheduled reminders or their dates: the drawer shows its own care calendar."
+            "Escribe el cajón de una tarjeta marcada como necesitada: un resumen, y una entrada "
+            "por cada sección del esqueleto para la que sus páginas tengan material — dos frases "
+            "cortas cada una, con las páginas de las que sale. Omite una sección sin material en "
+            "vez de inventarla. Copia una sección sin cambios cuando sus páginas no cambiaron lo "
+            "que dice. No repitas recordatorios programados ni sus fechas: el cajón muestra su "
+            "propio calendario de cuidados."
         )
 
     async def execute(self, card: str = "", brief: str = "", sections: Any = None,

@@ -27,15 +27,15 @@ def test_a_one_line_task_is_unchanged() -> None:
 
 def test_the_announce_keeps_its_shape() -> None:
     text = render_template("agent/subagent_announce.md", label="prezzi",
-                           status_text="completed successfully",
+                           status_text="terminó correctamente",
                            task=_task_head("Verifica\nmolto altro"), result="fatto", silent=False)
-    assert text.startswith("[Subagent 'prezzi' completed successfully]\n\nTask: Verifica")
-    assert "molto altro" not in text and "Result:\nfatto" in text
+    assert text.startswith("[Subagente 'prezzi' terminó correctamente]\n\nTarea: Verifica")
+    assert "molto altro" not in text and "Resultado:\nfatto" in text
 
 
 def _announce(**kw) -> str:
     return render_template("agent/subagent_announce.md", label="editor",
-                           status_text="completed successfully", task="Scrivi", silent=False,
+                           status_text="terminó correctamente", task="Scrivi", silent=False,
                            result="Fatto.\n\n**To research**\n- felce: umidità", **kw)
 
 
@@ -44,20 +44,20 @@ def test_in_a_plan_the_announce_leaves_research_to_the_code() -> None:
     il template che diceva «research them» a ogni resoconto era il motore del
     giro infinito del Titan (26/10)."""
     text = _announce(research_items=1, in_plan=True)
-    assert "The plan keeps this list" in text and "do not start research" in text
-    assert "research them" not in text
+    assert "El plan conserva esta lista" in text and "no inicies investigación" in text
+    assert "actúa sobre ello" not in text
 
 
 def test_outside_a_plan_the_announce_still_asks_to_research() -> None:
     text = _announce(research_items=1, in_plan=False)
-    assert "research them" in text and "The plan keeps this list" not in text
+    assert "actúa sobre ello" in text and "El plan conserva esta lista" not in text
 
 
 def test_a_mention_of_to_research_is_not_a_list() -> None:
     """Il renderer conta le voci col parser del driver: nominarla in una frase
     non e' una lista, dentro o fuori un piano."""
     text = render_template("agent/subagent_announce.md", label="editor",
-                           status_text="completed successfully", task="Scrivi", silent=False,
+                           status_text="terminó correctamente", task="Scrivi", silent=False,
                            result="Nothing left To research here.", research_items=0,
                            in_plan=False)
-    assert "research them" not in text and "The plan keeps this list" not in text
+    assert "actúa sobre ello" not in text and "El plan conserva esta lista" not in text

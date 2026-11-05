@@ -69,7 +69,7 @@ async def test_a_notebook_turn_sees_only_what_it_can_use(notebook: Path) -> None
     assert "todo_add" not in offered
     assert "recall_history" not in offered and "nothing_to_report" not in offered
     # La vista e' ancora l'orchestratore: il suo prompt c'e'.
-    assert "# Orchestrator Mode" in _system_prompt(captured)
+    assert "# Modo orquestador" in _system_prompt(captured)
     # Il registro del loop non e' stato toccato.
     assert loop.tools.get("todo_add") is not None
 
