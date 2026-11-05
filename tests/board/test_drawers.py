@@ -132,4 +132,6 @@ def test_the_drawer_writers_are_told_not_to_repeat_reminder_dates() -> None:
     templates = Path(__file__).resolve().parents[2] / "arkhiva" / "templates" / "agent"
     assert "Nunca\ncites" in (templates / "board_pass.md").read_text()
     assert "calendario de cuidados" in (templates / "types" / "notebook-editor.md").read_text()
-    assert "calendario de cuidados" in BoardWriteSummaryTool.description.fget(None)
+    # Il tool layer non è tradotto: la sua descrizione dice la regola in inglese,
+    # il template del cajón in spagnolo. La stessa regola, due lettori.
+    assert "care calendar" in BoardWriteSummaryTool.description.fget(None)

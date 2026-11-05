@@ -329,8 +329,8 @@ async def _attach_reminder(root: Path, card: str, rid: str, cron: Any) -> str:
     where = _where(rem["card"])
     if not done["changed"]:
         return f"Reminder `{rem['id']}` is already {where}: nothing changed."
-    tail = ("una línea en la nota libre del tablero" if rem["card"] == model.NOTEBOOK
-            else "una línea en la nota de la tarjeta y en su calendario de cuidados")
+    tail = ("a line on the board's free sticky note" if rem["card"] == model.NOTEBOOK
+            else "a line on the card's sticky note and in its care calendar")
     return (f"Reminder «{rem['text']}» is now {where} (it was {_where(done['from'])}): {tail}. "
             f"Its id is now `{rem['id']}` (it was `{rid}`).")
 

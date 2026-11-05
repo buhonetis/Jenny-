@@ -85,5 +85,5 @@ def test_dream_prompt_says_agents_md_is_not_writable(tmp_path: Path) -> None:
     )
     # Non basta che il nome compaia: deve comparire come divieto.
     head = prompt[: prompt.find("**Routing examples:**")]
-    assert "not yours either" in head
-    assert "refused" in head
+    assert "tampoco es tuyo" in head
+    assert "rechazada" in head

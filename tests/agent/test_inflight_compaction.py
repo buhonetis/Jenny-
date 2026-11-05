@@ -38,7 +38,7 @@ from arkhiva.utils.helpers import estimate_prompt_tokens_chain
 
 WINDOW = 12_000
 MAX_OUT = 1_000
-CHECKPOINT_ASK = "Write a checkpoint that will REPLACE"
+CHECKPOINT_ASK = "Escribe un checkpoint que REEMPLAZARÁ"
 SUMMARY = "## Request\nDo the steps.\n## User instructions\nNone\n## Done so far\nsteps 1-N"
 
 
@@ -189,7 +189,7 @@ async def test_after_a_compaction_the_request_carries_the_checkpoint_and_a_short
     request = after[1]
     assert request["role"] == "user"
     assert request["content"].startswith("do 40 steps")
-    assert "[Context checkpoint" in request["content"]
+    assert "[Checkpoint de contexto" in request["content"]
     assert SUMMARY in request["content"]
     assert after[2]["role"] == "assistant"
     assert len([m for m in after if m.get("role") == "tool"]) < 10
@@ -304,7 +304,7 @@ def test_the_view_puts_the_checkpoint_after_the_request_and_drops_the_middle():
     view = apply_checkpoint(messages, checkpoint)
 
     assert view[0] == messages[0]
-    assert view[1]["content"].startswith("r\n\n[Context checkpoint")
+    assert view[1]["content"].startswith("r\n\n[Checkpoint de contexto")
     assert view[2:] == messages[6:]
     assert messages[1] == {"role": "user", "content": "r"}
 
@@ -325,7 +325,7 @@ def test_a_request_with_images_keeps_them_and_gets_the_checkpoint_as_text():
     view = apply_checkpoint(messages, InFlightCheckpoint(anchor=1, cut=4, summary="S"))
     blocks = view[1]["content"]
     assert image in blocks
-    assert any("[Context checkpoint" in b.get("text", "") for b in blocks)
+    assert any("[Checkpoint de contexto" in b.get("text", "") for b in blocks)
 
 
 def test_only_the_users_own_words_are_kept_verbatim():
@@ -397,7 +397,7 @@ async def test_the_next_turn_starts_from_the_compacted_view(tmp_path):
     assert len([r for r in rows if r.get("role") == "tool"]) == 40
 
     first_of_second = provider.requests[-1]
-    assert "[Context checkpoint" in str(first_of_second)
+    assert "[Checkpoint de contexto" in str(first_of_second)
     tools_seen = [m for m in first_of_second if m.get("role") == "tool"]
     assert len(tools_seen) == len([m for m in last_of_first if m.get("role") == "tool"]) < 40
     # Dopo il system, la richiesta nuova comincia con l'ultima del turno prima.

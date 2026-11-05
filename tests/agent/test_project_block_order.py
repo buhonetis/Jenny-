@@ -35,8 +35,8 @@ from arkhiva.agent.context import ContextBuilder
 # cosa che dice *dove* quel blocco è finito, e non dipende dal contenuto che
 # l'utente ci ha scritto.
 BOOTSTRAP_MARKER = "## AGENTS.md"
-PROJECT_MARKER = "# Project Folder"
-SCHEDULING_MARKER = "# Work for Later"
+PROJECT_MARKER = "# Carpeta del proyecto"
+SCHEDULING_MARKER = "# Trabajo para después"
 
 
 def _project_prompt(root: pathlib.Path, *, instructions: str) -> str:
