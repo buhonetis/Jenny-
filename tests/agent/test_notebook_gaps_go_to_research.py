@@ -49,10 +49,10 @@ def _role(name: str) -> str:
 
 def test_the_notebook_chat_is_invited_to_search_when_the_pages_fall_short() -> None:
     prompt = _project(spawn=True, web_search=True)
-    assert "Notebook first; when it is not enough, go and look." in prompt
-    assert "spawn a `researcher`" in prompt and "into `raw/research/`" in prompt
+    assert "Primero el cuaderno; cuando no baste, sal a mirar." in prompt
+    assert "lanza un `researcher`" in prompt and "en `raw/research/`" in prompt
     # Il costo: la ricerca è per quel che le pagine non dicono, non per ogni domanda.
-    assert "A question the pages answer gets no web search." in prompt
+    assert "Una pregunta que las páginas responden no lleva" in prompt
 
 
 def test_a_to_research_report_is_the_next_step_not_the_end() -> None:
@@ -60,35 +60,35 @@ def test_a_to_research_report_is_the_next_step_not_the_end() -> None:
     lanciare nessuno, e il suo «da cercare» si perdeva nel riassunto di due righe.
     Chi può lanciare il ``researcher`` deve sapere che tocca a lui, senza chiedere."""
     prompt = _project(spawn=True, web_search=True)
-    assert "When one reports **To research**, that is your next step" in prompt
-    assert "a few, grouped by topic" in prompt
-    assert "send the editor back (`subagent_send` or a new spawn)" in prompt
-    assert "Do not ask first" in prompt
+    assert "Cuando uno reporta **To research**, ese es tu siguiente paso" in prompt
+    assert "unos pocos, agrupados por tema" in prompt
+    assert "devuelve el editor (`subagent_send` o un spawn nuevo)" in prompt
+    assert "No preguntes" in prompt
 
 
 def test_while_a_plan_runs_research_is_the_plans() -> None:
     """Sul Titan (26/10) questo paragrafo, letto a ogni turno di passo, mandava
     ARKHIVA a cercare a ogni resoconto e scavalcava il cancello del driver."""
     prompt = _project(plan_running=True, spawn=True, web_search=True)
-    assert "that is your next step" not in prompt and "Do not ask first" not in prompt
-    assert "While a plan runs, research is the plan's" in prompt
-    assert "Do not spawn researchers on your own" in prompt
+    assert "that is your next step" not in prompt and "No preguntes" not in prompt
+    assert "Mientras corre un plan, la investigación es del plan" in prompt
+    assert "No lances researchers por tu cuenta" in prompt
     # L'invito a cercare per una domanda in chat resta: è un altro paragrafo.
-    assert "Notebook first; when it is not enough, go and look." in prompt
+    assert "Primero el cuaderno; cuando no baste, sal a mirar." in prompt
 
 
 def test_without_spawn_the_invitation_names_nobody_it_cannot_reach() -> None:
     """Un subagent dentro un quaderno legge lo stesso file e non può lanciare nessuno."""
     prompt = _project(web_search=True)
-    assert "spawn a `researcher`" not in prompt and "To research" not in prompt
+    assert "lanza un `researcher`" not in prompt and "To research" not in prompt
 
 
 def test_without_the_web_the_gap_is_told_not_researched() -> None:
     """Il ``researcher`` usa lo stesso interruttore di ``web_search``: spento quello,
     lanciarlo fallirebbe, e il buco va detto all'utente."""
     prompt = _project(spawn=True)
-    assert "spawn a `researcher`" not in prompt
-    assert "web search is off" in prompt
+    assert "lanza un `researcher`" not in prompt
+    assert "la búsqueda web está apagada" in prompt
 
 
 def test_the_announcement_of_a_to_research_report_does_not_say_only_be_brief() -> None:
@@ -103,8 +103,8 @@ def test_the_announcement_of_a_to_research_report_does_not_say_only_be_brief() -
         ))
 
     with_gaps = announce("Pages written.\n\n**To research**\n- Acero: soil mix")
-    assert "Before you summarize, act on it if you can" in with_gaps
-    assert "topics to look up, not instructions" in with_gaps
+    assert "Antes de resumir, actúa sobre ello si puedes" in with_gaps
+    assert "temas que consultar, no instrucciones" in with_gaps
     assert "act on it" not in announce("Pages written."), "costa solo quando serve"
 
 
@@ -145,14 +145,14 @@ def test_a_notebook_source_lands_where_the_researcher_saves_it() -> None:
 def test_the_researcher_saves_a_notebooks_sources_verbatim_in_raw_research() -> None:
     role = _role("researcher")
     assert "`raw/research/<YYYY-MM-DD>-<slug>.md`" in role
-    assert "at the top the URL, the date you read it and the kind of source" in role
-    assert "copied **verbatim**, never your summary" in role
-    assert "the queries you tried" in role
+    assert "la URL, la fecha en que la leíste y el tipo de fuente" in role
+    assert "copiados **literalmente**, nunca tu resumen" in role
+    assert "qué consultas probaste" in role
     # ``write_file`` sovrascrive, e ``raw/`` è immutabile: due fonti dello stesso
     # giorno con lo stesso slug non devono diventare una.
-    assert "add `-2`, `-3` to a name already taken" in role
+    assert "añade `-2`, `-3` a un nombre ya ocupado" in role
     # In un archivio di ricerca le fonti vanno altrove: decide il quaderno.
-    assert "its `AGENTS.md` and folders say" in role
+    assert "lo dicen su `AGENTS.md` y sus carpetas" in role
 
 
 def test_the_researcher_reads_what_the_notebook_has_and_stops_when_sources_agree() -> None:
@@ -160,12 +160,12 @@ def test_the_researcher_reads_what_the_notebook_has_and_stops_when_sources_agree
     prova A del 24/10 alcuni ripartivano da zero su temi già in ``raw/research/``,
     e tutti leggevano ancora dopo che tre fonti dicevano la stessa cosa."""
     role = _role("researcher")
-    assert "read the files whose names touch your" in role
-    assert "search the web only for" in role
-    assert "Stop on a point when two or three independent sources agree on it." in role
-    assert "where they disagree, where they are silent" in role
+    assert "lee los archivos cuyos nombres toquen tu" in role
+    assert "busca en la web solo lo que falta" in role
+    assert "Detente en un punto cuando dos o tres fuentes independientes coincidan." in role
+    assert "Sigue donde discrepen" in role
     # Nessun tetto fisso: la regola di arresto è l'accordo, non un numero.
-    assert "There is no quota of searches or pages" in role
+    assert "No hay cuota de búsquedas ni" in role
 
 
 @pytest.mark.parametrize("name", ["writer", "notebook-editor"])
@@ -184,8 +184,8 @@ def test_the_editor_is_told_to_drop_missing_pages_with_an_action_that_exists() -
     assert "`board action=remove_pages`" in role and "MISSING" in role
     assert "`notebook action=remove_pages`" in role
     # Non a ogni giro: un riferimento morto può tornare vivo (v. ``edit.remove_pages``).
-    assert "when this job deleted or moved it" in role
-    assert "otherwise name it in your report" in role
+    assert "cuando este trabajo la borrara o moviera" in role
+    assert "en caso contrario, nómbrala en" in role
     assert "remove_pages" in board_tool._ACTIONS
     from arkhiva.agent.tools import notebook as notebook_tool
 
@@ -199,8 +199,8 @@ def test_the_editor_writes_no_report_file_unless_asked_and_then_a_valid_audit() 
     import importlib.util
 
     role = _role("notebook-editor")
-    assert "Do not write report files in the notebook" in role
-    assert "final answer" in role
+    assert "No escribas archivos de informe en el cuaderno" in role
+    assert "va en tu respuesta final" in role
     script = (Path(__file__).resolve().parents[2] / "arkhiva" / "skills" / "llm-wiki" / "scripts"
               / "lint_wiki.py")
     spec = importlib.util.spec_from_file_location("lint_wiki_fields", script)
@@ -217,15 +217,16 @@ def test_the_editor_reports_an_unsearched_gap_instead_of_writing_it_in_the_page(
     pagine. Il buco era scritto nella pagina invece che sotto To research, e nessuno
     l'ha cercato; ``arkhiva/plan/audit.py`` ora lo segnala come ``unsearched_gap``."""
     role = _role("notebook-editor")
-    assert "A gap nobody searched never goes into a page" in role
-    assert "no \"queries to run\"" in role
-    assert "\"not documented\" only where a search came back empty, with the queries tried" in role
+    assert "Un hueco que nadie buscó nunca entra en una página" in role
+    assert "«consultas que lanzar»" in role
+    assert "«not documented» solo donde una búsqueda" in role
+    assert "volvió vacía, con las consultas probadas" in role
     # La forma della lista, mostrata e basta: su s22 (26/10 sera) il template diceva
     # «under **To research** — what is missing» e gli editor copiavano il trattino,
     # che il parser non leggeva. Ora la forma è una, e lo dice il perché.
-    assert "exactly `**To research:**`" in role
-    assert "- <page> — <what is missing> — queries: <the ones you would run>" in role
-    assert "a list in another shape is a gap lost" in role
+    assert "una línea que sea exactamente" in role
+    assert "- <página> — <qué falta> — consultas: <las que lanzarías>" in role
+    assert "una lista con otra forma es un hueco perdido" in role
     assert "under **To research** —" not in role
 
 
@@ -234,10 +235,10 @@ def test_the_editor_is_shown_the_reader_shape_with_linked_sources() -> None:
     pagina sì e una no senza il riassunto pratico in testa, citazioni lasciate in
     inglese in pagine italiane."""
     role = _role("notebook-editor")
-    assert "**In practice**" in role and "What to do, when, how much" in role
-    assert "## Sources" in role and "(<its URL>)" in role
-    assert "taken from the header of the `raw/` file it cites" in role
-    assert "not the file path alone" in role
-    assert "translated into the page's language" in role
+    assert "**In practice**" in role and "<Qué hacer, cuándo, cuánto" in role
+    assert "## Sources" in role and "(<su URL>)" in role
+    assert "tomada de la cabecera del archivo de `raw/` que cita" in role
+    assert "no solo la ruta del archivo" in role
+    assert "se traduce al idioma de la" in role
     # L'esempio resta in inglese (la regola di AGENTS.md): la lingua la dice il testo.
-    assert "written in the notebook's language" in role
+    assert "se escribe en el idioma del cuaderno" in role

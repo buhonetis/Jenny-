@@ -161,8 +161,8 @@ async def test_an_oversized_page_is_named_with_its_size(tmp_path: Path) -> None:
     prompt = await _prompt(loop)
 
     assert "`grossa.md`" in prompt
-    assert "over the 6,000 budget" in prompt
-    assert "skipped whole" in prompt
+    assert "por encima del presupuesto de 6,000" in prompt
+    assert "se **omite entera**" in prompt
     assert "`piccola.md`" not in prompt, (
         "l'elenco è delle pagine oltre il tetto: nominarle tutte è la lista dei nomi "
         "che la mappa dà già"
@@ -184,8 +184,8 @@ async def test_with_no_oversized_page_it_says_so_and_still_warns(tmp_path: Path)
 
     prompt = await _prompt(loop)
 
-    assert "over the 6,000 budget" not in prompt
-    assert "starves the pages the map lists after it" in prompt
+    assert "por encima del presupuesto de 6,000" not in prompt
+    assert "deja sin raciones a las que el mapa enumera después" in prompt
 
 
 @pytest.mark.parametrize(
@@ -204,8 +204,8 @@ async def test_the_prune_paragraph_only_appears_when_the_map_is_over(
 
     prompt = await _prompt(loop)
 
-    assert ("It is over." in prompt) is over
-    assert ("Prune prose, never entries" in prompt) is over
+    assert ("Está por encima." in prompt) is over
+    assert ("Poda prosa, nunca entradas" in prompt) is over
 
 
 async def test_the_numbers_come_from_the_readers_that_charge_them(tmp_path: Path) -> None:
@@ -222,8 +222,12 @@ async def test_the_numbers_come_from_the_readers_that_charge_them(tmp_path: Path
 
     prompt = await _prompt(loop)
 
-    assert f"against a ceiling of {MAP_TARGET_CHARS:,}" in prompt
-    assert f"inject {page_ceiling():,} characters" in prompt
+    # Il numero arriva dal lettore che lo applica, non da un letterale nel
+    # template: il testo va a capo fra «techo de» e la cifra, quindi si
+    # asserisce sulle due parti e non sulla riga intera.
+    assert "contra un techo de" in prompt
+    assert f"{MAP_TARGET_CHARS:,}" in prompt
+    assert f"puede inyectar {page_ceiling():,} caracteres" in prompt
 
 
 # ── Il puntatore alla ricetta ────────────────────────────────────────────────
@@ -262,10 +266,10 @@ async def test_it_carries_the_two_things_a_pass_cannot_have(tmp_path: Path) -> N
 
     prompt = await _prompt(loop)
 
-    assert "**Ask.**" in prompt
-    assert "You may read any page in full" in prompt
+    assert "**Pregunta.**" in prompt
+    assert "Puedes leer cualquier página entera" in prompt
     # E il freno, che con l'incoraggiamento dell'utente in mano è il primo a cedere.
-    assert "add and move, do not rewrite" in prompt
+    assert "añade y mueve, no reescribas" in prompt
 
 
 async def test_a_tidy_that_moves_nothing_is_allowed(tmp_path: Path) -> None:
@@ -281,7 +285,7 @@ async def test_a_tidy_that_moves_nothing_is_allowed(tmp_path: Path) -> None:
 
     prompt = await _prompt(loop)
 
-    assert "A tidy that moves nothing is a correct outcome" in prompt
+    assert "Un ordenado que no mueve nada es un resultado correcto" in prompt
 
 
 # ── Il contorno ──────────────────────────────────────────────────────────────
@@ -358,9 +362,9 @@ async def test_a_notebook_gets_the_notebook_section(tmp_path: Path) -> None:
 
     prompt = await _prompt(loop)
 
-    assert "notebook** layout" in prompt
+    assert "disposición **cuaderno**" in prompt
     assert "`compile` in a **project** wiki (notebook layout)" in prompt
-    assert "add and move, do not rewrite" in prompt
+    assert "añade y mueve, no reescribas" in prompt
 
 
 async def test_a_research_wiki_gets_the_five_numbered_steps(tmp_path: Path) -> None:
@@ -376,12 +380,12 @@ async def test_a_research_wiki_gets_the_five_numbered_steps(tmp_path: Path) -> N
 
     prompt = await _prompt(loop)
 
-    assert "research** layout" in prompt
-    assert "the five numbered steps of `compile` as written" in prompt
-    assert "do not apply its rules here" in prompt
-    assert "add and move, do not rewrite" not in prompt
+    assert "disposición **investigación**" in prompt
+    assert "los cinco pasos numerados de `compile` tal como están escritos" in prompt
+    assert "no apliques sus reglas aquí" in prompt
+    assert "añade y mueve, no reescribas" not in prompt
     # Al posto di quel freno, il freno che la ricetta ricerca ha davvero.
-    assert "confirm a split or a merge with them before writing it" in prompt
+    assert "confirma una escisión o una fusión con ellos antes de escribirla" in prompt
 
 
 @pytest.mark.parametrize("rel", ["concepts/x.md", "entities/y.md", "summaries/z.md"])
@@ -401,7 +405,7 @@ async def test_any_of_the_three_folders_declares_the_research_layout(
 
     prompt = await _prompt(loop)
 
-    assert "research** layout" in prompt
+    assert "disposición **investigación**" in prompt
 
 
 async def test_the_measurements_are_in_both_layouts(tmp_path: Path) -> None:
@@ -415,9 +419,9 @@ async def test_the_measurements_are_in_both_layouts(tmp_path: Path) -> None:
 
     prompt = await _prompt(loop)
 
-    assert "research** layout" in prompt
+    assert "disposición **investigación**" in prompt
     assert "`concepts/grossa.md`" in prompt
-    assert "over the 6,000 budget" in prompt
+    assert "por encima del presupuesto de 6,000" in prompt
 
 
 # ── La forma del testo, misurata come la rende la produzione ──────────────────

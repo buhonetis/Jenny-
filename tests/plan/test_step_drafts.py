@@ -424,7 +424,7 @@ async def test_after_a_restart_mid_step_the_step_is_told_its_drafts_already_wait
     step_msgs = [
         m for m in bus.inbound if m.metadata.get(INJECTED_EVENT_META) == PLAN_STEP_EVENT
     ]
-    assert "Already waiting for the user's approval" in step_msgs[-1].content
+    assert "Ya esperando la aprobación del usuario" in step_msgs[-1].content
     assert TARGET in step_msgs[-1].content
     assert "Already waiting" not in step_msgs[0].content
 
