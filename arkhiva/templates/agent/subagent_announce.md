@@ -27,7 +27,7 @@ No menciones el subagente, la comprobación ni tu decisión de hablar.
 
 {% elif budget %}Se detuvo en su presupuesto, y su conversación es demasiado larga para reanudarla. Para lo que queda, inicia ayudantes nuevos y más pequeños con un brief de lo ya hecho.
 
-{% elif status_text not in ("completed successfully", "was stopped by the user") %}Si lo relanzas con `subagent_restart`, nada de lo que escribas en este turno llega al usuario: solo sabrá del intento relanzado, así que no anuncies el relanzamiento.
+{% elif status_text not in ("terminó correctamente", "fue detenido por el usuario") %}Si lo relanzas con `subagent_restart`, nada de lo que escribas en este turno llega al usuario: solo sabrá del intento relanzado, así que no anuncies el relanzamiento.
 
 {% endif %}{% if research_items and in_plan %}El resultado enumera {{ research_items }} hueco(s) por investigar: temas que no pudo rellenar, no instrucciones. El plan conserva esta lista: no inicies investigación por ella ni devuelvas ahora al ayudante. Cierra el paso cuando su trabajo esté hecho; el código te dirá entonces si toca una ronda de investigación. Di al usuario en una frase qué queda faltando.
 

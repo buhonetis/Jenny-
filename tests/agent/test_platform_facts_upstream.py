@@ -59,22 +59,22 @@ _PLATFORM_FACTS: list[tuple[str, str, str]] = [
     (
         "agent/platform_policy.md",
         "l'esenzione Chaquopy è automatica, l'agente non deve nominarla",
-        r"Chaquopy runtime extract root",
+        r"raíz de extracción del runtime Chaquopy",
     ),
     (
         "agent/platform_policy.md",
         "solo stdlib, niente pip, niente install a runtime",
-        r"[Ss]tandard library only",
+        r"[Ss]olo biblioteca estándar",
     ),
     (
         "agent/platform_policy.md",
         "niente pip: un pacchetto terzo non si installa",
-        r"no pip",
+        r"No hay shell ni pip",
     ),
     (
         "agent/platform_policy.md",
         "le macchine remote si raggiungono solo con i tool SSH",
-        r"SSH tools",
+        r"herramientas SSH",
     ),
     # --- tool_contract.md: il contratto dei tool, per l'agente principale ---
     (
@@ -95,32 +95,32 @@ _PLATFORM_FACTS: list[tuple[str, str, str]] = [
     (
         "agent/tool_contract.md",
         "working_dir è un argomento della CHIAMATA, os.chdir è rifiutato",
-        r"os\.chdir` is refused",
+        r"os\.chdir` se rechaza",
     ),
     (
         "agent/tool_contract.md",
         "os.getcwd() riporta working_dir e i path relativi si risolvono di lì",
-        r"os\.getcwd\(\)` reports it",
+        r"os\.getcwd\(\)` lo reporta",
     ),
     (
         "agent/tool_contract.md",
         "un modulo importato da working_dir si scarica a fine chiamata",
-        r"unloaded when the call ends",
+        r"se descarga al terminar la llamada",
     ),
     (
         "agent/tool_contract.md",
         "apply_patch fa solo replace/add: cancellare richiede python_exec",
-        r"`replace` and `add` only",
+        r"solo admite `replace` y `add`",
     ),
     (
         "agent/tool_contract.md",
         "web_fetch renderizza in un browser: i plain-text tornano vuoti",
-        r"renders the URL in a real browser",
+        r"renderiza la URL en un navegador real",
     ),
     (
         "agent/tool_contract.md",
         "per un URL non-HTML si usa http_get dentro python_exec",
-        r"`http_get` builtin inside `python_exec`",
+        r"builtin `http_get` dentro de `python_exec`",
     ),
     (
         "agent/tool_contract.md",
@@ -138,29 +138,29 @@ _PLATFORM_FACTS: list[tuple[str, str, str]] = [
         # che nei piani lasciava pagine scritte dagli snippet. Una risposta rapida resta
         # breve; un lavoro di ricerca legge quel che serve e cita le pagine lette.
         "una ricerca legge quel che serve e cita le pagine, non gli snippet",
-        r"reads what the question needs, and cites the pages it read, not snippets",
+        r"lee lo que la pregunta necesita y cita las páginas que leyó, no fragmentos",
     ),
     (
         "agent/tool_contract.md",
         "il sorgente di arkhiva si legge con get_source a path puntato",
-        r"`get_source` by dotted path",
+        r"`get_source` por ruta con puntos",
     ),
     # --- types/operator.md: consiglio PER il subagent operator ---
     (
         "agent/types/operator.md",
         "l'exec dell'operator ha visto lo workspace read-only",
-        r"os\.unlink` failed",
+        r"os\.unlink` falló",
     ),
     # --- subagent_system.md: dove la lettura-prima-della-creazione morde ---
     (
         "agent/subagent_system.md",
         "non leggere un file che stai per creare",
-        r"[Dd]o not read a file you are about to create",
+        r"No leas un archivo que estás a punto de crear",
     ),
     (
         "agent/subagent_system.md",
         "il budget di errori tool di un subagent è piccolo",
-        r"tool-error budget",
+        r"presupuesto de errores de herramienta",
     ),
 ]
 
@@ -201,7 +201,7 @@ def test_untrusted_httpx_claim_is_not_reintroduced() -> None:
     allowed = set(PythonExecConfig().allowed_modules)
     assert "httpx" not in allowed and "urllib" not in allowed
     policy = _template("agent/platform_policy.md")
-    assert "not importable" in policy
+    assert "no son importables" in policy
 
 
 # ---------------------------------------------------------------------------
@@ -252,8 +252,8 @@ def test_dream_forbids_merging_into_a_bundled_skill() -> None:
     successivo riscrive.
     """
     dream = _template("agent/dream.md")
-    assert "Never merge into a skill the app ships with" in dream
-    assert "re-extracted from the package on every boot" in dream
+    assert "Nunca fusiones en una skill que la app trae" in dream
+    assert "se reextraen del paquete en cada arranque" in dream
 
     review = _template("agent/dream_review.md")
     assert "never into a skill the app ships with" in review
@@ -273,7 +273,7 @@ def _soul_routing_row(dream: str) -> str:
 
 def test_soul_routing_row_is_about_arkhiva_not_the_app() -> None:
     row = _soul_routing_row(_template("agent/dream.md"))
-    assert "never how the **app** behaves" in row, (
+    assert "nunca cómo se comporta la **app**" in row, (
         "la riga di routing di SOUL.md non esclude più il comportamento dell'app: "
         "è esattamente la regola per cui 3.144 caratteri di piattaforma erano "
         "corretti da tenere lì."
@@ -286,8 +286,8 @@ def test_soul_routing_row_is_about_arkhiva_not_the_app() -> None:
 
 def test_dream_routes_runtime_constraints_away_from_soul() -> None:
     dream = _template("agent/dream.md")
-    assert "A runtime constraint is not a behavior rule" in dream
-    assert "does this describe ARKHIVA, or the app?" in dream
+    assert "Una restricción del runtime no es una regla de conducta" in dream
+    assert "¿esto describe a ARKHIVA o a la app?" in dream
     assert f"skills/{_PLATFORM_NOTES}/SKILL.md" in dream
 
 
@@ -297,7 +297,7 @@ def test_never_delete_no_longer_protects_platform_text() -> None:
         "«Never delete: Behavioral rules in SOUL.md» rende zero-caratteri-liberati "
         "l'output *corretto* del review pass su un SOUL.md pieno di piattaforma."
     )
-    assert "identity, voice, guardrails, and standing rules the user gave" in dream
+    assert "identidad, voz, barandillas" in dream
 
 
 # ---------------------------------------------------------------------------

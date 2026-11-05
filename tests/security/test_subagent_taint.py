@@ -188,7 +188,7 @@ async def test_a_clean_result_is_unchanged(ws: Path) -> None:
     sm = _manager(ws)
     msg = await _run(sm, ws, "out/nota.md")
     assert "UNTRUSTED" not in msg.content
-    assert "Result:\nEcco il riassunto." in msg.content
+    assert "Resultado:\nEcco il riassunto." in msg.content
     assert "subagent_tainted" not in msg.metadata
 
 

@@ -1356,7 +1356,7 @@ class AgentLoop(
                 page_max=f"{ceiling:,}",
                 notebook=notebook,
                 pages_over="\n".join(
-                    f"  - `{rel}` — **{chars:,} characters, over the {ceiling:,} budget**"
+                    f"  - `{rel}` — **{chars:,} caracteres, por encima del presupuesto de {ceiling:,}**"
                     for rel, chars in over
                 ),
             )

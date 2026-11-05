@@ -113,7 +113,7 @@ async def test_defects_open_a_repair_list_instead_of_a_free_check(
     )
     assert plan.status == "running"
     message = _messages(bus)[-1]
-    assert "This step is only the repair" in message
+    assert "Este paso es solo la reparación" in message
     assert "wiki/salvia.md" in message and "query da fare" in message
     assert "Zero link morti" not in message  # il done_when libero non c'è più
     assert plan.steps[-1].extra["machine_check"]["round"] == 1

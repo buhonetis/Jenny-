@@ -151,14 +151,14 @@ def test_system_prompt_follows_the_mode(tmp_path: Path) -> None:
     orchestrated = ContextBuilder(tmp_path, orchestrator=True).build_system_prompt()
     classic = ContextBuilder(tmp_path, orchestrator=False).build_system_prompt()
 
-    assert "Orchestrator Mode" in orchestrated
-    assert "Do not poll" in orchestrated
-    assert "Process Execution" not in orchestrated
-    assert "## File and Coding Workflows" not in orchestrated
+    assert "Modo orquestador" in orchestrated
+    assert "No sondees" in orchestrated
+    assert "Ejecución de procesos" not in orchestrated
+    assert "## Flujos de archivo y de código" not in orchestrated
 
-    assert "Orchestrator Mode" not in classic
-    assert "Process Execution" in classic
-    assert "## File and Coding Workflows" in classic
+    assert "Modo orquestador" not in classic
+    assert "Ejecución de procesos" in classic
+    assert "## Flujos de archivo y de código" in classic
 
 
 # -- guardia anti-polling ------------------------------------------------------
@@ -524,7 +524,7 @@ def test_orchestrator_prompt_teaches_send_vs_spawn() -> None:
 
     prompt = render_template("agent/orchestrator.md", strip=True)
     assert "subagent_send" in prompt
-    assert "Follow-ups" in prompt
+    assert "Seguimientos" in prompt
 
 
 # -- la sessione d'origine ------------------------------

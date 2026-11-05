@@ -108,11 +108,11 @@ async def test_the_budget_announce_carries_the_report_and_says_how_to_continue(t
     assert closing, "no finalization call at the budget"
     assert closing[-1]["messages"][-1]["content"] == SUBAGENT_BUDGET_FINALIZATION_PROMPT
     text = announce.content
-    assert "iteration budget" in text.splitlines()[0]
+    assert "presupuesto de iteraciones" in text.splitlines()[0]
     assert REPORT in text
-    assert "Steps before the stop:" in text and "list_dir" in text
+    assert "Pasos antes del alto:" in text and "list_dir" in text
     assert "subagent_send" in text and record.task_id in text
-    assert "Do not spawn a new helper" in text
+    assert "No lances un ayudante nuevo" in text
     assert announce.metadata["subagent_status"] == "budget"
     assert announce.metadata["subagent_resumable"] is True
     assert REPORT in record.result_summary
@@ -128,8 +128,8 @@ async def test_a_budget_stop_too_long_to_resume_does_not_promise_a_continuation(
     assert record.state == "budget"
     assert record.resumable is False
     assert announce.metadata["subagent_resumable"] is False
-    assert "Do not spawn a new helper" not in announce.content
-    assert "too long to resume" in announce.content
+    assert "No lances un ayudante nuevo" not in announce.content
+    assert "demasiado larga para reanudarla" in announce.content
 
 
 async def test_the_snapshot_offers_the_continuation_only_on_the_latest_attempt(tmp_path):
@@ -197,7 +197,7 @@ async def test_budget_resumes_stop_at_the_cap_with_a_clear_refusal(tmp_path):
     assert record.resumable is False
     assert manager.status_snapshot("unified:default")["recent"][0]["resumable"] is False
     assert announce.metadata["subagent_resumable"] is False
-    assert "Split what remains into smaller helpers" in announce.content
+    assert "Divide lo que queda en ayudantes más pequeños" in announce.content
     assert manager.continuable(record.task_id) is False
     with pytest.raises(SubagentSendError, match=f"budget {MAX_BUDGET_RESUMES + 1} times"):
         await manager.send(record.task_id, "once more")

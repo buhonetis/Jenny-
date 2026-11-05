@@ -74,14 +74,14 @@ VERBATIM_USER_MAX_CHARS = 8_000
 VERBATIM_USER_EACH_MAX_CHARS = 2_000
 
 _CHECKPOINT_HEADER = (
-    "[Context checkpoint — not a message from the user. The earlier steps of this task "
-    "were replaced by the summary below to save space ({count}). Their tool results are "
-    "no longer in context: if you need one again, re-read the file or repeat the lookup "
-    "rather than guessing.]"
+    "[Checkpoint de contexto — no es un mensaje del usuario. Los pasos anteriores de esta "
+    "tarea se reemplazaron por el resumen de abajo para ahorrar espacio ({count}). Sus "
+    "resultados de herramientas ya no están en el contexto: si necesitas uno otra vez, "
+    "vuelve a leer el archivo o repite la consulta en lugar de adivinarla.]"
 )
 _DETERMINISTIC_NOTE = (
-    "(No summary could be written, so this is the list of the calls made in the "
-    "compacted steps, with the start of each result.)"
+    "(No se pudo escribir un resumen, así que esta es la lista de las llamadas hechas en "
+    "los pasos compactados, con el comienzo de cada resultado.)"
 )
 
 

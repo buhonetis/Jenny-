@@ -118,7 +118,7 @@ async def test_inside_a_project_the_literal_never_reaches_the_agent(
 
     assert expanded is not None
     assert expanded.content.strip() != PROJECT_INIT_COMMAND
-    assert "instructions file" in expanded.content, "è il prompt reso, non un segnaposto"
+    assert "archivo de instrucciones" in expanded.content, "è il prompt reso, non un segnaposto"
     # Tutto il resto del messaggio resta quello che era: cambia solo il testo.
     assert expanded.channel == "websocket" and expanded.chat_id == "default"
 

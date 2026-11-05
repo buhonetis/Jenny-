@@ -146,7 +146,7 @@ async def test_approve_takes_photo_a_and_opens_step_one(driver: PlanDriver, bus:
     assert msg.channel == "system" and msg.session_key == KEY
     assert msg.chat_id == "websocket:project:piante"
     assert msg.metadata[PLAN_ID_META] == plan.id and msg.metadata[PLAN_STEP_META] == "s1"
-    assert "Step 1: Cerco Acero e Ginkgo" in msg.content
+    assert "Paso 1: Cerco Acero e Ginkgo" in msg.content
     assert "Due ricerche" in msg.content
     assert driver.step_open(KEY) and driver.plan_running(KEY)
 
@@ -180,7 +180,7 @@ async def test_cut_steps_are_skipped_and_not_counted(driver: PlanDriver, bus: Fa
     assert plan.steps[0].status == "cut" and plan.steps[1].status == "now"
     view = plan_view(plan)
     assert view["total"] == 2 and view["current_step_id"] == "s2"
-    assert "step 1 of 2" in _step_messages(bus)[0].content
+    assert "paso 1 de 2" in _step_messages(bus)[0].content
 
 
 # ── il ciclo ────────────────────────────────────────────────────────────────
@@ -249,7 +249,7 @@ async def test_a_stalled_step_gets_one_reminder_then_blocks(
     plan = await _approve(driver)
     await driver.on_turn_end(KEY, {INJECTED_EVENT_META: PLAN_STEP_EVENT})
     [reminder] = _step_messages(bus, PLAN_REMINDER_EVENT)
-    assert "only reminder" in reminder.content
+    assert "único recordatorio" in reminder.content
     await driver.on_turn_end(KEY, dict(reminder.metadata))
     assert len(_step_messages(bus, PLAN_REMINDER_EVENT)) == 1
     plan = driver.store.load(plan.id)
@@ -991,8 +991,8 @@ async def test_the_step_turn_carries_done_when_and_the_stop_on_a_false_premise_r
 ) -> None:
     await _approve(driver)
     [msg] = _step_messages(bus)
-    assert f"Done when: {STEPS[0]['done_when']}" in msg.content
-    assert "premise of the plan proves false" in msg.content
+    assert f"Terminado cuando: {STEPS[0]['done_when']}" in msg.content
+    assert "una premisa del plan resulta falsa" in msg.content
     assert "plan_blocked" in msg.content
 
 
@@ -1015,8 +1015,8 @@ async def test_a_research_step_turn_lists_the_web_entries_it_covers(
     plan = driver.store.open_plan_for("piante")
     await driver.approve(plan.id, plan.version, [])
     [msg] = _step_messages(bus)
-    assert "This step searches these coverage entries" in msg.content
-    assert "- c2: Glicine — missing: la potatura" in msg.content
+    assert "Este paso busca estas entradas de cobertura" in msg.content
+    assert "- c2: Glicine — falta: la potatura" in msg.content
     assert "Acero e Ginkgo — missing" not in msg.content
     await driver.step_done(KEY, "cercato")
     await driver.on_turn_end(KEY, {})
@@ -1036,7 +1036,7 @@ async def test_the_planning_turn_shows_the_proposed_coverage_and_covers(
     assert "- c1: Acero e Ginkgo (notebook)" in block
     assert "- c2: Glicine (web)" in block
     assert "(covers: c1, c2)" in block
-    assert "reassigned by position in the new version: recheck every `covers`" in block
+    assert "se reasignan por posición en la versión nueva" in block
 
 
 async def test_the_step_turn_says_how_many_helpers_and_how_to_continue_one(
@@ -1044,14 +1044,14 @@ async def test_the_step_turn_says_how_many_helpers_and_how_to_continue_one(
 ) -> None:
     await _approve(driver)
     [msg] = _step_messages(bus)
-    assert "up to 5 helpers at once" in msg.content
-    assert "continue the same helper with `subagent_send`" in msg.content
-    assert "Never create `outputs/` in a notebook" in msg.content
+    assert "hasta 5 ayudantes a la vez" in msg.content
+    assert "continúa el mismo ayudante con `subagent_send`" in msg.content
+    assert "Nunca crees `outputs/` en un cuaderno" in msg.content
     # Il resoconto di un aiutante sta nella sua risposta: un file libero in audit/
     # lint_wiki lo segnala (ogni audit/*.md vuole il frontmatter di una voce).
-    assert "report goes in its final answer, not in a file" in msg.content
-    assert "audit entry in `audit/` with the audit frontmatter" in msg.content
-    assert "notebook-editor helper's job (`notebook` action `remove_pages`)" in msg.content
+    assert "va en su respuesta final, no en un archivo" in msg.content
+    assert "entrada de auditoría en `audit/` con el frontmatter de auditoría" in msg.content
+    assert "trabajo de un ayudante notebook-editor (`notebook` acción `remove_pages`)" in msg.content
 
 
 def test_the_prompts_number_of_plan_helpers_matches_the_manager() -> None:
@@ -1061,19 +1061,19 @@ def test_the_prompts_number_of_plan_helpers_matches_the_manager() -> None:
 
     for name in ("plan_step.md", "plan_mode.md"):
         text = (_AGENT_TEMPLATES / name).read_text(encoding="utf-8")
-        assert f"up to {PLAN_HELPER_SLOTS} helpers at once" in text, name
+        assert f"hasta {PLAN_HELPER_SLOTS} ayudantes a la vez" in text, name
 
 
 def test_the_planning_prompt_sizes_steps_with_numbers_and_the_notebook_tool() -> None:
     text = (_AGENT_TEMPLATES / "plan_mode.md").read_text(encoding="utf-8")
     assert "helper's budget" not in text
-    assert "about 10 pages" in text
+    assert "unas 10 páginas" in text
     assert "(`check`, `map`" in text and "`remove_pages`" in text
-    assert "the code runs it" in text and "`expect`" in text
+    assert "y lo ejecuta el código" in text and "`expect`" in text
     assert "`covers`" in text
-    assert "not a file" in text, "il resoconto del piano e' la nota e il messaggio finale"
-    assert "up to 5 when the items are many" in text
-    assert "notebook-editor helper with `remove_pages`" in text
+    assert "no un archivo" in text, "il resoconto del piano e' la nota e il messaggio finale"
+    assert "hasta 5 cuando los ítems son muchos" in text
+    assert "eliminar páginas es un ayudante notebook-editor con" in text
     assert "up to two researcher" not in text
     assert "`notebook map`" in text and "`notebook read_many`" in text
 
@@ -1084,9 +1084,9 @@ def test_helper_reports_go_in_the_answer_not_in_free_files(name: str) -> None:
     ``lint_wiki``); un file nel quaderno, se il compito lo chiede, e' una voce
     di audit col suo frontmatter."""
     text = " ".join((_AGENT_TEMPLATES / "types" / name).read_text(encoding="utf-8").split())
-    assert "report goes in your final answer, not in a file" in text
-    assert "audit entry in `audit/` with the audit frontmatter" in text
-    assert "Never create `outputs/` in a notebook" in text
+    assert "va en tu respuesta final" in text
+    assert "entrada de auditoría en `audit/` con el frontmatter de auditoría" in text
+    assert "Nunca crees `outputs/` en un cuaderno" in text
     assert "A report inside a notebook goes in its `audit/` folder" not in text
     # La guida del formato per percorso, come nel notebook-editor: «la skill» da
     # sola non dice quale file aprire.

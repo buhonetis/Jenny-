@@ -253,9 +253,9 @@ def test_the_prompt_tells_why_there_is_no_board_and_what_does_not_decide_it(tmp_
     assert fed["project_board_absence"] == "research"
 
     text = render_template("agent/project.md", project_path="wikis/finanza", **fed)
-    assert "This notebook has no board yet" in text
-    assert "research archive" in text
-    assert "not the pages' frontmatter" in text
+    assert "Este cuaderno aún no tiene tablero" in text
+    assert "archivo de investigación" in text
+    assert "ni el frontmatter de las páginas" in text
 
 
 def test_a_board_with_cards_keeps_the_absence_out_of_the_prompt(tmp_path) -> None:
@@ -267,8 +267,8 @@ def test_a_board_with_cards_keeps_the_absence_out_of_the_prompt(tmp_path) -> Non
     assert fed["project_board_absence"] == ""
 
     text = render_template("agent/project.md", project_path="wikis/piante", **fed)
-    assert "This notebook opens on its **board**" in text
-    assert "has no board yet" not in text
+    assert "Este cuaderno se abre en su **tablero**" in text
+    assert "aún no tiene tablero" not in text
 
 
 def test_who_changes_the_board_is_said_to_each_reader(tmp_path) -> None:
@@ -286,10 +286,10 @@ def test_who_changes_the_board_is_said_to_each_reader(tmp_path) -> None:
                                has=lambda name: name in tools, **fed)
 
     chat = render("spawn", "journal_append")
-    assert "is the job of a `notebook-editor`" in chat and "ask once first" in chat
-    assert "you do not change it" not in chat
-    assert "the `board` tool, exactly as asked" in render("board", "write_file")
-    assert "you do not change it — the main agent does" in render("write_file")
+    assert "es trabajo\nde un `notebook-editor`" in chat and "pregunta primero una vez" in chat
+    assert "no lo cambias" not in chat
+    assert "con la herramienta `board`, exactamente como se pida" in render("board", "write_file")
+    assert "no lo cambias tú — lo hace el agente principal" in render("write_file")
 
 
 def test_the_chat_knows_what_waits_in_the_envelope(tmp_path) -> None:

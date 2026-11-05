@@ -3,8 +3,8 @@ El usuario te ha pedido ordenar la wiki de este proyecto: `{{ project_path }}`.
 Esta es la operación `compile`, y tiene una receta. **Lee primero la skill `llm-wiki`** y síguela.
 {% if notebook %}
 Este proyecto está en la disposición **cuaderno** — páginas planas bajo `wiki/`, cada una con `state:` y
-`source:`, alimentadas por un `raw/journal/` de solo adición — así que la sección que quieres es `compile`
-en una wiki de **proyecto** (disposición cuaderno). Lleva las cinco reglas que difieren de la disposición
+`source:`, alimentadas por un `raw/journal/` de solo adición — así que la sección que quieres es la que en
+la skill se titula «`compile` in a **project** wiki (notebook layout)». Lleva las cinco reglas que difieren de la disposición
 de investigación, y cada una se ha equivocado antes: el techo es de caracteres y no de palabras, el texto
 se mueve **literalmente** sin fusionar ni reformular, `source:` es un valor único y nunca una lista,
 `state:` no sube durante una reestructuración, y la lista de páginas del mapa sale entera.

@@ -254,7 +254,7 @@ async def test_the_announce_tells_arkhiva_there_is_something_to_approve(ws: Path
     await sm._run_subagent("t1", spec, SubagentStatus(
         task_id="t1", label="l", task_description="installa", started_at=time.monotonic()))
     msg = await sm.bus.consume_inbound()
-    assert "wait for the user's approval on a card in the home chat" in msg.content
+    assert "esperan la aprobación del usuario en una tarjeta del chat de casa" in msg.content
     assert len(msg.metadata["subagent_staged_ids"]) == 1
 
 

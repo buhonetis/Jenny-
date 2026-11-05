@@ -424,7 +424,7 @@ async def test_run_subagent_uses_type_defaults_and_prompt(tmp_path: Path) -> Non
     assert seen["temperature"] == AGENT_TYPES["analyst"].temperature
     assert seen["max_iterations"] == AGENT_TYPES["analyst"].max_iterations
     assert "web_search" not in seen["tools"]
-    assert "Role: analyst" in str(seen["system"])
+    assert "Rol: analyst" in str(seen["system"])
 
 
 @pytest.mark.asyncio
@@ -466,4 +466,4 @@ def test_every_type_has_a_prompt_template() -> None:
 
     for name, atype in AGENT_TYPES.items():
         rendered = render_template(atype.prompt_template, strip=True)
-        assert f"Role: {name}" in rendered
+        assert f"Rol: {name}" in rendered

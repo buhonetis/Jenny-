@@ -194,7 +194,7 @@ class TestDreamPromptBudgetGauge:
         )
         # Nemmeno una riga vuota in più fra il template e la history.
         assert prompt.startswith(f"{legacy_template}\n\n## Conversation History\n")
-        assert "## Budget" not in prompt
+        assert "## Presupuesto" not in prompt
 
     def test_gauge_injects_budget_section(self, store):
         store.append_history("hello")
@@ -202,7 +202,7 @@ class TestDreamPromptBudgetGauge:
         assert result is not None
         prompt = result.prompt
 
-        assert "## Budget" in prompt
+        assert "## Presupuesto" in prompt
         assert "MEMORY.md [67% - 1474/2200 chars]" in prompt
 
     def test_budget_section_sits_after_the_call_frugality_rule(self, store):
@@ -217,8 +217,8 @@ class TestDreamPromptBudgetGauge:
         assert result is not None
         prompt = result.prompt
 
-        assert prompt.index("## Editing") < prompt.index("## Budget")
-        assert prompt.index("## Budget") < prompt.index("## Conversation History")
+        assert prompt.index("## Edición") < prompt.index("## Presupuesto")
+        assert prompt.index("## Presupuesto") < prompt.index("## Conversation History")
 
     def test_empty_gauge_behaves_like_no_gauge(self, store):
         store.append_history("hello")
@@ -243,7 +243,7 @@ _DREAM_MD_RULES: tuple[tuple[str, str, str], ...] = (
         "proponi voci, non riscrivere file",
         "il difetto d'origine: finché il prompt dice «modifica il file», il modello "
         "modifica il file, e sotto pressione pota una riga e si ferma",
-        "Propose entries, do not rewrite files",
+        "Propón entradas, no reescribas archivos",
     ),
     (
         "tutto il lotto in una chiamata",
@@ -252,59 +252,59 @@ _DREAM_MD_RULES: tuple[tuple[str, str, str], ...] = (
         "``add`` un fatto per volta faceva ``list`` e filtrava da sé, e un lotto di "
         "soli duplicati restava senza evidenza per voce — trattenuto pur essendo "
         "consolidato",
-        "Propose the whole batch in one call",
+        "Propón todo el lote en una llamada",
     ),
     (
         "e il parametro che lo permette",
         "l'altra metà: «tutto in una chiamata» senza dire *come* lascia il modello "
         "a inventarsi la forma",
-        "`add` takes `texts`",
+        "`add` toma `texts`",
     ),
     (
         "non leggere il file per decidere",
         "filtrare da sé è il comportamento da chiudere: il tool sa già cosa è nuovo",
-        "Do not read the file first to work out what is new",
+        "No leas antes el archivo para calcular qué es nuevo",
     ),
     (
         "a cosa serve davvero list",
         "togliergli ``list`` di mano senza dire a cosa serve lo lascerebbe senza "
         "modo di trovare un id da sostituire",
-        "the id of an entry you intend to `replace` or `remove`",
+        "el id de una entrada que pretendas `replace` o `remove`",
     ),
     (
         "proporre un duplicato è gratis",
         "se proporre un duplicato sembrasse costoso, il modello tornerebbe a "
         "filtrare da sé",
-        "costs nothing to propose",
+        "no cuesta nada proponerla",
     ),
     (
         "SOUL.md resta a scrittura-file",
         "prosa con una struttura, non un elenco: le voci non c'entrano, e un "
         "``add`` su SOUL.md non ha dove atterrare",
-        "SOUL.md and `skills/<name>/SKILL.md` have no entry tool",
+        "no tienen herramienta de entradas",
     ),
     (
         "le etichette del Consolidator si dichiarano",
         "il diario porta ``[skip]`` e ``[correction]``: se il prompt non le spiega, "
         "il modello le tratta come testo del fatto",
-        "History attribute tags",
+        "Etiquetas del historial",
     ),
     (
         "e si dice cosa vuol dire skip",
         "«audit-only» è la ragione per cui una riga marcata così non deve entrare in "
         "memoria: senza, il modello la salva comunque",
-        "[skip]: audit-only",
+        "[skip]: solo auditoría",
     ),
     (
         "e cosa vuol dire correction",
         "una correzione non è un fatto in più: è un fatto che ne **sostituisce** uno",
-        "[correction]: replace the older conflicting fact",
+        "[correction]: reemplaza en su sitio el hecho anterior en conflicto",
     ),
     (
         "le etichette non finiscono nei file",
         "un'etichetta salvata dentro il fatto lo rende illeggibile per sempre, e "
         "nessuno la va a togliere a mano",
-        "Always strip these bracketed tags from saved memory content",
+        "Quita siempre esas etiquetas entre corchetes del contenido guardado",
     ),
 )
 
@@ -331,7 +331,7 @@ class TestThePromptTeachesTheEntryTool:
     def test_it_names_the_tool_and_its_three_verbs(self):
         prompt = self._prompt()
 
-        assert "`memory` tool" in prompt
+        assert "herramienta `memory`" in prompt
         for verb in ("`add`", "`replace`", "`remove`"):
             assert verb in prompt
 
@@ -374,8 +374,8 @@ class TestThePromptTeachesTheEntryTool:
         prompt = result.prompt
 
         assert _RETIRED_BLESSING not in prompt
-        assert "prunes and then stops has saved nothing" in prompt
-        assert "Finish with the `add`." in prompt
+        assert "poda y luego se detiene no ha guardado nada" in prompt
+        assert "Termina con el `add`." in prompt
 
 
 class TestDreamReviewState:
@@ -772,7 +772,7 @@ class TestWriteFileSaysWhatThePromptSays:
             "agent/dream.md", strip=True, skill_creator_path="skills/skill-creator/SKILL.md",
         )
         claim = re.search(
-            r"your registry allows exactly (.+?), so a write there is refused", prompt,
+            r"tu registro permite exactamente (.+?), así que una escritura ahí se rechaza", prompt,
         )
         assert claim is not None, "la frase del registry è cambiata: riallinea il test"
         claimed = re.findall(r"`([^`]+)`", claim.group(1))

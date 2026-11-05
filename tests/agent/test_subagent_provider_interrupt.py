@@ -91,7 +91,7 @@ async def test_a_transient_provider_error_keeps_the_history_and_resumes(
     await _settle(sm)
 
     announce = (await _announces(sm))[-1]
-    assert "provider kept failing for a while" in announce
+    assert "el proveedor estuvo fallando un rato" in announce
     assert "subagent_send" in announce
     assert sm._history.load(lineage) is not None
 
@@ -136,7 +136,7 @@ async def test_a_real_error_still_drops_the_history(tmp_path: Path) -> None:
     await _settle(sm)
 
     announce = await sm.bus.consume_inbound()
-    assert "provider kept failing" not in announce.content
+    assert "el proveedor estuvo fallando" not in announce.content
     assert "subagent_interrupted" not in announce.metadata
     assert sm._history.load(lineage) is None
     assert sm.list_records("unified:default")[-1].resumable is False

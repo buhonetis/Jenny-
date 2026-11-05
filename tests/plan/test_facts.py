@@ -151,7 +151,7 @@ async def _close(driver: PlanDriver) -> None:
     await driver.on_turn_end(KEY, {})
 
 
-_LOST_HEADER = "Facts that were in the notebook before this plan and are in no page now"
+_LOST_HEADER = "Hechos que estaban en el cuaderno antes de este plan y ahora no están en ninguna página"
 
 
 async def test_the_check_step_lists_the_facts_the_plan_lost(
@@ -238,4 +238,4 @@ async def test_a_capped_list_says_the_total(
     await _close(driver)
     await _close(driver)
     check = _step_messages(bus)[-1]
-    assert f"({MAX_LOST} shown of 50)" in check.content
+    assert f"({MAX_LOST} mostrados de 50)" in check.content

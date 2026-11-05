@@ -50,8 +50,8 @@ from arkhiva.session.manager import SessionManager
 _MAP = "# casa\n\n## Pagine\n\n- [[furgone]] — il Ducato\n"
 _PAGES = {"furgone.md": "---\nstate: open\n---\n\n# Furgone\n\nDucato 2011, turbo da cambiare."}
 
-_MAP_HEADING = "### The map, as it stands"
-_PAGES_HEADING = "### The pages, as they stand"
+_MAP_HEADING = "### El mapa, tal como está"
+_PAGES_HEADING = "### Las páginas, tal como están"
 
 
 def _wiki(root: pathlib.Path, name: str = "casa", *, filled: bool = True) -> pathlib.Path:
@@ -83,7 +83,7 @@ def _content_sections(prompt: str) -> str:
     """Le due sezioni di contenuto del blocco, isolate da quel che le circonda."""
     if _MAP_HEADING not in prompt:
         return ""
-    return prompt.split(_MAP_HEADING, 1)[1].split("\n## Depth", 1)[0]
+    return prompt.split(_MAP_HEADING, 1)[1].split("\n## Profundidad", 1)[0]
 
 
 # ── (a) il subagent le riceve, e nella stessa forma ───────────────────────
@@ -98,7 +98,7 @@ def test_the_subagent_inside_a_project_gets_the_map_and_the_pages(tmp_path) -> N
     assert _PAGES_HEADING in prompt
     assert "## Pagine" in prompt, "la mappa e' nominata ma non consegnata"
     assert "turbo da cambiare" in prompt, "le pagine sono nominate ma non consegnate"
-    assert "Those are 1 of the project's 1 pages" in prompt
+    assert "Son 1 de las 1 páginas del proyecto" in prompt
 
 
 def test_the_two_sections_are_byte_identical_to_the_main_prompt(tmp_path) -> None:
@@ -128,9 +128,9 @@ def test_the_counts_are_fed_together_with_the_text(tmp_path) -> None:
 
     prompt = _manager(tmp_path)._build_subagent_prompt(workspace=project)
 
-    assert "Those are 3 of the project's 3 pages" in prompt
-    assert "Those are  of" not in prompt
-    assert "the project's  pages" not in prompt
+    assert "Son 3 de las 3 páginas del proyecto" in prompt
+    assert "Son  de las" not in prompt
+    assert "de las  páginas del proyecto" not in prompt
 
 
 # ── (b) una variabile non alimentata e' un guasto, non una sezione vuota ──
@@ -236,10 +236,10 @@ def test_a_project_with_nothing_in_it_gets_no_empty_heading(tmp_path) -> None:
 
     prompt = _manager(tmp_path)._build_subagent_prompt(workspace=project)
 
-    assert "# Project Folder" in prompt, "la pianta serve comunque: e' dove scrive"
+    assert "# Carpeta del proyecto" in prompt, "la pianta serve comunque: e' dove scrive"
     assert _MAP_HEADING not in prompt
     assert _PAGES_HEADING not in prompt
-    assert "of the project's" not in prompt
+    assert "páginas del proyecto" not in prompt
 
 
 def test_a_project_with_a_map_but_no_pages_only_shows_the_map(tmp_path) -> None:
@@ -259,7 +259,7 @@ def test_outside_a_project_neither_section_appears(tmp_path) -> None:
     restano le regole del workspace."""
     prompt = _manager(tmp_path)._build_subagent_prompt(workspace=tmp_path)
 
-    assert "# Project Folder" not in prompt
+    assert "# Carpeta del proyecto" not in prompt
     assert _MAP_HEADING not in prompt
     assert _PAGES_HEADING not in prompt
-    assert "Files you produce go under" in prompt
+    assert "archivos que produ" in prompt
