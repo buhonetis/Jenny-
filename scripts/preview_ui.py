@@ -76,10 +76,15 @@ def _bootstrap(request: Request) -> Response:
     from arkhiva.webui import ui_version
 
     host = request.headers.get("Host") or "localhost"
+    # Detrás del proxy del sandbox la página llega por https: un ws:// ahí lo
+    # bloquea el navegador como contenido mixto, y el cascarón se queda
+    # «reconectando» aunque los ficheros hayan cargado bien.
+    proto = (request.headers.get("X-Forwarded-Proto") or "").split(",")[0].strip().lower()
+    scheme = "wss" if proto == "https" else "ws"
     return _json(
         {
             "ws_path": "/",
-            "ws_url": f"ws://{host}/",
+            "ws_url": f"{scheme}://{host}/",
             "model_name": "ARKHIVA",
             "provider": "preview",
             "remote": False,
