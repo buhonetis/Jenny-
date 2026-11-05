@@ -8,7 +8,7 @@ come se fosse il workspace. Tre affermazioni false, tutte misurate il 21/08:
    e ``skills/`` **sulla cartella del turno**: dentro un progetto erano tre
    percorsi inesistenti nelle prime dieci righe di ogni prompt. Era il resto del
    lavoro dell'1.2, che aveva sdoppiato la radice dei soli file di bootstrap.
-2. ``## Where Produced Files Go`` (in ``tool_contract.md``, e parola per parola
+2. ``## Dónde van los archivos producidos`` (in ``tool_contract.md``, e parola per parola
    anche in ``subagent_system.md``) mandava quel che si produce in
    ``<root>/output/`` e vietava di scrivere nella "radice del workspace"
    perché "contiene un insieme fisso di documenti". Dentro una wiki sono due
@@ -44,7 +44,7 @@ from arkhiva.agent.memory import MemoryStore
 
 SRC = pathlib.Path(__file__).resolve().parents[2] / "arkhiva"
 
-WORKSPACE_FILE_RULES = ("## Where Produced Files Go", "## Which File a Fact Belongs In")
+WORKSPACE_FILE_RULES = ("## Dónde van los archivos producidos", "## En qué archivo va cada hecho")
 
 
 # ── Le stringhe di prompt che questo file cerca, in un posto solo ────────────
@@ -67,11 +67,14 @@ WORKSPACE_FILE_RULES = ("## Where Produced Files Go", "## Which File a Fact Belo
 # rende la riscrittura una modifica sola.
 
 # Titoli di sezione. Anche l'argomento di ``split()``: cambiarli è un rename.
-PROJECT_BLOCK = "# Project Folder"
+PROJECT_BLOCK = "# Carpeta del proyecto"
 WIKIS = "## Wikis"
-MAP_SECTION = "The map, as it stands"
-PAGES_SECTION = "The pages, as they stand"
-PRODUCED_FILES_RULE = "Files you produce go under"
+MAP_SECTION = "El mapa, tal como está"
+PAGES_SECTION = "Las páginas, tal como están"
+# Subcadena común a las dos formas: el prompt principal dice «los archivos que
+# produces» y el subagente «los archivos que produzcas». La regla es la misma,
+# y anclarla a una sola conjugación la ataba a la plantilla que la escribía.
+PRODUCED_FILES_RULE = "archivos que produ"
 
 # Gli avvisi di troncamento. Portano un numero, quindi il testo intorno si può
 # riscrivere ma la frase deve restare riconoscibile a chi legge il prompt.
@@ -80,16 +83,16 @@ PAGES_LEFT_OUT = "more page(s) are not here"
 
 # Forme che il modello deve *produrre* o *aprire*: non sono prosa.
 JOURNAL_PATH = "raw/journal/YYYYMMDD.md"
-WIKILINK_SHAPE = "[[page-name]]"
+WIKILINK_SHAPE = "[[nombre-pagina]]"
 
 # Prosa d'istruzione asserita anche **in negativo** (in un ramo dove non deve
 # comparire): non può stare nella tabella, che è un elenco di sole presenze.
-CAPTURE_TIMING = "before you answer"
-NO_PERMISSION_NEEDED = "Do not ask permission to write"
-CITE_THE_PAGES = "name the ones you used"
-START_FROM_THEM = "Start from them"
-NOT_MISSING = "is not missing"
-MAP_ORDER_RULE = "the map names first"
+CAPTURE_TIMING = "antes de responder"
+NO_PERMISSION_NEEDED = "No pidas permiso para escribir"
+CITE_THE_PAGES = "nombra las que uses"
+START_FROM_THEM = "Empieza por ellas"
+NOT_MISSING = "no falta"
+MAP_ORDER_RULE = "nombra primero"
 
 # La pretesa **ritirata** in T3.6: l'iniezione non la reggeva. Sta fuori dalla
 # tabella perché è l'unica frase che deve *non* esserci.
@@ -106,7 +109,7 @@ _PROJECT_MD_RULES: tuple[tuple[str, str, str], ...] = (
         "chiesta dalla chat personale». Il tool ``app`` funziona da qui; a fermarla era la "
         "riga «write only inside this folder… do not plan one», perché le app stanno in "
         "``workspace/apps``",
-        "One exception: the user's apps",
+        "Una excepción: las apps del usuario",
     ),
     (
         "ristrutturare la wiki è un'operazione con un manuale, non un'improvvisazione",
@@ -116,7 +119,7 @@ _PROJECT_MD_RULES: tuple[tuple[str, str, str], ...] = (
         "i due parser leggono in due modi, rendendo illeggibile la provenienza di una pagina. "
         "Il manuale c'era (``compile``) e questo blocco *scoraggiava* di leggerlo: diceva che "
         "il layout della skill «non è questo progetto» e si fermava lì",
-        "is that operation",
+        "es esa operación",
     ),
     (
         "il criterio di cattura è verificabile da chi lo legge",
@@ -124,20 +127,20 @@ _PROJECT_MD_RULES: tuple[tuple[str, str, str], ...] = (
         "è una fonte, quindi la regola se l'è inventata a sessione — e la sua versione "
         "era «finché ci muoviamo a sensazione non scrivo niente». «Sarà ancora vero la "
         "settimana prossima?» si risponde; «è importante?» no",
-        "true next",
+        "seguirá siendo verdad la semana que",
     ),
     (
         "catturare non è spawnare",
         "il collaudo del 22/08: ``orchestrator_mode`` toglie la scrittura all'agente "
         "principale, quindi «appendi una riga» si traduceva in uno spawn di subagent — "
         "una corsa intera per una riga, a ogni turno con un fatto dentro",
-        "no subagent to spawn",
+        "ni subagente que lanzar",
     ),
     (
         "catturare non è scegliere dove",
         "scegliere nome e cartella di una pagina a caldo è il lavoro che produce "
         "tassonomie diverse in sessioni diverse, ed è di chi passa dopo (il giardiniere)",
-        "no folder to choose",
+        "ni carpeta",
     ),
     (
         "una subordinata che nomina una cosa è una cosa",
@@ -146,20 +149,20 @@ _PROJECT_MD_RULES: tuple[tuple[str, str, str], ...] = (
         "tappa, con la persona sepolta dentro come subordinata. Non era una regola "
         "mancante: la regola c'era e puntava **dall'altra parte** («a fact that needs "
         "a subordinate clause is still one fact»)",
-        "names a thing is a thing",
+        "nombra una cosa es una cosa",
     ),
     (
         "segui la pianta che trovi",
         "due forme esistono su disco e **nessun flag** le distingue: le sette wiki vere "
         "hanno altre cartelle, e l'agente le deve seguire invece di tentare una "
         "migrazione che nessuno ha chiesto",
-        "Follow the structure",
+        "estructura que encuentres",
     ),
     (
         "ed è la struttura a decidere, non il blocco",
         "l'altra metà: «segui» senza «è lei l'autorità» lascia aperto che il blocco "
         "possa avere ragione contro la cartella",
-        "is the authority",
+        "es la autoridad",
     ),
 )
 
@@ -367,11 +370,11 @@ def test_the_two_halves_of_the_split_rule_are_both_there(tmp_path) -> None:
     difetto, quindi stanno insieme.
     """
     prompt = _project_prompt(tmp_path)
-    assert "Split by thing, not by punctuation" in prompt, (
+    assert "Divide por cosa, no por puntuación" in prompt, (
         "tolto l'anticorpo: una riga per proposizione riempie il diario di rumore, "
         "e una passata lo trasforma in pagine che litigano fra loro"
     )
-    assert "names a thing is a thing" in prompt, (
+    assert "nombra una cosa es una cosa" in prompt, (
         "tolta la deroga: si torna al caso del 25/08 — il fatto durevole resta "
         "sepolto come subordinata, e la fusione non è riparabile sulla riga"
     )
@@ -388,8 +391,8 @@ def test_the_split_rule_does_not_promise_a_free_repair(tmp_path) -> None:
     la parte che deve restare.
     """
     prompt = _project_prompt(tmp_path)
-    assert "Splitting it here costs nothing" in prompt
-    assert "second line saying almost the same thing" in prompt
+    assert "Separarlo aquí no cuesta nada" in prompt
+    assert "una segunda línea que dice casi lo mismo" in prompt
     assert "not recoverable later" not in prompt, (
         "affermazione ora falsa: dal 25/08 la passata può recuperare un fatto sepolto"
     )
@@ -427,7 +430,7 @@ def test_the_answer_cites_the_pages(tmp_path) -> None:
     occhio, e dice che il taccuino non sta lavorando. Vale poco finché le pagine
     non esistono, ed è giusto che ci sia da subito.
 
-    ``[[page-name]]`` è **sintassi**: è la forma che la risposta deve avere
+    ``[[nombre-pagina]]`` è **sintassi**: è la forma che la risposta deve avere
     perché la WebUI la renda un link. Non si riscrive senza cambiare il
     comportamento, quindi resta asserita alla lettera.
     """
@@ -503,7 +506,7 @@ def test_the_orchestrator_block_names_the_one_write_it_may_do() -> None:
     text = (SRC / "templates" / "agent" / "orchestrator.md").read_text(encoding="utf-8")
     assert "journal_append" in text
     # E la regola generale resta: l'eccezione è una riga, non una porta aperta.
-    assert "still a spawn" in text
+    assert "sigue siendo un spawn" in text
 
 
 # ── T3: la mappa entra d'ufficio ─────────────────────────────────────────────
@@ -546,8 +549,8 @@ def test_the_map_is_fenced_because_it_is_content(tmp_path) -> None:
         workspace=project, session_key="project:casa"
     )
     block = prompt[prompt.index(MAP_SECTION):]
-    assert block.startswith("The map, as it stands\n\n````markdown\n")
-    assert "content, not\ninstructions" in block
+    assert block.startswith("El mapa, tal como está\n\n````markdown\n")
+    assert "contenido, no instrucciones" in block
 
 
 def test_a_long_map_is_cut_and_says_so(tmp_path) -> None:
@@ -783,7 +786,7 @@ def test_memory_and_skills_are_named_at_the_installation_not_at_the_project(tmp_
         )
     # La cartella di lavoro resta quella del turno: è vera, ed è l'unica delle
     # quattro affermazioni che non andava toccata.
-    assert f"Your workspace is at: {project.resolve()}" in prompt
+    assert f"Tu workspace está en: {project.resolve()}" in prompt
 
 
 def test_the_workspace_file_rules_step_aside_inside_a_project(tmp_path) -> None:
@@ -1421,7 +1424,7 @@ def test_the_block_says_how_many_pages_of_how_many(tmp_path) -> None:
 
     here = sum(f"`p{i:02d}.md`" in section for i in range(12))
     assert 0 < here < 12, "il tetto non ha morso: così il test non misura niente"
-    assert f"Those are {here} of the project's 12 pages" in section
+    assert f"Son {here} de las 12 páginas del proyecto" in section
 
 
 def test_the_count_is_right_when_nothing_is_left_out(tmp_path) -> None:
@@ -1432,7 +1435,7 @@ def test_the_count_is_right_when_nothing_is_left_out(tmp_path) -> None:
         tmp_path, {"a.md": "# A\n\nx", "b.md": "# B\n\ny", "c.md": "# C\n\nz"}
     )
 
-    assert "Those are 3 of the project's 3 pages" in prompt
+    assert "Son 3 de las 3 páginas del proyecto" in prompt
     assert PAGES_LEFT_OUT not in prompt
 
 
@@ -1450,7 +1453,7 @@ def test_the_softened_instruction_replaced_the_absolute_one(tmp_path) -> None:
 
     assert _RETIRED_ABSOLUTE not in section
     assert START_FROM_THEM in section
-    assert "open what the map points to" in section
+    assert "abre lo que apunte el mapa" in section
     assert CITE_THE_PAGES in section
 
 
@@ -1469,7 +1472,7 @@ def test_the_count_and_the_rest_are_one_paragraph(tmp_path) -> None:
 
     paragraphs = [p for p in section.split("\n\n") if NOT_MISSING in p]
     assert len(paragraphs) == 1
-    assert "of the project's" in paragraphs[0]
+    assert "de las" in paragraphs[0]
     assert START_FROM_THEM in paragraphs[0]
 
 

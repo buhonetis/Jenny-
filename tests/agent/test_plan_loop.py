@@ -99,15 +99,15 @@ class Script:
             return self._after_tool(messages)
         text = _text(last)
         self.prompts.append(text)
-        if "[Planning turn]" in text:
+        if "[Turno de planificación]" in text:
             if self.hang_planning:
                 self.planning_started.set()
                 await asyncio.Event().wait()  # fino al cancel
-            if self.ask_first and "The user pressed Plan" in text:
+            if self.ask_first and "El usuario pulsó Plan" in text:
                 return LLMResponse(content="La camelia la tengo? Se non mi dici niente: sì.")
             # Prima si guarda il quaderno: ``plan_propose`` rifiuta senza.
             return _call("read_file", path="wiki/index.md")
-        found = re.search(r"\[Plan(?: reminder)? — step (\d+) of", text)
+        found = re.search(r"\[(?:Recordatorio del plan — el paso|Plan — paso) (\d+) de", text)
         if found and self.refuse_steps:
             return LLMResponse(content=None, finish_reason="content_filter")
         if found and self.hang_steps:
@@ -204,7 +204,7 @@ async def test_the_planning_turn_offers_only_plan_propose(workspace: Path) -> No
     await _planning(loop, "Rifai la wiki")
     assert "plan_propose" in script.offered[0]
     assert not (script.offered[0] & PLAN_STEP_TOOLS)
-    assert "[Planning turn]" in script.prompts[0]
+    assert "[Turno de planificación]" in script.prompts[0]
     plan = driver.store.open_plan_for("piante")
     assert plan is not None and plan.status == "proposed"
 
@@ -217,7 +217,7 @@ async def test_plan_mode_outside_a_notebook_offers_nothing(workspace: Path) -> N
         metadata={"plan_mode": True},
     ))
     assert not (script.offered[-1] & PLAN_TOOLS)
-    assert "[Planning turn]" not in script.prompts[-1]
+    assert "[Turno de planificación]" not in script.prompts[-1]
 
 
 async def test_a_step_turn_offers_the_step_tools_and_persists_no_user_bubble(
@@ -233,9 +233,9 @@ async def test_a_step_turn_offers_the_step_tools_and_persists_no_user_bubble(
     outcome = await loop._process_message(step_msg)
     assert PLAN_STEP_TOOLS <= script.offered[-1]
     assert "plan_propose" not in script.offered[-1]
-    assert "Step 1: Scrivo acero" in script.prompts[-1]
+    assert "Paso 1: Scrivo acero" in script.prompts[-1]
     # La lista del piano è anche nel contesto del turno.
-    assert 'Plan "Rifare la wiki"' in script.prompts[-1]
+    assert 'Plan: Rifare la wiki' in script.prompts[-1]
     session = loop.sessions.get_or_create(KEY)
     row = next(m for m in session.messages if m.get(INJECTED_EVENT_META) == PLAN_STEP_EVENT)
     assert row["role"] == "user" and row["plan_step"] == "s1"
@@ -292,7 +292,7 @@ async def test_propose_approve_and_three_steps_to_done(workspace: Path) -> None:
     assert driver.changes(plan.id)["added"] == [
         "wiki/passo1.md", "wiki/passo2.md", "wiki/passo3.md", "wiki/passo4.md",
     ]
-    steps_seen = [p for p in script.prompts if "[Plan — step" in p]
+    steps_seen = [p for p in script.prompts if "[Plan — paso" in p]
     assert len(steps_seen) == 4
 
 
@@ -311,7 +311,7 @@ async def test_a_stalled_step_is_reminded_once_then_blocked(workspace: Path) -> 
         await _stop(loop, task)
     plan = driver.store.load(plan.id)
     assert plan.blocked["reason"] == "stalled"
-    assert sum("[Plan reminder" in p for p in script.prompts) == 1
+    assert sum("[Recordatorio del plan" in p for p in script.prompts) == 1
 
 
 async def test_a_refused_step_blocks_without_a_reminder(workspace: Path) -> None:
@@ -331,9 +331,9 @@ async def test_a_refused_step_blocks_without_a_reminder(workspace: Path) -> None
         await _stop(loop, task)
     plan = driver.store.load(plan.id)
     assert plan.blocked["reason"] == "refused"
-    assert sum("[Plan reminder" in p for p in script.prompts) == 0
+    assert sum("[Recordatorio del plan" in p for p in script.prompts) == 0
     # Il turno del passo è l'ultima riga ``user``: niente da togliere, una richiesta sola.
-    assert sum("[Plan — step" in p for p in script.prompts) == 1
+    assert sum("[Plan — paso" in p for p in script.prompts) == 1
 
 
 async def test_cancelling_a_planning_stops_the_turn_in_flight(workspace: Path) -> None:
@@ -403,7 +403,7 @@ async def test_stop_with_a_helper_running(workspace: Path) -> None:
         await driver.approve(plan.id, plan.version, [])
         running.add("aiutante")
         # Il passo ha lanciato un aiutante: il turno finisce, il passo resta aperto.
-        await wait_until(lambda: any("[Plan — step 1" in p for p in script.prompts), timeout=5)
+        await wait_until(lambda: any("[Plan — paso 1" in p for p in script.prompts), timeout=5)
         await wait_until(lambda: KEY not in loop._pending_queues, timeout=5)
         assert driver.store.load(plan.id).status == "running"
         await driver.stop(plan.id, "keep")
@@ -412,7 +412,7 @@ async def test_stop_with_a_helper_running(workspace: Path) -> None:
     plan = driver.store.load(plan.id)
     assert cancelled == [KEY]
     assert plan.status == "stopped" and plan.steps[0].status == "interrupted"
-    assert not any("[Plan reminder" in p for p in script.prompts)
+    assert not any("[Recordatorio del plan" in p for p in script.prompts)
 
 
 async def test_slash_stop_in_the_notebook_stops_the_plan(workspace: Path) -> None:
@@ -630,7 +630,7 @@ async def test_a_reminder_injected_into_another_turn_ends_in_a_block(workspace: 
     reminder = await asyncio.wait_for(loop.bus.consume_inbound(), timeout=2)
     assert reminder.metadata[INJECTED_EVENT_META] == "plan_reminder"
     await _dispatch(loop, _user("ci sei?"), reminder)
-    assert any("[Plan reminder" in p for p in script.prompts)
+    assert any("[Recordatorio del plan" in p for p in script.prompts)
     plan = driver.store.load(plan.id)
     assert plan.status == "blocked" and plan.blocked["reason"] == "stalled"
 
@@ -643,7 +643,7 @@ async def test_a_stale_reminder_is_not_injected_mid_turn(workspace: Path) -> Non
     reminder = await asyncio.wait_for(loop.bus.consume_inbound(), timeout=2)
     await driver.stop(plan.id, "keep")
     await _dispatch(loop, _user("e adesso?"), reminder)
-    assert not any("[Plan reminder" in p for p in script.prompts)
+    assert not any("[Recordatorio del plan" in p for p in script.prompts)
     assert loop.bus.inbound.empty()
 
 
@@ -654,7 +654,7 @@ async def test_a_reminder_waits_for_a_cron_turn_to_end(workspace: Path) -> None:
     await _dispatch(loop, step_msg)
     reminder = await asyncio.wait_for(loop.bus.consume_inbound(), timeout=2)
     await _dispatch(loop, _cron(), reminder)
-    assert not any("[Plan reminder" in p for p in script.prompts)
+    assert not any("[Recordatorio del plan" in p for p in script.prompts)
     again = await asyncio.wait_for(loop.bus.consume_inbound(), timeout=2)
     assert again is reminder
     await _dispatch(loop, again)
@@ -681,7 +681,7 @@ async def test_stop_and_rollback_refuse_under_an_abandoned_turn(workspace: Path)
         await wait_until(lambda: KEY not in loop._pending_queues, timeout=5)
         plan = driver.store.open_plan_for("piante")
         await driver.approve(plan.id, plan.version, [])
-        await wait_until(lambda: any("[Plan — step 1" in p for p in script.prompts), timeout=5)
+        await wait_until(lambda: any("[Plan — paso 1" in p for p in script.prompts), timeout=5)
         page = workspace / "wikis" / "piante" / "wiki" / "acero.md"
         page.write_text("scritta dal passo\n", encoding="utf-8")
         result = await driver.stop(plan.id, "rollback")
@@ -713,7 +713,7 @@ async def test_the_answer_to_a_question_is_still_a_planning_turn(workspace: Path
     assert answer.metadata[WORKSPACE_READONLY_METADATA_KEY] is True
     await loop._process_message(answer, session_key=KEY)
     assert "plan_propose" in script.offered[-2]
-    assert "still preparing a plan" in script.prompts[-1]
+    assert "Todavía estás preparando un plan" in script.prompts[-1]
     plan = driver.store.open_plan_for("piante")
     assert plan is not None and plan.status == "proposed"
     assert driver.drafting_for(KEY) is None
@@ -722,7 +722,7 @@ async def test_the_answer_to_a_question_is_still_a_planning_turn(workspace: Path
     await loop._plan_before_turn(after, KEY)
     await loop._process_message(after, session_key=KEY)
     assert "plan_propose" not in script.offered[-1]
-    assert "[Planning turn]" not in script.prompts[-1]
+    assert "[Turno de planificación]" not in script.prompts[-1]
 
 
 async def test_the_planning_turn_counts_its_reads(workspace: Path) -> None:

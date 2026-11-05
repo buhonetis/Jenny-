@@ -534,7 +534,7 @@ class TestEmptiedBootstrapFile:
 
 # Il titolo del template. Cercarlo nel prompt è come si distingue "il blocco c'è"
 # da "il prompt nomina cron da qualche altra parte".
-_SCHEDULING_HEADING = "# Work for Later"
+_SCHEDULING_HEADING = "# Trabajo para después"
 
 # Il registry che ``build_dream_tools`` costruisce davvero (``memory.py``):
 # lettura e scrittura, nient'altro. Nessun ``cron``.
@@ -780,12 +780,12 @@ class TestBundledToolContract:
         tpl = pkg_files("arkhiva") / "templates" / "agent" / "tool_contract.md"
         content = tpl.read_text(encoding="utf-8")
 
-        assert "## General Tool Contract" in content
-        assert "Use the narrowest structured tool" in content
-        assert "## File and Coding Workflows" in content
+        assert "## Contrato general de herramientas" in content
+        assert "herramienta estructurada más estrecha" in content
+        assert "## Flujos de archivo y de código" in content
         assert "apply_patch" in content
-        assert "## Web and External Information" in content
-        assert "## Messaging and Media" in content
+        assert "## Web e información externa" in content
+        assert "## Mensajería y medios" in content
         assert "pure coding" not in content.lower()
         # "Scheduling and Background Work" è uscita di qui: diceva le stesse tre
         # cose di ``agent/scheduling.md`` ma senza la sua guardia, quindi Dream
@@ -797,8 +797,8 @@ class TestBundledToolContract:
         builder = _builder(tmp_path)
         prompt = builder.build_system_prompt()
 
-        assert "# Tool Usage Notes" in prompt
-        assert "## General Tool Contract" in prompt
+        assert "# Notas de uso de herramientas" in prompt
+        assert "## Contrato general de herramientas" in prompt
 
 
 class TestOutputDestinationRule:
@@ -817,15 +817,15 @@ class TestOutputDestinationRule:
         expected = str(tmp_path.resolve() / "output")
 
         assert expected in prompt
-        assert "Never create a new file in the workspace root" in prompt
-        # Senza "you may edit but never add to" l'agente smette di aggiornare
+        assert "Nunca crees un archivo nuevo en la raíz del workspace" in prompt
+        # Senza "puedes editar pero nunca ampliar" l'agente smette di aggiornare
         # AGENTS.md e USER.md, che invece deve continuare a fare.
-        assert "you may edit but never add to" in prompt
+        assert "puedes editar pero nunca ampliar" in prompt
 
     def test_rule_sits_at_the_end_of_the_tool_contract(self, tmp_path):
         """In fondo apposta: fra due istruzioni in conflitto vince l'ultima."""
         prompt = _builder(tmp_path).build_system_prompt()
-        contract_start = prompt.index("# Tool Usage Notes")
+        contract_start = prompt.index("# Notas de uso de herramientas")
         # Il contratto è l'ultima sezione quando non c'è altro dopo (workspace
         # nudo): niente separatore da cercare, si arriva in fondo.
         contract_end = prompt.find("\n\n---\n\n", contract_start)
@@ -836,13 +836,13 @@ class TestOutputDestinationRule:
         # nello stesso ruolo: una sezione che sta prima, così l'asserzione parla
         # ancora dell'ordine e non della presenza di un titolo.
         assert contract.index(str(tmp_path.resolve() / "output")) > contract.index(
-            "## Messaging and Media"
+            "## Mensajería y medios"
         )
 
     def test_download_precedent_is_kept(self, tmp_path):
         """La regola nuova generalizza quella sui download, non la sostituisce."""
         prompt = _builder(tmp_path).build_system_prompt(orchestrator=False)
-        assert "Save downloaded files under `downloads/` only, never in the workspace root" in prompt
+        assert "Guarda los archivos descargados solo bajo `downloads/`, nunca en la raíz del workspace" in prompt
 
     def test_output_dir_is_not_created_just_by_building_a_prompt(self, tmp_path):
         _builder(tmp_path).build_system_prompt()
@@ -919,8 +919,8 @@ class TestBuildSystemPrompt:
         builder = _builder(tmp_path)
         identity = builder._get_identity()
         assert "Android" in identity
-        assert "Platform Policy (Android)" in identity
-        assert "Chaquopy Python runtime" in identity
+        assert "Política de plataforma (Android)" in identity
+        assert "runtime Python de Chaquopy" in identity
 
     def test_includes_bootstrap_files(self, tmp_path):
         (tmp_path / "AGENTS.md").write_text("Be helpful and concise.", encoding="utf-8")
@@ -1093,7 +1093,7 @@ class TestTheToolContractIsGatedByTool:
         contract = self._contract(tmp_path, self.DREAM_TOOLS)
 
         assert "needs `python_exec`" not in contract
-        assert "cannot delete a file" in contract
+        assert "no puede borrar un archivo" in contract
 
     def test_an_unknown_registry_still_gets_everything(self, tmp_path):
         """``None`` vuol dire "non lo so", non "non c'è".
@@ -1144,14 +1144,14 @@ class TestWhichFileAFactBelongsIn:
         )
 
     @pytest.mark.parametrize(
-        "name", ["USER.md", "SOUL.md", "AGENTS.md", "memory/MEMORY.md", "skills/<name>/SKILL.md"]
+        "name", ["USER.md", "SOUL.md", "AGENTS.md", "memory/MEMORY.md", "skills/<nombre>/SKILL.md"]
     )
     def test_every_destination_is_named(self, name):
         assert name in self._contract()
 
     def test_it_survives_the_tool_gate(self):
         """Sta nella coda non gated di proposito: è Dream che ne ha più bisogno."""
-        assert "Which File a Fact Belongs In" in self._contract(
+        assert "En qué archivo va cada hecho" in self._contract(
             TestTheToolContractIsGatedByTool.DREAM_TOOLS
         )
 
@@ -1163,8 +1163,8 @@ class TestWhichFileAFactBelongsIn:
         """
         contract = self._contract()
 
-        assert "timezone" in contract
-        assert "stale the moment it is saved" in contract
+        assert "zona horaria" in contract
+        assert "obsoleta en el momento de guardarse" in contract
 
 
 # ---------------------------------------------------------------------------
@@ -1200,9 +1200,9 @@ class TestTheBotNameReachesTheModel:
         # Stesso builder, nessun riavvio: il nome nuovo vale dal prompt dopo.
         self._write_name(path, "Ada")
         renamed = builder.build_system_prompt(available_tools=self._TOOLS)
-        assert "## Name\nYour name is Ada: the user renamed you." in renamed
-        assert "introduce yourself as Ada" in renamed
+        assert "## Nombre\nTu nombre es Ada: el usuario te ha renombrado." in renamed
+        assert "preséntate como Ada" in renamed
         # Il resto del prompt non cambia: la riga in piu' e' tutta la differenza.
         assert renamed.replace(
-            renamed[renamed.index("## Name"):renamed.index("## Environment")], ""
+            renamed[renamed.index("## Nombre"):renamed.index("## Entorno")], ""
         ) == default_prompt
